@@ -1,6 +1,5 @@
 package com.log.main;
 
-import com.log.main.UserDAO;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,8 +13,10 @@ import java.io.IOException;
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/log/ui/PropertiesPage.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/com/log/ui/views/PropertiesPage.fxml"));
         Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass()
+                .getResource("/com/log/ui/styles/styles.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
 
