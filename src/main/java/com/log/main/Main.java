@@ -14,7 +14,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/com/log/ui/views/PropertiesPage.fxml"));
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(root, 1200, 800);
         scene.getStylesheets().add(getClass()
                 .getResource("/com/log/ui/styles/styles.css").toExternalForm());
         stage.setScene(scene);
