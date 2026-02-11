@@ -17,6 +17,18 @@
          <padding>
             <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
          </padding>
+         <children>
+            <Label styleClass="panel-title" text="Properties">
+               <VBox.margin>
+                  <Insets bottom="16.0" />
+               </VBox.margin>
+            </Label>
+            <Button mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Button" />
+            <Button layoutX="25.0" layoutY="71.0" mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Button" />
+            <Button layoutX="25.0" layoutY="112.0" mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Button" />
+            <Button layoutX="25.0" layoutY="153.0" mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Button" />
+            <Button layoutX="25.0" layoutY="195.0" mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Button" />
+         </children>
       </VBox>
     </left>
 
@@ -31,7 +43,7 @@
 
                     <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="panel-scroll" HBox.hgrow="ALWAYS">
                         <content>
-                            <VBox alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" spacing="16.0" styleClass="panel">
+                            <VBox alignment="TOP_CENTER" spacing="16.0" styleClass="panel">
                                 <children>
                                     <Label styleClass="panel-title" text="Label" />
                                     <Button styleClass="primary-btn" text="Button" />
@@ -47,9 +59,9 @@
 
                     <ScrollPane styleClass="panel-scroll" HBox.hgrow="ALWAYS">
                         <content>
-                            <VBox styleClass="panel">
+                            <VBox alignment="CENTER" styleClass="panel">
                                 <children>
-                                    <Label styleClass="panel-title" text="Label" />
+                                    <Label styleClass="panel-title" text="Entries" />
                                     <GridPane styleClass="data-grid" />
                                     <GridPane styleClass="data-grid" />
                                 </children>
@@ -66,6 +78,6 @@
         <HBox styleClass="bottombar" />
     </bottom>
    <padding>
-      <Insets bottom="15.0" right="15.0" top="15.0" />
+      <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
    </padding>
 </BorderPane>

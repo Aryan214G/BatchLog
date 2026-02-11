@@ -6,6 +6,7 @@
 
 .sidebar {
     -fx-background-color: #e8def8;
+    -fx-background-radius: 12;
 }
 
 .topbar {
@@ -30,7 +31,8 @@
 }
 
 .panel-scroll {
-    -fx-background-color: transparent;
+    -fx-background-color: #e8def8;
+    -fx-spacing: 16;
 }
 
 .panel {
@@ -42,9 +44,12 @@
 //text and labels
 
 .panel-title {
-    -fx-font-size: 15px;
+    -fx-font-size: 30px;
+    -fx-background-color: #ffffff;
     -fx-font-weight: bold;
     -fx-text-fill: #1f2933;
+    -fx-background-radius: 8;
+    -fx-padding: 0 20;
 }
 
 //buttons
@@ -70,6 +75,20 @@
     -fx-padding: 12 20;
 }
 
+.secondary-btn:hover {
+    -fx-background-color: #d1d5db;
+    }
+
+.sidebar-panel-btn {
+-fx-background-color: transparent;
+-fx-max-width: Infinity;
+-fx-padding: 12 20;
+}
+
+.sidebar-panel-btn:hover {
+    -fx-background-color: #D4C4F0;
+    -fx-background-radius: 12;
+}
 //gridpane styling
 
 .data-grid {
