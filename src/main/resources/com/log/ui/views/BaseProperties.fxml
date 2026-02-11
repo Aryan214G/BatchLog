@@ -1,104 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox prefWidth="640.0" prefHeight="400.0"
-      xmlns="http://javafx.com/javafx/25"
-      xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
 
-    <!-- ===== MENU BAR ===== -->
-    <MenuBar VBox.vgrow="NEVER">
-        <menus>
-            <Menu text="File">
-                <items>
-                    <MenuItem text="New"/>
-                    <MenuItem text="Open…"/>
-                    <Menu text="Open Recent"/>
-                    <SeparatorMenuItem/>
-                    <MenuItem text="Close"/>
-                    <MenuItem text="Save"/>
-                    <MenuItem text="Save As…"/>
-                    <SeparatorMenuItem/>
-                    <MenuItem text="Preferences…"/>
-                    <SeparatorMenuItem/>
-                    <MenuItem text="Quit"/>
-                </items>
-            </Menu>
+    <!-- ===== TOP MENU ===== -->
+    <top>
+        <MenuBar>
+            <menus>
+                <Menu text="File">
+                    <items>
+                        <MenuItem text="Close" />
+                    </items>
+                </Menu>
+                <Menu text="Edit">
+                    <items>
+                        <MenuItem text="Delete" />
+                    </items>
+                </Menu>
+                <Menu text="Help">
+                    <items>
+                        <MenuItem text="About" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
 
-            <Menu text="Edit">
-                <items>
-                    <MenuItem text="Undo"/>
-                    <MenuItem text="Redo"/>
-                    <SeparatorMenuItem/>
-                    <MenuItem text="Cut"/>
-                    <MenuItem text="Copy"/>
-                    <MenuItem text="Paste"/>
-                    <MenuItem text="Delete"/>
-                    <SeparatorMenuItem/>
-                    <MenuItem text="Select All"/>
-                </items>
-            </Menu>
+    <!-- ===== CENTER FORM ===== -->
+    <center>
+        <VBox alignment="CENTER_LEFT" prefHeight="529.0" prefWidth="818.0" spacing="15" BorderPane.alignment="TOP_LEFT">
+            <padding>
+                <Insets bottom="70.0" left="70.0" right="70.0" top="70.0" />
+            </padding>
 
-            <Menu text="Help">
-                <items>
-                    <MenuItem text="About Batchlog"/>
-                </items>
-            </Menu>
-        </menus>
-    </MenuBar>
+            <Label text="Project Name" />
+            <TextField maxWidth="Infinity" />
 
-    <!-- ===== MAIN FORM AREA ===== -->
-    <GridPane VBox.vgrow="ALWAYS" hgap="12" vgap="12">
+            <Label text="Batch No." />
+            <TextField maxWidth="Infinity" />
 
-        <padding>
-            <Insets top="20" right="30" bottom="20" left="30"/>
-        </padding>
+            <Label text="Product Name" />
+            <TextField maxWidth="Infinity" />
 
-        <!-- Column Layout -->
-        <columnConstraints>
-            <ColumnConstraints percentWidth="30"/>
-            <ColumnConstraints percentWidth="70" hgrow="ALWAYS"/>
-        </columnConstraints>
+            <Label text="Component ID" />
+            <TextField maxWidth="Infinity" />
 
-        <!-- Row 1 -->
-        <Label text="Project Name" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <TextField GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            <Label text="Test Date" />
+            <DatePicker maxWidth="Infinity" />
 
-        <!-- Row 2 -->
-        <Label text="Batch No." GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <TextField GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            <Label text="Place of Testing" />
+            <TextField maxWidth="Infinity" />
 
-        <!-- Row 3 -->
-        <Label text="Product Name" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-        <TextField GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+            <Label text="File Name" />
+            <TextField maxWidth="Infinity" />
 
-        <!-- Row 4 -->
-        <Label text="Component ID" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-        <TextField GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+        </VBox>
+    </center>
 
-        <!-- Row 5 -->
-        <Label text="Test Date" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-        <TextField GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-
-        <!-- Row 6 -->
-        <Label text="Place of Testing" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-        <TextField GridPane.rowIndex="5" GridPane.columnIndex="1"/>
-
-        <!-- Row 7 -->
-        <Label text="File Name" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
-        <TextField GridPane.rowIndex="6" GridPane.columnIndex="1"/>
-
-        <!-- Buttons Row -->
-        <HBox spacing="10" alignment="CENTER_RIGHT"
-              GridPane.rowIndex="7"
-              GridPane.columnIndex="1">
-
-            <Button text="Cancel"/>
-            <Button text="Save"/>
+    <!-- ===== BOTTOM BUTTONS ===== -->
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" spacing="10">
+            <padding>
+                <Insets bottom="20" right="20" />
+            </padding>
+            <Button text="Cancel" />
+            <Button text="Save" />
         </HBox>
+    </bottom>
 
-    </GridPane>
-
-</VBox>
+</BorderPane>
