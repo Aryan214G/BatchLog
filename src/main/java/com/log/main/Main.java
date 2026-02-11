@@ -8,19 +8,28 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main extends Application {
+
     @Override
     public void start(Stage stage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/com/log/ui/views/BaseProperties.fxml"));
+
+        FXMLLoader loader = new FXMLLoader(
+                Main.class.getResource("/com/log/ui/views/MainView.fxml")
+        );
+
+        Parent root = loader.load();
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass()
-                .getResource("/com/log/ui/styles/baseProperties.css").toExternalForm());
+
+        scene.getStylesheets().add(
+                Main.class.getResource("/com/log/ui/styles/mainpage.css").toExternalForm()
+        );
+
+        stage.setTitle("BatchLog");
         stage.setScene(scene);
         stage.show();
-
     }
+
+
     public static void main(String[] args) {
         launch();
     }

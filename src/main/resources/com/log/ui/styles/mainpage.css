@@ -1,0 +1,61 @@
+/* Root background */
+.root {
+    -fx-background-color: linear-gradient(to bottom, #f4f6f9, #e9eef3);
+    -fx-font-family: "Segoe UI", "Inter", sans-serif;
+}
+
+/* Title */
+.label {
+  -fx-font-family: "Verdana";
+  -fx-font-optical-sizing: auto;
+  -fx-font-weight: <b>bold</b>;
+  -fx-font-style: normal;
+  -fx-font-padding: 16 8 ;
+}
+
+/* Search TextField */
+.text-field {
+    -fx-background-color: #c9c3d8;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #000000;
+    -fx-border-width: 1;
+    -fx-padding:  16 16;
+    -fx-font-size: 14px;
+
+}
+
+.text-field:focused {
+    -fx-border-color: #2563eb;
+    -fx-border-width: 1.5;
+    -fx-effect: dropshadow(gaussian, rgba(37,99,235,0.25), 8, 0, 0, 0);
+}
+
+/* Primary Button (OK button style) */
+.button {
+    -fx-background-color: #000000;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-padding: 8 18 8 18;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #363636;
+}
+
+.button:pressed {
+    -fx-background-color: #363636;
+}
+
+/* Optional: Make New Entry button secondary */
+.button:nth-child(3) {
+    -fx-background-color: #10b981;
+}
+
+.button:nth-child(3):hover {
+    -fx-background-color: #059669;
+}
+
+.padding
