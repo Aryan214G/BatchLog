@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -36,12 +37,13 @@
                             </VBox>
                         </content>
                     </ScrollPane>
+               <Separator orientation="VERTICAL" prefHeight="200.0" />
 
-                    <ScrollPane styleClass="panel-scroll" HBox.hgrow="ALWAYS">
+                    <ScrollPane fitToWidth="true" styleClass="panel-scroll" HBox.hgrow="ALWAYS">
                         <content>
-                            <VBox alignment="CENTER" styleClass="entries-panel">
+                            <VBox alignment="TOP_CENTER" styleClass="entries-panel">
                                 <children>
-                                    <Label styleClass="entry-title" text="Entries" />
+                                    <Label alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="entry-title" text="Entries" />
                                     <GridPane styleClass="data-grid" />
                                     <GridPane styleClass="data-grid" />
                                 </children>
@@ -70,11 +72,11 @@
                         <Insets bottom="16.0" />
                      </VBox.margin>
                   </Label>
-                  <Button mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Button" />
-                  <Button mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Button" />
-                  <Button mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Button" />
-                  <Button mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Button" />
-                  <Button mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Button" />
+                  <Button mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Physical" />
+                  <Button mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Mechanical" />
+                  <Button mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Thermal" />
+                  <Button mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Tribological" />
+                  <Button mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Microstructure" />
                </children>
             </VBox>
          </content>
