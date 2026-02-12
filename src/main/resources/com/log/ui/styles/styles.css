@@ -160,3 +160,29 @@
 -fx-padding: 16;
 -fx-spacing: 16;
 }
+
+//text fields
+
+.input-field {
+-fx-pref-height: 48;
+-fx-pref-width: max-content;
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 12;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 12;
+    -fx-padding: 12 16;
+}
+
+.combo-box {
+-fx-pref-height: 48;
+-fx-pref-width: max-content;
+    -fx-background-color: lightgray;
+    -fx-background-radius: 12;
+-fx-padding: 12 16;
+
+}
+
+.input-field-container{
+-fx-padding: 16;
+
+}
