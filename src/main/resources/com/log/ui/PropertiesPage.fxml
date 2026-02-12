@@ -61,11 +61,11 @@
       <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
    </padding>
    <left>
-      <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" styleClass="panel-scroll" BorderPane.alignment="CENTER">
+      <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="260.0" styleClass="panel-scroll" BorderPane.alignment="CENTER">
          <content>
             <VBox maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" styleClass="sidebar">
                <children>
-                  <Label styleClass="sidebar-title" text="Properties">
+                  <Label alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="sidebar-title" text="Properties">
                      <VBox.margin>
                         <Insets bottom="16.0" />
                      </VBox.margin>

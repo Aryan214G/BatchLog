@@ -7,6 +7,7 @@
 .sidebar {
     -fx-background-color: #e8def8;
     -fx-background-radius: 16;
+    -fx-padding: 16;
 }
 
 .topbar {
@@ -27,6 +28,7 @@
 
 .content-row {
 -fx-background-color: #e8def8;
+-fx-background-radius: 16;
 }
 
 .panel-scroll {
@@ -62,7 +64,7 @@
     -fx-font-weight: bold;
     -fx-text-fill: #1f2933;
     -fx-background-radius: 8;
-    -fx-padding: 0 20;
+    -fx-padding: 4 20;
 }
 
 .subproperties-title {
@@ -85,7 +87,7 @@
     -fx-font-weight: bold;
     -fx-background-radius: 12;
     -fx-max-width: Infinity;
-    -fx-padding: 12 20;
+    -fx-padding: 16 24;
 }
 
 .primary-btn:hover {
@@ -97,7 +99,7 @@
     -fx-text-fill: #111827;
     -fx-background-radius: 12;
     -fx-max-width: Infinity;
-    -fx-padding: 12 20;
+    -fx-padding: 16 24;
 }
 
 .secondary-btn:hover {
