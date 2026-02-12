@@ -96,8 +96,8 @@
 //buttons
 
 .primary-btn {
-    -fx-background-color: #2563eb;
-    -fx-text-fill: white;
+    -fx-background-color: #C9E996;
+    -fx-text-fill: #111827;
     -fx-font-weight: bold;
     -fx-background-radius: 12;
     -fx-max-width: Infinity;
@@ -105,11 +105,11 @@
 }
 
 .primary-btn:hover {
-    -fx-background-color: #1d4ed8;
+    -fx-background-color: #A7D86C;
 }
 
 .secondary-btn {
-    -fx-background-color: #e5e7eb;
+    -fx-background-color: #ffffff;
     -fx-text-fill: #111827;
     -fx-background-radius: 12;
     -fx-max-width: Infinity;
