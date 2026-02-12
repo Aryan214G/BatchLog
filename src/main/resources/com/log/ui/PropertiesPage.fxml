@@ -44,7 +44,24 @@
                             <VBox alignment="TOP_CENTER" styleClass="entries-panel">
                                 <children>
                                     <Label alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="entry-title" text="Entries" />
-                                    <GridPane styleClass="data-grid" />
+                           <HBox alignment="TOP_CENTER" fillHeight="false" prefHeight="100.0" prefWidth="200.0" styleClass="metric-chip-container">
+                              <children>
+                                 <HBox styleClass="metric-chip">
+                                    <children>
+                                       <Label styleClass="body-text" text="Mean" />
+                                       <Separator orientation="VERTICAL" />
+                                       <Label styleClass="body-text" text="10" />
+                                    </children>
+                                 </HBox>
+                                 <HBox styleClass="metric-chip">
+                                    <children>
+                                       <Label styleClass="body-text" text="Standard deviation" />
+                                       <Separator orientation="VERTICAL" />
+                                       <Label styleClass="body-text" text="10" />
+                                    </children>
+                                 </HBox>
+                              </children>
+                           </HBox>
                                     <GridPane styleClass="data-grid" />
                                 </children>
                             </VBox>

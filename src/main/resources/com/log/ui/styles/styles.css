@@ -3,6 +3,11 @@
 .root-layout {
     -fx-background-color: #f5f6f8;
 }
+.body-text {
+    -fx-font-size: 14px;
+    -fx-text-fill: #1f2933;
+    -fx-font-weight: normal;
+}
 
 .sidebar {
     -fx-background-color: #e8def8;
@@ -140,4 +145,18 @@
 
 .panel-scroll .viewport {
     -fx-background-color: transparent;
+}
+
+//cards
+
+.metric-chip {
+-fx-background-color: #ffffff;
+-fx-background-radius: 16;
+-fx-padding: 16;
+}
+
+.metric-chip-container
+{
+-fx-padding: 16;
+-fx-spacing: 16;
 }
