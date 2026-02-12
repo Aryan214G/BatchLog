@@ -6,18 +6,15 @@
 
 .sidebar {
     -fx-background-color: #e8def8;
-    -fx-background-radius: 12;
+    -fx-background-radius: 16;
 }
 
 .topbar {
     -fx-background-color: #ffffff;
-    -fx-border-color: #e0e0e0;
-    -fx-border-width: 0 0 1 0;
 }
 
 .bottombar {
     -fx-background-color: #ffffff;
-    -fx-border-color: #e0e0e0;
     -fx-border-width: 1 0 0 0;
 }
 
@@ -33,14 +30,24 @@
 }
 
 .panel-scroll {
-    -fx-background-color: #e8def8;
-    -fx-spacing: 16;
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-border-color: transparent;
+}
+
+
+.panel-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.panel-scroll:focused {
+    -fx-border-color: transparent;
 }
 
 .subproperties-panel {
     -fx-background-color: transparent;
     -fx-background-radius: 16;
-    -fx-background-radius: 8;
 }
 
 .entries-panel {

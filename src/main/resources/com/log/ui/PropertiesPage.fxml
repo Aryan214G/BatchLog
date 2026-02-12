@@ -12,26 +12,6 @@
 
 <BorderPane fx:id="root" prefHeight="800.0" prefWidth="1200.0" styleClass="root-layout" stylesheets="@styles/styles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
 
-    <left>
-        <VBox prefWidth="220.0" styleClass="sidebar">
-         <padding>
-            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-         </padding>
-         <children>
-            <Label styleClass="sidebar-title" text="Properties">
-               <VBox.margin>
-                  <Insets bottom="16.0" />
-               </VBox.margin>
-            </Label>
-            <Button mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Button" />
-            <Button layoutX="25.0" layoutY="71.0" mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Button" />
-            <Button layoutX="25.0" layoutY="112.0" mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Button" />
-            <Button layoutX="25.0" layoutY="153.0" mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Button" />
-            <Button layoutX="25.0" layoutY="195.0" mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Button" />
-         </children>
-      </VBox>
-    </left>
-
     <top>
         <VBox styleClass="topbar" />
     </top>
@@ -80,4 +60,24 @@
    <padding>
       <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
    </padding>
+   <left>
+      <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" styleClass="panel-scroll" BorderPane.alignment="CENTER">
+         <content>
+            <VBox maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" styleClass="sidebar">
+               <children>
+                  <Label styleClass="sidebar-title" text="Properties">
+                     <VBox.margin>
+                        <Insets bottom="16.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Button mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Button" />
+                  <Button mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Button" />
+                  <Button mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Button" />
+                  <Button mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Button" />
+                  <Button mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Button" />
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </left>
 </BorderPane>
