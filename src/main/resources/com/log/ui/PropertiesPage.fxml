@@ -26,14 +26,14 @@
             <children>
                 <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="content-row">
 
-                    <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="panel-scroll" HBox.hgrow="ALWAYS">
+                    <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="panel-scroll" HBox.hgrow="NEVER">
                         <content>
                             <VBox alignment="TOP_CENTER" spacing="16.0" styleClass="subproperties-panel">
                                 <children>
-                                    <Label styleClass="subproperties-title" text="Label" />
-                                    <Button styleClass="primary-btn" text="Button" />
-                                    <Button styleClass="secondary-btn" text="Button" />
-                                    <Button styleClass="secondary-btn" text="Button" />
+                                    <Label styleClass="subproperties-title" text="Sub Properties" />
+                                    <Button styleClass="primary-btn" text="Property 1" wrapText="true" />
+                                    <Button styleClass="secondary-btn" text="Property 2" wrapText="true" />
+                                    <Button styleClass="secondary-btn" text="Property 3" wrapText="true" />
                                 </children>
                         <padding>
                            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
@@ -43,7 +43,7 @@
                     </ScrollPane>
                <Separator orientation="VERTICAL" prefHeight="200.0" />
 
-                    <ScrollPane fitToWidth="true" styleClass="panel-scroll" HBox.hgrow="ALWAYS">
+                    <ScrollPane fitToWidth="true" maxWidth="1.7976931348623157E308" styleClass="panel-scroll" HBox.hgrow="ALWAYS">
                         <content>
                             <VBox alignment="TOP_CENTER" styleClass="entries-panel">
                                 <children>
@@ -52,14 +52,14 @@
                               <children>
                                  <HBox styleClass="metric-chip">
                                     <children>
-                                       <Label styleClass="body-text" text="Mean" />
+                                       <Label styleClass="body-text" text="Mean" wrapText="true" />
                                        <Separator orientation="VERTICAL" />
                                        <Label styleClass="body-text" text="10" />
                                     </children>
                                  </HBox>
                                  <HBox styleClass="metric-chip">
                                     <children>
-                                       <Label styleClass="body-text" text="Standard deviation" />
+                                       <Label styleClass="body-text" text="Standard deviation" wrapText="true" />
                                        <Separator orientation="VERTICAL" />
                                        <Label styleClass="body-text" text="10" />
                                     </children>

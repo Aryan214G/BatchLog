@@ -164,7 +164,6 @@
 //text fields
 
 .input-field {
--fx-pref-height: 48;
 -fx-pref-width: max-content;
     -fx-background-color: #ffffff;
     -fx-background-radius: 12;
@@ -174,7 +173,6 @@
 }
 
 .combo-box {
--fx-pref-height: 48;
 -fx-pref-width: max-content;
     -fx-background-color: lightgray;
     -fx-background-radius: 12;
@@ -185,4 +183,11 @@
 .input-field-container{
 -fx-padding: 16;
 
+}
+
+.text-field,
+.combo-box {
+    -fx-pref-height: 48;
+    -fx-min-height: 48;
+    -fx-max-height: 48;
 }
