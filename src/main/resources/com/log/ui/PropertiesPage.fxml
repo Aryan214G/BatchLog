@@ -18,7 +18,7 @@
             <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
          </padding>
          <children>
-            <Label styleClass="panel-title" text="Properties">
+            <Label styleClass="sidebar-title" text="Properties">
                <VBox.margin>
                   <Insets bottom="16.0" />
                </VBox.margin>
@@ -39,13 +39,13 @@
     <center>
         <StackPane styleClass="content-area">
             <children>
-                <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="16.0" styleClass="content-row">
+                <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="content-row">
 
                     <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="panel-scroll" HBox.hgrow="ALWAYS">
                         <content>
-                            <VBox alignment="TOP_CENTER" spacing="16.0" styleClass="panel">
+                            <VBox alignment="TOP_CENTER" spacing="16.0" styleClass="subproperties-panel">
                                 <children>
-                                    <Label styleClass="panel-title" text="Label" />
+                                    <Label styleClass="subproperties-title" text="Label" />
                                     <Button styleClass="primary-btn" text="Button" />
                                     <Button styleClass="secondary-btn" text="Button" />
                                     <Button styleClass="secondary-btn" text="Button" />
@@ -59,9 +59,9 @@
 
                     <ScrollPane styleClass="panel-scroll" HBox.hgrow="ALWAYS">
                         <content>
-                            <VBox alignment="CENTER" styleClass="panel">
+                            <VBox alignment="CENTER" styleClass="entries-panel">
                                 <children>
-                                    <Label styleClass="panel-title" text="Entries" />
+                                    <Label styleClass="entry-title" text="Entries" />
                                     <GridPane styleClass="data-grid" />
                                     <GridPane styleClass="data-grid" />
                                 </children>
