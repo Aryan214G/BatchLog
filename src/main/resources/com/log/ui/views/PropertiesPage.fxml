@@ -20,10 +20,8 @@
     <top>
         <VBox styleClass="topbar">
             <children>
-                <fx:include source="/com/log/ui/components/menubar.fxml"/>
-            </children>
-            <children>
-                <fx:include source="/com/log/ui/components/infoBar.fxml"/>
+                <fx:include source="../components/menubar.fxml"/>
+                <fx:include source="../components/infoBar.fxml"/>
             </children>
         </VBox>
     </top>
