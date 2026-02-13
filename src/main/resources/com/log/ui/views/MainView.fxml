@@ -16,25 +16,7 @@
 
     <!-- Top Menu -->
     <top>
-        <MenuBar>
-            <menus>
-                <Menu text="File">
-                    <items>
-                        <MenuItem text="Close" />
-                    </items>
-                </Menu>
-                <Menu text="Edit">
-                    <items>
-                        <MenuItem text="Delete" />
-                    </items>
-                </Menu>
-                <Menu text="Help">
-                    <items>
-                        <MenuItem text="About" />
-                    </items>
-                </Menu>
-            </menus>
-        </MenuBar>
+   <fx:include source="/com/log/ui/components/menubar.fxml"/>
     </top>
 
     <!-- Center Content -->
