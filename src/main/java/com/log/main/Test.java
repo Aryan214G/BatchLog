@@ -22,6 +22,10 @@ public class Test extends Application {
                     Test.class.getResource("/com/log/ui/styles/propertiesPage.css").toExternalForm()
             );
 
+            scene.getStylesheets().add(
+                    Test.class.getResource("/com/log/ui/styles/infoBar.css").toExternalForm()
+            );
+
             stage.setTitle("BatchLog");
             stage.setScene(scene);
             stage.show();
