@@ -48,22 +48,22 @@
             <TextField alignment="CENTER" maxWidth="700.0" />
 
             <Label text="Batch No." />
-            <TextField maxWidth="700.0" />
+            <TextField alignment="CENTER" maxWidth="700.0" />
 
             <Label text="Product Name" />
-            <TextField maxWidth="700.0" />
+            <TextField alignment="CENTER" maxWidth="700.0" />
 
             <Label text="Component ID" />
-            <TextField maxWidth="700.0" />
+            <TextField alignment="CENTER" maxWidth="700.0" />
 
             <Label text="Test Date" />
             <DatePicker maxWidth="250.0" />
 
             <Label text="Place of Testing" />
-            <TextField maxWidth="700.0" />
+            <TextField alignment="CENTER" maxWidth="700.0" />
 
             <Label text="File Name" />
-            <TextField maxWidth="700.0" />
+            <TextField alignment="CENTER" maxWidth="700.0" />
 
         </VBox>
     </center>
