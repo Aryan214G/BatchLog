@@ -16,7 +16,7 @@
 
     <!-- ===== TOP MENU ===== -->
     <top>
-        <fx:include source="/com/log/ui/components/menubar.fxml"/>
+        <fx:include source="../components/menubar.fxml"/>
     </top>
 
     <!-- ===== CENTER FORM ===== -->
