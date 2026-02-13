@@ -1,0 +1,66 @@
+.root-layout {
+    -fx-background-color: #f5f6f8;
+    -fx-padding: 16;
+}
+
+//text fields
+
+.input-field {
+-fx-pref-width: max-content;
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 12;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 12;
+    -fx-padding: 12 16;
+}
+
+input-field-container{
+-fx-padding: 16;
+-fx spacing: 16;
+-fx-border-color: #000000;
+}
+
+//buttons
+
+.primary-btn {
+    -fx-background-color: #000000;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-background-radius: 12;
+    -fx-max-width: Infinity;
+    -fx-padding: 16 24;
+}
+
+.primary-btn:hover {
+    -fx-background-color: #A7D86C;
+}
+
+
+//titles and labels
+
+.title {
+-fx-font-size: 30px;
+-fx-font-weight: bold;
+    -fx-text-fill: #1f2933;
+    -fx-padding: 0 20;}
+
+//panels and content
+.content.area{
+-fx-spacing: 16;
+}
+
+.attributes-card{
+-fx-background-color: #ffffff;
+-fx-background-radius: 16;
+-fx-border-color: #e5e7eb;
+-fx-border-radius: 16;
+-fx-padding: 16;
+}
+
+.attributes-container {
+-fx-background-color: #e8def8;
+-fx-background-radius: 16;
+-fx-padding: 16;
+-fx-spacing: 16;
+
+}
