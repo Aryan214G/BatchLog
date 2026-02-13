@@ -1,0 +1,32 @@
+/* ===== TOOLBAR BACKGROUND ===== */
+.tool-bar {
+    -fx-background-color: #e9e9ee;
+    -fx-padding: 6 12 6 12;
+    -fx-spacing: 10;
+}
+
+/* Remove default gradient */
+.tool-bar .container {
+    -fx-background-color: transparent;
+}
+
+/* ===== PILL BUTTON STYLE ===== */
+.tool-bar .button {
+    -fx-background-color: #2f2f33;
+    -fx-text-fill: white;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-padding: 6 14 6 14;
+    -fx-font-size: 13px;
+    -fx-font-weight: 500;
+}
+
+/* Hover */
+.tool-bar .button:hover {
+    -fx-background-color: #3a3a40;
+}
+
+/* Pressed */
+.tool-bar .button:pressed {
+    -fx-background-color: #242428;
+}
