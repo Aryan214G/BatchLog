@@ -8,11 +8,7 @@ public class UserDAO {
 
     public static void createTable() {
         String sql = """
-                CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY,
-                name TEXT NOT NULL,
-                email TEXT UNIQUE
-                );
+                
                 """;
 
         try(Connection conn = DBUtil.getConnection();
