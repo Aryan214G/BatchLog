@@ -19,7 +19,6 @@ public class Main extends Application {
                 .getResource("/com/log/ui/styles/styles.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
-
     }
     public static void main(String[] args) {
         launch();
