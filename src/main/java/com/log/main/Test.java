@@ -19,7 +19,7 @@ public class Test extends Application {
             Scene scene = new Scene(root);
 
             scene.getStylesheets().add(
-                    Test.class.getResource("/com/log/ui/styles/styles.css").toExternalForm()
+                    Test.class.getResource("/com/log/ui/styles/propertiesPage.css").toExternalForm()
             );
 
             stage.setTitle("BatchLog");
