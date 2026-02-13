@@ -12,11 +12,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="500.0" prefWidth="800.0" stylesheets="@homepage_style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane prefHeight="500.0" prefWidth="800.0"  xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
 
     <!-- Top Menu -->
     <top>
-   <fx:include source="/com/log/ui/components/menubar.fxml"/>
+        <fx:include source="../components/menubar.fxml"/>
     </top>
 
     <!-- Center Content -->
