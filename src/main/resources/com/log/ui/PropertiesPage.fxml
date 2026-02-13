@@ -109,7 +109,7 @@
                         <Insets bottom="16.0" />
                      </VBox.margin>
                   </Label>
-                  <Button mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Physical" />
+                  <Button mnemonicParsing="false" styleClass="primary-btn" text="Physical" />
                   <Button mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Mechanical" />
                   <Button mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Thermal" />
                   <Button mnemonicParsing="false" styleClass="sidebar-panel-btn" text="Tribological" />
