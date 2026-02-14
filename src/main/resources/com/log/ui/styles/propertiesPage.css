@@ -3,6 +3,8 @@
 .root-layout {
     -fx-background-color: #f5f6f8;
 }
+
+
 .body-text {
     -fx-font-size: 14px;
     -fx-text-fill: #1f2933;
@@ -37,9 +39,7 @@
 -fx-background-radius: 16;
 }
 
-.buttons-list{
--fx-background-color: transparent;
-}
+
 
 .separator:vertical {
     -fx-padding: 0 8; /* space around divider */
@@ -195,4 +195,39 @@
     -fx-pref-height: 48;
     -fx-min-height: 48;
     -fx-max-height: 48;
+}
+
+//buttons list view
+
+.buttons-list{
+-fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 8;
+
+}
+
+.buttons-list .viewport {
+    -fx-background-color: transparent;
+}
+
+.buttons-list .list-cell {
+    -fx-padding: 20;
+    -fx-background-color: transparent;
+    -fx-alignment: CENTER;
+}
+
+.buttons-list .list-cell:filled {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 12;
+    -fx-background-insets: 8;
+}
+
+.buttons-list .list-cell:filled:hover {
+    -fx-background-color: #dcd6eb;
+}
+
+.buttons-list .list-cell:filled:selected {
+    -fx-background-color: #b8d989;
+    -fx-text-fill: black;
+    -fx-text-weight: bold;
 }

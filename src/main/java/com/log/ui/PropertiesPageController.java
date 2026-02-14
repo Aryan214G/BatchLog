@@ -20,28 +20,28 @@ public class PropertiesPageController {
         propertiesListView.setItems(properties);
 
         //lambda function
-        propertiesListView.setCellFactory(listView-> new ListCell<>(){
-            private final Button button = new Button();
-
-            //initializer block in place of default constructor
-            {
-                button.setMaxWidth(Double.MAX_VALUE);
-            }
-
-            @Override
-            protected void updateItem(String item, boolean empty)
-            {
-                super.updateItem(item, empty);
-
-                if(empty || item == null)
-                {
-                    setGraphic(null);
-                }
-                else{
-                    button.setText(item);
-                    setGraphic(button);
-                }
-            }
-        });
+//        propertiesListView.setCellFactory(listView-> new ListCell<>(){
+//            private final Button button = new Button();
+//
+//            //initializer block in place of default constructor
+//            {
+//                button.setMaxWidth(Double.MAX_VALUE);
+//            }
+//
+//            @Override
+//            protected void updateItem(String item, boolean empty)
+//            {
+//                super.updateItem(item, empty);
+//
+//                if(empty || item == null)
+//                {
+//                    setGraphic(null);
+//                }
+//                else{
+//                    button.setText(item);
+//                    setGraphic(button);
+//                }
+//            }
+//        });
     }
 }
