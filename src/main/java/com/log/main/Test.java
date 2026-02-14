@@ -13,7 +13,7 @@ public class Test extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         {
-            FXMLLoader loader = new FXMLLoader(Test.class.getResource("/com/log/ui/views/BaseProperties.fxml"));
+            FXMLLoader loader = new FXMLLoader(Test.class.getResource("/com/log/ui/views/PropertiesPage.fxml"));
 
             Parent root = loader.load();
             Scene scene = new Scene(root);

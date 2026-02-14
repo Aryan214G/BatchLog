@@ -13,6 +13,7 @@
     -fx-background-color: #e8def8;
     -fx-background-radius: 16;
     -fx-padding: 16;
+    -fx-spacing: 16;
 }
 
 .topbar {
@@ -34,6 +35,10 @@
 .content-row {
 -fx-background-color: #e8def8;
 -fx-background-radius: 16;
+}
+
+.buttons-list{
+-fx-background-color: transparent;
 }
 
 .separator:vertical {
