@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" styleClass="root-layout" stylesheets="@../styles/AddPropertiesStyles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" styleClass="content-area" BorderPane.alignment="CENTER">
+         <children>
+            <VBox prefHeight="200.0" prefWidth="100.0" styleClass="input-field-container">
+               <children>
+                  <Label text="Label" />
+                  <TextField styleClass="input-field" />
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" fillWidth="false" prefHeight="200.0" prefWidth="100.0" styleClass="attributes-container">
+               <children>
+                  <Label styleClass="title" text="Add attributes" />
+                  <Label layoutX="10.0" layoutY="10.0" styleClass="attributes-card" text="Label" />
+                  <Label layoutX="10.0" layoutY="27.0" styleClass="attributes-card" text="Label" />
+                  <Button mnemonicParsing="false" styleClass="primary-btn" text="Button" />
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </center>
+   <top>
+      <Label styleClass="title" text="Add property" BorderPane.alignment="CENTER" />
+   </top>
+   <bottom>
+      <Button mnemonicParsing="false" styleClass="primary-btn" text="Button" BorderPane.alignment="CENTER" />
+   </bottom>
+</BorderPane>
