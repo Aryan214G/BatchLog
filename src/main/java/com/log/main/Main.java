@@ -13,15 +13,15 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-        FXMLLoader loader = new FXMLLoader(
-                Main.class.getResource("/com/log/ui/views/PropertiesPage.fxml")
+        FXMLLoader loader = new FXMLLoader(getClass()
+                .getResource("/com/log/ui/views/PropertiesPage.fxml")
         );
 
         Parent root = loader.load();
         Scene scene = new Scene(root);
 
-        scene.getStylesheets().add(
-                Main.class.getResource("/com/log/ui/styles/propertiesPage.css").toExternalForm()
+        scene.getStylesheets().add(getClass()
+                .getResource("/com/log/ui/styles/propertiesPage.css").toExternalForm()
         );
 
         stage.setTitle("BatchLog");

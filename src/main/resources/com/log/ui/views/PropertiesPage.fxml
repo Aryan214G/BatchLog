@@ -37,10 +37,8 @@
                         <content>
                             <VBox alignment="TOP_CENTER" spacing="16.0" styleClass="subproperties-panel">
                                 <children>
-                                    <Label styleClass="subproperties-title" text="Sub Properties" />
-                                    <Button styleClass="primary-btn" text="Property 1" wrapText="true" />
-                                    <Button styleClass="secondary-btn" text="Property 2" wrapText="true" />
-                                    <Button styleClass="secondary-btn" text="Property 3" wrapText="true" />
+                                    <Label fx:id="propertiesLabel" styleClass="subproperties-title" />
+                           <ListView fx:id="propertiesListView" styleClass="buttons-list" />
                            <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
                            <Button mnemonicParsing="false" styleClass="edit-button" text="Edit" />
                                 </children>
@@ -111,8 +109,8 @@
    <left>
       <VBox styleClass="sidebar" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="sidebar-title" text="Properties" />
-            <ListView fx:id="propertiesListView" styleClass="buttons-list" />
+            <Label alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="sidebar-title" text="Categories" />
+            <ListView fx:id="categoriesListView" styleClass="buttons-list" />
             <Region prefHeight="200.0" prefWidth="200.0" />
             <Button mnemonicParsing="false" styleClass="edit-button" text="Edit" />
          </children>

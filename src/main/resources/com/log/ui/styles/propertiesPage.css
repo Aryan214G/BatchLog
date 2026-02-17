@@ -102,7 +102,7 @@
 //buttons
 
 .primary-btn {
-    -fx-background-color: #C9E996;
+    -fx-background-color: #000000;
     -fx-text-fill: #111827;
     -fx-font-weight: bold;
     -fx-background-radius: 12;
@@ -111,7 +111,7 @@
 }
 
 .primary-btn:hover {
-    -fx-background-color: #A7D86C;
+    -fx-background-color: #383838;
 }
 
 .secondary-btn {
@@ -236,7 +236,7 @@
 }
 
 .buttons-list .list-cell:filled:selected {
-    -fx-background-color: #b8d989;
-    -fx-text-fill: black;
+    -fx-background-color: #000000;
+    -fx-text-fill: white;
     -fx-text-weight: bold;
 }
