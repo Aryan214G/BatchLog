@@ -57,7 +57,7 @@
                 <Insets bottom="20" right="20" />
             </padding>
             <Button text="Cancel" />
-            <Button text="Save" />
+            <Button text="Next" />
         </HBox>
     </bottom>
 
