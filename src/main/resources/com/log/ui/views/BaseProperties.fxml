@@ -27,25 +27,25 @@
             </padding>
 
             <Label text="Project Name" />
-            <TextField alignment="CENTER" maxWidth="700.0" />
+            <TextField fx:id="projectName" alignment="CENTER" maxWidth="700.0" />
 
             <Label text="Batch No." />
-            <TextField alignment="CENTER" maxWidth="700.0" />
+            <TextField  fx:id="batchNo" alignment="CENTER" maxWidth="700.0" />
 
             <Label text="Product Name" />
-            <TextField alignment="CENTER" maxWidth="700.0" />
+            <TextField fx:id="productName" alignment="CENTER" maxWidth="700.0" />
 
             <Label text="Component ID" />
-            <TextField alignment="CENTER" maxWidth="700.0" />
+            <TextField fx:id="componentID" alignment="CENTER" maxWidth="700.0" />
 
             <Label text="Test Date" />
-            <DatePicker maxWidth="250.0" />
+            <DatePicker fx:id="testDate" maxWidth="250.0" />
 
             <Label text="Place of Testing" />
-            <TextField alignment="CENTER" maxWidth="700.0" />
+            <TextField fx:id="placeOfTesting" alignment="CENTER" maxWidth="700.0" />
 
             <Label text="File Name" />
-            <TextField alignment="CENTER" maxWidth="700.0" />
+            <TextField fx:id="fileName" alignment="CENTER" maxWidth="700.0" />
 
         </VBox>
     </center>
