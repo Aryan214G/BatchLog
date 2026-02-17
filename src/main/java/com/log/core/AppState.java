@@ -38,4 +38,25 @@ public class AppState {
     private String fileName;
 
 
+    public String getProjectName() { return projectName; }
+    public void setProjectName(String projectName) { this.projectName = projectName; }
+
+    public String getBatchNo() { return batchNo; }
+    public void setBatchNo(String batchNo) { this.batchNo = batchNo; }
+
+    public String getProductName() { return productName; }
+    public void setProductName(String productName) { this.productName = productName; }
+
+    public String getComponentID() { return componentID; }
+    public void setComponentID(String componentID) { this.componentID = componentID; }
+
+    public LocalDate getTestDate() { return testDate; }
+    public void setTestDate(LocalDate testDate) { this.testDate = testDate; }
+
+    public String getPlaceOfTesting() { return placeOfTesting; }
+    public void setPlaceOfTesting(String placeOfTesting) { this.placeOfTesting = placeOfTesting; }
+
+    public String getFileName() { return fileName; }
+    public void setFileName(String fileName) { this.fileName = fileName; }
+
 }
