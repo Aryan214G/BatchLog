@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
@@ -40,6 +41,8 @@
                                     <Button styleClass="primary-btn" text="Property 1" wrapText="true" />
                                     <Button styleClass="secondary-btn" text="Property 2" wrapText="true" />
                                     <Button styleClass="secondary-btn" text="Property 3" wrapText="true" />
+                           <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                           <Button mnemonicParsing="false" styleClass="edit-button" text="Edit" />
                                 </children>
                         <padding>
                            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
@@ -110,6 +113,8 @@
          <children>
             <Label alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="sidebar-title" text="Properties" />
             <ListView fx:id="propertiesListView" styleClass="buttons-list" />
+            <Region prefHeight="200.0" prefWidth="200.0" />
+            <Button mnemonicParsing="false" styleClass="edit-button" text="Edit" />
          </children>
       </VBox>
    </left>

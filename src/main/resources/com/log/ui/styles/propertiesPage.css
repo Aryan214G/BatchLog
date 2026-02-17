@@ -126,6 +126,14 @@
     -fx-background-color: #d1d5db;
     }
 
+.edit-button {
+-fx-background-color: #000000;
+-fx-text-fill: #ffffff;
+-fx-padding: 10 16;
+-fx-background-radius: 8;
+-fx-max-width: Infinity;
+}
+
 .sidebar-panel-btn {
 -fx-background-color: transparent;
 -fx-max-width: Infinity;
