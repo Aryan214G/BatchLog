@@ -4,9 +4,6 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -16,7 +13,7 @@
 
     <!-- ===== TOP MENU ===== -->
     <top>
-        <fx:include source="../components/menubar.fxml"/>
+        <fx:include source="../components/menubar.fxml" />
     </top>
 
     <!-- ===== CENTER FORM ===== -->
@@ -30,7 +27,7 @@
             <TextField fx:id="projectName" alignment="CENTER" maxWidth="700.0" />
 
             <Label text="Batch No." />
-            <TextField  fx:id="batchNo" alignment="CENTER" maxWidth="700.0" />
+            <TextField fx:id="batchNo" alignment="CENTER" maxWidth="700.0" />
 
             <Label text="Product Name" />
             <TextField fx:id="productName" alignment="CENTER" maxWidth="700.0" />
@@ -45,7 +42,7 @@
             <TextField fx:id="placeOfTesting" alignment="CENTER" maxWidth="700.0" />
 
             <Label text="File Name" />
-            <TextField fx:id="fileName" alignment="CENTER" maxWidth="700.0" />
+            <TextField fx:id="fileName" alignment="CENTER" maxWidth="700.0" onMouseClicked="#handleNext" />
 
         </VBox>
     </center>
@@ -57,7 +54,7 @@
                 <Insets bottom="20" right="20" />
             </padding>
             <Button text="Cancel" />
-            <Button text="Next" />
+            <Button onMouseClicked="#handleNext" text="Next" />
         </HBox>
     </bottom>
 

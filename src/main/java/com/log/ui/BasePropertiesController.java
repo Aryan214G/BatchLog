@@ -2,6 +2,8 @@ package com.log.ui;
 
 import com.log.core.AppState;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 
@@ -58,6 +60,24 @@ public class BasePropertiesController {
         appState.setPlaceOfTesting(placeOfTesting.getText());
         appState.setFileName(fileName.getText());
         // TODO: Navigate to next screen
+        loadPropertiesPage();
+
+    }
+    private void loadPropertiesPage() {
+
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/log/ui/views/PropertiesPage.fxml")
+            );
+
+            Parent root = loader.load();
+
+            // Replace current scene content
+            projectName.getScene().setRoot(root);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
