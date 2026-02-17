@@ -1,66 +1,101 @@
+/* ===== ROOT ===== */
 .root-layout {
-    -fx-background-color: #f5f6f8;
-    -fx-padding: 16;
+    -fx-background-color: #e9e9ea;
+    -fx-font-family: "Inter", "Segoe UI", sans-serif;
 }
 
-//text fields
+/* ===== CONTENT AREA ===== */
+.content-area {
+    -fx-alignment: top-center;
+}
+
+/* ===== MAIN TITLE ===== */
+.title {
+    -fx-font-size: 48px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #222222;
+}
+
+/* ===== SECTION TITLE (inside card) ===== */
+.section-title {
+    -fx-font-size: 32px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #222222;
+}
+
+/* ===== INPUT FIELD ===== */
+.input-field-container {
+    -fx-spacing: 6;
+}
+
+.input-field-container .label {
+    -fx-text-fill: #333;
+    -fx-font-size: 13px;
+}
 
 .input-field {
--fx-pref-width: max-content;
-    -fx-background-color: #ffffff;
-    -fx-background-radius: 12;
-    -fx-border-color: #e5e7eb;
-    -fx-border-radius: 12;
+    -fx-background-color: #c7c2d6;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #6b5fb5;
+    -fx-border-width: 1;
+    -fx-padding: 10 14;
+    -fx-pref-height: 40;
+
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 6, 0.2, 0, 2);
+}
+
+/* ===== ATTRIBUTES CONTAINER ===== */
+.attributes-container {
+    -fx-background-color: #bdb9cc;
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-border-color: #6b5fb5;
+    -fx-border-width: 2;
+
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0.2, 0, 4);
+}
+
+/* ===== ATTRIBUTE CARD ===== */
+.attributes-card {
+    -fx-background-color: #f4f4f4;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
     -fx-padding: 12 16;
+    -fx-spacing: 10;
+    -fx-alignment: center-left;
+    -fx-max-width: 260;
+
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 6, 0.2, 0, 2);
 }
 
-input-field-container{
--fx-padding: 16;
--fx spacing: 16;
--fx-border-color: #000000;
+.attributes-card .label {
+    -fx-font-size: 15px;
+    -fx-font-weight: 600;
 }
 
-//buttons
+/* ===== ICON BUTTON ===== */
+.icon-btn {
+    -fx-background-color: transparent;
+    -fx-font-size: 14;
+    -fx-text-fill: #333;
+    -fx-cursor: hand;
+}
 
+.icon-btn:hover {
+    -fx-text-fill: #6b5fb5;
+}
+
+/* ===== PRIMARY BUTTON ===== */
 .primary-btn {
-    -fx-background-color: #000000;
-    -fx-text-fill: #ffffff;
-    -fx-font-weight: bold;
-    -fx-background-radius: 12;
-    -fx-max-width: Infinity;
-    -fx-padding: 16 24;
+    -fx-background-color: #2b2b2b;
+    -fx-text-fill: white;
+    -fx-font-size: 14;
+    -fx-font-weight: 600;
+    -fx-background-radius: 8;
+    -fx-padding: 10 18;
 }
 
 .primary-btn:hover {
-    -fx-background-color: #363636;
-}
-
-
-//titles and labels
-
-.title {
--fx-font-size: 30px;
--fx-font-weight: bold;
-    -fx-text-fill: #1f2933;
-    -fx-padding: 0 20;}
-
-//panels and content
-.content.area{
--fx-spacing: 16;
-}
-
-.attributes-card{
--fx-background-color: #ffffff;
--fx-background-radius: 16;
--fx-border-color: #e5e7eb;
--fx-border-radius: 16;
--fx-padding: 16;
-}
-
-.attributes-container {
--fx-background-color: #e8def8;
--fx-background-radius: 16;
--fx-padding: 16;
--fx-spacing: 16;
-
+    -fx-background-color: #3a3a3a;
 }

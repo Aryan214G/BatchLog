@@ -1,37 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<BorderPane prefHeight="600.0" prefWidth="800.0" styleClass="root-layout" stylesheets="@../styles/AddPropertiesStyles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" styleClass="root-layout" stylesheets="@../styles/AddPropertiesStyles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+   <!-- ===== TITLE ===== -->
+   <top>
+      <VBox alignment="CENTER">
+         <padding>
+            <Insets bottom="20" top="30" />
+         </padding>
+         <Label styleClass="title" text="Add property" />
+      </VBox>
+   </top>
+
+   <!-- ===== CENTER CONTENT ===== -->
    <center>
-      <VBox prefHeight="200.0" prefWidth="100.0" styleClass="content-area" BorderPane.alignment="CENTER">
-         <children>
-            <VBox prefHeight="200.0" prefWidth="100.0" styleClass="input-field-container">
-               <children>
-                  <Label text="Label" />
-                  <TextField styleClass="input-field" />
-               </children>
-            </VBox>
-            <VBox alignment="CENTER" fillWidth="false" prefHeight="200.0" prefWidth="100.0" styleClass="attributes-container">
-               <children>
-                  <Label styleClass="title" text="Add attributes" />
-                  <Label layoutX="10.0" layoutY="10.0" styleClass="attributes-card" text="Label" />
-                  <Label layoutX="10.0" layoutY="27.0" styleClass="attributes-card" text="Label" />
-                  <Button mnemonicParsing="false" styleClass="primary-btn" text="Button" />
-               </children>
-            </VBox>
-         </children>
+      <VBox alignment="TOP_CENTER" spacing="30" styleClass="content-area" BorderPane.alignment="CENTER">
+
+         <!-- Property Name -->
+         <VBox maxWidth="600" spacing="6" styleClass="input-field-container">
+            <Label text="Property Name" />
+            <TextField promptText="Value" styleClass="input-field" />
+         </VBox>
+
+         <!-- Attributes Card -->
+         <VBox alignment="TOP_CENTER" maxWidth="600" spacing="25" styleClass="attributes-container">
+
+            <padding>
+               <Insets bottom="30" left="40" right="40" top="30" />
+            </padding>
+
+            <Label styleClass="section-title" text="Add Attributes" />
+
+            <!-- Attribute Row -->
+            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="attributes-card">
+
+               <Label text="Density" HBox.hgrow="ALWAYS" />
+               <Button styleClass="icon-btn" text="✎">
+                  <HBox.margin>
+                     <Insets left="100.0" />
+                  </HBox.margin></Button>
+               <Button styleClass="icon-btn" text="⋯" />
+            </HBox>
+
+            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="attributes-card">
+
+               <Label text="Porousity" HBox.hgrow="ALWAYS" />
+               <Button styleClass="icon-btn" text="✎" />
+               <Button styleClass="icon-btn" text="⋯" />
+            </HBox>
+
+            <Button prefWidth="180" styleClass="primary-btn" text="New Attribute" />
+         </VBox>
+
       </VBox>
    </center>
-   <top>
-      <Label styleClass="title" text="Add property" BorderPane.alignment="CENTER" />
-   </top>
+
+   <!-- ===== SAVE BUTTON ===== -->
    <bottom>
-      <Button mnemonicParsing="false" styleClass="primary-btn" text="Button" BorderPane.alignment="CENTER" />
+      <VBox alignment="CENTER">
+         <padding>
+            <Insets bottom="30" top="20" />
+         </padding>
+
+         <Button prefWidth="200" styleClass="primary-btn" text="Save Property" />
+      </VBox>
    </bottom>
+
 </BorderPane>
