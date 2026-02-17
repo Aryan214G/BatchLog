@@ -4,11 +4,11 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 
-<MenuBar xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<MenuBar fx:id="menuBar" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.MenubarController">
   <menus>
     <Menu mnemonicParsing="false" text="File">
       <items>
-            <MenuItem fx:id="newProjectBtn" mnemonicParsing="false" text="New project" />
+            <MenuItem fx:id="newProjectBtn" mnemonicParsing="false" onAction="#loadBasePropertiesView" text="New project" />
             <MenuItem mnemonicParsing="false" text="Open folder" />
             <MenuItem mnemonicParsing="false" text="Retrieval page" />
         <MenuItem mnemonicParsing="false" text="Exit" />
