@@ -50,6 +50,13 @@ public class BasePropertiesController {
         System.out.println("Batch: " + batch);
 
         // TODO: Save to AppState / Database / Model
+        appState.setProjectName(projectName.getText());
+        appState.setBatchNo(batchNo.getText());
+        appState.setProductName(productName.getText());
+        appState.setComponentID(componentID.getText());
+        appState.setTestDate(testDate.getValue());
+        appState.setPlaceOfTesting(placeOfTesting.getText());
+        appState.setFileName(fileName.getText());
         // TODO: Navigate to next screen
     }
 
