@@ -3,6 +3,8 @@ package com.log.core;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.time.LocalDate;
+
 //singleton class
 //TODO: plan to use synchronized object creation
 public class AppState {
@@ -26,4 +28,14 @@ public class AppState {
     public void setProperties(ObservableList<String> properties) {
         this.properties = properties;
     }
+
+    private String projectName;
+    private String batchNo;
+    private String productName;
+    private String componentID;
+    private LocalDate testDate;
+    private String placeOfTesting;
+    private String fileName;
+
+
 }
