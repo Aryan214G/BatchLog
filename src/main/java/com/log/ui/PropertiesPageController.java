@@ -4,10 +4,8 @@ import com.log.core.AppState;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 
 import java.util.HashMap;
@@ -35,32 +33,9 @@ public class PropertiesPageController {
         loadTempData();
         categoriesListView.setItems(categories);
         loadProperties();
+        populateEntriesGrid();
 
 
-        //lambda function
-//        propertiesListView.setCellFactory(listView-> new ListCell<>(){
-//            private final Button button = new Button();
-//
-//            //initializer block in place of default constructor
-//            {
-//                button.setMaxWidth(Double.MAX_VALUE);
-//            }
-//
-//            @Override
-//            protected void updateItem(String item, boolean empty)
-//            {
-//                super.updateItem(item, empty);
-//
-//                if(empty || item == null)
-//                {
-//                    setGraphic(null);
-//                }
-//                else{
-//                    button.setText(item);
-//                    setGraphic(button);
-//                }
-//            }
-//        });
     }
 
     //temporary data
@@ -117,4 +92,30 @@ public class PropertiesPageController {
                 });
     }
 
+    int rowCount = 0;
+    private void populateEntriesGrid() {
+        int colCount = 0;
+        Label label = new Label("Value");
+        TextField field = new TextField();
+        ComboBox<String> combo = new ComboBox<>();
+
+        //styles
+        label.getStyleClass().add("body-text");
+        field.getStyleClass().add("input-field");
+        combo.getStyleClass().add("combo-box");
+
+        entriesGrid.add(label, colCount, rowCount);
+        entriesGrid.add(field, colCount, rowCount + 1);
+        entriesGrid.add(combo, colCount + 1, rowCount + 1);
+
+        rowCount++;
+
+        field.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.TAB) {
+                event.consume();   // prevent normal tab behavior
+                populateEntriesGrid();
+            }
+        });
+
+    }
 }
