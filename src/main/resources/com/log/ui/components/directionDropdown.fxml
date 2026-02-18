@@ -5,11 +5,11 @@
 
 <HBox xmlns="http://javafx.com/javafx/25"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.log.ui.UnitsDropdownController"
+      fx:controller="com.log.ui.DirectionDropdownController"
       spacing="5">
 
-    <ComboBox fx:id="unitsCombo"
+    <ComboBox fx:id="directionCombo"
               prefWidth="180"
-              promptText="Select Units"/>
+              promptText="Select Direction"/>
 
 </HBox>
