@@ -56,7 +56,7 @@ public class AddPropertiesPopupController {
         System.out.println("Saving Property: " + propertyName);
 
         // Example: Save to AppState (adapt to your model later)
-        appState.getProperties().add(propertyName);
+        appState.getCategories().add(propertyName);
 
         showAlert("Success", "Property saved successfully!");
     }
