@@ -22,19 +22,25 @@ public class PropertiesPageController {
     @FXML
     private Label propertiesLabel;
 
-    @FXML
-    private GridPane entriesGrid;
-
     private HashMap<String, ObservableList<String>> propertiesMap = instance.getPropertiesMap();
 
     private ObservableList<String> categories = instance.getCategories();
+
+    @FXML
+    private GridPane entriesGrid;
+    @FXML
+    private InfoBarController infoBarController;
     @FXML
     public void initialize(){
         loadTempData();
         categoriesListView.setItems(categories);
         loadProperties();
         populateEntriesGrid();
+
+
+
     }
+
 
     //temporary data
     private void loadTempData() {
@@ -86,9 +92,29 @@ public class PropertiesPageController {
                     {
                         propertiesListView.setItems(propertiesMap.get(newCategory));
                         propertiesLabel.setText(newCategory);
+                        instance.setSelectedCategory(newCategory);
+
+                        updateInfoBar();
+
+                    }
+                });
+        propertiesListView.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((obs, oldVal, newVal) -> {
+
+                    if (newVal != null) {
+                        instance.setSelectedProperty(newVal);
+                        updateInfoBar();
                     }
                 });
     }
+
+    private void updateInfoBar() {
+        if (infoBarController != null) {
+            infoBarController.refresh();
+        }
+    }
+
 
     int rowCount = 0;
     private void populateEntriesGrid() {
@@ -116,4 +142,5 @@ public class PropertiesPageController {
         });
 
     }
+
 }

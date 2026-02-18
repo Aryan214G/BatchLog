@@ -21,7 +21,7 @@
         <VBox styleClass="topbar">
             <children>
                 <fx:include source="../components/menubar.fxml" />
-                <fx:include source="../components/infoBar.fxml" />
+                <fx:include source="../components/infoBar.fxml" fx:id="infoBar" />
             </children>
         </VBox>
     </top>
