@@ -73,7 +73,7 @@
                                  </HBox>
                               </children>
                            </HBox>
-                           <GridPane hgap="12.0" styleClass="input-field-container" vgap="12.0">
+                           <GridPane fx:id="entriesGrid" hgap="12.0" styleClass="input-field-container" vgap="12.0">
                              <columnConstraints>
                                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="215.88885498046875" minWidth="0.0" prefWidth="0.0" />

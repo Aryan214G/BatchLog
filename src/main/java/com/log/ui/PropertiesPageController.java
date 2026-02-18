@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.layout.GridPane;
 
 import java.util.HashMap;
 
@@ -23,6 +24,9 @@ public class PropertiesPageController {
     @FXML
     private Label propertiesLabel;
 
+    @FXML
+    private GridPane entriesGrid;
+
     private HashMap<String, ObservableList<String>> propertiesMap = instance.getPropertiesMap();
 
     private ObservableList<String> categories = instance.getCategories();
@@ -30,16 +34,8 @@ public class PropertiesPageController {
     public void initialize(){
         loadTempData();
         categoriesListView.setItems(categories);
+        loadProperties();
 
-        categoriesListView.getSelectionModel()
-                .selectedItemProperty()
-                .addListener((observable, oldCategory, newCategory) -> {
-                    if(newCategory != null)
-                    {
-                        propertiesListView.setItems(propertiesMap.get(newCategory));
-                        propertiesLabel.setText(newCategory);
-                    }
-                });
 
         //lambda function
 //        propertiesListView.setCellFactory(listView-> new ListCell<>(){
@@ -107,6 +103,18 @@ public class PropertiesPageController {
                 ));
 
 
+    }
+
+    private void loadProperties() {
+        categoriesListView.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((observable, oldCategory, newCategory) -> {
+                    if(newCategory != null)
+                    {
+                        propertiesListView.setItems(propertiesMap.get(newCategory));
+                        propertiesLabel.setText(newCategory);
+                    }
+                });
     }
 
 }
