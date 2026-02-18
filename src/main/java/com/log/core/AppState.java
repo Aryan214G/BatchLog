@@ -16,7 +16,6 @@ public class AppState {
 
     private HashMap<String, ObservableList<String>> propertiesMap = new HashMap<>();
 
-
     //TODO: change the list to not be hardcoded
     //Todo:put this list in controller and read from that
     private ObservableList<String> categories = FXCollections.observableArrayList(
