@@ -5,10 +5,15 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="600.0" prefWidth="800.0" styleClass="root-layout" stylesheets="@../styles/AddPropertiesStyles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane prefHeight="600.0"
+            prefWidth="800.0"
+            styleClass="root-layout"
+            stylesheets="@../styles/AddPropertiesStyles.css"
+            xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.log.ui.AddPropertiesPopupController">
 
    <!-- ===== TITLE ===== -->
    <top>
@@ -22,16 +27,26 @@
 
    <!-- ===== CENTER CONTENT ===== -->
    <center>
-      <VBox alignment="TOP_CENTER" spacing="30" styleClass="content-area" BorderPane.alignment="CENTER">
+      <VBox alignment="TOP_CENTER"
+            spacing="30"
+            styleClass="content-area">
 
          <!-- Property Name -->
-         <VBox maxWidth="600" spacing="6" styleClass="input-field-container">
+         <VBox maxWidth="600"
+               spacing="6"
+               styleClass="input-field-container">
             <Label text="Property Name" />
-            <TextField promptText="Value" styleClass="input-field" />
+            <TextField fx:id="propertyNameField"
+                       promptText="Value"
+                       styleClass="input-field" />
          </VBox>
 
-         <!-- Attributes Card -->
-         <VBox alignment="TOP_CENTER" maxWidth="600" spacing="25" styleClass="attributes-container">
+         <!-- Attributes Container -->
+         <VBox fx:id="attributesContainer"
+               alignment="TOP_CENTER"
+               maxWidth="600"
+               spacing="15"
+               styleClass="attributes-container">
 
             <padding>
                <Insets bottom="30" left="40" right="40" top="30" />
@@ -39,25 +54,10 @@
 
             <Label styleClass="section-title" text="Add Attributes" />
 
-            <!-- Attribute Row -->
-            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="attributes-card">
-
-               <Label text="Density" HBox.hgrow="ALWAYS" />
-               <Button styleClass="icon-btn" text="✎">
-                  <HBox.margin>
-                     <Insets left="100.0" />
-                  </HBox.margin></Button>
-               <Button styleClass="icon-btn" text="⋯" />
-            </HBox>
-
-            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="attributes-card">
-
-               <Label text="Porousity" HBox.hgrow="ALWAYS" />
-               <Button styleClass="icon-btn" text="✎" />
-               <Button styleClass="icon-btn" text="⋯" />
-            </HBox>
-
-            <Button prefWidth="180" styleClass="primary-btn" text="New Attribute" />
+            <Button prefWidth="180"
+                    styleClass="primary-btn"
+                    text="New Attribute"
+                    onAction="#handleNewAttribute" />
          </VBox>
 
       </VBox>
@@ -70,7 +70,10 @@
             <Insets bottom="30" top="20" />
          </padding>
 
-         <Button prefWidth="200" styleClass="primary-btn" text="Save Property" />
+         <Button prefWidth="200"
+                 styleClass="primary-btn"
+                 text="Save Property"
+                 onAction="#handleSaveProperty" />
       </VBox>
    </bottom>
 
