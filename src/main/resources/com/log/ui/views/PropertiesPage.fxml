@@ -36,8 +36,7 @@
                             <VBox alignment="TOP_CENTER" spacing="16.0" styleClass="subproperties-panel">
                                 <children>
                                     <Label fx:id="propertiesLabel" styleClass="subproperties-title" />
-                           <ListView fx:id="propertiesListView" styleClass="buttons-list" />
-                           <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                           <ListView fx:id="propertiesListView" styleClass="buttons-list" VBox.vgrow="ALWAYS"/>
                            <Button mnemonicParsing="false" styleClass="edit-button" text="Edit" />
                                 </children>
                         <padding>
@@ -102,10 +101,10 @@
    <left>
       <VBox styleClass="sidebar" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="sidebar-title" text="Categories" />
-            <ListView fx:id="categoriesListView" styleClass="buttons-list" />
-            <Region prefHeight="200.0" prefWidth="200.0" />
-            <Button mnemonicParsing="false" styleClass="edit-button" text="Edit" />
+             <Label alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="sidebar-title" text="Categories" />
+             <fx:include source="../components/searchBar.fxml" />
+            <ListView fx:id="categoriesListView" styleClass="buttons-list" VBox.vgrow="ALWAYS"/>
+            <Button fx:id="editButton" mnemonicParsing="false" onAction="#handleEditClick" styleClass="edit-button" text="Edit" />
          </children>
       </VBox>
    </left>
