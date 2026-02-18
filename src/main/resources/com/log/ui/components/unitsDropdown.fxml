@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.layout.HBox?>
+
+<HBox xmlns="http://javafx.com/javafx/25"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.log.ui.UnitsDropdownController"
+      spacing="5">
+
+    <ComboBox fx:id="unitsCombo"
+              prefWidth="180"
+              promptText="Select Units"/>
+
+</HBox>
