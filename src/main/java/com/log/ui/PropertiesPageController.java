@@ -34,8 +34,6 @@ public class PropertiesPageController {
         categoriesListView.setItems(categories);
         loadProperties();
         populateEntriesGrid();
-
-
     }
 
     //temporary data
