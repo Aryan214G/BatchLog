@@ -8,8 +8,8 @@
       fx:controller="com.log.ui.DirectionDropdownController"
       spacing="5">
 
-    <ComboBox fx:id="unitsCombo"
+    <ComboBox fx:id="directionCombo"
               prefWidth="180"
-              promptText="Select Units"/>
+              promptText="Select Direction"/>
 
 </HBox>
