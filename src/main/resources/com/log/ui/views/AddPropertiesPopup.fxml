@@ -13,7 +13,7 @@
             stylesheets="@../styles/AddPropertiesStyles.css"
             xmlns="http://javafx.com/javafx/25"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.log.ui.AddPropertiesPopupController">
+            fx:controller="com.log.ui.AddCategoriesPopupController">
 
    <!-- ===== TITLE ===== -->
    <top>
