@@ -48,11 +48,19 @@ public class CategoriesPageController {
 
     private List<InputRow> inputRows = new ArrayList<>();
 
+    private HashMap<String, Integer> defaultRowsMap = instance.getDefaultRowsMap();
+
+
+    // ======================= END OF VARIABLES DECLARATION ==============================
 
     @FXML
     public void initialize() throws IOException {
         if (categoriesMap.isEmpty()) {
             loadTempData();
+        }
+
+        if(defaultRowsMap.isEmpty()) {
+            loadDefaultRowsTempData();
         }
 
         categoriesListView.setItems(categories);
@@ -158,6 +166,39 @@ public class CategoriesPageController {
         instance.setCategoriesMap(categoriesMap);
     }
 
+    private void loadDefaultRowsTempData() {
+
+        // Physical
+        defaultRowsMap.put("Density", 6);
+        defaultRowsMap.put("Open porosity", 3);
+
+        // Mechanical
+        defaultRowsMap.put("Tensile Strength", 6);
+        defaultRowsMap.put("Tensile Modulus", 6);
+        defaultRowsMap.put("Compressive Strength", 6);
+        defaultRowsMap.put("Compressive Modulus", 6);
+        defaultRowsMap.put("Flexural Strength", 6);
+        defaultRowsMap.put("Flexural Modulus", 6);
+
+        // Thermal
+        defaultRowsMap.put("Specific Heat", 3);
+        defaultRowsMap.put("Thermal Diffusivity", 3);
+        defaultRowsMap.put("Thermal conductivity", 3);
+        defaultRowsMap.put("Mass Loss(%)", 5);
+        defaultRowsMap.put("Coefficient of thermal expansion", 3);
+
+        // Tribological
+        defaultRowsMap.put("Coefficient of friction", 5);
+        defaultRowsMap.put("Wear Rate", 5);
+
+        // Microstructure
+        defaultRowsMap.put("ASTM grain size no.", 3);
+        defaultRowsMap.put("Grain size", 3);
+
+        instance.setDefaultRowsMap(defaultRowsMap);
+    }
+
+
     private void loadProperties() {
         categoriesListView.getSelectionModel()
                 .selectedItemProperty()
@@ -174,11 +215,11 @@ public class CategoriesPageController {
                 });
         propertiesListView.getSelectionModel()
                 .selectedItemProperty()
-                .addListener((obs, oldVal, newVal) -> {
+                .addListener((obs, oldProperty, newProperty) -> {
 
-                    if (newVal != null) {
-                        instance.setSelectedProperty(newVal);
-                        int defaultRows = 6;
+                    if (newProperty != null) {
+                        instance.setSelectedProperty(newProperty);
+                        int defaultRows = instance.getDefaultRowsMap().get(newProperty);
                         for (int i = 0; i < defaultRows; i++) {
                             try {
                                 addInputRows(i);
