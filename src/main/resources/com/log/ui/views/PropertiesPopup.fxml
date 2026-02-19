@@ -5,37 +5,31 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/25"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.log.ui.AddPropertiesPopupController">
+<BorderPane prefHeight="451.0" prefWidth="661.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.AddPropertiesPopupController">
 
     <!-- CENTER CONTENT -->
     <center>
-        <VBox alignment="CENTER"
-              spacing="25"
-              BorderPane.alignment="CENTER">
+        <VBox alignment="CENTER" spacing="25" BorderPane.alignment="CENTER">
 
             <padding>
-                <Insets top="30" bottom="30" left="40" right="40"/>
+                <Insets bottom="30" left="40" right="40" top="30" />
             </padding>
 
             <!-- Title -->
             <Label text="Add Attribute">
                 <font>
-                    <Font size="36"/>
+                    <Font size="36" />
                 </font>
             </Label>
 
             <!-- Attribute Name -->
-            <VBox alignment="CENTER_LEFT"
-                  maxWidth="400"
-                  spacing="8">
-                <Label text="Attribute Name"/>
-                <TextField fx:id="attributeNameField"
-                           maxWidth="Infinity"/>
+            <VBox alignment="CENTER_LEFT" maxWidth="400" spacing="8">
+                <Label text="Attribute Name" />
+                <TextField fx:id="attributeNameField" maxWidth="Infinity" />
             </VBox>
 
         </VBox>
@@ -43,21 +37,17 @@
 
     <!-- BOTTOM BUTTONS -->
     <bottom>
-        <VBox alignment="CENTER"
-              spacing="10"
-              BorderPane.alignment="CENTER">
+        <VBox alignment="CENTER" spacing="10" BorderPane.alignment="CENTER">
 
             <padding>
-                <Insets top="20" bottom="30"/>
+                <Insets bottom="30" top="20" />
             </padding>
-
-            <Button text="Save Attribute"
-                    onAction="#handleSaveProperty"
-                    maxWidth="250"/>
-
-            <Button text="Cancel"
-                    onAction="#handleCancel"
-                    maxWidth="250"/>
+         <HBox prefHeight="100.0" prefWidth="200.0" />
+   
+                  <Button maxWidth="250" onAction="#handleCancel" text="Select/Add Unit" />
+   
+                  <Button maxWidth="250" onAction="#handleSaveProperty" text="Save Attribute" />
+         <Button layoutX="216.0" layoutY="140.0" maxWidth="250" onAction="#handleCancel" text="Cancel" />
         </VBox>
     </bottom>
 
