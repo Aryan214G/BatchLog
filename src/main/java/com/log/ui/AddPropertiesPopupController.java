@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 public class AddPropertiesPopupController {
 
     @FXML
-    private TextField propertiesNameField;
+    private TextField attributeNameField;
 
     private String propertyName;
 
@@ -18,9 +18,23 @@ public class AddPropertiesPopupController {
     @FXML
     private void handleSaveProperty() {
 
-        propertyName = propertiesNameField.getText();
+        String input = attributeNameField.getText();
 
-        Stage stage = (Stage) propertiesNameField.getScene().getWindow();
+        if (input == null || input.trim().isEmpty()) {
+            attributeNameField.setStyle("-fx-border-color: red;");
+            return;
+        }
+
+        propertyName = input.trim();
+
+        Stage stage = (Stage) attributeNameField.getScene().getWindow();
+        stage.close();
+    }
+
+    @FXML
+    private void handleCancel() {
+        propertyName = null;
+        Stage stage = (Stage) attributeNameField.getScene().getWindow();
         stage.close();
     }
 }

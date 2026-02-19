@@ -8,47 +8,56 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.AddPropertiesPopupController">
+<BorderPane xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.log.ui.AddPropertiesPopupController">
 
-    <!-- ===== CENTER CONTENT ===== -->
+    <!-- CENTER CONTENT -->
     <center>
-        <VBox alignment="CENTER" spacing="25" BorderPane.alignment="CENTER">
+        <VBox alignment="CENTER"
+              spacing="25"
+              BorderPane.alignment="CENTER">
 
             <padding>
-                <Insets bottom="30" left="40" right="40" top="30" />
+                <Insets top="30" bottom="30" left="40" right="40"/>
             </padding>
 
             <!-- Title -->
-            <Label text="Add Attributes">
+            <Label text="Add Attribute">
                 <font>
-                    <Font size="40" />
+                    <Font size="36"/>
                 </font>
             </Label>
 
             <!-- Attribute Name -->
-            <VBox alignment="CENTER_LEFT" maxWidth="400" spacing="8">
-                <Label text="Attribute Name" />
-                <TextField fx:id="attributeNameField" maxWidth="Infinity" />
-            </VBox>
-
-            <!-- Units Section -->
-            <VBox alignment="CENTER_LEFT" maxWidth="400" spacing="8">
-                <Label text="Units" />
-                <Button maxWidth="Infinity" text="Select Units" />
+            <VBox alignment="CENTER_LEFT"
+                  maxWidth="400"
+                  spacing="8">
+                <Label text="Attribute Name"/>
+                <TextField fx:id="attributeNameField"
+                           maxWidth="Infinity"/>
             </VBox>
 
         </VBox>
     </center>
 
-    <!-- ===== SAVE BUTTON ===== -->
+    <!-- BOTTOM BUTTONS -->
     <bottom>
-        <VBox alignment="CENTER" spacing="10" BorderPane.alignment="CENTER">
+        <VBox alignment="CENTER"
+              spacing="10"
+              BorderPane.alignment="CENTER">
 
             <padding>
-                <Insets bottom="30" top="20" />
+                <Insets top="20" bottom="30"/>
             </padding>
 
-            <Button maxWidth="300" onAction="#handleSaveProperty" text="Save Attribute" />
+            <Button text="Save Attribute"
+                    onAction="#handleSaveProperty"
+                    maxWidth="250"/>
+
+            <Button text="Cancel"
+                    onAction="#handleCancel"
+                    maxWidth="250"/>
         </VBox>
     </bottom>
 
