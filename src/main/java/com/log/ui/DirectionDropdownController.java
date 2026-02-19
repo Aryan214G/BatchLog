@@ -7,12 +7,12 @@ import javafx.scene.control.ComboBox;
 public class DirectionDropdownController {
 
     @FXML
-    private ComboBox<String> unitsCombo;
+    private ComboBox<String> directionCombo;
 
     @FXML
     public void initialize() {
 
-        unitsCombo.setItems(FXCollections.observableArrayList(
+        directionCombo.setItems(FXCollections.observableArrayList(
                 "Longitudinal", "Thickness direction", "Parallel",
                 "Perpendicular", "XY",
                 "Z", "U",
@@ -21,16 +21,17 @@ public class DirectionDropdownController {
         ));
     }
 
+
     public String getSelectedUnit() {
-        return unitsCombo.getValue();
+        return directionCombo.getValue();
     }
 
     public void setSelectedUnit(String unit) {
-        unitsCombo.setValue(unit);
+        directionCombo.setValue(unit);
     }
 
     public ComboBox<String> getComboBox() {
-        return unitsCombo;
+        return directionCombo;
     }
 }
 
