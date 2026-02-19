@@ -1,9 +1,13 @@
 package com.log.ui;
 
 import com.log.core.AppState;
+import com.log.model.InputRow;
+import com.log.model.InputRow;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
@@ -15,7 +19,10 @@ import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class PropertiesPageController {
 
@@ -43,9 +50,11 @@ public class PropertiesPageController {
     @FXML
     private InfoBarController infoBarController;
 
-    @FXML
-    public void initialize() {
+    private List<InputRow> inputRows = new ArrayList<>();
 
+
+    @FXML
+    public void initialize() throws IOException {
         if (propertiesMap.isEmpty()) {
             loadTempData();
         }
@@ -121,9 +130,13 @@ public class PropertiesPageController {
         propertiesMap.remove(selectedCategory);
     }
 
+    //temporary data
     private void loadTempData() {
         propertiesMap.put("Physical",
-                FXCollections.observableArrayList("Density", "Open porosity"));
+                FXCollections.observableArrayList(
+                        "Density",
+                        "Open porosity"
+        ));
 
         propertiesMap.put("Mechanical",
                 FXCollections.observableArrayList(
@@ -191,28 +204,40 @@ public class PropertiesPageController {
     }
 
 
+
+
+    //TODO: check if editing the values of previous fields update the inputRows
     int rowCount = 0;
-    private void populateEntriesGrid() {
+    private void populateEntriesGrid() throws IOException {
         int colCount = 0;
-        Label label = new Label("Value");
+//        Label label = new Label("Value");
         TextField field = new TextField();
-        ComboBox<String> combo = new ComboBox<>();
+
+        //component loader
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/log/ui/components/unitsDropdown.fxml"));
+        Parent units = loader.load();
+        UnitsDropdownController controller = loader.getController();
 
         //styles
-        label.getStyleClass().add("body-text");
+//        label.getStyleClass().add("body-text");
         field.getStyleClass().add("input-field");
-        combo.getStyleClass().add("combo-box");
 
-        entriesGrid.add(label, colCount, rowCount);
-        entriesGrid.add(field, colCount, rowCount + 1);
-        entriesGrid.add(combo, colCount + 1, rowCount + 1);
 
+        entriesGrid.add(field, 0, rowCount);
+        entriesGrid.add(units, 1, rowCount);
+
+        inputRows.add(new InputRow(field, controller));
         rowCount++;
 
         field.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.TAB) {
-                event.consume();   // prevent normal tab behavior
-                populateEntriesGrid();
+            if (event.getCode() == KeyCode.ENTER
+                    && !field.getText().isBlank()
+                    && inputRows.get(inputRows.size() - 1).getField() == field) {
+                try {
+                    populateEntriesGrid();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
