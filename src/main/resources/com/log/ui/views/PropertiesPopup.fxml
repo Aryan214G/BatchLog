@@ -20,7 +20,7 @@
             </padding>
 
             <!-- Title -->
-            <Label text="Add Attribute">
+            <Label text="Add Property">
                 <font>
                     <Font size="36" />
                 </font>
@@ -28,7 +28,7 @@
 
             <!-- Attribute Name -->
             <VBox alignment="CENTER_LEFT" maxWidth="400" spacing="8">
-                <Label text="Attribute Name" />
+                <Label text="Property Name" />
                 <TextField fx:id="attributeNameField" maxWidth="Infinity" />
             </VBox>
 
