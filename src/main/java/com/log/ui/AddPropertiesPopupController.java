@@ -7,20 +7,20 @@ import javafx.stage.Stage;
 public class AddPropertiesPopupController {
 
     @FXML
-    private TextField attributeNameField;
+    private TextField propertiesNameField;
 
-    private String attributeName;
+    private String propertyName;
 
-    public String getAttributeName() {
-        return attributeName;
+    public String getPropertyName() {
+        return propertyName;
     }
 
     @FXML
-    private void handleSaveAttribute() {
+    private void handleSaveProperty() {
 
-        attributeName = attributeNameField.getText();
+        propertyName = propertiesNameField.getText();
 
-        Stage stage = (Stage) attributeNameField.getScene().getWindow();
+        Stage stage = (Stage) propertiesNameField.getScene().getWindow();
         stage.close();
     }
 }

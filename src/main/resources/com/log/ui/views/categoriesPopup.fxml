@@ -80,7 +80,7 @@
             <Button prefHeight="40"
                     prefWidth="200"
                     text="Save Attribute"
-                    onAction="#handleSaveAttribute" />
+                    onAction="#handleSaveProperty" />
         </VBox>
     </bottom>
 

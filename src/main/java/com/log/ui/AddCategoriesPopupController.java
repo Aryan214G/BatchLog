@@ -54,7 +54,7 @@ public class AddCategoriesPopupController {
             stage.showAndWait();
 
             AddPropertiesPopupController controller = loader.getController();
-            String attributeName = controller.getAttributeName();
+            String attributeName = controller.getPropertyName();
 
             if (attributeName != null && !attributeName.isBlank()) {
                 addAttributeCard(attributeName);
