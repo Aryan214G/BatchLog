@@ -165,7 +165,7 @@ public class CategoriesPageController {
                         "Grain size"
                 ));
 
-
+        instance.setCategoriesMap(categoriesMap);
     }
 
     private void loadProperties() {
