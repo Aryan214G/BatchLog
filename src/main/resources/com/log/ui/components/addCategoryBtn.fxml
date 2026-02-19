@@ -3,7 +3,7 @@
 <?import javafx.scene.control.Button?>
 
 
-<Button text="Add Properties"
+<Button text="Add Category"
         prefHeight="40.0"
         prefWidth="180.0"
         stylesheets="@../styles/infoBar.css"

@@ -60,10 +60,10 @@ public class BasePropertiesController {
         appState.setPlaceOfTesting(placeOfTesting.getText());
         appState.setFileName(fileName.getText());
         // TODO: Navigate to next screen
-        loadPropertiesPage();
+        loadCategoriesPage();
 
     }
-    private void loadPropertiesPage() {
+    private void loadCategoriesPage() {
 
         try {
             FXMLLoader loader = new FXMLLoader(
@@ -82,7 +82,7 @@ public class BasePropertiesController {
 
     @FXML
     private void handleCancel() {
-        loadPropertiesPage();
+        loadCategoriesPage();
     }
 
     // ===== HELPERS =====
