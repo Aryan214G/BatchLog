@@ -57,7 +57,12 @@ public class CategoriesPageController {
 
         categoriesListView.setItems(categories);
         loadProperties();
-        populateEntriesGrid();
+
+        int defaultRows = 6;
+
+        for (int i = 0; i < defaultRows; i++) {
+            addInputRows(i);
+        }
 
 
         categoriesListView.getSelectionModel()
@@ -203,40 +208,40 @@ public class CategoriesPageController {
 
 
     //TODO: check if editing the values of previous fields update the inputRows
-    int rowCount = 0;
-    private void populateEntriesGrid() throws IOException {
-        int colCount = 0;
-//        Label label = new Label("Value");
-        TextField field = new TextField();
+    private void addInputRows(int rowCount) throws IOException {
 
-        //component loader
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/log/ui/components/unitsDropdown.fxml"));
+        TextField field = new TextField();
+        field.getStyleClass().add("input-field");
+
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/com/log/ui/components/unitsDropdown.fxml")
+        );
+
         Parent units = loader.load();
         UnitsDropdownController controller = loader.getController();
 
-        //styles
-//        label.getStyleClass().add("body-text");
-        field.getStyleClass().add("input-field");
-
-
         entriesGrid.add(field, 0, rowCount);
-        entriesGrid.add(units, 1, rowCount);
+        if(rowCount < 1)
+        {
+            entriesGrid.add(units, 1, rowCount);
+        }
 
         inputRows.add(new InputRow(field, controller));
-        rowCount++;
 
+        // ENTER adds new row dynamically
         field.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER
                     && !field.getText().isBlank()
                     && inputRows.get(inputRows.size() - 1).getField() == field) {
+
                 try {
-                    populateEntriesGrid();
+                    addInputRows(rowCount+1);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
         });
-
     }
+
 
 }
