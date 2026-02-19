@@ -58,21 +58,6 @@ public class CategoriesPageController {
         categoriesListView.setItems(categories);
         loadProperties();
 
-        int defaultRows = 6;
-
-        for (int i = 0; i < defaultRows; i++) {
-            addInputRows(i);
-        }
-
-
-        categoriesListView.getSelectionModel()
-                .selectedItemProperty()
-                .addListener((observable, oldCategory, newCategory) -> {
-                    if (newCategory != null) {
-                        propertiesListView.setItems(categoriesMap.get(newCategory));
-                        propertiesLabel.setText(newCategory);
-                    }
-                });
 
         // EDIT MENU SETUP
         MenuItem addItem = new MenuItem("Add Category");
@@ -193,6 +178,14 @@ public class CategoriesPageController {
 
                     if (newVal != null) {
                         instance.setSelectedProperty(newVal);
+                        int defaultRows = 6;
+                        for (int i = 0; i < defaultRows; i++) {
+                            try {
+                                addInputRows(i);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
                         updateInfoBar();
                     }
                 });
