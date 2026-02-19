@@ -1,14 +1,11 @@
 package com.log.ui;
 
 import com.log.core.AppState;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
 import java.time.LocalDate;
 
@@ -70,7 +67,7 @@ public class BasePropertiesController {
 
         try {
             FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/log/ui/views/PropertiesPage.fxml")
+                    getClass().getResource("/com/log/ui/views/CategoriesPage.fxml")
             );
 
             Parent root = loader.load();

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class PropertiesPageController {
+public class CategoriesPageController {
 
     @FXML
     private Button editButton;
@@ -88,7 +88,7 @@ public class PropertiesPageController {
 
         try {
             FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/log/ui/views/AddPropertiesPopup.fxml")
+                    getClass().getResource("/com/log/ui/views/AddCategoriesPopup.fxml")
             );
 
             Parent root = loader.load();

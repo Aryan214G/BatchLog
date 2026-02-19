@@ -6,7 +6,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 import static javafx.application.Application.launch;
 
@@ -20,7 +19,7 @@ public class Test extends Application {
             Scene scene = new Scene(root);
 
             scene.getStylesheets().add(
-                    Test.class.getResource("/com/log/ui/styles/baseProperties.css").toExternalForm()
+                    Test.class.getResource("/com/log/ui/styles/baseCategory.css").toExternalForm()
             );
 
             scene.getStylesheets().add(

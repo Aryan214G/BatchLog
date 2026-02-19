@@ -14,14 +14,14 @@ public class Main extends Application {
     public void start(Stage stage) throws IOException {
 
         FXMLLoader loader = new FXMLLoader(getClass()
-                .getResource("/com/log/ui/views/PropertiesPage.fxml")
+                .getResource("/com/log/ui/views/CategoriesPage.fxml")
         );
 
         Parent root = loader.load();
         Scene scene = new Scene(root);
 
         scene.getStylesheets().add(getClass()
-                .getResource("/com/log/ui/styles/propertiesPage.css").toExternalForm()
+                .getResource("/com/log/ui/styles/categoriesPage.css").toExternalForm()
         );
 
         stage.setTitle("BatchLog");

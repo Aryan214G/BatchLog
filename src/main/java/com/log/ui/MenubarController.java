@@ -3,7 +3,6 @@ package com.log.ui;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
@@ -26,7 +25,7 @@ public class MenubarController {
         Parent root = loader.load();
         Scene scene = new Scene(root);
 
-        String css = getClass().getResource("/com/log/ui/styles/baseProperties.css").toExternalForm();
+        String css = getClass().getResource("/com/log/ui/styles/baseCategory.css").toExternalForm();
         scene.getStylesheets().add(css);
 
         Stage stage = (Stage) menuBar.getScene().getWindow();

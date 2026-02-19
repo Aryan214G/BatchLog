@@ -10,7 +10,7 @@
 <BorderPane prefHeight="600.0"
             prefWidth="800.0"
             styleClass="root-layout"
-            stylesheets="@../styles/AddPropertiesStyles.css"
+            stylesheets="@../styles/AddCategoriesStyles.css"
             xmlns="http://javafx.com/javafx/25"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.log.ui.AddCategoriesPopupController">

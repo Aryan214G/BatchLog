@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="root" prefHeight="800.0" prefWidth="1200.0" styleClass="root-layout" stylesheets="@../styles/propertiesPage.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.PropertiesPageController">
+<BorderPane fx:id="root" prefHeight="800.0" prefWidth="1200.0" styleClass="root-layout" stylesheets="@../styles/categoriesPage.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.CategoriesPageController">
 
     <top>
         <VBox styleClass="topbar">
