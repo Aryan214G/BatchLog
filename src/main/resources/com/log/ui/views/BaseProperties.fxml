@@ -42,7 +42,7 @@
             <TextField fx:id="placeOfTesting" alignment="CENTER" maxWidth="700.0" />
 
             <Label text="File Name" />
-            <TextField fx:id="fileName" alignment="CENTER" maxWidth="700.0" onMouseClicked="#handleNext" />
+            <TextField fx:id="fileName" alignment="CENTER" maxWidth="700.0" />
 
         </VBox>
     </center>
