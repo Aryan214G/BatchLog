@@ -11,8 +11,8 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<BorderPane prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.AddAttributesPopupController">
 
-<BorderPane prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
 
     <!-- ===== TITLE ===== -->
     <top>
@@ -40,7 +40,7 @@
             <!-- Attribute Name -->
             <VBox spacing="8">
                 <Label text="Attribute Name" />
-                <TextField prefHeight="35" />
+                <TextField fx:id="attributeNameField" prefHeight="35" />
             </VBox>
 
             <!-- Type + Units Row -->
@@ -77,7 +77,10 @@
             <padding>
                 <Insets bottom="40" top="40" />
             </padding>
-            <Button prefHeight="40" prefWidth="200" text="Save Attribute" />
+            <Button prefHeight="40"
+                    prefWidth="200"
+                    text="Save Attribute"
+                    onAction="#handleSaveAttribute" />
         </VBox>
     </bottom>
 

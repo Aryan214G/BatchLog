@@ -49,6 +49,14 @@ public class AppState {
     private LocalDate testDate;
     private String placeOfTesting;
     private String fileName;
+    private String selectedCategory;
+    private String selectedProperty;
+
+    public String getSelectedCategory() { return selectedCategory; }
+    public void setSelectedCategory(String selectedCategory) { this.selectedCategory = selectedCategory; }
+
+    public String getSelectedProperty() { return selectedProperty; }
+    public void setSelectedProperty(String selectedProperty) { this.selectedProperty = selectedProperty; }
 
 
     public String getProjectName() { return projectName; }
