@@ -14,7 +14,7 @@ public class AppState {
 
     AppState(){};
 
-    private HashMap<String, ObservableList<String>> propertiesMap = new HashMap<>();
+    private HashMap<String, ObservableList<String>> categoriesMap = new HashMap<>();
 
     //TODO: change the list to not be hardcoded
     //Todo:put this list in controller and read from that
@@ -26,12 +26,12 @@ public class AppState {
         return instance;
     }
 
-    public HashMap<String, ObservableList<String>> getPropertiesMap() {
-        return propertiesMap;
+    public HashMap<String, ObservableList<String>> getCategoriesMap() {
+        return categoriesMap;
     }
 
-    public void setPropertiesMap(HashMap<String, ObservableList<String>> propertiesMap) {
-        this.propertiesMap = propertiesMap;
+    public void setCategoriesMap(HashMap<String, ObservableList<String>> categoriesMap) {
+        this.categoriesMap = categoriesMap;
     }
 
     public ObservableList<String> getCategories() {

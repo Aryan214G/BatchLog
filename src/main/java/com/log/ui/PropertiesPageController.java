@@ -2,7 +2,6 @@ package com.log.ui;
 
 import com.log.core.AppState;
 import com.log.model.InputRow;
-import com.log.model.InputRow;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,11 +10,8 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Side;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -42,7 +38,7 @@ public class PropertiesPageController {
     @FXML
     private Label propertiesLabel;
 
-    private HashMap<String, ObservableList<String>> propertiesMap = instance.getPropertiesMap();
+    private HashMap<String, ObservableList<String>> categoriesMap = instance.getCategoriesMap();
     private ObservableList<String> categories = instance.getCategories();
 
     @FXML
@@ -55,7 +51,7 @@ public class PropertiesPageController {
 
     @FXML
     public void initialize() throws IOException {
-        if (propertiesMap.isEmpty()) {
+        if (categoriesMap.isEmpty()) {
             loadTempData();
         }
 
@@ -68,7 +64,7 @@ public class PropertiesPageController {
                 .selectedItemProperty()
                 .addListener((observable, oldCategory, newCategory) -> {
                     if (newCategory != null) {
-                        propertiesListView.setItems(propertiesMap.get(newCategory));
+                        propertiesListView.setItems(categoriesMap.get(newCategory));
                         propertiesLabel.setText(newCategory);
                     }
                 });
@@ -103,14 +99,14 @@ public class PropertiesPageController {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
 
-            AddPropertiesPopupController controller = loader.getController();
+            AddCategoriesPopupController controller = loader.getController();
             String newCategory = controller.getEnteredCategory();
             ObservableList<String> newAttributes = controller.getAttributesList();
             if (newCategory != null && !newCategory.isBlank()) {
 
                 if (!categories.contains(newCategory)) {
                     categories.add(newCategory);
-                    propertiesMap.put(newCategory, newAttributes);
+                    categoriesMap.put(newCategory, newAttributes);
                 }
             }
 
@@ -127,18 +123,18 @@ public class PropertiesPageController {
         if (selectedCategory == null) return;
 
         categories.remove(selectedCategory);
-        propertiesMap.remove(selectedCategory);
+        categoriesMap.remove(selectedCategory);
     }
 
     //temporary data
     private void loadTempData() {
-        propertiesMap.put("Physical",
+        categoriesMap.put("Physical",
                 FXCollections.observableArrayList(
                         "Density",
                         "Open porosity"
         ));
 
-        propertiesMap.put("Mechanical",
+        categoriesMap.put("Mechanical",
                 FXCollections.observableArrayList(
                         "Tensile Strength",
                         "Tensile Modulus",
@@ -148,7 +144,7 @@ public class PropertiesPageController {
                         "Flexural Modulus"
                 ));
 
-        propertiesMap.put("Thermal",
+        categoriesMap.put("Thermal",
                 FXCollections.observableArrayList(
                         "Specific Heat",
                         "Thermal Diffusivity",
@@ -157,13 +153,13 @@ public class PropertiesPageController {
                         "Coefficient of thermal expansion"
                 ));
 
-        propertiesMap.put("Tribological",
+        categoriesMap.put("Tribological",
                 FXCollections.observableArrayList(
                         "Coefficient of friction",
                         "Wear Rate"
                 ));
 
-        propertiesMap.put("Microstructure",
+        categoriesMap.put("Microstructure",
                 FXCollections.observableArrayList(
                         "ASTM grain size no.",
                         "Grain size"
@@ -178,7 +174,7 @@ public class PropertiesPageController {
                 .addListener((observable, oldCategory, newCategory) -> {
                     if(newCategory != null)
                     {
-                        propertiesListView.setItems(propertiesMap.get(newCategory));
+                        propertiesListView.setItems(categoriesMap.get(newCategory));
                         propertiesLabel.setText(newCategory);
                         instance.setSelectedCategory(newCategory);
 
