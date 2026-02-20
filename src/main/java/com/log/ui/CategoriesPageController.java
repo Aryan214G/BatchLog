@@ -48,6 +48,12 @@ public class CategoriesPageController {
 
     private List<InputRow> inputRows = new ArrayList<>();
 
+    private HashMap<String, Integer> defaultRowsMap = instance.getDefaultRowsMap();
+
+
+
+
+    // ======================= END OF VARIABLES DECLARATION ==============================
 
     @FXML
     public void initialize() throws IOException {
@@ -55,19 +61,13 @@ public class CategoriesPageController {
             loadTempData();
         }
 
+        if(defaultRowsMap.isEmpty()) {
+            loadDefaultRowsTempData();
+        }
+
         categoriesListView.setItems(categories);
         loadProperties();
-        populateEntriesGrid();
 
-
-        categoriesListView.getSelectionModel()
-                .selectedItemProperty()
-                .addListener((observable, oldCategory, newCategory) -> {
-                    if (newCategory != null) {
-                        propertiesListView.setItems(categoriesMap.get(newCategory));
-                        propertiesLabel.setText(newCategory);
-                    }
-                });
 
         // EDIT MENU SETUP
         MenuItem addItem = new MenuItem("Add Category");
@@ -165,8 +165,41 @@ public class CategoriesPageController {
                         "Grain size"
                 ));
 
-
+        instance.setCategoriesMap(categoriesMap);
     }
+
+    private void loadDefaultRowsTempData() {
+
+        // Physical
+        defaultRowsMap.put("Density", 6);
+        defaultRowsMap.put("Open porosity", 3);
+
+        // Mechanical
+        defaultRowsMap.put("Tensile Strength", 6);
+        defaultRowsMap.put("Tensile Modulus", 6);
+        defaultRowsMap.put("Compressive Strength", 6);
+        defaultRowsMap.put("Compressive Modulus", 6);
+        defaultRowsMap.put("Flexural Strength", 6);
+        defaultRowsMap.put("Flexural Modulus", 6);
+
+        // Thermal
+        defaultRowsMap.put("Specific Heat", 3);
+        defaultRowsMap.put("Thermal Diffusivity", 3);
+        defaultRowsMap.put("Thermal conductivity", 3);
+        defaultRowsMap.put("Mass Loss(%)", 5);
+        defaultRowsMap.put("Coefficient of thermal expansion", 3);
+
+        // Tribological
+        defaultRowsMap.put("Coefficient of friction", 5);
+        defaultRowsMap.put("Wear Rate", 5);
+
+        // Microstructure
+        defaultRowsMap.put("ASTM grain size no.", 3);
+        defaultRowsMap.put("Grain size", 3);
+
+        instance.setDefaultRowsMap(defaultRowsMap);
+    }
+
 
     private void loadProperties() {
         categoriesListView.getSelectionModel()
@@ -174,6 +207,7 @@ public class CategoriesPageController {
                 .addListener((observable, oldCategory, newCategory) -> {
                     if(newCategory != null)
                     {
+                        entriesGrid.getChildren().clear();
                         propertiesListView.setItems(categoriesMap.get(newCategory));
                         propertiesLabel.setText(newCategory);
                         instance.setSelectedCategory(newCategory);
@@ -184,10 +218,19 @@ public class CategoriesPageController {
                 });
         propertiesListView.getSelectionModel()
                 .selectedItemProperty()
-                .addListener((obs, oldVal, newVal) -> {
+                .addListener((obs, oldProperty, newProperty) -> {
 
-                    if (newVal != null) {
-                        instance.setSelectedProperty(newVal);
+                    if (newProperty != null) {
+                        entriesGrid.getChildren().clear();
+                        instance.setSelectedProperty(newProperty);
+                        int defaultRows = instance.getDefaultRowsMap().get(newProperty);
+                        for (int i = 0; i < defaultRows; i++) {
+                            try {
+                                addInputRows(i);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
                         updateInfoBar();
                     }
                 });
@@ -200,43 +243,39 @@ public class CategoriesPageController {
     }
 
 
-
-
     //TODO: check if editing the values of previous fields update the inputRows
-    int rowCount = 0;
-    private void populateEntriesGrid() throws IOException {
-        int colCount = 0;
-//        Label label = new Label("Value");
-        TextField field = new TextField();
+    private void addInputRows(int rowCount) throws IOException {
 
-        //component loader
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/log/ui/components/unitsDropdown.fxml"));
+        TextField field = new TextField();
+        field.getStyleClass().add("input-field");
+
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/com/log/ui/components/unitsDropdown.fxml")
+        );
+
         Parent units = loader.load();
         UnitsDropdownController controller = loader.getController();
 
-        //styles
-//        label.getStyleClass().add("body-text");
-        field.getStyleClass().add("input-field");
-
-
         entriesGrid.add(field, 0, rowCount);
-        entriesGrid.add(units, 1, rowCount);
+        if(rowCount < 1)
+        {
+            entriesGrid.add(units, 1, rowCount);
+        }
 
         inputRows.add(new InputRow(field, controller));
-        rowCount++;
 
+        // ENTER adds new row dynamically
         field.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER
                     && !field.getText().isBlank()
                     && inputRows.get(inputRows.size() - 1).getField() == field) {
+
                 try {
-                    populateEntriesGrid();
+                    addInputRows(rowCount+1);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
         });
-
     }
-
 }

@@ -68,6 +68,7 @@ public class AppState {
     public String getProductName() { return productName; }
     public void setProductName(String productName) { this.productName = productName; }
 
+    //TODO: change componentID to productID
     public String getComponentID() { return componentID; }
     public void setComponentID(String componentID) { this.componentID = componentID; }
 
@@ -80,4 +81,16 @@ public class AppState {
     public String getFileName() { return fileName; }
     public void setFileName(String fileName) { this.fileName = fileName; }
 
+
+    //==== default input rows fields ====
+
+    private HashMap<String, Integer> defaultRowsMap = new HashMap<>();
+
+    public HashMap<String, Integer> getDefaultRowsMap() {
+        return defaultRowsMap;
+    }
+
+    public void setDefaultRowsMap(HashMap<String, Integer> defaultRowsMap) {
+        this.defaultRowsMap = defaultRowsMap;
+    }
 }
