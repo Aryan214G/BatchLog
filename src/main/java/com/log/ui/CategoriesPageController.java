@@ -269,17 +269,41 @@ public class CategoriesPageController {
     // ======================= TEMP DATA ==============================
 
     private void loadTempData() {
-
         categoriesMap.put("Physical",
                 FXCollections.observableArrayList(
                         "Density",
                         "Open porosity"
                 ));
 
+        categoriesMap.put("Mechanical",
+                FXCollections.observableArrayList(
+                        "Tensile Strength",
+                        "Tensile Modulus",
+                        "Compressive Strength",
+                        "Compressive Modulus",
+                        "Flexural Strength",
+                        "Flexural Modulus"
+                ));
+
         categoriesMap.put("Thermal",
                 FXCollections.observableArrayList(
                         "Specific Heat",
-                        "Thermal conductivity"
+                        "Thermal Diffusivity",
+                        "Thermal conductivity",
+                        "Mass Loss(%)",
+                        "Coefficient of thermal expansion"
+                ));
+
+        categoriesMap.put("Tribological",
+                FXCollections.observableArrayList(
+                        "Coefficient of friction",
+                        "Wear Rate"
+                ));
+
+        categoriesMap.put("Microstructure",
+                FXCollections.observableArrayList(
+                        "ASTM grain size no.",
+                        "Grain size"
                 ));
 
         instance.setCategoriesMap(categoriesMap);
@@ -287,10 +311,32 @@ public class CategoriesPageController {
 
     private void loadDefaultRowsTempData() {
 
+        // Physical
         defaultRowsMap.put("Density", 6);
         defaultRowsMap.put("Open porosity", 3);
+
+        // Mechanical
+        defaultRowsMap.put("Tensile Strength", 6);
+        defaultRowsMap.put("Tensile Modulus", 6);
+        defaultRowsMap.put("Compressive Strength", 6);
+        defaultRowsMap.put("Compressive Modulus", 6);
+        defaultRowsMap.put("Flexural Strength", 6);
+        defaultRowsMap.put("Flexural Modulus", 6);
+
+        // Thermal
         defaultRowsMap.put("Specific Heat", 3);
+        defaultRowsMap.put("Thermal Diffusivity", 3);
         defaultRowsMap.put("Thermal conductivity", 3);
+        defaultRowsMap.put("Mass Loss(%)", 5);
+        defaultRowsMap.put("Coefficient of thermal expansion", 3);
+
+        // Tribological
+        defaultRowsMap.put("Coefficient of friction", 5);
+        defaultRowsMap.put("Wear Rate", 5);
+
+        // Microstructure
+        defaultRowsMap.put("ASTM grain size no.", 3);
+        defaultRowsMap.put("Grain size", 3);
 
         instance.setDefaultRowsMap(defaultRowsMap);
     }
