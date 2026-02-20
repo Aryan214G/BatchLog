@@ -241,6 +241,7 @@ public class CategoriesPageController {
                         int defaultRows = instance.getDefaultRowsMap().get(newProperty);
                         for (int i = 0; i < defaultRows; i++) {
                             try {
+                                addHeaderControls();
                                 addInputRows(i, newProperty);
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
