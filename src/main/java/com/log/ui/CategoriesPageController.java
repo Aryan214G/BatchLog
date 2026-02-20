@@ -199,10 +199,6 @@ public class CategoriesPageController {
         instance.setDefaultRowsMap(defaultRowsMap);
     }
 
-    private void loadDefaultUnits() {
-        defaultUnits.put()
-    }
-
     private void loadProperties() {
         categoriesListView.getSelectionModel()
                 .selectedItemProperty()
@@ -228,7 +224,7 @@ public class CategoriesPageController {
                         int defaultRows = instance.getDefaultRowsMap().get(newProperty);
                         for (int i = 0; i < defaultRows; i++) {
                             try {
-                                addInputRows(i);
+                                addInputRows(i, newProperty);
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
@@ -246,7 +242,7 @@ public class CategoriesPageController {
 
 
     //TODO: check if editing the values of previous fields update the inputRows
-    private void addInputRows(int rowCount) throws IOException {
+    private void addInputRows(int rowCount, String property) throws IOException {
 
         TextField field = new TextField();
         field.getStyleClass().add("input-field");
@@ -257,6 +253,7 @@ public class CategoriesPageController {
 
         Parent units = loader.load();
         UnitsDropdownController controller = loader.getController();
+        controller.setUnits(property);
 
         entriesGrid.add(field, 0, rowCount);
         if(rowCount < 1)
@@ -273,7 +270,7 @@ public class CategoriesPageController {
                     && inputRows.get(inputRows.size() - 1).getField() == field) {
 
                 try {
-                    addInputRows(rowCount+1);
+                    addInputRows(rowCount+1, property);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
