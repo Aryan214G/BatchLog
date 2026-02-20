@@ -14,12 +14,15 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.util.HashMap;
 import java.util.Optional;
 
 public class AddCategoriesPopupController {
 
-    @FXML private TextField propertyNameField;
-    @FXML private VBox attributesContainer;
+    @FXML
+    private TextField propertyNameField;
+    @FXML
+    private VBox attributesContainer;
 
     private final AppState appState = AppState.getInstance();
 
@@ -33,9 +36,14 @@ public class AddCategoriesPopupController {
     }
 
     private ObservableList<String> attributesList = FXCollections.observableArrayList();
+
     public ObservableList<String> getAttributesList() {
         return attributesList;
     }
+
+    private HashMap<String,Integer> entriesMap = new HashMap<>();
+
+    public HashMap<String,Integer> getEntriesMap(){return entriesMap;}
 
     // ===== NEW ATTRIBUTE BUTTON =====
     @FXML
@@ -56,7 +64,7 @@ public class AddCategoriesPopupController {
             AddPropertiesPopupController controller = loader.getController();
             String attributeName = controller.getPropertyName();
             int entries = (controller.getAttributeEntries()).intValue();
-
+            entriesMap.put(attributeName,entries);
             if (attributeName != null && !attributeName.isBlank()) {
                 addAttributeCard(attributeName);
             }

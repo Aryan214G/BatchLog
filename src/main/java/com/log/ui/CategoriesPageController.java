@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CategoriesPageController {
 
@@ -102,11 +103,19 @@ public class CategoriesPageController {
             AddCategoriesPopupController controller = loader.getController();
             String newCategory = controller.getEnteredCategory();
             ObservableList<String> newAttributes = controller.getAttributesList();
+            HashMap<String,Integer> attrEntriesMap = controller.getEntriesMap();
             if (newCategory != null && !newCategory.isBlank()) {
 
                 if (!categories.contains(newCategory)) {
                     categories.add(newCategory);
                     categoriesMap.put(newCategory, newAttributes);
+                }
+                for (Map.Entry<String, Integer> entry : attrEntriesMap.entrySet()) {
+
+                    String key = entry.getKey();
+                    Integer value = entry.getValue();
+
+                    defaultRowsMap.put(key,value);
                 }
             }
 
