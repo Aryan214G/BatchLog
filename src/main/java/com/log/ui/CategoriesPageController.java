@@ -10,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
@@ -27,7 +28,7 @@ public class CategoriesPageController {
 
     private ContextMenu editMenu;
 
-    AppState instance = AppState.getInstance();
+    private final AppState instance = AppState.getInstance();
 
     @FXML
     private ListView<String> categoriesListView;
@@ -38,38 +39,37 @@ public class CategoriesPageController {
     @FXML
     private Label propertiesLabel;
 
-    private HashMap<String, ObservableList<String>> categoriesMap = instance.getCategoriesMap();
-    private ObservableList<String> categories = instance.getCategories();
-
     @FXML
     private GridPane entriesGrid;
+
+    @FXML
+    private HBox headerBox;
+
     @FXML
     private InfoBarController infoBarController;
 
-    private List<InputRow> inputRows = new ArrayList<>();
+    private final HashMap<String, ObservableList<String>> categoriesMap = instance.getCategoriesMap();
+    private final ObservableList<String> categories = instance.getCategories();
+    private final HashMap<String, Integer> defaultRowsMap = instance.getDefaultRowsMap();
 
-    private HashMap<String, Integer> defaultRowsMap = instance.getDefaultRowsMap();
+    private final List<InputRow> inputRows = new ArrayList<>();
 
-
-
-
-    // ======================= END OF VARIABLES DECLARATION ==============================
+    // ======================= INITIALIZE ==============================
 
     @FXML
-    public void initialize() throws IOException {
+    public void initialize() {
+
         if (categoriesMap.isEmpty()) {
             loadTempData();
         }
 
-        if(defaultRowsMap.isEmpty()) {
+        if (defaultRowsMap.isEmpty()) {
             loadDefaultRowsTempData();
         }
 
         categoriesListView.setItems(categories);
         loadProperties();
 
-
-        // EDIT MENU SETUP
         MenuItem addItem = new MenuItem("Add Category");
         MenuItem deleteItem = new MenuItem("Delete Selected Category");
 
@@ -84,8 +84,9 @@ public class CategoriesPageController {
         editMenu.show(editButton, Side.BOTTOM, 0, 0);
     }
 
-    private void openAddCategoryPopup() {
+    // ======================= CATEGORY POPUP ==============================
 
+    private void openAddCategoryPopup() {
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/log/ui/views/AddCategoriesPopup.fxml")
@@ -102,8 +103,8 @@ public class CategoriesPageController {
             AddCategoriesPopupController controller = loader.getController();
             String newCategory = controller.getEnteredCategory();
             ObservableList<String> newAttributes = controller.getAttributesList();
-            if (newCategory != null && !newCategory.isBlank()) {
 
+            if (newCategory != null && !newCategory.isBlank()) {
                 if (!categories.contains(newCategory)) {
                     categories.add(newCategory);
                     categoriesMap.put(newCategory, newAttributes);
@@ -116,7 +117,6 @@ public class CategoriesPageController {
     }
 
     private void handleDeleteCategory() {
-
         String selectedCategory =
                 categoriesListView.getSelectionModel().getSelectedItem();
 
@@ -126,104 +126,45 @@ public class CategoriesPageController {
         categoriesMap.remove(selectedCategory);
     }
 
-    //temporary data
-    private void loadTempData() {
-        categoriesMap.put("Physical",
-                FXCollections.observableArrayList(
-                        "Density",
-                        "Open porosity"
-        ));
-
-        categoriesMap.put("Mechanical",
-                FXCollections.observableArrayList(
-                        "Tensile Strength",
-                        "Tensile Modulus",
-                        "Compressive Strength",
-                        "Compressive Modulus",
-                        "Flexural Strength",
-                        "Flexural Modulus"
-                ));
-
-        categoriesMap.put("Thermal",
-                FXCollections.observableArrayList(
-                        "Specific Heat",
-                        "Thermal Diffusivity",
-                        "Thermal conductivity",
-                        "Mass Loss(%)",
-                        "Coefficient of thermal expansion"
-                ));
-
-        categoriesMap.put("Tribological",
-                FXCollections.observableArrayList(
-                        "Coefficient of friction",
-                        "Wear Rate"
-                ));
-
-        categoriesMap.put("Microstructure",
-                FXCollections.observableArrayList(
-                        "ASTM grain size no.",
-                        "Grain size"
-                ));
-
-        instance.setCategoriesMap(categoriesMap);
-    }
-
-    private void loadDefaultRowsTempData() {
-
-        // Physical
-        defaultRowsMap.put("Density", 6);
-        defaultRowsMap.put("Open porosity", 3);
-
-        // Mechanical
-        defaultRowsMap.put("Tensile Strength", 6);
-        defaultRowsMap.put("Tensile Modulus", 6);
-        defaultRowsMap.put("Compressive Strength", 6);
-        defaultRowsMap.put("Compressive Modulus", 6);
-        defaultRowsMap.put("Flexural Strength", 6);
-        defaultRowsMap.put("Flexural Modulus", 6);
-
-        // Thermal
-        defaultRowsMap.put("Specific Heat", 3);
-        defaultRowsMap.put("Thermal Diffusivity", 3);
-        defaultRowsMap.put("Thermal conductivity", 3);
-        defaultRowsMap.put("Mass Loss(%)", 5);
-        defaultRowsMap.put("Coefficient of thermal expansion", 3);
-
-        // Tribological
-        defaultRowsMap.put("Coefficient of friction", 5);
-        defaultRowsMap.put("Wear Rate", 5);
-
-        // Microstructure
-        defaultRowsMap.put("ASTM grain size no.", 3);
-        defaultRowsMap.put("Grain size", 3);
-
-        instance.setDefaultRowsMap(defaultRowsMap);
-    }
-
+    // ======================= PROPERTY SELECTION ==============================
 
     private void loadProperties() {
+
         categoriesListView.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((observable, oldCategory, newCategory) -> {
-                    if(newCategory != null)
-                    {
+
+                    if (newCategory != null) {
                         entriesGrid.getChildren().clear();
+                        headerBox.getChildren().clear();
                         propertiesListView.setItems(categoriesMap.get(newCategory));
                         propertiesLabel.setText(newCategory);
                         instance.setSelectedCategory(newCategory);
-
                         updateInfoBar();
-
                     }
                 });
+
         propertiesListView.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, oldProperty, newProperty) -> {
 
                     if (newProperty != null) {
+
                         entriesGrid.getChildren().clear();
+                        headerBox.getChildren().clear();
+                        inputRows.clear();
+
                         instance.setSelectedProperty(newProperty);
-                        int defaultRows = instance.getDefaultRowsMap().get(newProperty);
+
+                        try {
+                            addHeaderControls();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        int defaultRows =
+                                instance.getDefaultRowsMap().get(newProperty);
+
                         for (int i = 0; i < defaultRows; i++) {
                             try {
                                 addInputRows(i);
@@ -231,6 +172,7 @@ public class CategoriesPageController {
                                 throw new RuntimeException(e);
                             }
                         }
+
                         updateInfoBar();
                     }
                 });
@@ -242,9 +184,39 @@ public class CategoriesPageController {
         }
     }
 
+    // ======================= HEADER CONTROLS ==============================
 
-    //TODO: check if editing the values of previous fields update the inputRows
-    private void addInputRows(int rowCount) throws IOException {
+    private void addHeaderControls() throws IOException {
+
+        headerBox.getChildren().clear();
+
+        // Temperature Field
+        TextField temperatureField = new TextField();
+        temperatureField.setPromptText("Temperature");
+        temperatureField.getStyleClass().add("input-field");
+
+        // Temperature Unit Dropdown
+        FXMLLoader unitLoader = new FXMLLoader(
+                getClass().getResource("/com/log/ui/components/unitsDropdown.fxml")
+        );
+        Parent tempUnitNode = unitLoader.load();
+
+        // Direction Dropdown
+        FXMLLoader directionLoader = new FXMLLoader(
+                getClass().getResource("/com/log/ui/components/directionDropdown.fxml")
+        );
+        Parent directionNode = directionLoader.load();
+
+        headerBox.getChildren().addAll(
+                temperatureField,
+                tempUnitNode,
+                directionNode
+        );
+    }
+
+    // ======================= VALUE ROWS ==============================
+
+    private void addInputRows(int rowIndex) throws IOException {
 
         TextField field = new TextField();
         field.getStyleClass().add("input-field");
@@ -256,26 +228,55 @@ public class CategoriesPageController {
         Parent units = loader.load();
         UnitsDropdownController controller = loader.getController();
 
-        entriesGrid.add(field, 0, rowCount);
-        if(rowCount < 1)
-        {
-            entriesGrid.add(units, 1, rowCount);
+        entriesGrid.add(field, 0, rowIndex);
+
+        // First value row gets units
+        if (rowIndex == 0) {
+            entriesGrid.add(units, 1, rowIndex);
         }
 
         inputRows.add(new InputRow(field, controller));
 
-        // ENTER adds new row dynamically
         field.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER
                     && !field.getText().isBlank()
                     && inputRows.get(inputRows.size() - 1).getField() == field) {
 
                 try {
-                    addInputRows(rowCount+1);
+                    addInputRows(entriesGrid.getRowCount());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
         });
+    }
+
+    // ======================= TEMP DATA ==============================
+
+    private void loadTempData() {
+
+        categoriesMap.put("Physical",
+                FXCollections.observableArrayList(
+                        "Density",
+                        "Open porosity"
+                ));
+
+        categoriesMap.put("Thermal",
+                FXCollections.observableArrayList(
+                        "Specific Heat",
+                        "Thermal conductivity"
+                ));
+
+        instance.setCategoriesMap(categoriesMap);
+    }
+
+    private void loadDefaultRowsTempData() {
+
+        defaultRowsMap.put("Density", 6);
+        defaultRowsMap.put("Open porosity", 3);
+        defaultRowsMap.put("Specific Heat", 3);
+        defaultRowsMap.put("Thermal conductivity", 3);
+
+        instance.setDefaultRowsMap(defaultRowsMap);
     }
 }

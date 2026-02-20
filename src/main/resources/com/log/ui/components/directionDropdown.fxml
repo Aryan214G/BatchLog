@@ -10,6 +10,6 @@
 
     <ComboBox fx:id="directionCombo"
               prefWidth="180"
-              promptText="Select Direction"/>
+              promptText="Direction"/>
 
 </HBox>
