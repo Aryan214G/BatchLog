@@ -30,6 +30,8 @@
             <VBox alignment="CENTER_LEFT" maxWidth="400" spacing="8">
                 <Label text="Property Name" />
                 <TextField fx:id="attributeNameField" maxWidth="Infinity" />
+                <Label text="Default Fields" />
+                <TextField fx:id="attributeEntriesField" maxWidth="Infinity" />
             </VBox>
 
         </VBox>

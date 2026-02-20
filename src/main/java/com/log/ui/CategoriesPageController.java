@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CategoriesPageController {
 
@@ -39,6 +40,9 @@ public class CategoriesPageController {
     @FXML
     private Label propertiesLabel;
 
+    private HashMap<String, ObservableList<String>> categoriesMap = instance.getCategoriesMap();
+    private ObservableList<String> categories = instance.getCategories();
+
     @FXML
     private GridPane entriesGrid;
 
@@ -48,17 +52,17 @@ public class CategoriesPageController {
     @FXML
     private InfoBarController infoBarController;
 
-    private final HashMap<String, ObservableList<String>> categoriesMap = instance.getCategoriesMap();
-    private final ObservableList<String> categories = instance.getCategories();
-    private final HashMap<String, Integer> defaultRowsMap = instance.getDefaultRowsMap();
+    private List<InputRow> inputRows = new ArrayList<>();
 
-    private final List<InputRow> inputRows = new ArrayList<>();
+    private HashMap<String, Integer> defaultRowsMap = instance.getDefaultRowsMap();
 
-    // ======================= INITIALIZE ==============================
+
+
+
+    // ======================= END OF VARIABLES DECLARATION ==============================
 
     @FXML
-    public void initialize() {
-
+    public void initialize() throws IOException {
         if (categoriesMap.isEmpty()) {
             loadTempData();
         }
@@ -70,6 +74,8 @@ public class CategoriesPageController {
         categoriesListView.setItems(categories);
         loadProperties();
 
+
+        // EDIT MENU SETUP
         MenuItem addItem = new MenuItem("Add Category");
         MenuItem deleteItem = new MenuItem("Delete Selected Category");
 
@@ -87,6 +93,7 @@ public class CategoriesPageController {
     // ======================= CATEGORY POPUP ==============================
 
     private void openAddCategoryPopup() {
+
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/log/ui/views/AddCategoriesPopup.fxml")
@@ -103,11 +110,19 @@ public class CategoriesPageController {
             AddCategoriesPopupController controller = loader.getController();
             String newCategory = controller.getEnteredCategory();
             ObservableList<String> newAttributes = controller.getAttributesList();
-
+            HashMap<String,Integer> attrEntriesMap = controller.getEntriesMap();
             if (newCategory != null && !newCategory.isBlank()) {
+
                 if (!categories.contains(newCategory)) {
                     categories.add(newCategory);
                     categoriesMap.put(newCategory, newAttributes);
+                }
+                for (Map.Entry<String, Integer> entry : attrEntriesMap.entrySet()) {
+
+                    String key = entry.getKey();
+                    Integer value = entry.getValue();
+
+                    defaultRowsMap.put(key,value);
                 }
             }
 
@@ -117,6 +132,7 @@ public class CategoriesPageController {
     }
 
     private void handleDeleteCategory() {
+
         String selectedCategory =
                 categoriesListView.getSelectionModel().getSelectedItem();
 
@@ -129,27 +145,26 @@ public class CategoriesPageController {
     // ======================= PROPERTY SELECTION ==============================
 
     private void loadProperties() {
-
         categoriesListView.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((observable, oldCategory, newCategory) -> {
-
-                    if (newCategory != null) {
+                    if(newCategory != null)
+                    {
                         entriesGrid.getChildren().clear();
                         headerBox.getChildren().clear();
                         propertiesListView.setItems(categoriesMap.get(newCategory));
                         propertiesLabel.setText(newCategory);
                         instance.setSelectedCategory(newCategory);
+
                         updateInfoBar();
+
                     }
                 });
-
         propertiesListView.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, oldProperty, newProperty) -> {
 
                     if (newProperty != null) {
-
                         entriesGrid.getChildren().clear();
                         headerBox.getChildren().clear();
                         inputRows.clear();
