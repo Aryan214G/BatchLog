@@ -51,6 +51,8 @@ public class CategoriesPageController {
     private HashMap<String, Integer> defaultRowsMap = instance.getDefaultRowsMap();
 
 
+
+
     // ======================= END OF VARIABLES DECLARATION ==============================
 
     @FXML
@@ -205,6 +207,7 @@ public class CategoriesPageController {
                 .addListener((observable, oldCategory, newCategory) -> {
                     if(newCategory != null)
                     {
+                        entriesGrid.getChildren().clear();
                         propertiesListView.setItems(categoriesMap.get(newCategory));
                         propertiesLabel.setText(newCategory);
                         instance.setSelectedCategory(newCategory);
@@ -218,6 +221,7 @@ public class CategoriesPageController {
                 .addListener((obs, oldProperty, newProperty) -> {
 
                     if (newProperty != null) {
+                        entriesGrid.getChildren().clear();
                         instance.setSelectedProperty(newProperty);
                         int defaultRows = instance.getDefaultRowsMap().get(newProperty);
                         for (int i = 0; i < defaultRows; i++) {
@@ -237,8 +241,6 @@ public class CategoriesPageController {
             infoBarController.refresh();
         }
     }
-
-
 
 
     //TODO: check if editing the values of previous fields update the inputRows
@@ -276,6 +278,4 @@ public class CategoriesPageController {
             }
         });
     }
-
-
 }
