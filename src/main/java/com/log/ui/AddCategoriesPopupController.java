@@ -42,7 +42,7 @@ public class AddCategoriesPopupController {
     private void handleNewAttribute() {
         try {
             FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/log/ui/views/categoriesPopup.fxml")
+                    getClass().getResource("/com/log/ui/views/PropertiesPopup.fxml")
             );
 
             Parent root = loader.load();

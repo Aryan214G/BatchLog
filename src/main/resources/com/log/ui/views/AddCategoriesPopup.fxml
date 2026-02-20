@@ -7,13 +7,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="600.0"
-            prefWidth="800.0"
-            styleClass="root-layout"
-            stylesheets="@../styles/AddCategoriesStyles.css"
-            xmlns="http://javafx.com/javafx/25"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.log.ui.AddCategoriesPopupController">
+<BorderPane prefHeight="600.0" prefWidth="800.0" styleClass="root-layout" stylesheets="@../styles/AddCategoriesStyles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.AddCategoriesPopupController">
 
    <!-- ===== TITLE ===== -->
    <top>
@@ -21,43 +15,30 @@
          <padding>
             <Insets bottom="20" top="30" />
          </padding>
-         <Label styleClass="title" text="Add property" />
+         <Label styleClass="title" text="Add Category" />
       </VBox>
    </top>
 
    <!-- ===== CENTER CONTENT ===== -->
    <center>
-      <VBox alignment="TOP_CENTER"
-            spacing="30"
-            styleClass="content-area">
+      <VBox alignment="TOP_CENTER" spacing="30" styleClass="content-area">
 
          <!-- Property Name -->
-         <VBox maxWidth="600"
-               spacing="6"
-               styleClass="input-field-container">
-            <Label text="Property Name" />
-            <TextField fx:id="propertyNameField"
-                       promptText="Value"
-                       styleClass="input-field" />
+         <VBox maxWidth="600" spacing="6" styleClass="input-field-container">
+            <Label text="Category Name" />
+            <TextField fx:id="propertyNameField" promptText="Value" styleClass="input-field" />
          </VBox>
 
          <!-- Attributes Container -->
-         <VBox fx:id="attributesContainer"
-               alignment="TOP_CENTER"
-               maxWidth="600"
-               spacing="15"
-               styleClass="attributes-container">
+         <VBox fx:id="attributesContainer" alignment="TOP_CENTER" maxWidth="600" spacing="15" styleClass="attributes-container">
 
             <padding>
                <Insets bottom="30" left="40" right="40" top="30" />
             </padding>
 
-            <Label styleClass="section-title" text="Add Attributes" />
+            <Label styleClass="section-title" text="Add property" />
 
-            <Button prefWidth="180"
-                    styleClass="primary-btn"
-                    text="New Attribute"
-                    onAction="#handleNewAttribute" />
+            <Button onAction="#handleNewAttribute" prefWidth="180" styleClass="primary-btn" text="New property" />
          </VBox>
 
       </VBox>
@@ -70,10 +51,7 @@
             <Insets bottom="30" top="20" />
          </padding>
 
-         <Button prefWidth="200"
-                 styleClass="primary-btn"
-                 text="Save Property"
-                 onAction="#handleSaveProperty" />
+         <Button onAction="#handleSaveProperty" prefWidth="200" styleClass="primary-btn" text="Save Category" />
       </VBox>
    </bottom>
 

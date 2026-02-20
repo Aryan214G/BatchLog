@@ -32,4 +32,53 @@ public class MenubarController {
         stage.setScene(scene);
         stage.show();
         }
+    @FXML
+    private void openSaveFilePopup(ActionEvent event) throws IOException {
+
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/com/log/ui/views/saveFile.fxml")
+        );
+
+        Parent root = loader.load();
+
+        Scene scene = new Scene(root);
+
+        Stage popupStage = new Stage();
+        popupStage.setTitle("Save File");
+        popupStage.setScene(scene);
+
+
+        popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+
+
+        Stage owner = (Stage) menuBar.getScene().getWindow();
+        popupStage.initOwner(owner);
+
+        popupStage.showAndWait();
+    }
+
+    @FXML
+    private void openSettingsPagePopup(ActionEvent event) throws IOException {
+
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/com/log/ui/views/settingsPage.fxml")
+        );
+
+        Parent root = loader.load();
+
+        Scene scene = new Scene(root);
+
+        Stage popupStage = new Stage();
+        popupStage.setTitle("Settings");
+        popupStage.setScene(scene);
+
+
+        popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+
+
+        Stage owner = (Stage) menuBar.getScene().getWindow();
+        popupStage.initOwner(owner);
+
+        popupStage.showAndWait();
+    }
 }

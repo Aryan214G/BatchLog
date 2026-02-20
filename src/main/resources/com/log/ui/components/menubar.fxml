@@ -10,7 +10,10 @@
       <items>
             <MenuItem fx:id="newProjectBtn" mnemonicParsing="false" onAction="#loadBasePropertiesView" text="New project" />
             <MenuItem mnemonicParsing="false" text="Open folder" />
+            <MenuItem fx:id="saveAsBtn" mnemonicParsing="false" onAction="#openSaveFilePopup"  text="Save as" />
             <MenuItem mnemonicParsing="false" text="Retrieval page" />
+            <MenuItem fx:id="settingsBtn" mnemonicParsing="false" onAction="#openSettingsPagePopup"  text="Settings" />
+
         <MenuItem mnemonicParsing="false" text="Exit" />
       </items>
     </Menu>
