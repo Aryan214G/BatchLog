@@ -10,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CategoriesPageController {
 
@@ -43,6 +45,10 @@ public class CategoriesPageController {
 
     @FXML
     private GridPane entriesGrid;
+
+    @FXML
+    private HBox headerBox;
+
     @FXML
     private InfoBarController infoBarController;
 
@@ -83,6 +89,8 @@ public class CategoriesPageController {
         editMenu.show(editButton, Side.BOTTOM, 0, 0);
     }
 
+    // ======================= CATEGORY POPUP ==============================
+
     private void openAddCategoryPopup() {
 
         try {
@@ -101,11 +109,19 @@ public class CategoriesPageController {
             AddCategoriesPopupController controller = loader.getController();
             String newCategory = controller.getEnteredCategory();
             ObservableList<String> newAttributes = controller.getAttributesList();
+            HashMap<String,Integer> attrEntriesMap = controller.getEntriesMap();
             if (newCategory != null && !newCategory.isBlank()) {
 
                 if (!categories.contains(newCategory)) {
                     categories.add(newCategory);
                     categoriesMap.put(newCategory, newAttributes);
+                }
+                for (Map.Entry<String, Integer> entry : attrEntriesMap.entrySet()) {
+
+                    String key = entry.getKey();
+                    Integer value = entry.getValue();
+
+                    defaultRowsMap.put(key,value);
                 }
             }
 
@@ -199,6 +215,7 @@ public class CategoriesPageController {
         instance.setDefaultRowsMap(defaultRowsMap);
     }
 
+
     private void loadProperties() {
         categoriesListView.getSelectionModel()
                 .selectedItemProperty()
@@ -276,5 +293,36 @@ public class CategoriesPageController {
                 }
             }
         });
+    }
+
+
+    // ======================= HEADER CONTROLS ==============================
+
+    private void addHeaderControls() throws IOException {
+
+        headerBox.getChildren().clear();
+
+        // Temperature Field
+        TextField temperatureField = new TextField();
+        temperatureField.setPromptText("Temperature");
+        temperatureField.getStyleClass().add("input-field");
+
+        // Temperature Unit Dropdown
+        FXMLLoader unitLoader = new FXMLLoader(
+                getClass().getResource("/com/log/ui/components/unitsDropdown.fxml")
+        );
+        Parent tempUnitNode = unitLoader.load();
+
+        // Direction Dropdown
+        FXMLLoader directionLoader = new FXMLLoader(
+                getClass().getResource("/com/log/ui/components/directionDropdown.fxml")
+        );
+        Parent directionNode = directionLoader.load();
+
+        headerBox.getChildren().addAll(
+                temperatureField,
+                tempUnitNode,
+                directionNode
+        );
     }
 }
