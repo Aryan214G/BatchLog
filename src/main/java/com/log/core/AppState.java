@@ -93,4 +93,16 @@ public class AppState {
     public void setDefaultRowsMap(HashMap<String, Integer> defaultRowsMap) {
         this.defaultRowsMap = defaultRowsMap;
     }
+
+    //======= default units for properties ========
+
+    private HashMap<String, String> defaultUnitsMap = new HashMap<>();
+
+    public HashMap<String, String> getDefaultUnitsMap() {
+        return defaultUnitsMap;
+    }
+
+    public void setDefaultUnitsMap(HashMap<String, String> defaultUnitsMap) {
+        this.defaultUnitsMap = defaultUnitsMap;
+    }
 }

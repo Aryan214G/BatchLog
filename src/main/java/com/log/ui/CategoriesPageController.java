@@ -50,8 +50,7 @@ public class CategoriesPageController {
 
     private HashMap<String, Integer> defaultRowsMap = instance.getDefaultRowsMap();
 
-
-
+    private HashMap<String, String> defaultUnits = instance.getDefaultUnitsMap();
 
     // ======================= END OF VARIABLES DECLARATION ==============================
 
@@ -126,7 +125,7 @@ public class CategoriesPageController {
         categoriesMap.remove(selectedCategory);
     }
 
-    //temporary data
+    //=============== temporary data ===================
     private void loadTempData() {
         categoriesMap.put("Physical",
                 FXCollections.observableArrayList(
@@ -200,6 +199,9 @@ public class CategoriesPageController {
         instance.setDefaultRowsMap(defaultRowsMap);
     }
 
+    private void loadDefaultUnits() {
+        defaultUnits.put()
+    }
 
     private void loadProperties() {
         categoriesListView.getSelectionModel()
