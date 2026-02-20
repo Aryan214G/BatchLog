@@ -29,7 +29,7 @@ public class CategoriesPageController {
 
     private ContextMenu editMenu;
 
-    private final AppState instance = AppState.getInstance();
+    AppState instance = AppState.getInstance();
 
     @FXML
     private ListView<String> categoriesListView;
@@ -56,8 +56,7 @@ public class CategoriesPageController {
 
     private HashMap<String, Integer> defaultRowsMap = instance.getDefaultRowsMap();
 
-
-
+    private HashMap<String, String> defaultUnits = instance.getDefaultUnitsMap();
 
     // ======================= END OF VARIABLES DECLARATION ==============================
 
@@ -67,7 +66,7 @@ public class CategoriesPageController {
             loadTempData();
         }
 
-        if (defaultRowsMap.isEmpty()) {
+        if(defaultRowsMap.isEmpty()) {
             loadDefaultRowsTempData();
         }
 
@@ -142,138 +141,13 @@ public class CategoriesPageController {
         categoriesMap.remove(selectedCategory);
     }
 
-    // ======================= PROPERTY SELECTION ==============================
-
-    private void loadProperties() {
-        categoriesListView.getSelectionModel()
-                .selectedItemProperty()
-                .addListener((observable, oldCategory, newCategory) -> {
-                    if(newCategory != null)
-                    {
-                        entriesGrid.getChildren().clear();
-                        headerBox.getChildren().clear();
-                        propertiesListView.setItems(categoriesMap.get(newCategory));
-                        propertiesLabel.setText(newCategory);
-                        instance.setSelectedCategory(newCategory);
-
-                        updateInfoBar();
-
-                    }
-                });
-        propertiesListView.getSelectionModel()
-                .selectedItemProperty()
-                .addListener((obs, oldProperty, newProperty) -> {
-
-                    if (newProperty != null) {
-                        entriesGrid.getChildren().clear();
-                        headerBox.getChildren().clear();
-                        inputRows.clear();
-
-                        instance.setSelectedProperty(newProperty);
-
-                        try {
-                            addHeaderControls();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-
-                        int defaultRows =
-                                instance.getDefaultRowsMap().get(newProperty);
-
-                        for (int i = 0; i < defaultRows; i++) {
-                            try {
-                                addInputRows(i);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-
-                        updateInfoBar();
-                    }
-                });
-    }
-
-    private void updateInfoBar() {
-        if (infoBarController != null) {
-            infoBarController.refresh();
-        }
-    }
-
-    // ======================= HEADER CONTROLS ==============================
-
-    private void addHeaderControls() throws IOException {
-
-        headerBox.getChildren().clear();
-
-        // Temperature Field
-        TextField temperatureField = new TextField();
-        temperatureField.setPromptText("Temperature");
-        temperatureField.getStyleClass().add("input-field");
-
-        // Temperature Unit Dropdown
-        FXMLLoader unitLoader = new FXMLLoader(
-                getClass().getResource("/com/log/ui/components/unitsDropdown.fxml")
-        );
-        Parent tempUnitNode = unitLoader.load();
-
-        // Direction Dropdown
-        FXMLLoader directionLoader = new FXMLLoader(
-                getClass().getResource("/com/log/ui/components/directionDropdown.fxml")
-        );
-        Parent directionNode = directionLoader.load();
-
-        headerBox.getChildren().addAll(
-                temperatureField,
-                tempUnitNode,
-                directionNode
-        );
-    }
-
-    // ======================= VALUE ROWS ==============================
-
-    private void addInputRows(int rowIndex) throws IOException {
-
-        TextField field = new TextField();
-        field.getStyleClass().add("input-field");
-
-        FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/com/log/ui/components/unitsDropdown.fxml")
-        );
-
-        Parent units = loader.load();
-        UnitsDropdownController controller = loader.getController();
-
-        entriesGrid.add(field, 0, rowIndex);
-
-        // First value row gets units
-        if (rowIndex == 0) {
-            entriesGrid.add(units, 1, rowIndex);
-        }
-
-        inputRows.add(new InputRow(field, controller));
-
-        field.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ENTER
-                    && !field.getText().isBlank()
-                    && inputRows.get(inputRows.size() - 1).getField() == field) {
-
-                try {
-                    addInputRows(entriesGrid.getRowCount());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-    }
-
-    // ======================= TEMP DATA ==============================
-
+    //=============== temporary data ===================
     private void loadTempData() {
         categoriesMap.put("Physical",
                 FXCollections.observableArrayList(
                         "Density",
                         "Open porosity"
-                ));
+        ));
 
         categoriesMap.put("Mechanical",
                 FXCollections.observableArrayList(
@@ -339,5 +213,117 @@ public class CategoriesPageController {
         defaultRowsMap.put("Grain size", 3);
 
         instance.setDefaultRowsMap(defaultRowsMap);
+    }
+
+
+    private void loadProperties() {
+        categoriesListView.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((observable, oldCategory, newCategory) -> {
+                    if(newCategory != null)
+                    {
+                        entriesGrid.getChildren().clear();
+                        propertiesListView.setItems(categoriesMap.get(newCategory));
+                        propertiesLabel.setText(newCategory);
+                        instance.setSelectedCategory(newCategory);
+
+                        updateInfoBar();
+
+                    }
+                });
+        propertiesListView.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((obs, oldProperty, newProperty) -> {
+
+                    if (newProperty != null) {
+                        entriesGrid.getChildren().clear();
+                        instance.setSelectedProperty(newProperty);
+                        int defaultRows = instance.getDefaultRowsMap().get(newProperty);
+                        for (int i = 0; i < defaultRows; i++) {
+                            try {
+                                addHeaderControls();
+                                addInputRows(i, newProperty);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                        updateInfoBar();
+                    }
+                });
+    }
+
+    private void updateInfoBar() {
+        if (infoBarController != null) {
+            infoBarController.refresh();
+        }
+    }
+
+
+    //TODO: check if editing the values of previous fields update the inputRows
+    private void addInputRows(int rowCount, String property) throws IOException {
+
+        TextField field = new TextField();
+        field.getStyleClass().add("input-field");
+
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/com/log/ui/components/unitsDropdown.fxml")
+        );
+
+        Parent units = loader.load();
+        UnitsDropdownController controller = loader.getController();
+        controller.setUnits(property);
+
+        entriesGrid.add(field, 0, rowCount);
+        if(rowCount < 1)
+        {
+            entriesGrid.add(units, 1, rowCount);
+        }
+
+        inputRows.add(new InputRow(field, controller));
+
+        // ENTER adds new row dynamically
+        field.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER
+                    && !field.getText().isBlank()
+                    && inputRows.get(inputRows.size() - 1).getField() == field) {
+
+                try {
+                    addInputRows(rowCount+1, property);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }
+
+
+    // ======================= HEADER CONTROLS ==============================
+
+    private void addHeaderControls() throws IOException {
+
+        headerBox.getChildren().clear();
+
+        // Temperature Field
+        TextField temperatureField = new TextField();
+        temperatureField.setPromptText("Temperature");
+        temperatureField.getStyleClass().add("input-field");
+
+        // Temperature Unit Dropdown
+        FXMLLoader unitLoader = new FXMLLoader(
+                getClass().getResource("/com/log/ui/components/unitsDropdown.fxml")
+        );
+        Parent tempUnitNode = unitLoader.load();
+
+        // Direction Dropdown
+        FXMLLoader directionLoader = new FXMLLoader(
+                getClass().getResource("/com/log/ui/components/directionDropdown.fxml")
+        );
+        Parent directionNode = directionLoader.load();
+
+        headerBox.getChildren().addAll(
+                temperatureField,
+                tempUnitNode,
+                directionNode
+        );
     }
 }
