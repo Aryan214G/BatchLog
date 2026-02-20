@@ -55,6 +55,7 @@ public class AddCategoriesPopupController {
 
             AddPropertiesPopupController controller = loader.getController();
             String attributeName = controller.getPropertyName();
+            int entries = (controller.getAttributeEntries()).intValue();
 
             if (attributeName != null && !attributeName.isBlank()) {
                 addAttributeCard(attributeName);
