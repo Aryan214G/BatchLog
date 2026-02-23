@@ -42,8 +42,6 @@
                                     <Label fx:id="propertiesLabel" styleClass="subproperties-title" />
 
                                     <ListView fx:id="propertiesListView" styleClass="buttons-list" VBox.vgrow="ALWAYS" />
-
-                                    <Button styleClass="edit-button" text="Edit" />
                                 </children>
 
                                 <padding>

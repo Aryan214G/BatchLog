@@ -58,10 +58,17 @@ public class CategoriesPageController {
 
     private HashMap<String, String> defaultUnits = instance.getDefaultUnitsMap();
 
+
     // ======================= END OF VARIABLES DECLARATION ==============================
 
     @FXML
     public void initialize() throws IOException {
+
+        if(!instance.isProjectCreated()) {
+            categoriesListView.setDisable(true);
+            propertiesListView.setDisable(true);
+        }
+
         if (categoriesMap.isEmpty()) {
             loadTempData();
         }
@@ -325,5 +332,13 @@ public class CategoriesPageController {
                 tempUnitNode,
                 directionNode
         );
+    }
+
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Action Not Allowed");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
