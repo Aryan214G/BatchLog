@@ -59,6 +59,8 @@ public class BasePropertiesController {
         appState.setTestDate(testDate.getValue());
         appState.setPlaceOfTesting(placeOfTesting.getText());
         appState.setFileName(fileName.getText());
+
+        appState.setProjectCreated(true);
         // TODO: Navigate to next screen
         loadCategoriesPage();
 

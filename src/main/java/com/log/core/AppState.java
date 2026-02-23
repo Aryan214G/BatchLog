@@ -104,4 +104,17 @@ public class AppState {
     public void setDefaultUnitsMap(HashMap<String, String> defaultUnitsMap) {
         this.defaultUnitsMap = defaultUnitsMap;
     }
+
+    //============ FLAGS =================
+
+    private boolean projectCreated = false;
+
+    public boolean isProjectCreated() {
+        return projectCreated;
+    }
+
+    public void setProjectCreated(boolean projectCreated) {
+        this.projectCreated = projectCreated;
+    }
 }
+
