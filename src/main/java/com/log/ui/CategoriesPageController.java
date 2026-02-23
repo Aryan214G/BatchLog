@@ -59,6 +59,8 @@ public class CategoriesPageController {
     private HashMap<String, String> defaultUnits = instance.getDefaultUnitsMap();
 
 
+
+
     // ======================= END OF VARIABLES DECLARATION ==============================
 
     @FXML
@@ -68,6 +70,7 @@ public class CategoriesPageController {
             categoriesListView.setDisable(true);
             propertiesListView.setDisable(true);
         }
+
 
         if (categoriesMap.isEmpty()) {
             loadTempData();
@@ -89,6 +92,8 @@ public class CategoriesPageController {
         deleteItem.setOnAction(e -> handleDeleteCategory());
 
         editMenu = new ContextMenu(addItem, deleteItem);
+
+
     }
 
     @FXML
