@@ -32,7 +32,7 @@
             <Label text="Product Name" />
             <TextField fx:id="productName" alignment="CENTER" maxWidth="700.0" />
 
-            <Label text="Component ID" />
+            <Label text="Product ID" />
             <TextField fx:id="componentID" alignment="CENTER" maxWidth="700.0" />
 
             <Label text="Test Date" />

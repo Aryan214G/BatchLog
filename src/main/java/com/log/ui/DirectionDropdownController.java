@@ -17,7 +17,7 @@ public class DirectionDropdownController {
                 "Perpendicular", "XY",
                 "Z", "U",
                 "V", "W",
-                "Radial", "Circumferential"
+                "Radial", "Circumferential", "Not Applicable"
         ));
     }
 
