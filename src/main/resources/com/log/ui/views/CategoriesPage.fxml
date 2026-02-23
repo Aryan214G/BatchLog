@@ -58,31 +58,13 @@
                     <ScrollPane fitToWidth="true" styleClass="panel-scroll" HBox.hgrow="ALWAYS">
 
                         <content>
-                            <VBox alignment="TOP_LEFT" spacing="16" styleClass="entries-panel">
+                            <VBox fx:id="entriesPanel" alignment="TOP_LEFT" spacing="16" styleClass="entries-panel">
 
                                 <!-- Title -->
                                 <Label alignment="CENTER" maxWidth="Infinity" styleClass="entry-title" text="Entries" />
 
                                 <!-- Metric Chips -->
-                                <HBox alignment="CENTER_LEFT" spacing="10" styleClass="metric-chip-container">
 
-                                    <HBox spacing="8" styleClass="metric-chip">
-                                        <children>
-                                            <Label styleClass="body-text" text="Mean" />
-                                            <Separator orientation="VERTICAL" />
-                                            <Label styleClass="body-text" text="10" />
-                                        </children>
-                                    </HBox>
-
-                                    <HBox spacing="8" styleClass="metric-chip">
-                                        <children>
-                                            <Label styleClass="body-text" text="Standard deviation" />
-                                            <Separator orientation="VERTICAL" />
-                                            <Label styleClass="body-text" text="10" />
-                                        </children>
-                                    </HBox>
-
-                                </HBox>
 
                                 <!-- HEADER ROW -->
                                 <HBox fx:id="headerBox" alignment="CENTER_LEFT" spacing="12">

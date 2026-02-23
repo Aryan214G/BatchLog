@@ -13,6 +13,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -64,10 +65,10 @@ public class CategoriesPageController {
     @FXML
     public void initialize() throws IOException {
 
-        if(!instance.isProjectCreated()) {
-            categoriesListView.setDisable(true);
-            propertiesListView.setDisable(true);
-        }
+//        if(!instance.isProjectCreated()) {
+//            categoriesListView.setDisable(true);
+//            propertiesListView.setDisable(true);
+//        }
 
         if (categoriesMap.isEmpty()) {
             loadTempData();
@@ -243,6 +244,11 @@ public class CategoriesPageController {
                 .addListener((obs, oldProperty, newProperty) -> {
 
                     if (newProperty != null) {
+                        try {
+                            loadMetrics();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                         entriesGrid.getChildren().clear();
                         instance.setSelectedProperty(newProperty);
                         int defaultRows = instance.getDefaultRowsMap().get(newProperty);
@@ -340,5 +346,28 @@ public class CategoriesPageController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    @FXML
+    private VBox entriesPanel;
+
+    private Parent metrics;
+    private void loadMetrics() throws IOException {
+
+        if (metrics != null) {
+            return;
+        }
+        int index = entriesPanel.getChildren().indexOf(headerBox);
+
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/com/log/ui/components/metrics.fxml")
+        );
+
+        metrics = loader.load();
+        entriesPanel.getChildren().add(index, metrics);
+        MetricsController controller = new MetricsController();
+
+
+
     }
 }
