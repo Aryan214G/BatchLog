@@ -246,6 +246,7 @@ public class CategoriesPageController {
                     if (newProperty != null) {
                         saveCurrentPropertyValues(oldProperty);
 
+                        headerBox.getChildren().clear();
                         entriesGrid.getChildren().clear();
                         inputRows.clear();
 
@@ -309,6 +310,7 @@ public class CategoriesPageController {
 
     // ======================= HEADER CONTROLS ==============================
 
+    private InputRow tempDirValues;
     private void addHeaderControls() throws IOException {
 
         headerBox.getChildren().clear();
@@ -323,18 +325,23 @@ public class CategoriesPageController {
                 getClass().getResource("/com/log/ui/components/unitsDropdown.fxml")
         );
         Parent tempUnitNode = unitLoader.load();
+        UnitsDropdownController unitsDropdownController = unitLoader.getController();
 
         // Direction Dropdown
         FXMLLoader directionLoader = new FXMLLoader(
                 getClass().getResource("/com/log/ui/components/directionDropdown.fxml")
         );
         Parent directionNode = directionLoader.load();
+        DirectionDropdownController directionDropdownController = directionLoader.getController();
 
         headerBox.getChildren().addAll(
                 temperatureField,
                 tempUnitNode,
                 directionNode
         );
+        tempDirValues.setTemperatureField(temperatureField);
+        tempDirValues.setTempUnit(unitsDropdownController);
+        tempDirValues.setDirection(directionDropdownController);
     }
 
     private void showAlert(String message) {
@@ -356,7 +363,12 @@ public class CategoriesPageController {
             String fieldValue = row.getField().getText();
             String unitValue = row.getUnit().getComboBox().getValue();
 
-            values.add(new InputRow(fieldValue, unitValue));
+            String tempValue = tempDirValues.getTemperatureField().getText();
+            String tempUnitValue = tempDirValues.getTempUnit().getComboBox().getValue();
+
+            String directionValue = tempDirValues.getDirection().getSelectedDirection();
+
+            values.add(new InputRow(fieldValue, unitValue, tempValue, tempUnitValue, directionValue));
         }
         propertyValues.put(property, values);
     }
@@ -383,6 +395,17 @@ public class CategoriesPageController {
             inputRows.get(i)
                     .getUnit()
                     .setSelectedUnit(values.get(i).getUnitValue());
+
+            inputRows.get(i)
+                    .getTemperatureField()
+                    .setText(values.get(i).getTemperatureValue());
+
+            inputRows.get(i)
+                    .getTempUnit()
+                    .setSelectedUnit(values.get(i).getTempUnitValue());
+
+            inputRows.get(i)
+                    .getDirection().setSelectedDirection(values.get(i).getDirectionValue());
         }
     }
 }
