@@ -66,9 +66,6 @@ public class CategoriesPageController {
     @FXML
     public void initialize() throws IOException {
 
-            printButton.setVisible(false);
-            printButton.setManaged(false);
-
         if(!instance.isProjectCreated()) {
             categoriesListView.setDisable(true);
             propertiesListView.setDisable(true);
@@ -253,8 +250,6 @@ public class CategoriesPageController {
                     if (newProperty != null) {
                         entriesGrid.getChildren().clear();
                         inputRows.clear();
-                        printButton.setVisible(false);
-                        printButton.setManaged(false);
 
                         instance.setSelectedProperty(newProperty);
                         int defaultRows = instance.getDefaultRowsMap().get(newProperty);
@@ -303,9 +298,6 @@ public class CategoriesPageController {
         }
 
         inputRows.add(new InputRow(field, controller));
-        field.textProperty().addListener((obs, oldVal, newVal) -> {
-            updatePrintButtonVisibility();
-        });
 
         // ENTER adds new row dynamically
         field.setOnKeyPressed(event -> {
@@ -355,18 +347,26 @@ public class CategoriesPageController {
 
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Action Not Allowed");
+        alert.setTitle("Warning!");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
     }
 
-    private void updatePrintButtonVisibility() {
+    @FXML
+    private void PrintButtonHandler() {
 
-        boolean hasText = inputRows.stream()
-                .anyMatch(row -> !row.getField().getText().trim().isEmpty());
+            boolean hasText = inputRows.stream()
+                    .anyMatch(row ->
+                            row.getField().getText() != null &&
+                                    !row.getField().getText().trim().isEmpty()
+                    );
 
-        printButton.setVisible(hasText);
-        printButton.setManaged(hasText);
+            if (!hasText) {
+                showAlert("Please enter at least one value before printing.");
+                return;
+            }
+
+            System.out.println("Printing...");
+        }
     }
-}
