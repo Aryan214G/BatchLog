@@ -57,14 +57,17 @@ public class CategoriesPageController {
     private HashMap<String, Integer> defaultRowsMap = instance.getDefaultRowsMap();
 
     private HashMap<String, String> defaultUnits = instance.getDefaultUnitsMap();
-
-
+    @FXML
+    private Button printButton;
 
 
     // ======================= END OF VARIABLES DECLARATION ==============================
 
     @FXML
     public void initialize() throws IOException {
+
+            printButton.setVisible(false);
+            printButton.setManaged(false);
 
         if(!instance.isProjectCreated()) {
             categoriesListView.setDisable(true);
@@ -249,11 +252,19 @@ public class CategoriesPageController {
 
                     if (newProperty != null) {
                         entriesGrid.getChildren().clear();
+                        inputRows.clear();
+                        printButton.setVisible(false);
+                        printButton.setManaged(false);
+
                         instance.setSelectedProperty(newProperty);
                         int defaultRows = instance.getDefaultRowsMap().get(newProperty);
+                        try {
+                            addHeaderControls();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                         for (int i = 0; i < defaultRows; i++) {
                             try {
-                                addHeaderControls();
                                 addInputRows(i, newProperty);
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
@@ -292,6 +303,9 @@ public class CategoriesPageController {
         }
 
         inputRows.add(new InputRow(field, controller));
+        field.textProperty().addListener((obs, oldVal, newVal) -> {
+            updatePrintButtonVisibility();
+        });
 
         // ENTER adds new row dynamically
         field.setOnKeyPressed(event -> {
@@ -345,5 +359,14 @@ public class CategoriesPageController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void updatePrintButtonVisibility() {
+
+        boolean hasText = inputRows.stream()
+                .anyMatch(row -> !row.getField().getText().trim().isEmpty());
+
+        printButton.setVisible(hasText);
+        printButton.setManaged(hasText);
     }
 }
