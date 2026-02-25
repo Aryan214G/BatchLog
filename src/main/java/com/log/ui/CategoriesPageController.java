@@ -367,7 +367,6 @@ public class CategoriesPageController {
         entriesPanel.getChildren().add(index, metrics);
         MetricsController controller = new MetricsController();
 
-
-
     }
+
 }
