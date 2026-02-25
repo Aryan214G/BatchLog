@@ -57,6 +57,8 @@ public class CategoriesPageController {
     private HashMap<String, Integer> defaultRowsMap = instance.getDefaultRowsMap();
 
     private HashMap<String, String> defaultUnits = instance.getDefaultUnitsMap();
+    @FXML
+    private Button printButton;
 
 
     // ======================= END OF VARIABLES DECLARATION ==============================
@@ -247,8 +249,15 @@ public class CategoriesPageController {
 
                     if (newProperty != null) {
                         entriesGrid.getChildren().clear();
+                        inputRows.clear();
+
                         instance.setSelectedProperty(newProperty);
                         int defaultRows = instance.getDefaultRowsMap().get(newProperty);
+                        try {
+                            addHeaderControls();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                         for (int i = 0; i < defaultRows; i++) {
                             try {
                                 addHeaderControls();
@@ -339,9 +348,26 @@ public class CategoriesPageController {
 
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Action Not Allowed");
+        alert.setTitle("Warning!");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
     }
-}
+
+    @FXML
+    private void PrintButtonHandler() {
+
+            boolean hasText = inputRows.stream()
+                    .anyMatch(row ->
+                            row.getField().getText() != null &&
+                                    !row.getField().getText().trim().isEmpty()
+                    );
+
+            if (!hasText) {
+                showAlert("Please enter at least one value before printing.");
+                return;
+            }
+
+            System.out.println("Printing...");
+        }
+    }
