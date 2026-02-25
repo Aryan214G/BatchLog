@@ -7,11 +7,33 @@ public class InputRow {
 
     private TextField field;
     private UnitsDropdownController unit;
+    private String fieldValue;
+    private String unitValue;
 
+    public String getFieldValue() {
+        return fieldValue;
+    }
+
+    public void setFieldValue(String fieldValue) {
+        this.fieldValue = fieldValue;
+    }
+
+    public String getUnitValue() {
+        return unitValue;
+    }
+
+    public void setUnitValue(String unitValue) {
+        this.unitValue = unitValue;
+    }
 
     public InputRow(TextField field, UnitsDropdownController unit) {
         this.field = field;
         this.unit = unit;
+    }
+
+    public InputRow(String fieldValue, String unitValue) {
+        this.fieldValue = fieldValue;
+        this.unitValue = unitValue;
     }
 
     public TextField getField() {

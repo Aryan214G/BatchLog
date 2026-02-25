@@ -345,24 +345,27 @@ public class CategoriesPageController {
         alert.showAndWait();
     }
 
-    private HashMap<String, List<String>> propertyReadings = new HashMap<>();
+    private HashMap<String, List<InputRow>> propertyValues = new HashMap<>();
     private void saveCurrentPropertyValues(String property) {
 
         if (property == null) return;
 
-        List<String> values = new ArrayList<>();
+        List<InputRow> values = new ArrayList<>();
 
         for (InputRow row : inputRows) {
-            values.add(row.getField().getText());
+            String fieldValue = row.getField().getText();
+            String unitValue = row.getUnit().getComboBox().getValue();
+
+            values.add(new InputRow(fieldValue, unitValue));
         }
-        propertyReadings.put(property, values);
+        propertyValues.put(property, values);
     }
 
     private void loadPropertyFields(int defaultRows, String property) throws IOException {
 
         inputRows.clear();
 
-        List<String> values = propertyReadings.get(property);
+        List<InputRow> values = propertyValues.get(property);
 
         if (values == null || values.isEmpty()) {
             for (int i = 0; i < defaultRows; i++) {
@@ -373,7 +376,13 @@ public class CategoriesPageController {
 
         for (int i = 0; i < values.size(); i++) {
             addInputRow(i, property);
-            inputRows.get(i).getField().setText(values.get(i));
+            inputRows.get(i)
+                    .getField()
+                    .setText(values.get(i).getFieldValue());
+
+            inputRows.get(i)
+                    .getUnit()
+                    .setSelectedUnit(values.get(i).getUnitValue());
         }
     }
 }
