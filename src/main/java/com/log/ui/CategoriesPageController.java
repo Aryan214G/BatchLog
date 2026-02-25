@@ -64,10 +64,10 @@ public class CategoriesPageController {
     @FXML
     public void initialize() throws IOException {
 
-        if(!instance.isProjectCreated()) {
-            categoriesListView.setDisable(true);
-            propertiesListView.setDisable(true);
-        }
+//        if(!instance.isProjectCreated()) {
+//            categoriesListView.setDisable(true);
+//            propertiesListView.setDisable(true);
+//        }
 
         if (categoriesMap.isEmpty()) {
             loadTempData();
@@ -223,6 +223,7 @@ public class CategoriesPageController {
     }
 
 
+    //TODO: loadProperties is doing multiple tasks. Either change the name of the method or divide the responsibilities
     private void loadProperties() {
         categoriesListView.getSelectionModel()
                 .selectedItemProperty()
@@ -243,16 +244,18 @@ public class CategoriesPageController {
                 .addListener((obs, oldProperty, newProperty) -> {
 
                     if (newProperty != null) {
+                        saveCurrentPropertyValues(oldProperty);
+
                         entriesGrid.getChildren().clear();
+                        inputRows.clear();
+
                         instance.setSelectedProperty(newProperty);
                         int defaultRows = instance.getDefaultRowsMap().get(newProperty);
-                        for (int i = 0; i < defaultRows; i++) {
-                            try {
-                                addHeaderControls();
-                                addInputRows(i, newProperty);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
+                        try {
+                            addHeaderControls();
+                            loadPropertyFields(defaultRows, newProperty);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
                         }
                         updateInfoBar();
                     }
@@ -267,7 +270,7 @@ public class CategoriesPageController {
 
 
     //TODO: check if editing the values of previous fields update the inputRows
-    private void addInputRows(int rowCount, String property) throws IOException {
+    private void addInputRow(int rowCount, String property) throws IOException {
 
         TextField field = new TextField();
         field.getStyleClass().add("input-field");
@@ -295,7 +298,7 @@ public class CategoriesPageController {
                     && inputRows.get(inputRows.size() - 1).getField() == field) {
 
                 try {
-                    addInputRows(rowCount+1, property);
+                    addInputRow(rowCount+1, property);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -340,5 +343,37 @@ public class CategoriesPageController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private HashMap<String, List<String>> propertyReadings = new HashMap<>();
+    private void saveCurrentPropertyValues(String property) {
+
+        if (property == null) return;
+
+        List<String> values = new ArrayList<>();
+
+        for (InputRow row : inputRows) {
+            values.add(row.getField().getText());
+        }
+        propertyReadings.put(property, values);
+    }
+
+    private void loadPropertyFields(int defaultRows, String property) throws IOException {
+
+        inputRows.clear();
+
+        List<String> values = propertyReadings.get(property);
+
+        if (values == null || values.isEmpty()) {
+            for (int i = 0; i < defaultRows; i++) {
+                addInputRow(i, property);
+            }
+            return;
+        }
+
+        for (int i = 0; i < values.size(); i++) {
+            addInputRow(i, property);
+            inputRows.get(i).getField().setText(values.get(i));
+        }
     }
 }
