@@ -59,8 +59,6 @@ public class CategoriesPageController {
     private HashMap<String, String> defaultUnits = instance.getDefaultUnitsMap();
 
 
-
-
     // ======================= END OF VARIABLES DECLARATION ==============================
 
     @FXML
