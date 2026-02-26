@@ -1,46 +1,41 @@
-package com.log.core;
-
-import com.log.model.InputRow;
+package com.log.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PropertyState {
 
-    private List<InputRow> readings = new ArrayList<>();
+    private List<Reading> readings = new ArrayList<>();
+
     private String temperature;
     private String temperatureUnit;
     private String direction;
 
-    public List<InputRow> getReadings() {
+    public List<Reading> getReadings() {
         return readings;
-    }
-
-    public void setReadings(List<InputRow> readings) {
-        this.readings = readings;
-    }
-
-    public String getTemperature() {
-        return temperature;
     }
 
     public void setTemperature(String temperature) {
         this.temperature = temperature;
     }
 
-    public String getTemperatureUnit() {
-        return temperatureUnit;
-    }
-
     public void setTemperatureUnit(String temperatureUnit) {
         this.temperatureUnit = temperatureUnit;
     }
 
-    public String getDirection() {
-        return direction;
-    }
-
     public void setDirection(String direction) {
         this.direction = direction;
+    }
+
+    public String getTemperature() {
+        return temperature;
+    }
+
+    public String getTemperatureUnit() {
+        return temperatureUnit;
+    }
+
+    public String getDirection() {
+        return direction;
     }
 }

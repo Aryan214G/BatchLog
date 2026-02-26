@@ -1,7 +1,8 @@
 package com.log.ui;
 
 import com.log.core.AppState;
-import com.log.model.InputRow;
+import com.log.model.PropertyState;
+import com.log.model.Reading;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -58,6 +59,9 @@ public class CategoriesPageController {
 
     private HashMap<String, String> defaultUnits = instance.getDefaultUnitsMap();
 
+    private TextField temperatureField;
+    private UnitsDropdownController tempUnitController;
+    private DirectionDropdownController directionController;
 
     // ======================= END OF VARIABLES DECLARATION ==============================
 
@@ -230,6 +234,7 @@ public class CategoriesPageController {
                 .addListener((observable, oldCategory, newCategory) -> {
                     if(newCategory != null)
                     {
+                        headerBox.getChildren().clear();
                         entriesGrid.getChildren().clear();
                         propertiesListView.setItems(categoriesMap.get(newCategory));
                         propertiesLabel.setText(newCategory);
@@ -310,38 +315,32 @@ public class CategoriesPageController {
 
     // ======================= HEADER CONTROLS ==============================
 
-    private InputRow tempDirValues;
+
     private void addHeaderControls() throws IOException {
 
         headerBox.getChildren().clear();
 
-        // Temperature Field
-        TextField temperatureField = new TextField();
+        temperatureField = new TextField();
         temperatureField.setPromptText("Temperature");
         temperatureField.getStyleClass().add("input-field");
 
-        // Temperature Unit Dropdown
         FXMLLoader unitLoader = new FXMLLoader(
                 getClass().getResource("/com/log/ui/components/unitsDropdown.fxml")
         );
         Parent tempUnitNode = unitLoader.load();
-        UnitsDropdownController unitsDropdownController = unitLoader.getController();
+        tempUnitController = unitLoader.getController();
 
-        // Direction Dropdown
         FXMLLoader directionLoader = new FXMLLoader(
                 getClass().getResource("/com/log/ui/components/directionDropdown.fxml")
         );
         Parent directionNode = directionLoader.load();
-        DirectionDropdownController directionDropdownController = directionLoader.getController();
+        directionController = directionLoader.getController();
 
         headerBox.getChildren().addAll(
                 temperatureField,
                 tempUnitNode,
                 directionNode
         );
-        tempDirValues.setTemperatureField(temperatureField);
-        tempDirValues.setTempUnit(unitsDropdownController);
-        tempDirValues.setDirection(directionDropdownController);
     }
 
     private void showAlert(String message) {
@@ -352,60 +351,56 @@ public class CategoriesPageController {
         alert.showAndWait();
     }
 
-    private HashMap<String, List<InputRow>> propertyValues = new HashMap<>();
+    private Map<String, PropertyState> propertyStates = new HashMap<>();
     private void saveCurrentPropertyValues(String property) {
 
         if (property == null) return;
 
-        List<InputRow> values = new ArrayList<>();
+        PropertyState state = new PropertyState();
 
         for (InputRow row : inputRows) {
-            String fieldValue = row.getField().getText();
-            String unitValue = row.getUnit().getComboBox().getValue();
 
-            String tempValue = tempDirValues.getTemperatureField().getText();
-            String tempUnitValue = tempDirValues.getTempUnit().getComboBox().getValue();
+            String value = row.getField().getText();
+            String unit = row.getUnitController()
+                    .getComboBox()
+                    .getValue();
 
-            String directionValue = tempDirValues.getDirection().getSelectedDirection();
-
-            values.add(new InputRow(fieldValue, unitValue, tempValue, tempUnitValue, directionValue));
+            state.getReadings().add(new Reading(value, unit));
         }
-        propertyValues.put(property, values);
+
+        state.setTemperature(temperatureField.getText());
+        state.setTemperatureUnit(tempUnitController.getComboBox().getValue());
+        state.setDirection(directionController.getSelectedDirection());
+
+        propertyStates.put(property, state);
     }
 
     private void loadPropertyFields(int defaultRows, String property) throws IOException {
 
         inputRows.clear();
+        entriesGrid.getChildren().clear();
 
-        List<InputRow> values = propertyValues.get(property);
+        PropertyState state = propertyStates.get(property);
 
-        if (values == null || values.isEmpty()) {
+        if (state == null) {
             for (int i = 0; i < defaultRows; i++) {
                 addInputRow(i, property);
             }
             return;
         }
 
-        for (int i = 0; i < values.size(); i++) {
+        temperatureField.setText(state.getTemperature());
+        tempUnitController.setSelectedUnit(state.getTemperatureUnit());
+        directionController.setSelectedDirection(state.getDirection());
+
+        for (int i = 0; i < state.getReadings().size(); i++) {
+
             addInputRow(i, property);
-            inputRows.get(i)
-                    .getField()
-                    .setText(values.get(i).getFieldValue());
 
-            inputRows.get(i)
-                    .getUnit()
-                    .setSelectedUnit(values.get(i).getUnitValue());
+            inputRows.get(i).getField()
+                    .setText(state.getReadings().get(i).getValue());
 
-            inputRows.get(i)
-                    .getTemperatureField()
-                    .setText(values.get(i).getTemperatureValue());
-
-            inputRows.get(i)
-                    .getTempUnit()
-                    .setSelectedUnit(values.get(i).getTempUnitValue());
-
-            inputRows.get(i)
-                    .getDirection().setSelectedDirection(values.get(i).getDirectionValue());
+            inputRows.get(i).getUnitController()
+                    .setSelectedUnit(state.getReadings().get(i).getUnit());
         }
-    }
-}
+    }}
