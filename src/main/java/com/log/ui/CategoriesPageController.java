@@ -1,7 +1,8 @@
 package com.log.ui;
 
 import com.log.core.AppState;
-import com.log.model.InputRow;
+import com.log.model.PropertyState;
+import com.log.model.Reading;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -60,6 +61,9 @@ public class CategoriesPageController {
     @FXML
     private Button printButton;
 
+    private TextField temperatureField;
+    private UnitsDropdownController tempUnitController;
+    private DirectionDropdownController directionController;
 
     // ======================= END OF VARIABLES DECLARATION ==============================
 
@@ -92,8 +96,6 @@ public class CategoriesPageController {
         deleteItem.setOnAction(e -> handleDeleteCategory());
 
         editMenu = new ContextMenu(addItem, deleteItem);
-
-
     }
 
     @FXML
@@ -228,12 +230,15 @@ public class CategoriesPageController {
     }
 
 
+    //TODO: loadProperties is doing multiple tasks. Either change the name of the method or divide the responsibilities
     private void loadProperties() {
         categoriesListView.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((observable, oldCategory, newCategory) -> {
                     if(newCategory != null)
                     {
+                        saveCurrentPropertyValues(instance.getSelectedProperty());
+                        headerBox.getChildren().clear();
                         entriesGrid.getChildren().clear();
                         propertiesListView.setItems(categoriesMap.get(newCategory));
                         propertiesLabel.setText(newCategory);
@@ -248,20 +253,19 @@ public class CategoriesPageController {
                 .addListener((obs, oldProperty, newProperty) -> {
 
                     if (newProperty != null) {
+                        instance.setSelectedProperty(oldProperty);
+                        saveCurrentPropertyValues(oldProperty);
+
+                        headerBox.getChildren().clear();
                         entriesGrid.getChildren().clear();
                         inputRows.clear();
 
                         instance.setSelectedProperty(newProperty);
                         int defaultRows = instance.getDefaultRowsMap().get(newProperty);
-                        try {
-                            addHeaderControls();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
                         for (int i = 0; i < defaultRows; i++) {
                             try {
                                 addHeaderControls();
-                                addInputRows(i, newProperty);
+                                loadPropertyFields(defaultRows, newProperty);
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
@@ -279,7 +283,7 @@ public class CategoriesPageController {
 
 
     //TODO: check if editing the values of previous fields update the inputRows
-    private void addInputRows(int rowCount, String property) throws IOException {
+    private void addInputRow(int rowCount, String property) throws IOException {
 
         TextField field = new TextField();
         field.getStyleClass().add("input-field");
@@ -307,7 +311,7 @@ public class CategoriesPageController {
                     && inputRows.get(inputRows.size() - 1).getField() == field) {
 
                 try {
-                    addInputRows(rowCount+1, property);
+                    addInputRow(rowCount+1, property);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -322,22 +326,21 @@ public class CategoriesPageController {
 
         headerBox.getChildren().clear();
 
-        // Temperature Field
-        TextField temperatureField = new TextField();
+        temperatureField = new TextField();
         temperatureField.setPromptText("Temperature");
         temperatureField.getStyleClass().add("input-field");
 
-        // Temperature Unit Dropdown
         FXMLLoader unitLoader = new FXMLLoader(
                 getClass().getResource("/com/log/ui/components/unitsDropdown.fxml")
         );
         Parent tempUnitNode = unitLoader.load();
+        tempUnitController = unitLoader.getController();
 
-        // Direction Dropdown
         FXMLLoader directionLoader = new FXMLLoader(
                 getClass().getResource("/com/log/ui/components/directionDropdown.fxml")
         );
         Parent directionNode = directionLoader.load();
+        directionController = directionLoader.getController();
 
         headerBox.getChildren().addAll(
                 temperatureField,
@@ -370,4 +373,59 @@ public class CategoriesPageController {
 
             System.out.println("Printing...");
         }
+
+
+    private Map<String, PropertyState> propertyStates = new HashMap<>();
+    private void saveCurrentPropertyValues(String property) {
+
+        if (property == null) return;
+
+        PropertyState state = new PropertyState();
+
+        for (InputRow row : inputRows) {
+
+            String value = row.getField().getText();
+            String unit = row.getUnitController()
+                    .getComboBox()
+                    .getValue();
+
+            state.getReadings().add(new Reading(value, unit));
+        }
+
+        state.setTemperature(temperatureField.getText());
+        state.setTemperatureUnit(tempUnitController.getComboBox().getValue());
+        state.setDirection(directionController.getSelectedDirection());
+
+        propertyStates.put(property, state);
+    }
+
+    private void loadPropertyFields(int defaultRows, String property) throws IOException {
+
+        inputRows.clear();
+        entriesGrid.getChildren().clear();
+
+        PropertyState state = propertyStates.get(property);
+
+        if (state == null) {
+            for (int i = 0; i < defaultRows; i++) {
+                addInputRow(i, property);
+            }
+            return;
+        }
+
+        temperatureField.setText(state.getTemperature());
+        tempUnitController.setSelectedUnit(state.getTemperatureUnit());
+        directionController.setSelectedDirection(state.getDirection());
+
+        for (int i = 0; i < state.getReadings().size(); i++) {
+
+            addInputRow(i, property);
+
+            inputRows.get(i).getField()
+                    .setText(state.getReadings().get(i).getValue());
+
+            inputRows.get(i).getUnitController()
+                    .setSelectedUnit(state.getReadings().get(i).getUnit());
+        }
+    }
     }

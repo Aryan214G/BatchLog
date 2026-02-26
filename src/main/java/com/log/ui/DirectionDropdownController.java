@@ -22,11 +22,11 @@ public class DirectionDropdownController {
     }
 
 
-    public String getSelectedUnit() {
+    public String getSelectedDirection() {
         return directionCombo.getValue();
     }
 
-    public void setSelectedUnit(String unit) {
+    public void setSelectedDirection(String unit) {
         directionCombo.setValue(unit);
     }
 
