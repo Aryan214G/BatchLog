@@ -26,6 +26,7 @@ public class BasePropertiesController {
     @FXML
     public void initialize() {
         // You can preload data here if needed
+        setDefaultProject();
         System.out.println("Base Properties Loaded");
     }
 
@@ -106,5 +107,15 @@ public class BasePropertiesController {
         placeOfTesting.clear();
         fileName.clear();
         testDate.setValue(null);
+    }
+    public void setDefaultProject(){
+        appState.setProjectName("Project");
+        appState.setBatchNo("456");
+        appState.setProductName("Product");
+        appState.setComponentID("1738");
+        appState.setTestDate(LocalDate.now());
+        appState.setPlaceOfTesting("Lab 4");
+        appState.setFileName("TestFile");
+
     }
 }

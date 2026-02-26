@@ -103,7 +103,7 @@
 
 .primary-btn {
     -fx-background-color: #000000;
-    -fx-text-fill: #111827;
+    -fx-text-fill: #ffffff;   /* White text */
     -fx-font-weight: bold;
     -fx-background-radius: 12;
     -fx-max-width: Infinity;
@@ -112,6 +112,12 @@
 
 .primary-btn:hover {
     -fx-background-color: #383838;
+    -fx-text-fill: #ffffff;   /* Keep white on hover */
+}
+
+.primary-btn:pressed {
+    -fx-background-color: #1f1f1f;
+    -fx-text-fill: #ffffff;
 }
 
 .secondary-btn {
@@ -238,4 +244,9 @@
     -fx-background-color: #000000;
     -fx-text-fill: white;
     -fx-text-weight: bold;
+}
+.entries-title{
+    -fx-font-size: 50px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1f2933;
 }

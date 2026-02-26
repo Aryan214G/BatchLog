@@ -42,13 +42,13 @@ public class AppState {
         this.categories = categories;
     }
 
-    private String projectName;
-    private String batchNo;
-    private String productName;
-    private String componentID;
-    private LocalDate testDate;
-    private String placeOfTesting;
-    private String fileName;
+    private String projectName="Project";
+    private String batchNo="456";
+    private String productName="Product";
+    private String componentID="1738";
+    private LocalDate testDate=LocalDate.now();
+    private String placeOfTesting="Lab 4";
+    private String fileName="TestFile";
     private String selectedCategory;
     private String selectedProperty;
 
@@ -107,7 +107,7 @@ public class AppState {
 
     //============ FLAGS =================
 
-    private boolean projectCreated = false;
+    private boolean projectCreated = true;
 
     public boolean isProjectCreated() {
         return projectCreated;
@@ -116,5 +116,7 @@ public class AppState {
     public void setProjectCreated(boolean projectCreated) {
         this.projectCreated = projectCreated;
     }
+
+
 }
 

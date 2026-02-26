@@ -64,10 +64,11 @@
             <children>
                 <Label alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="sidebar-title" text="Settings" />
                 <fx:include source="../components/searchBar.fxml" />
-            <Button mnemonicParsing="false" prefHeight="45.0" prefWidth="218.0" text="Set defaults" />
-            <Button layoutX="31.0" layoutY="137.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="218.0" text="Add or remove units" />
-            <Button layoutX="31.0" layoutY="197.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="218.0" text="Add or remove directions" />
-                <ListView fx:id="categoriesListView" styleClass="buttons-list" VBox.vgrow="ALWAYS" />
+            <Button mnemonicParsing="false" prefHeight="74.0" prefWidth="218.0" text="Set defaults" />
+            <Button layoutX="31.0" layoutY="137.0" mnemonicParsing="false" prefHeight="79.0" prefWidth="218.0" text="Add or remove units" />
+            <Button layoutX="31.0" layoutY="197.0" mnemonicParsing="false" prefHeight="74.0" prefWidth="218.0" text="Add or remove directions" />
+            <Button layoutX="31.0" layoutY="251.0" mnemonicParsing="false" prefHeight="82.0" prefWidth="218.0" text="Add or remove Categories" />
+                <ListView fx:id="categoriesListView" prefHeight="353.0" prefWidth="218.0" styleClass="buttons-list" VBox.vgrow="ALWAYS" />
                 <Button fx:id="editButton" mnemonicParsing="false" styleClass="edit-button" text="Edit" />
             </children>
         </VBox>
