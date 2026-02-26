@@ -234,6 +234,7 @@ public class CategoriesPageController {
                 .addListener((observable, oldCategory, newCategory) -> {
                     if(newCategory != null)
                     {
+                        saveCurrentPropertyValues(instance.getSelectedProperty());
                         headerBox.getChildren().clear();
                         entriesGrid.getChildren().clear();
                         propertiesListView.setItems(categoriesMap.get(newCategory));
@@ -249,6 +250,7 @@ public class CategoriesPageController {
                 .addListener((obs, oldProperty, newProperty) -> {
 
                     if (newProperty != null) {
+                        instance.setSelectedProperty(oldProperty);
                         saveCurrentPropertyValues(oldProperty);
 
                         headerBox.getChildren().clear();
