@@ -107,7 +107,7 @@ public class AppState {
 
     //============ FLAGS =================
 
-    private boolean projectCreated = true;
+    private boolean projectCreated = false;
 
     public boolean isProjectCreated() {
         return projectCreated;
