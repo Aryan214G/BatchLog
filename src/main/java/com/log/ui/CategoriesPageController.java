@@ -1,7 +1,9 @@
 package com.log.ui;
 
 import com.log.core.AppState;
-import com.log.model.InputRow;
+import com.log.model.PropertyState;
+import com.log.model.Reading;
+import com.log.service.StatisticsService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -13,6 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -60,6 +63,9 @@ public class CategoriesPageController {
     @FXML
     private Button printButton;
 
+    private TextField temperatureField;
+    private UnitsDropdownController tempUnitController;
+    private DirectionDropdownController directionController;
 
     // ======================= END OF VARIABLES DECLARATION ==============================
 
@@ -92,8 +98,6 @@ public class CategoriesPageController {
         deleteItem.setOnAction(e -> handleDeleteCategory());
 
         editMenu = new ContextMenu(addItem, deleteItem);
-
-
     }
 
     @FXML
@@ -228,13 +232,16 @@ public class CategoriesPageController {
     }
 
 
+    //TODO: loadProperties is doing multiple tasks. Either change the name of the method or divide the responsibilities
     private void loadProperties() {
         categoriesListView.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((observable, oldCategory, newCategory) -> {
                     if(newCategory != null)
                     {
-                        entriesGrid.getChildren().clear();
+                        saveCurrentPropertyValues(instance.getSelectedProperty());
+
+                        clearUIComponents();
                         propertiesListView.setItems(categoriesMap.get(newCategory));
                         propertiesLabel.setText(newCategory);
                         instance.setSelectedCategory(newCategory);
@@ -248,24 +255,24 @@ public class CategoriesPageController {
                 .addListener((obs, oldProperty, newProperty) -> {
 
                     if (newProperty != null) {
-                        entriesGrid.getChildren().clear();
+
+                        saveCurrentPropertyValues(oldProperty);
+                        clearUIComponents();
                         inputRows.clear();
 
                         instance.setSelectedProperty(newProperty);
+
                         int defaultRows = instance.getDefaultRowsMap().get(newProperty);
+
                         try {
+                            loadMetrics();
                             addHeaderControls();
+                            loadPropertyFields(defaultRows, newProperty);
+                            updateMetrics();   // force refresh after load
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
-                        for (int i = 0; i < defaultRows; i++) {
-                            try {
-                                addHeaderControls();
-                                addInputRows(i, newProperty);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
+
                         updateInfoBar();
                     }
                 });
@@ -279,7 +286,7 @@ public class CategoriesPageController {
 
 
     //TODO: check if editing the values of previous fields update the inputRows
-    private void addInputRows(int rowCount, String property) throws IOException {
+    private void addInputRow(int rowCount, String property) throws IOException {
 
         TextField field = new TextField();
         field.getStyleClass().add("input-field");
@@ -307,10 +314,19 @@ public class CategoriesPageController {
                     && inputRows.get(inputRows.size() - 1).getField() == field) {
 
                 try {
-                    addInputRows(rowCount+1, property);
+                    addInputRow(rowCount+1, property);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+            }
+        });
+
+        field.textProperty().addListener((obs, oldVal, newVal) -> {
+            System.out.println("Text changed");
+            System.out.println("metricsController = " + metricsController);
+
+            if (metricsController != null) {
+                updateMetrics();
             }
         });
     }
@@ -322,22 +338,21 @@ public class CategoriesPageController {
 
         headerBox.getChildren().clear();
 
-        // Temperature Field
-        TextField temperatureField = new TextField();
+        temperatureField = new TextField();
         temperatureField.setPromptText("Temperature");
         temperatureField.getStyleClass().add("input-field");
 
-        // Temperature Unit Dropdown
         FXMLLoader unitLoader = new FXMLLoader(
                 getClass().getResource("/com/log/ui/components/unitsDropdown.fxml")
         );
         Parent tempUnitNode = unitLoader.load();
+        tempUnitController = unitLoader.getController();
 
-        // Direction Dropdown
         FXMLLoader directionLoader = new FXMLLoader(
                 getClass().getResource("/com/log/ui/components/directionDropdown.fxml")
         );
         Parent directionNode = directionLoader.load();
+        directionController = directionLoader.getController();
 
         headerBox.getChildren().addAll(
                 temperatureField,
@@ -370,4 +385,130 @@ public class CategoriesPageController {
 
             System.out.println("Printing...");
         }
+
+
+    private Map<String, PropertyState> propertyStates = new HashMap<>();
+    private void saveCurrentPropertyValues(String property) {
+
+        if (property == null) return;
+
+        PropertyState state = new PropertyState();
+
+        for (InputRow row : inputRows) {
+
+            String value = row.getField().getText();
+            String unit = row.getUnitController()
+                    .getComboBox()
+                    .getValue();
+
+            state.getReadings().add(new Reading(value, unit));
+        }
+
+        state.setTemperature(temperatureField.getText());
+        state.setTemperatureUnit(tempUnitController.getComboBox().getValue());
+        state.setDirection(directionController.getSelectedDirection());
+
+        propertyStates.put(property, state);
     }
+
+    private void loadPropertyFields(int defaultRows, String property) throws IOException {
+
+        inputRows.clear();
+        entriesGrid.getChildren().clear();
+
+        PropertyState state = propertyStates.get(property);
+
+        if (state == null) {
+            for (int i = 0; i < defaultRows; i++) {
+                addInputRow(i, property);
+            }
+            return;
+        }
+
+        temperatureField.setText(state.getTemperature());
+        tempUnitController.setSelectedUnit(state.getTemperatureUnit());
+        directionController.setSelectedDirection(state.getDirection());
+
+        for (int i = 0; i < state.getReadings().size(); i++) {
+
+            addInputRow(i, property);
+
+            inputRows.get(i).getField()
+                    .setText(state.getReadings().get(i).getValue());
+
+            inputRows.get(i).getUnitController()
+                    .setSelectedUnit(state.getReadings().get(i).getUnit());
+        }
+    }
+
+
+    @FXML
+    private VBox entriesPanel;
+
+    private MetricsController metricsController;
+
+    private Parent metrics;
+    private void loadMetrics() throws IOException {
+
+        if (metrics != null) return;
+        int index = entriesPanel.getChildren().indexOf(headerBox);
+
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/com/log/ui/components/metrics.fxml")
+        );
+
+        metrics = loader.load();
+        metricsController = loader.getController();
+        entriesPanel.getChildren().add(index, metrics);
+
+    }
+    private void updateMetrics() {
+
+        if (metricsController == null) return;
+
+        List<Double> values = getCurrentPropertyValues();
+
+        if (values.isEmpty()) {
+            metricsController.setMean(0);
+            metricsController.setStandardDeviation(0);
+            return;
+        }
+
+        double mean = StatisticsService.mean(values);
+        double sd = StatisticsService.standardDeviation(values);
+
+        metricsController.setMean(mean);
+        metricsController.setStandardDeviation(sd);
+    }
+
+    private void clearUIComponents(){
+        headerBox.getChildren().clear();
+        entriesGrid.getChildren().clear();
+
+        if (metrics != null) {
+            entriesPanel.getChildren().remove(metrics);
+            metrics = null;
+            metricsController = null;
+        }
+    }
+
+    private List<Double> getCurrentPropertyValues() {
+
+        List<Double> values = new ArrayList<>();
+
+        for (InputRow row : inputRows) {
+
+            String text = row.getField().getText();
+
+            if (text != null && !text.isBlank()) {
+                try {
+                    values.add(Double.parseDouble(text));
+                } catch (NumberFormatException ignored) {
+                    // ignore invalid numbers
+                }
+            }
+        }
+
+        return values;
+    }
+}

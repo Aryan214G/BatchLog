@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.HBox?>
+
+<HBox fx:id="metricsContainer" alignment="CENTER_LEFT" spacing="10" styleClass="metric-chip-container" stylesheets="@../styles/categoriesPage.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.MetricsController">
+
+    <HBox fx:id="meanCard" spacing="8" styleClass="metric-chip">
+        <children>
+            <Label styleClass="body-text" text="Mean" />
+            <Separator orientation="VERTICAL" />
+            <Label fx:id="meanLabel" styleClass="body-text" />
+        </children>
+    </HBox>
+
+    <HBox fx:id="sdCard" spacing="8" styleClass="metric-chip">
+        <children>
+            <Label styleClass="body-text" text="Standard deviation" />
+            <Separator orientation="VERTICAL" />
+            <Label fx:id="sdLabel" styleClass="body-text" />
+        </children>
+    </HBox>
+
+</HBox>
