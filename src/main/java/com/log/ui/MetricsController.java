@@ -1,6 +1,7 @@
 package com.log.ui;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 
 public class MetricsController {
@@ -8,19 +9,18 @@ public class MetricsController {
     @FXML
     private HBox metricsContainer;
 
-    private double calculateMean(){
-        return 0;
+    @FXML
+    private Label meanLabel;
+
+    @FXML
+    private Label sdLabel;
+
+    public void setMean(double mean) {
+        meanLabel.setText(String.format("%.3f", mean));
+        System.out.println("Mean set to: " + mean);
     }
 
-    private double calculateStandardDeviation() {
-        return 0;
-    }
-
-    private void displayMean(){
-
-    }
-
-    private void displayStandardDeviation(){
-
+    public void setStandardDeviation(double sd) {
+        sdLabel.setText(String.format("%.3f", sd));
     }
 }

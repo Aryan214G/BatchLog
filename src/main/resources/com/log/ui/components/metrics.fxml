@@ -4,7 +4,7 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.HBox?>
 
-<HBox fx:id="metricsContainer" alignment="CENTER_LEFT" spacing="10" styleClass="metric-chip-container" stylesheets="@../styles/categoriesPage.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<HBox fx:id="metricsContainer" alignment="CENTER_LEFT" spacing="10" styleClass="metric-chip-container" stylesheets="@../styles/categoriesPage.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.MetricsController">
 
     <HBox fx:id="meanCard" spacing="8" styleClass="metric-chip">
         <children>
