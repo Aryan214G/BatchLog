@@ -3,6 +3,7 @@ package com.log.ui;
 import com.log.core.AppState;
 import com.log.model.PropertyState;
 import com.log.model.Reading;
+import com.log.service.StatisticsService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -14,6 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -238,8 +240,8 @@ public class CategoriesPageController {
                     if(newCategory != null)
                     {
                         saveCurrentPropertyValues(instance.getSelectedProperty());
-                        headerBox.getChildren().clear();
-                        entriesGrid.getChildren().clear();
+
+                        clearUIComponents();
                         propertiesListView.setItems(categoriesMap.get(newCategory));
                         propertiesLabel.setText(newCategory);
                         instance.setSelectedCategory(newCategory);
@@ -253,23 +255,24 @@ public class CategoriesPageController {
                 .addListener((obs, oldProperty, newProperty) -> {
 
                     if (newProperty != null) {
-                        instance.setSelectedProperty(oldProperty);
-                        saveCurrentPropertyValues(oldProperty);
 
-                        headerBox.getChildren().clear();
-                        entriesGrid.getChildren().clear();
+                        saveCurrentPropertyValues(oldProperty);
+                        clearUIComponents();
                         inputRows.clear();
 
                         instance.setSelectedProperty(newProperty);
+
                         int defaultRows = instance.getDefaultRowsMap().get(newProperty);
-                        for (int i = 0; i < defaultRows; i++) {
-                            try {
-                                addHeaderControls();
-                                loadPropertyFields(defaultRows, newProperty);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
+
+                        try {
+                            loadMetrics();
+                            addHeaderControls();
+                            loadPropertyFields(defaultRows, newProperty);
+                            updateMetrics();   // force refresh after load
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
                         }
+
                         updateInfoBar();
                     }
                 });
@@ -315,6 +318,15 @@ public class CategoriesPageController {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+            }
+        });
+
+        field.textProperty().addListener((obs, oldVal, newVal) -> {
+            System.out.println("Text changed");
+            System.out.println("metricsController = " + metricsController);
+
+            if (metricsController != null) {
+                updateMetrics();
             }
         });
     }
@@ -428,4 +440,75 @@ public class CategoriesPageController {
                     .setSelectedUnit(state.getReadings().get(i).getUnit());
         }
     }
+
+
+    @FXML
+    private VBox entriesPanel;
+
+    private MetricsController metricsController;
+
+    private Parent metrics;
+    private void loadMetrics() throws IOException {
+
+        if (metrics != null) return;
+        int index = entriesPanel.getChildren().indexOf(headerBox);
+
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/com/log/ui/components/metrics.fxml")
+        );
+
+        metrics = loader.load();
+        metricsController = loader.getController();
+        entriesPanel.getChildren().add(index, metrics);
+
     }
+    private void updateMetrics() {
+
+        if (metricsController == null) return;
+
+        List<Double> values = getCurrentPropertyValues();
+
+        if (values.isEmpty()) {
+            metricsController.setMean(0);
+            metricsController.setStandardDeviation(0);
+            return;
+        }
+
+        double mean = StatisticsService.mean(values);
+        double sd = StatisticsService.standardDeviation(values);
+
+        metricsController.setMean(mean);
+        metricsController.setStandardDeviation(sd);
+    }
+
+    private void clearUIComponents(){
+        headerBox.getChildren().clear();
+        entriesGrid.getChildren().clear();
+
+        if (metrics != null) {
+            entriesPanel.getChildren().remove(metrics);
+            metrics = null;
+            metricsController = null;
+        }
+    }
+
+    private List<Double> getCurrentPropertyValues() {
+
+        List<Double> values = new ArrayList<>();
+
+        for (InputRow row : inputRows) {
+
+            String text = row.getField().getText();
+
+            if (text != null && !text.isBlank()) {
+                try {
+                    values.add(Double.parseDouble(text));
+                } catch (NumberFormatException ignored) {
+                    // ignore invalid numbers
+                }
+            }
+        }
+
+        return values;
+    }
+}
