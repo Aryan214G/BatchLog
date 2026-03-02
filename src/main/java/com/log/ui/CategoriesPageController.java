@@ -239,8 +239,8 @@ public class CategoriesPageController {
                     if(newCategory != null)
                     {
                         saveCurrentPropertyValues(instance.getSelectedProperty());
-                        headerBox.getChildren().clear();
-                        entriesGrid.getChildren().clear();
+
+                        clearUIComponents();
                         propertiesListView.setItems(categoriesMap.get(newCategory));
                         propertiesLabel.setText(newCategory);
                         instance.setSelectedCategory(newCategory);
@@ -256,21 +256,18 @@ public class CategoriesPageController {
                     if (newProperty != null) {
                         instance.setSelectedProperty(oldProperty);
                         saveCurrentPropertyValues(oldProperty);
-
-                        headerBox.getChildren().clear();
-                        entriesGrid.getChildren().clear();
+                        clearUIComponents();
                         inputRows.clear();
 
                         instance.setSelectedProperty(newProperty);
                         int defaultRows = instance.getDefaultRowsMap().get(newProperty);
-                        for (int i = 0; i < defaultRows; i++) {
                             try {
+                                loadMetrics();
                                 addHeaderControls();
                                 loadPropertyFields(defaultRows, newProperty);
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
-                        }
                         updateInfoBar();
                     }
                 });
@@ -437,9 +434,6 @@ public class CategoriesPageController {
     private Parent metrics;
     private void loadMetrics() throws IOException {
 
-        if (metrics != null) {
-            return;
-        }
         int index = entriesPanel.getChildren().indexOf(headerBox);
 
         FXMLLoader loader = new FXMLLoader(
@@ -448,7 +442,13 @@ public class CategoriesPageController {
 
         metrics = loader.load();
         entriesPanel.getChildren().add(index, metrics);
-        MetricsController controller = new MetricsController();
+        MetricsController controller = loader.getController();
 
     }
+
+    private void clearUIComponents(){
+        headerBox.getChildren().clear();
+        entriesGrid.getChildren().clear();
+        entriesPanel.getChildren().remove(metrics);
     }
+}
