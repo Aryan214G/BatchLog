@@ -1,0 +1,64 @@
+/* ===== ROOT BACKGROUND ===== */
+.root {
+    -fx-background-color: #f2f2f2;
+    -fx-font-family: "Inter", "Segoe UI", sans-serif;
+}
+
+/* ===== LABELS ===== */
+.label {
+    -fx-text-fill: #2b2b2b;
+    -fx-font-size: 13px;
+    -fx-font-weight: 500;
+    -fx-margin-bottom: 4px;
+    -fx-margin-top:4px;
+}
+
+/* ===== TEXT FIELDS ===== */
+.text-field,
+.date-picker {
+    -fx-background-color: #c9c3d8;
+    -fx-background-radius: 10;
+    -fx-border-radius: 12;
+    -fx-border-color: #5e4b8b;
+    -fx-border-width: 1;
+    -fx-padding: 8 12 8 12;
+    -fx-font-size: 14px;
+    -fx-text-fill: #2b2b2b;
+    -fx-margin-bottom: 16px;
+
+    /* Soft shadow */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 6, 0.2, 0, 2);
+}
+
+/* ===== FOCUS STATE ===== */
+.text-field:focused,
+.date-picker:focused {
+    -fx-border-color: #4a3c72;
+    -fx-background-color: #ffffff;
+}
+
+/* ===== DATE PICKER ARROW BUTTON ===== */
+.date-picker > .arrow-button {
+    -fx-background-color: transparent;
+}
+
+/* ===== BUTTONS ===== */
+.button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #2b2b2b;
+    -fx-font-size: 14px;
+    -fx-padding: 6 14 6 14;
+}
+
+.button:hover {
+    -fx-text-fill: #5e4b8b;
+}
+
+/* ===== MENU BAR ===== */
+.menu-bar {
+    -fx-background-color: white;
+}
+
+.menu {
+    -fx-text-fill: #2b2b2b;
+}
