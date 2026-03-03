@@ -33,7 +33,7 @@
             <TextField fx:id="productName" alignment="CENTER" maxWidth="700.0" />
 
             <Label text="Product ID" />
-            <TextField fx:id="componentID" alignment="CENTER" maxWidth="700.0" />
+            <TextField fx:id="productID" alignment="CENTER" maxWidth="700.0" />
 
             <Label text="Test Date" />
             <DatePicker fx:id="testDate" maxWidth="250.0" />

@@ -15,7 +15,7 @@ public class BasePropertiesController {
     @FXML private TextField projectName;
     @FXML private TextField batchNo;
     @FXML private TextField productName;
-    @FXML private TextField componentID;
+    @FXML private TextField productID;
     @FXML private DatePicker testDate;
     @FXML private TextField placeOfTesting;
     @FXML private TextField fileName;
@@ -43,7 +43,7 @@ public class BasePropertiesController {
         String project = projectName.getText();
         String batch = batchNo.getText();
         String product = productName.getText();
-        String component = componentID.getText();
+        String component = productID.getText();
         LocalDate date = testDate.getValue();
         String place = placeOfTesting.getText();
         String file = fileName.getText();
@@ -56,7 +56,7 @@ public class BasePropertiesController {
         appState.setProjectName(projectName.getText());
         appState.setBatchNo(batchNo.getText());
         appState.setProductName(productName.getText());
-        appState.setComponentID(componentID.getText());
+        appState.setProductID(productID.getText());
         appState.setTestDate(testDate.getValue());
         appState.setPlaceOfTesting(placeOfTesting.getText());
         appState.setFileName(fileName.getText());
@@ -103,7 +103,7 @@ public class BasePropertiesController {
         projectName.clear();
         batchNo.clear();
         productName.clear();
-        componentID.clear();
+        productID.clear();
         placeOfTesting.clear();
         fileName.clear();
         testDate.setValue(null);
@@ -112,7 +112,7 @@ public class BasePropertiesController {
         appState.setProjectName("Project");
         appState.setBatchNo("456");
         appState.setProductName("Product");
-        appState.setComponentID("1738");
+        appState.setProductID("1738");
         appState.setTestDate(LocalDate.now());
         appState.setPlaceOfTesting("Lab 4");
         appState.setFileName("TestFile");
