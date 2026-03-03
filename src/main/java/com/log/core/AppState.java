@@ -62,7 +62,6 @@ public class AppState {
     public String getProductName() { return baseProperties.getProductName(); }
     public void setProductName(String productName) { baseProperties.setProductName(productName); }
 
-    //TODO: change componentID to productID
     public String getProductID() { return baseProperties.getProductID(); }
     public void setProductID(String ProductID) { baseProperties.setProductID(ProductID); }
 
