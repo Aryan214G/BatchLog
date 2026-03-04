@@ -2,6 +2,7 @@ package com.log.ui;
 
 import com.log.core.AppState;
 import com.log.core.basePropertiesState;
+import com.log.core.SelectedState;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
@@ -14,6 +15,7 @@ public class InfoBarController {
 
     private final AppState state = AppState.getInstance();
     private final basePropertiesState bpropState = basePropertiesState.getInstance();
+    private final SelectedState selectedState = SelectedState.getInstance();
 
     @FXML
     public void initialize() {
@@ -29,10 +31,10 @@ public class InfoBarController {
                 "Batch: " + safe(bpropState.getBatchNo()));
 
         infobar_propertyName.setText(
-                safe(state.getSelectedCategory()));
+                safe(selectedState.getSelectedCategory()));
 
         infobar_attributeName.setText(
-                safe(state.getSelectedProperty()));
+                safe(selectedState.getSelectedProperty()));
     }
 
     private String safe(String value) {

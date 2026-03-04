@@ -2,6 +2,7 @@ package com.log.ui;
 
 import com.log.core.AppState;
 import com.log.core.DefaultMapState;
+import com.log.core.SelectedState;
 import com.log.model.PropertyState;
 import com.log.model.Reading;
 import com.log.service.StatisticsService;
@@ -35,6 +36,7 @@ public class CategoriesPageController {
 
     AppState instance = AppState.getInstance();
     DefaultMapState DMapInstance = DefaultMapState.getInstance();
+    SelectedState selectedState = SelectedState.getInstance();
 
     @FXML
     private ListView<String> categoriesListView;
@@ -47,6 +49,8 @@ public class CategoriesPageController {
 
     private HashMap<String, ObservableList<String>> categoriesMap = instance.getCategoriesMap();
     private ObservableList<String> categories = instance.getCategories();
+
+
 
     @FXML
     private GridPane entriesGrid;
@@ -241,12 +245,12 @@ public class CategoriesPageController {
                 .addListener((observable, oldCategory, newCategory) -> {
                     if(newCategory != null)
                     {
-                        saveCurrentPropertyValues(instance.getSelectedProperty());
+                        saveCurrentPropertyValues(selectedState.getSelectedProperty());
 
                         clearUIComponents();
                         propertiesListView.setItems(categoriesMap.get(newCategory));
                         propertiesLabel.setText(newCategory);
-                        instance.setSelectedCategory(newCategory);
+                        selectedState.setSelectedCategory(newCategory);
 
                         updateInfoBar();
 
@@ -262,7 +266,7 @@ public class CategoriesPageController {
                         clearUIComponents();
                         inputRows.clear();
 
-                        instance.setSelectedProperty(newProperty);
+                        selectedState.setSelectedProperty(newProperty);
 
                         int defaultRows = DMapInstance.getDefaultRowsMap().get(newProperty);
 
