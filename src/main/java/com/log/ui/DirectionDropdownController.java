@@ -13,11 +13,7 @@ public class DirectionDropdownController {
     public void initialize() {
 
         directionCombo.setItems(FXCollections.observableArrayList(
-                "Longitudinal", "Thickness direction", "Parallel",
-                "Perpendicular", "XY",
-                "Z", "U",
-                "V", "W",
-                "Radial", "Circumferential", "Not Applicable"
+                "Not Applicable","Longitudinal", "Thickness direction", "Parallel", "Perpendicular", "XY", "Z", "U", "V", "W", "Radial", "Circumferential", "YZ", "ZX","12","23","31"
         ));
     }
 
