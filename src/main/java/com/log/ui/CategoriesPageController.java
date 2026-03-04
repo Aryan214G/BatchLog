@@ -1,9 +1,13 @@
 package com.log.ui;
 
 import com.log.core.AppState;
+import com.log.core.DefaultMapState;
+import com.log.core.SelectedState;
 import com.log.model.PropertyState;
 import com.log.model.Reading;
+import com.log.service.PropertyStateManager;
 import com.log.service.StatisticsService;
+import com.log.service.TempDataService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -33,6 +37,8 @@ public class CategoriesPageController {
     private ContextMenu editMenu;
 
     AppState instance = AppState.getInstance();
+    DefaultMapState DMapInstance = DefaultMapState.getInstance();
+    SelectedState selectedState = SelectedState.getInstance();
 
     @FXML
     private ListView<String> categoriesListView;
@@ -46,6 +52,8 @@ public class CategoriesPageController {
     private HashMap<String, ObservableList<String>> categoriesMap = instance.getCategoriesMap();
     private ObservableList<String> categories = instance.getCategories();
 
+
+
     @FXML
     private GridPane entriesGrid;
 
@@ -57,15 +65,17 @@ public class CategoriesPageController {
 
     private List<InputRow> inputRows = new ArrayList<>();
 
-    private HashMap<String, Integer> defaultRowsMap = instance.getDefaultRowsMap();
+    private HashMap<String, Integer> defaultRowsMap = DMapInstance.getDefaultRowsMap();
 
-    private HashMap<String, String> defaultUnits = instance.getDefaultUnitsMap();
+    private HashMap<String, String> defaultUnits = DMapInstance.getDefaultUnitsMap();
     @FXML
     private Button printButton;
 
     private TextField temperatureField;
     private UnitsDropdownController tempUnitController;
     private DirectionDropdownController directionController;
+
+    private TempDataService tempDataService = new TempDataService();
 
     // ======================= END OF VARIABLES DECLARATION ==============================
 
@@ -77,17 +87,11 @@ public class CategoriesPageController {
             propertiesListView.setDisable(true);
         }
 
-
-        if (categoriesMap.isEmpty()) {
-            loadTempData();
-        }
-
-        if(defaultRowsMap.isEmpty()) {
-            loadDefaultRowsTempData();
-        }
+        loadTempData();
 
         categoriesListView.setItems(categories);
-        loadProperties();
+        CategorySelectionListener();
+        PropertySelectionListener();
 
 
         // EDIT MENU SETUP
@@ -98,6 +102,14 @@ public class CategoriesPageController {
         deleteItem.setOnAction(e -> handleDeleteCategory());
 
         editMenu = new ContextMenu(addItem, deleteItem);
+    }
+
+    private void loadTempData(){
+        tempDataService.loadTempData();
+        categoriesMap = instance.getCategoriesMap();
+
+        tempDataService.loadDefaultRowsTempData();
+        defaultRowsMap = DMapInstance.getDefaultRowsMap();
     }
 
     @FXML
@@ -157,125 +169,61 @@ public class CategoriesPageController {
         categoriesMap.remove(selectedCategory);
     }
 
-    //=============== temporary data ===================
-    private void loadTempData() {
-        categoriesMap.put("Physical",
-                FXCollections.observableArrayList(
-                        "Density",
-                        "Open porosity"
-        ));
+    private void CategorySelectionListener() {
 
-        categoriesMap.put("Mechanical",
-                FXCollections.observableArrayList(
-                        "Tensile Strength",
-                        "Tensile Modulus",
-                        "Compressive Strength",
-                        "Compressive Modulus",
-                        "Flexural Strength",
-                        "Flexural Modulus"
-                ));
-
-        categoriesMap.put("Thermal",
-                FXCollections.observableArrayList(
-                        "Specific Heat",
-                        "Thermal Diffusivity",
-                        "Thermal conductivity",
-                        "Mass Loss(%)",
-                        "Coefficient of thermal expansion"
-                ));
-
-        categoriesMap.put("Tribological",
-                FXCollections.observableArrayList(
-                        "Coefficient of friction",
-                        "Wear Rate"
-                ));
-
-        categoriesMap.put("Microstructure",
-                FXCollections.observableArrayList(
-                        "ASTM grain size no.",
-                        "Grain size"
-                ));
-
-        instance.setCategoriesMap(categoriesMap);
-    }
-
-    private void loadDefaultRowsTempData() {
-
-        // Physical
-        defaultRowsMap.put("Density", 6);
-        defaultRowsMap.put("Open porosity", 3);
-
-        // Mechanical
-        defaultRowsMap.put("Tensile Strength", 6);
-        defaultRowsMap.put("Tensile Modulus", 6);
-        defaultRowsMap.put("Compressive Strength", 6);
-        defaultRowsMap.put("Compressive Modulus", 6);
-        defaultRowsMap.put("Flexural Strength", 6);
-        defaultRowsMap.put("Flexural Modulus", 6);
-
-        // Thermal
-        defaultRowsMap.put("Specific Heat", 3);
-        defaultRowsMap.put("Thermal Diffusivity", 3);
-        defaultRowsMap.put("Thermal conductivity", 3);
-        defaultRowsMap.put("Mass Loss(%)", 5);
-        defaultRowsMap.put("Coefficient of thermal expansion", 3);
-
-        // Tribological
-        defaultRowsMap.put("Coefficient of friction", 5);
-        defaultRowsMap.put("Wear Rate", 5);
-
-        // Microstructure
-        defaultRowsMap.put("ASTM grain size no.", 3);
-        defaultRowsMap.put("Grain size", 3);
-
-        instance.setDefaultRowsMap(defaultRowsMap);
-    }
-
-
-    //TODO: loadProperties is doing multiple tasks. Either change the name of the method or divide the responsibilities
-    private void loadProperties() {
         categoriesListView.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((observable, oldCategory, newCategory) -> {
                     if(newCategory != null)
                     {
-                        saveCurrentPropertyValues(instance.getSelectedProperty());
-
-                        clearUIComponents();
-                        propertiesListView.setItems(categoriesMap.get(newCategory));
-                        propertiesLabel.setText(newCategory);
-                        instance.setSelectedCategory(newCategory);
-
-                        updateInfoBar();
-
+                        HandleCategoryChange(newCategory);
                     }
                 });
+    }
+    private void HandleCategoryChange(String newCategory){
+        saveCurrentPropertyValues(selectedState.getSelectedProperty());
+        clearUIComponents();
+        propertiesListView.setItems(categoriesMap.get(newCategory));
+        propertiesLabel.setText(newCategory);
+        selectedState.setSelectedCategory(newCategory);
+
+        updateInfoBar();
+
+    }
+    private void PropertySelectionListener() {
+
         propertiesListView.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, oldProperty, newProperty) -> {
 
-                    if (newProperty != null) {
-
-                        saveCurrentPropertyValues(oldProperty);
-                        clearUIComponents();
-                        inputRows.clear();
-
-                        instance.setSelectedProperty(newProperty);
-
-                        int defaultRows = instance.getDefaultRowsMap().get(newProperty);
-
-                        try {
-                            loadMetrics();
-                            addHeaderControls();
-                            loadPropertyFields(defaultRows, newProperty);
-                            updateMetrics();   // force refresh after load
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-
-                        updateInfoBar();
+                    if (newProperty != null)
+                    {
+                        HandlePropertyChange(newProperty,oldProperty);
                     }
                 });
+    }
+
+    private void HandlePropertyChange(String newProperty,String oldProperty){
+        saveCurrentPropertyValues(oldProperty);
+        clearUIComponents();
+        inputRows.clear();
+
+        selectedState.setSelectedProperty(newProperty);
+
+        int defaultRows = DMapInstance.getDefaultRowsMap().get(newProperty);
+
+        try {
+            loadMetrics();
+            addHeaderControls();
+            loadPropertyFields(defaultRows, newProperty);
+            updateMetrics();   // force refresh after load
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+        updateInfoBar();
     }
 
     private void updateInfoBar() {
@@ -387,28 +335,30 @@ public class CategoriesPageController {
         }
 
 
-    private Map<String, PropertyState> propertyStates = new HashMap<>();
+    private final PropertyStateManager stateManager = new PropertyStateManager();
+
     private void saveCurrentPropertyValues(String property) {
 
-        if (property == null) return;
-
-        PropertyState state = new PropertyState();
-
-        for (InputRow row : inputRows) {
-
-            String value = row.getField().getText();
-            String unit = row.getUnitController()
-                    .getComboBox()
-                    .getValue();
-
-            state.getReadings().add(new Reading(value, unit));
+        if (property == null || temperatureField == null) {
+            return;
         }
 
-        state.setTemperature(temperatureField.getText());
-        state.setTemperatureUnit(tempUnitController.getComboBox().getValue());
-        state.setDirection(directionController.getSelectedDirection());
+        List<Reading> readings = new ArrayList<>();
 
-        propertyStates.put(property, state);
+        for (InputRow row : inputRows) {
+            readings.add(new Reading(
+                    row.getField().getText(),
+                    row.getUnitController().getComboBox().getValue()
+            ));
+        }
+
+        stateManager.saveState(
+                property,
+                readings,
+                temperatureField.getText(),
+                tempUnitController.getComboBox().getValue(),
+                directionController.getSelectedDirection()
+        );
     }
 
     private void loadPropertyFields(int defaultRows, String property) throws IOException {
@@ -416,7 +366,7 @@ public class CategoriesPageController {
         inputRows.clear();
         entriesGrid.getChildren().clear();
 
-        PropertyState state = propertyStates.get(property);
+        PropertyState state = stateManager.getState(property);
 
         if (state == null) {
             for (int i = 0; i < defaultRows; i++) {

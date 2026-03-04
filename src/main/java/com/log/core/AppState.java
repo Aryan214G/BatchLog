@@ -16,11 +16,11 @@ public class AppState {
 
     private HashMap<String, ObservableList<String>> categoriesMap = new HashMap<>();
 
+
     //TODO: change the list to not be hardcoded
     //Todo:put this list in controller and read from that
     private ObservableList<String> categories = FXCollections.observableArrayList(
             "Physical", "Mechanical", "Thermal", "Tribological", "Microstructure");
-
 
     public static AppState getInstance() {
         return instance;
@@ -42,72 +42,10 @@ public class AppState {
         this.categories = categories;
     }
 
-    private String projectName="Project";
-    private String batchNo="456";
-    private String productName="Product";
-    private String componentID="1738";
-    private LocalDate testDate=LocalDate.now();
-    private String placeOfTesting="Lab 4";
-    private String fileName="TestFile";
-    private String selectedCategory;
-    private String selectedProperty;
-
-    public String getSelectedCategory() { return selectedCategory; }
-    public void setSelectedCategory(String selectedCategory) { this.selectedCategory = selectedCategory; }
-
-    public String getSelectedProperty() { return selectedProperty; }
-    public void setSelectedProperty(String selectedProperty) { this.selectedProperty = selectedProperty; }
-
-
-    public String getProjectName() { return projectName; }
-    public void setProjectName(String projectName) { this.projectName = projectName; }
-
-    public String getBatchNo() { return batchNo; }
-    public void setBatchNo(String batchNo) { this.batchNo = batchNo; }
-
-    public String getProductName() { return productName; }
-    public void setProductName(String productName) { this.productName = productName; }
-
-    //TODO: change componentID to productID
-    public String getComponentID() { return componentID; }
-    public void setComponentID(String componentID) { this.componentID = componentID; }
-
-    public LocalDate getTestDate() { return testDate; }
-    public void setTestDate(LocalDate testDate) { this.testDate = testDate; }
-
-    public String getPlaceOfTesting() { return placeOfTesting; }
-    public void setPlaceOfTesting(String placeOfTesting) { this.placeOfTesting = placeOfTesting; }
-
-    public String getFileName() { return fileName; }
-    public void setFileName(String fileName) { this.fileName = fileName; }
-
-    //==== default input rows fields ====
-
-    private HashMap<String, Integer> defaultRowsMap = new HashMap<>();
-
-    public HashMap<String, Integer> getDefaultRowsMap() {
-        return defaultRowsMap;
-    }
-
-    public void setDefaultRowsMap(HashMap<String, Integer> defaultRowsMap) {
-        this.defaultRowsMap = defaultRowsMap;
-    }
-
-    //======= default units for properties ========
-
-    private HashMap<String, String> defaultUnitsMap = new HashMap<>();
-
-    public HashMap<String, String> getDefaultUnitsMap() {
-        return defaultUnitsMap;
-    }
-
-    public void setDefaultUnitsMap(HashMap<String, String> defaultUnitsMap) {
-        this.defaultUnitsMap = defaultUnitsMap;
-    }
 
     //============ FLAGS =================
 
-    private boolean projectCreated = true;
+    private boolean projectCreated = false;
 
     public boolean isProjectCreated() {
         return projectCreated;

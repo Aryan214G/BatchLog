@@ -17,7 +17,6 @@ public class DirectionDropdownController {
         ));
     }
 
-
     public String getSelectedDirection() {
         return directionCombo.getValue();
     }
