@@ -5,10 +5,33 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
+import com.log.database.DBUtil;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class Main extends Application {
+
+    public Main() throws SQLException {
+        try(Connection conn = DBUtil.getConnection()){
+
+            if (conn != null) {
+                System.out.println("Connected to SQLite database!");
+            }
+            Statement stmt = conn.createStatement();
+            stmt.execute("PRAGMA foreign_keys = ON");
+
+            System.out.println("Foreign keys enabled");
+
+            stmt.close();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -28,6 +51,10 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.show();
     }
+
+
+
+
 
 
     public static void main(String[] args) {
