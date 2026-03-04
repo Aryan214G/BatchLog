@@ -1,6 +1,7 @@
 package com.log.ui;
 
 import com.log.core.AppState;
+import com.log.core.DefaultMapState;
 import com.log.model.PropertyState;
 import com.log.model.Reading;
 import com.log.service.StatisticsService;
@@ -33,6 +34,7 @@ public class CategoriesPageController {
     private ContextMenu editMenu;
 
     AppState instance = AppState.getInstance();
+    DefaultMapState DMapInstance = DefaultMapState.getInstance();
 
     @FXML
     private ListView<String> categoriesListView;
@@ -57,9 +59,9 @@ public class CategoriesPageController {
 
     private List<InputRow> inputRows = new ArrayList<>();
 
-    private HashMap<String, Integer> defaultRowsMap = instance.getDefaultRowsMap();
+    private HashMap<String, Integer> defaultRowsMap = DMapInstance.getDefaultRowsMap();
 
-    private HashMap<String, String> defaultUnits = instance.getDefaultUnitsMap();
+    private HashMap<String, String> defaultUnits = DMapInstance.getDefaultUnitsMap();
     @FXML
     private Button printButton;
 
@@ -228,7 +230,7 @@ public class CategoriesPageController {
         defaultRowsMap.put("ASTM grain size no.", 3);
         defaultRowsMap.put("Grain size", 3);
 
-        instance.setDefaultRowsMap(defaultRowsMap);
+        DMapInstance.setDefaultRowsMap(defaultRowsMap);
     }
 
 
@@ -262,7 +264,7 @@ public class CategoriesPageController {
 
                         instance.setSelectedProperty(newProperty);
 
-                        int defaultRows = instance.getDefaultRowsMap().get(newProperty);
+                        int defaultRows = DMapInstance.getDefaultRowsMap().get(newProperty);
 
                         try {
                             loadMetrics();
