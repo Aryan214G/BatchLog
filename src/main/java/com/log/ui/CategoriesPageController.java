@@ -108,7 +108,7 @@ public class CategoriesPageController {
         categoriesMap = instance.getCategoriesMap();
 
         tempDataService.loadDefaultRowsTempData();
-        defaultRowsMap = instance.getDefaultRowsMap();
+        defaultRowsMap = DMapInstance.getDefaultRowsMap();
     }
 
     @FXML
