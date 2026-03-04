@@ -52,28 +52,6 @@ public class AppState {
     public String getSelectedProperty() { return selectedProperty; }
     public void setSelectedProperty(String selectedProperty) { this.selectedProperty = selectedProperty; }
 
-    private final basePropertiesState baseProperties = basePropertiesState.getInstance();
-    public String getProjectName() { return baseProperties.getProjectName(); }
-    public void setProjectName(String projectName) { baseProperties.setProjectName(projectName); }
-
-    public String getBatchNo() { return baseProperties.getBatchNo(); }
-    public void setBatchNo(String batchNo) { baseProperties.setBatchNo(batchNo); }
-
-    public String getProductName() { return baseProperties.getProductName(); }
-    public void setProductName(String productName) { baseProperties.setProductName(productName); }
-
-    public String getProductID() { return baseProperties.getProductID(); }
-    public void setProductID(String ProductID) { baseProperties.setProductID(ProductID); }
-
-    public LocalDate getTestDate() { return baseProperties.getTestDate(); }
-    public void setTestDate(LocalDate testDate) { baseProperties.setTestDate(testDate); }
-
-    public String getPlaceOfTesting() { return baseProperties.getPlaceOfTesting(); }
-    public void setPlaceOfTesting(String placeOfTesting) { baseProperties.setPlaceOfTesting(placeOfTesting); }
-
-    public String getFileName() { return baseProperties.getFileName(); }
-    public void setFileName(String fileName) { baseProperties.setFileName(fileName); }
-
     //==== default input rows fields ====
 
     private HashMap<String, Integer> defaultRowsMap = new HashMap<>();

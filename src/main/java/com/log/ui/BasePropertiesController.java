@@ -1,6 +1,7 @@
 package com.log.ui;
 
 import com.log.core.AppState;
+import com.log.core.basePropertiesState;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -21,6 +22,7 @@ public class BasePropertiesController {
     @FXML private TextField fileName;
 
     private final AppState appState = AppState.getInstance();
+    private final basePropertiesState bpropState = basePropertiesState.getInstance();
 
     // ===== INITIALIZATION =====
     @FXML
@@ -53,13 +55,13 @@ public class BasePropertiesController {
         System.out.println("Batch: " + batch);
 
         // TODO: Save to AppState / Database / Model
-        appState.setProjectName(projectName.getText());
-        appState.setBatchNo(batchNo.getText());
-        appState.setProductName(productName.getText());
-        appState.setProductID(productID.getText());
-        appState.setTestDate(testDate.getValue());
-        appState.setPlaceOfTesting(placeOfTesting.getText());
-        appState.setFileName(fileName.getText());
+        bpropState.setProjectName(projectName.getText());
+        bpropState.setBatchNo(batchNo.getText());
+        bpropState.setProductName(productName.getText());
+        bpropState.setProductID(productID.getText());
+        bpropState.setTestDate(testDate.getValue());
+        bpropState.setPlaceOfTesting(placeOfTesting.getText());
+        bpropState.setFileName(fileName.getText());
 
         appState.setProjectCreated(true);
         // TODO: Navigate to next screen
@@ -109,13 +111,13 @@ public class BasePropertiesController {
         testDate.setValue(null);
     }
     public void setDefaultProject(){
-        appState.setProjectName("Project");
-        appState.setBatchNo("456");
-        appState.setProductName("Product");
-        appState.setProductID("1738");
-        appState.setTestDate(LocalDate.now());
-        appState.setPlaceOfTesting("Lab 4");
-        appState.setFileName("TestFile");
+        bpropState.setProjectName("Project");
+        bpropState.setBatchNo("456");
+        bpropState.setProductName("Product");
+        bpropState.setProductID("1738");
+        bpropState.setTestDate(LocalDate.now());
+        bpropState.setPlaceOfTesting("Lab 4");
+        bpropState.setFileName("TestFile");
 
     }
 }
