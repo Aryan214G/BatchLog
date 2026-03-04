@@ -1,8 +1,11 @@
 package com.log.ui;
 
 import com.log.core.AppState;
+import com.log.core.DefaultMapState;
+import com.log.core.SelectedState;
 import com.log.model.PropertyState;
 import com.log.model.Reading;
+import com.log.service.PropertyStateManager;
 import com.log.service.StatisticsService;
 import com.log.service.TempDataService;
 import javafx.collections.FXCollections;
@@ -34,6 +37,8 @@ public class CategoriesPageController {
     private ContextMenu editMenu;
 
     AppState instance = AppState.getInstance();
+    DefaultMapState DMapInstance = DefaultMapState.getInstance();
+    SelectedState selectedState = SelectedState.getInstance();
 
     @FXML
     private ListView<String> categoriesListView;
@@ -47,6 +52,8 @@ public class CategoriesPageController {
     private HashMap<String, ObservableList<String>> categoriesMap = instance.getCategoriesMap();
     private ObservableList<String> categories = instance.getCategories();
 
+
+
     @FXML
     private GridPane entriesGrid;
 
@@ -58,9 +65,9 @@ public class CategoriesPageController {
 
     private List<InputRow> inputRows = new ArrayList<>();
 
-    private HashMap<String, Integer> defaultRowsMap = instance.getDefaultRowsMap();
+    private HashMap<String, Integer> defaultRowsMap = DMapInstance.getDefaultRowsMap();
 
-    private HashMap<String, String> defaultUnits = instance.getDefaultUnitsMap();
+    private HashMap<String, String> defaultUnits = DMapInstance.getDefaultUnitsMap();
     @FXML
     private Button printButton;
 
@@ -76,8 +83,8 @@ public class CategoriesPageController {
     public void initialize() throws IOException {
 
         if(!instance.isProjectCreated()) {
-            categoriesListView.setDisable(false);
-            propertiesListView.setDisable(false);
+            categoriesListView.setDisable(true);
+            propertiesListView.setDisable(true);
         }
 
         loadTempData();
@@ -102,7 +109,7 @@ public class CategoriesPageController {
         categoriesMap = instance.getCategoriesMap();
 
         tempDataService.loadDefaultRowsTempData();
-        defaultRowsMap = instance.getDefaultRowsMap();
+        defaultRowsMap = DMapInstance.getDefaultRowsMap();
     }
 
     @FXML
@@ -169,12 +176,12 @@ public class CategoriesPageController {
                 .addListener((observable, oldCategory, newCategory) -> {
                     if(newCategory != null)
                     {
-                        saveCurrentPropertyValues(instance.getSelectedProperty());
+                        saveCurrentPropertyValues(selectedState.getSelectedProperty());
 
                         clearUIComponents();
                         propertiesListView.setItems(categoriesMap.get(newCategory));
                         propertiesLabel.setText(newCategory);
-                        instance.setSelectedCategory(newCategory);
+                        selectedState.setSelectedCategory(newCategory);
 
                         updateInfoBar();
 
@@ -194,9 +201,9 @@ public class CategoriesPageController {
                         clearUIComponents();
                         inputRows.clear();
 
-                        instance.setSelectedProperty(newProperty);
+                        selectedState.setSelectedProperty(newProperty);
 
-                        int defaultRows = instance.getDefaultRowsMap().get(newProperty);
+                        int defaultRows = DMapInstance.getDefaultRowsMap().get(newProperty);
 
                         try {
                             loadMetrics();
@@ -321,28 +328,30 @@ public class CategoriesPageController {
         }
 
 
-    private Map<String, PropertyState> propertyStates = new HashMap<>();
+    private final PropertyStateManager stateManager = new PropertyStateManager();
+
     private void saveCurrentPropertyValues(String property) {
 
-        if (property == null) return;
-
-        PropertyState state = new PropertyState();
-
-        for (InputRow row : inputRows) {
-
-            String value = row.getField().getText();
-            String unit = row.getUnitController()
-                    .getComboBox()
-                    .getValue();
-
-            state.getReadings().add(new Reading(value, unit));
+        if (property == null || temperatureField == null) {
+            return;
         }
 
-        state.setTemperature(temperatureField.getText());
-        state.setTemperatureUnit(tempUnitController.getComboBox().getValue());
-        state.setDirection(directionController.getSelectedDirection());
+        List<Reading> readings = new ArrayList<>();
 
-        propertyStates.put(property, state);
+        for (InputRow row : inputRows) {
+            readings.add(new Reading(
+                    row.getField().getText(),
+                    row.getUnitController().getComboBox().getValue()
+            ));
+        }
+
+        stateManager.saveState(
+                property,
+                readings,
+                temperatureField.getText(),
+                tempUnitController.getComboBox().getValue(),
+                directionController.getSelectedDirection()
+        );
     }
 
     private void loadPropertyFields(int defaultRows, String property) throws IOException {
@@ -350,7 +359,7 @@ public class CategoriesPageController {
         inputRows.clear();
         entriesGrid.getChildren().clear();
 
-        PropertyState state = propertyStates.get(property);
+        PropertyState state = stateManager.getState(property);
 
         if (state == null) {
             for (int i = 0; i < defaultRows; i++) {

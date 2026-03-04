@@ -1,6 +1,7 @@
 package com.log.service;
 
 import com.log.core.AppState;
+import com.log.core.DefaultMapState;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -8,6 +9,7 @@ import java.util.HashMap;
 
 public class TempDataService {
 
+    private DefaultMapState Dmap = DefaultMapState.getInstance();
     private AppState instance = AppState.getInstance();
 
     public void loadTempData() {
@@ -55,7 +57,7 @@ public class TempDataService {
 
     public void loadDefaultRowsTempData() {
 
-        HashMap<String, Integer> defaultRowsMap = instance.getDefaultRowsMap();
+        HashMap<String, Integer> defaultRowsMap = Dmap.getDefaultRowsMap();
 
         // Physical
         defaultRowsMap.put("Density", 6);
@@ -84,6 +86,6 @@ public class TempDataService {
         defaultRowsMap.put("ASTM grain size no.", 3);
         defaultRowsMap.put("Grain size", 3);
 
-        instance.setDefaultRowsMap(defaultRowsMap);
+        Dmap.setDefaultRowsMap(defaultRowsMap);
     }
 }
