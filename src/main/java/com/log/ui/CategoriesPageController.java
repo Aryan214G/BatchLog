@@ -1,6 +1,8 @@
 package com.log.ui;
 
 import com.log.core.AppState;
+import com.log.core.DefaultMapState;
+import com.log.core.SelectedState;
 import com.log.model.PropertyState;
 import com.log.model.Reading;
 import com.log.service.PropertyStateManager;
@@ -35,6 +37,8 @@ public class CategoriesPageController {
     private ContextMenu editMenu;
 
     AppState instance = AppState.getInstance();
+    DefaultMapState DMapInstance = DefaultMapState.getInstance();
+    SelectedState selectedState = SelectedState.getInstance();
 
     @FXML
     private ListView<String> categoriesListView;
@@ -48,6 +52,8 @@ public class CategoriesPageController {
     private HashMap<String, ObservableList<String>> categoriesMap = instance.getCategoriesMap();
     private ObservableList<String> categories = instance.getCategories();
 
+
+
     @FXML
     private GridPane entriesGrid;
 
@@ -59,9 +65,9 @@ public class CategoriesPageController {
 
     private List<InputRow> inputRows = new ArrayList<>();
 
-    private HashMap<String, Integer> defaultRowsMap = instance.getDefaultRowsMap();
+    private HashMap<String, Integer> defaultRowsMap = DMapInstance.getDefaultRowsMap();
 
-    private HashMap<String, String> defaultUnits = instance.getDefaultUnitsMap();
+    private HashMap<String, String> defaultUnits = DMapInstance.getDefaultUnitsMap();
     @FXML
     private Button printButton;
 
@@ -77,8 +83,8 @@ public class CategoriesPageController {
     public void initialize() throws IOException {
 
         if(!instance.isProjectCreated()) {
-            categoriesListView.setDisable(false);
-            propertiesListView.setDisable(false);
+            categoriesListView.setDisable(true);
+            propertiesListView.setDisable(true);
         }
 
         loadTempData();
@@ -171,12 +177,12 @@ public class CategoriesPageController {
                 .addListener((observable, oldCategory, newCategory) -> {
                     if(newCategory != null)
                     {
-                        saveCurrentPropertyValues(instance.getSelectedProperty());
+                        saveCurrentPropertyValues(selectedState.getSelectedProperty());
 
                         clearUIComponents();
                         propertiesListView.setItems(categoriesMap.get(newCategory));
                         propertiesLabel.setText(newCategory);
-                        instance.setSelectedCategory(newCategory);
+                        selectedState.setSelectedCategory(newCategory);
 
                         updateInfoBar();
 
@@ -192,9 +198,9 @@ public class CategoriesPageController {
                         clearUIComponents();
                         inputRows.clear();
 
-                        instance.setSelectedProperty(newProperty);
+                        selectedState.setSelectedProperty(newProperty);
 
-                        int defaultRows = instance.getDefaultRowsMap().get(newProperty);
+                        int defaultRows = DMapInstance.getDefaultRowsMap().get(newProperty);
 
                         try {
                             loadMetrics();

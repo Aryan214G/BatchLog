@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 public class basePropertiesState {
     private static final basePropertiesState instance = new basePropertiesState();
+
     basePropertiesState(){};
 
     public static basePropertiesState getInstance() {
