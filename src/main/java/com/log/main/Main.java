@@ -20,12 +20,6 @@ public class Main extends Application {
             if (conn != null) {
                 System.out.println("Connected to SQLite database!");
             }
-            Statement stmt = conn.createStatement();
-            stmt.execute("PRAGMA foreign_keys = ON");
-
-            System.out.println("Foreign keys enabled");
-
-            stmt.close();
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
