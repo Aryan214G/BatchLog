@@ -83,7 +83,8 @@ public class CategoriesPageController {
         loadTempData();
 
         categoriesListView.setItems(categories);
-        loadProperties();
+        CategorySelectionListener();
+        PropertySelectionListener();
 
 
         // EDIT MENU SETUP
@@ -161,10 +162,8 @@ public class CategoriesPageController {
         categoriesMap.remove(selectedCategory);
     }
 
+    private void CategorySelectionListener() {
 
-
-    //TODO: loadProperties is doing multiple tasks. Either change the name of the method or divide the responsibilities
-    private void loadProperties() {
         categoriesListView.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((observable, oldCategory, newCategory) -> {
@@ -181,6 +180,10 @@ public class CategoriesPageController {
 
                     }
                 });
+    }
+
+    private void PropertySelectionListener() {
+
         propertiesListView.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, oldProperty, newProperty) -> {
