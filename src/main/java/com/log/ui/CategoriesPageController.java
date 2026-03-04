@@ -3,6 +3,7 @@ package com.log.ui;
 import com.log.core.AppState;
 import com.log.model.PropertyState;
 import com.log.model.Reading;
+import com.log.service.PropertyStateManager;
 import com.log.service.StatisticsService;
 import com.log.service.TempDataService;
 import javafx.collections.FXCollections;
@@ -318,28 +319,30 @@ public class CategoriesPageController {
         }
 
 
-    private Map<String, PropertyState> propertyStates = new HashMap<>();
+    private final PropertyStateManager stateManager = new PropertyStateManager();
+
     private void saveCurrentPropertyValues(String property) {
 
-        if (property == null) return;
-
-        PropertyState state = new PropertyState();
-
-        for (InputRow row : inputRows) {
-
-            String value = row.getField().getText();
-            String unit = row.getUnitController()
-                    .getComboBox()
-                    .getValue();
-
-            state.getReadings().add(new Reading(value, unit));
+        if (property == null || temperatureField == null) {
+            return;
         }
 
-        state.setTemperature(temperatureField.getText());
-        state.setTemperatureUnit(tempUnitController.getComboBox().getValue());
-        state.setDirection(directionController.getSelectedDirection());
+        List<Reading> readings = new ArrayList<>();
 
-        propertyStates.put(property, state);
+        for (InputRow row : inputRows) {
+            readings.add(new Reading(
+                    row.getField().getText(),
+                    row.getUnitController().getComboBox().getValue()
+            ));
+        }
+
+        stateManager.saveState(
+                property,
+                readings,
+                temperatureField.getText(),
+                tempUnitController.getComboBox().getValue(),
+                directionController.getSelectedDirection()
+        );
     }
 
     private void loadPropertyFields(int defaultRows, String property) throws IOException {
@@ -347,7 +350,7 @@ public class CategoriesPageController {
         inputRows.clear();
         entriesGrid.getChildren().clear();
 
-        PropertyState state = propertyStates.get(property);
+        PropertyState state = stateManager.getState(property);
 
         if (state == null) {
             for (int i = 0; i < defaultRows; i++) {
