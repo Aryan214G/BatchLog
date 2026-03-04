@@ -15,6 +15,10 @@ public class PropertyState {
         return readings;
     }
 
+    public void setReadings(List<Reading> readings) {
+        this.readings = readings;
+    }
+
     public void setTemperature(String temperature) {
         this.temperature = temperature;
     }
