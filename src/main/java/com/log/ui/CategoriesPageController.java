@@ -176,47 +176,54 @@ public class CategoriesPageController {
                 .addListener((observable, oldCategory, newCategory) -> {
                     if(newCategory != null)
                     {
-                        saveCurrentPropertyValues(selectedState.getSelectedProperty());
-
-                        clearUIComponents();
-                        propertiesListView.setItems(categoriesMap.get(newCategory));
-                        propertiesLabel.setText(newCategory);
-                        selectedState.setSelectedCategory(newCategory);
-
-                        updateInfoBar();
-
+                        HandleCategoryChange(newCategory);
                     }
                 });
     }
+    private void HandleCategoryChange(String newCategory){
+        saveCurrentPropertyValues(selectedState.getSelectedProperty());
+        clearUIComponents();
+        propertiesListView.setItems(categoriesMap.get(newCategory));
+        propertiesLabel.setText(newCategory);
+        selectedState.setSelectedCategory(newCategory);
 
+        updateInfoBar();
+
+    }
     private void PropertySelectionListener() {
 
         propertiesListView.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, oldProperty, newProperty) -> {
 
-                    if (newProperty != null) {
-
-                        saveCurrentPropertyValues(oldProperty);
-                        clearUIComponents();
-                        inputRows.clear();
-
-                        selectedState.setSelectedProperty(newProperty);
-
-                        int defaultRows = DMapInstance.getDefaultRowsMap().get(newProperty);
-
-                        try {
-                            loadMetrics();
-                            addHeaderControls();
-                            loadPropertyFields(defaultRows, newProperty);
-                            updateMetrics();   // force refresh after load
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-
-                        updateInfoBar();
+                    if (newProperty != null)
+                    {
+                        HandlePropertyChange(newProperty,oldProperty);
                     }
                 });
+    }
+
+    private void HandlePropertyChange(String newProperty,String oldProperty){
+        saveCurrentPropertyValues(oldProperty);
+        clearUIComponents();
+        inputRows.clear();
+
+        selectedState.setSelectedProperty(newProperty);
+
+        int defaultRows = DMapInstance.getDefaultRowsMap().get(newProperty);
+
+        try {
+            loadMetrics();
+            addHeaderControls();
+            loadPropertyFields(defaultRows, newProperty);
+            updateMetrics();   // force refresh after load
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+        updateInfoBar();
     }
 
     private void updateInfoBar() {
