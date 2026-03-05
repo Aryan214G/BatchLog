@@ -5,6 +5,7 @@ import com.log.core.DefaultMapState;
 import com.log.core.SelectedState;
 import com.log.model.PropertyState;
 import com.log.model.Reading;
+import com.log.service.ProjectService;
 import com.log.service.PropertyStateManager;
 import com.log.service.StatisticsService;
 import com.log.service.TempDataService;
@@ -461,4 +462,5 @@ public class CategoriesPageController {
 
         return values;
     }
+
 }

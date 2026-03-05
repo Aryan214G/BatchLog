@@ -2,6 +2,7 @@ package com.log.ui;
 
 import com.log.core.AppState;
 import com.log.core.basePropertiesState;
+import com.log.service.ProjectService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -23,6 +24,7 @@ public class BasePropertiesController {
 
     private final AppState appState = AppState.getInstance();
     private final basePropertiesState bpropState = basePropertiesState.getInstance();
+    private ProjectService projectService = new ProjectService();
 
     // ===== INITIALIZATION =====
     @FXML
@@ -49,6 +51,8 @@ public class BasePropertiesController {
         LocalDate date = testDate.getValue();
         String place = placeOfTesting.getText();
         String file = fileName.getText();
+
+        handleCreateProject(project);
 
         // Example: store something in AppState if needed
         System.out.println("Project: " + project);
@@ -120,4 +124,11 @@ public class BasePropertiesController {
         bpropState.setFileName("TestFile");
 
     }
+
+    @FXML
+    private void handleCreateProject(String project) {
+        projectService.createProject(project);
+        System.out.println("Project created");
+    }
+
 }
