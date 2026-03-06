@@ -7,6 +7,9 @@ public class Product {
     private String productName;
     private int projectId;
 
+    public Product() {
+    }
+
     public Product(int productId, String productName, int projectId) {
         this.productId = productId;
         this.productName = productName;
@@ -24,28 +27,28 @@ public class Product {
         return productCode;
     }
 
-    public int getProductId() {
-        return productId;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public int getProjectId() {
-        return projectId;
-    }
-
     public void setProductCode(int productCode) {
         this.productCode = productCode;
+    }
+
+    public int getProductId() {
+        return productId;
     }
 
     public void setProductId(int productId) {
         this.productId = productId;
     }
 
+    public String getProductName() {
+        return productName;
+    }
+
     public void setProductName(String productName) {
         this.productName = productName;
+    }
+
+    public int getProjectId() {
+        return projectId;
     }
 
     public void setProjectId(int projectId) {

@@ -44,7 +44,6 @@ public class AppState {
 
 
     //============ FLAGS =================
-
     private boolean projectCreated = false;
 
     public boolean isProjectCreated() {
