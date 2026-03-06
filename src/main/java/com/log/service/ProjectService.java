@@ -27,6 +27,8 @@ public class ProjectService {
         return projectDAO.getAllProjects();
     }
 
+
+
     public void deleteProject(int projectId){
         projectDAO.deleteProject(projectId);
     }

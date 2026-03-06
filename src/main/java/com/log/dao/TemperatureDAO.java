@@ -7,6 +7,7 @@ import java.util.List;
 import com.log.database.DBUtil;
 import com.log.model.Temperature;
 
+
 public class TemperatureDAO {
 
     public void insertTemperature(Temperature temperature) {
