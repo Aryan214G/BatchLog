@@ -4,11 +4,9 @@ import com.log.core.AppState;
 import com.log.core.DefaultMapState;
 import com.log.core.SelectedState;
 import com.log.model.PropertyState;
+import com.log.model.PropertyView;
 import com.log.model.Reading;
-import com.log.service.ProjectService;
-import com.log.service.PropertyStateManager;
-import com.log.service.StatisticsService;
-import com.log.service.TempDataService;
+import com.log.service.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -77,6 +75,7 @@ public class CategoriesPageController {
     private DirectionDropdownController directionController;
 
     private TempDataService tempDataService = new TempDataService();
+    private PropertyService propertyService = new PropertyService();
 
     // ======================= END OF VARIABLES DECLARATION ==============================
 
@@ -184,6 +183,7 @@ public class CategoriesPageController {
     private void HandleCategoryChange(String newCategory){
         saveCurrentPropertyValues(selectedState.getSelectedProperty());
         clearUIComponents();
+
         propertiesListView.setItems(categoriesMap.get(newCategory));
         propertiesLabel.setText(newCategory);
         selectedState.setSelectedCategory(newCategory);
