@@ -9,20 +9,29 @@ import java.util.List;
 
 public class ProjectDAO {
 
-    public void insertProject(Project project) {
+    public int insertProject(Project project) {
 
         String sql = "INSERT INTO Project (Project_name) VALUES (?)";
 
         try (Connection conn = DBUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, project.getProjectName());
             stmt.executeUpdate();
 
+            ResultSet rs = stmt.getGeneratedKeys();
+
+            if (rs.next()) {
+                return rs.getInt(1); // auto-generated Project_ID
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        return -1; // indicates failure
     }
+
 
     public List<Project> getAllProjects() {
 
@@ -37,6 +46,7 @@ public class ProjectDAO {
 
                 int id = rs.getInt("Project_ID");
                 String name = rs.getString("Project_name");
+
                 projects.add(new Project(id, name));
             }
 
@@ -46,6 +56,7 @@ public class ProjectDAO {
 
         return projects;
     }
+
 
     public void deleteProject(int projectId) {
 

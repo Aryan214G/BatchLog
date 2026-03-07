@@ -10,7 +10,7 @@ public class basePropertiesState {
     public static basePropertiesState getInstance() {
         return instance;
     }
-
+    private int projectId;
     private String projectName;
     private String batchNo;
     private String productName;
@@ -40,5 +40,11 @@ public class basePropertiesState {
 
     public String getFileName() { return fileName; }
     public void setFileName(String fileName) { this.fileName = fileName; }
+
+    public int getProjectId() {return projectId;}
+
+    public void setProjectId(int projectId) {this.projectId = projectId;}
+
+
 
 }

@@ -10,6 +10,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 
 import java.time.LocalDate;
+import com.log.service.ProductService;
 
 public class BasePropertiesController {
 
@@ -54,6 +55,9 @@ public class BasePropertiesController {
 
         handleCreateProject(project);
 
+        int productId = Integer.parseInt(productID.getText());
+        productService.createProduct(productId, product);
+
         // Example: store something in AppState if needed
         System.out.println("Project: " + project);
         System.out.println("Batch: " + batch);
@@ -89,6 +93,7 @@ public class BasePropertiesController {
         }
     }
 
+    private ProductService productService = new ProductService();
     @FXML
     private void handleCancel() {
         loadCategoriesPage();
@@ -125,10 +130,13 @@ public class BasePropertiesController {
 
     }
 
-    @FXML
     private void handleCreateProject(String project) {
-        projectService.createProject(project);
-        System.out.println("Project created");
+
+        int projectId = projectService.createProject(project);
+
+        bpropState.setProjectId(projectId);
+
+        System.out.println("Project created with ID: " + projectId);
     }
 
 }
