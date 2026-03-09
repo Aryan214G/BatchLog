@@ -23,6 +23,12 @@ public class PropertyView {
         this.unit = unit;
     }
 
+    public PropertyView(int propertyId, String propertyName, String categoryName) {
+        this.propertyId = propertyId;
+        this.propertyName = propertyName;
+        this.categoryName = categoryName;
+    }
+
     public int getPropertyId() {
         return propertyId;
     }

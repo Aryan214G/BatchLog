@@ -28,6 +28,7 @@ private int batchCode;
         this.batchCode = batchCode;
     }
 
+
     public String getPropertyName() {
         return propertyName;
     }

@@ -78,12 +78,6 @@ public class PropertyDAO {
         return properties;
     }
 
-    List<PropertyView> getPropertiesByCategory(int batchCode, int categoryId){
-        List<PropertyView> properties = new ArrayList<>();
-
-        return properties;
-    }
-
     void updateProperty(Property property){
     }
 
