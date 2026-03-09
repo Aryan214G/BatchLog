@@ -9,6 +9,7 @@ import com.log.service.ProjectService;
 import com.log.service.PropertyStateManager;
 import com.log.service.StatisticsService;
 import com.log.service.TempDataService;
+import com.log.ui.util.AlertUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -84,8 +85,8 @@ public class CategoriesPageController {
     public void initialize() throws IOException {
 
         if(!instance.isProjectCreated()) {
-            categoriesListView.setDisable(true);
-            propertiesListView.setDisable(true);
+            categoriesListView.setDisable(false);
+            propertiesListView.setDisable(false);
         }
 
         loadTempData();
@@ -310,14 +311,6 @@ public class CategoriesPageController {
         );
     }
 
-    private void showAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Warning!");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
     @FXML
     private void PrintButtonHandler() {
 
@@ -328,7 +321,7 @@ public class CategoriesPageController {
                     );
 
             if (!hasText) {
-                showAlert("Please enter at least one value before printing.");
+                AlertUtil.showWarning("Please enter at least one value before printing.");
                 return;
             }
 
