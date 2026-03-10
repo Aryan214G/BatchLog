@@ -8,7 +8,6 @@ import com.log.model.PropertyView;
 import com.log.model.Reading;
 import com.log.service.*;
 import com.log.ui.util.AlertUtil;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -44,13 +43,13 @@ public class CategoriesPageController {
     private ListView<String> categoriesListView;
 
     @FXML
-    private ListView<String> propertiesListView;
+    private ListView<PropertyView> propertiesListView;
 
     @FXML
     private Label propertiesLabel;
 
     private HashMap<String, ObservableList<String>> categoriesMap = instance.getCategoriesMap();
-    private ObservableList<String> categories = instance.getCategories();
+    private ObservableList<String> categories;
 
 
 
@@ -105,10 +104,9 @@ public class CategoriesPageController {
         editMenu = new ContextMenu(addItem, deleteItem);
     }
 
+    List<String> categoriesList;
     private void loadTempData(){
-        tempDataService.loadTempData();
-        categoriesMap = instance.getCategoriesMap();
-
+        categories = tempDataService.loadCategoriesList();
         tempDataService.loadDefaultRowsTempData();
         defaultRowsMap = DMapInstance.getDefaultRowsMap();
     }
@@ -185,7 +183,13 @@ public class CategoriesPageController {
         saveCurrentPropertyValues(selectedState.getSelectedProperty());
         clearUIComponents();
 
-        propertiesListView.setItems(categoriesMap.get(newCategory));
+        ObservableList<PropertyView> props = propertyService.getPropertiesByCategory(newCategory);
+
+        System.out.println("Properties loaded size: " + props.size());
+        System.out.println("Category: " + newCategory);
+        System.out.println("Properties loaded: " + props);
+
+        propertiesListView.setItems(props);
         propertiesLabel.setText(newCategory);
         selectedState.setSelectedCategory(newCategory);
 
@@ -205,19 +209,19 @@ public class CategoriesPageController {
                 });
     }
 
-    private void HandlePropertyChange(String newProperty,String oldProperty){
+    private void HandlePropertyChange(PropertyView newProperty,PropertyView oldProperty){
         saveCurrentPropertyValues(oldProperty);
         clearUIComponents();
         inputRows.clear();
 
         selectedState.setSelectedProperty(newProperty);
 
-        int defaultRows = DMapInstance.getDefaultRowsMap().get(newProperty);
+        int defaultRows = DMapInstance.getDefaultRowsMap().get(newProperty.getPropertyName());
 
         try {
             loadMetrics();
             addHeaderControls();
-            loadPropertyFields(defaultRows, newProperty);
+            loadPropertyFields(defaultRows, newProperty.getPropertyName());
             updateMetrics();   // force refresh after load
         }
         catch (IOException e)
@@ -331,7 +335,7 @@ public class CategoriesPageController {
 
     private final PropertyStateManager stateManager = new PropertyStateManager();
 
-    private void saveCurrentPropertyValues(String property) {
+    private void saveCurrentPropertyValues(PropertyView property) {
 
         if (property == null || temperatureField == null) {
             return;
@@ -347,7 +351,7 @@ public class CategoriesPageController {
         }
 
         stateManager.saveState(
-                property,
+                property.getPropertyName(),
                 readings,
                 temperatureField.getText(),
                 tempUnitController.getComboBox().getValue(),

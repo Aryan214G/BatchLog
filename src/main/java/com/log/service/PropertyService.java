@@ -3,6 +3,8 @@ package com.log.service;
 import com.log.dao.DefaultPropertiesDAO;
 import com.log.dao.PropertyDAO;
 import com.log.model.PropertyView;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -20,7 +22,7 @@ public class PropertyService {
         return propertyDAO.getPropertiesByBatch(batchCode);
     }
 
-    public List<PropertyView> getPropertiesByCategory(int categoryId){
-        return defaultPropertiesDAO.getDefaultProperties(categoryId);
+    public ObservableList<PropertyView> getPropertiesByCategory(String categoryName){
+        return defaultPropertiesDAO.getDefaultProperties(categoryName);
     }
 }

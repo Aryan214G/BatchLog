@@ -5,14 +5,16 @@ import com.log.core.DefaultMapState;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class TempDataService {
 
     private DefaultMapState Dmap = DefaultMapState.getInstance();
     private AppState instance = AppState.getInstance();
 
-    public void loadTempData() {
+    public void loadCategoriesMap() {
         HashMap<String, ObservableList<String>> categoriesMap = instance.getCategoriesMap();
 
         categoriesMap.put("Physical",
@@ -53,6 +55,16 @@ public class TempDataService {
                 ));
 
         instance.setCategoriesMap(categoriesMap);
+    }
+
+    public ObservableList<String> loadCategoriesList(){
+        ObservableList<String> categoriesList = FXCollections.observableArrayList();
+        categoriesList.add("Physical");
+        categoriesList.add("Mechanical");
+        categoriesList.add("Thermal");
+        categoriesList.add("Tribological");
+        categoriesList.add("Micro Structure");
+        return categoriesList;
     }
 
     public void loadDefaultRowsTempData() {

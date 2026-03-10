@@ -33,8 +33,12 @@ public class InfoBarController {
         infobar_propertyName.setText(
                 safe(selectedState.getSelectedCategory()));
 
+        String propertyName = selectedState.getSelectedProperty() == null
+                ? null
+                : selectedState.getSelectedProperty().getPropertyName();
+
         infobar_attributeName.setText(
-                safe(selectedState.getSelectedProperty()));
+                safe(propertyName));
     }
 
     private String safe(String value) {
