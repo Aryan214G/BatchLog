@@ -9,7 +9,6 @@ import com.log.model.PropertyView;
 import com.log.model.Reading;
 import com.log.service.*;
 import com.log.ui.util.AlertUtil;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -50,7 +49,7 @@ public class CategoriesPageController {
     @FXML
     private Label propertiesLabel;
 
-    private HashMap<String, ObservableList<String>> categoriesMap = instance.getCategoriesMap();
+    private HashMap<String, ObservableList<PropertyView>> categoriesMap = instance.getCategoriesMap();
     private ObservableList<String> categories = instance.getCategories();
 
 
@@ -99,7 +98,8 @@ public class CategoriesPageController {
         MenuItem addItem = new MenuItem("Add Category");
         MenuItem deleteItem = new MenuItem("Delete Selected Category");
 
-        addItem.setOnAction(e -> openAddCategoryPopup());
+        //TODO: un-comment later
+//        addItem.setOnAction(e -> openAddCategoryPopup());
         deleteItem.setOnAction(e -> handleDeleteCategory());
 
         editMenu = new ContextMenu(addItem, deleteItem);
@@ -117,48 +117,50 @@ public class CategoriesPageController {
 
     // ======================= CATEGORY POPUP ==============================
 
-    private void openAddCategoryPopup() {
-
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/log/ui/views/AddCategoriesPopup.fxml")
-            );
-
-            Parent root = loader.load();
-
-            Stage stage = new Stage();
-            stage.setTitle("Add Category");
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
-
-            AddCategoriesPopupController controller = loader.getController();
-            String newCategory = controller.getEnteredCategory();
-            ObservableList<String> newAttributes = controller.getAttributesList();
-            HashMap<String,Integer> attrEntriesMap = controller.getEntriesMap();
-            if (newCategory != null && !newCategory.isBlank()) {
-
-                if (!categories.contains(newCategory)) {
-
-                    categoryService.createCategory(newCategory);   // INSERT INTO DB
-
-                    loadCategoriesFromDB(); // refresh state
-
-                    categoriesMap.put(newCategory, newAttributes);
-                }
-                for (Map.Entry<String, Integer> entry : attrEntriesMap.entrySet()) {
-
-                    String key = entry.getKey();
-                    Integer value = entry.getValue();
-
-                    defaultRowsMap.put(key,value);
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    //TODO: resolve error and un comment
+//    private void openAddCategoryPopup() {
+//
+//        try {
+//            FXMLLoader loader = new FXMLLoader(
+//                    getClass().getResource("/com/log/ui/views/AddCategoriesPopup.fxml")
+//            );
+//
+//            Parent root = loader.load();
+//
+//            Stage stage = new Stage();
+//            stage.setTitle("Add Category");
+//            stage.setScene(new Scene(root));
+//            stage.initModality(Modality.APPLICATION_MODAL);
+//            stage.showAndWait();
+//
+//            AddCategoriesPopupController controller = loader.getController();
+//
+//            String newCategory = controller.getEnteredCategory();
+//            ObservableList<PropertyView> newProperties = controller.getPropertiesList();
+//            HashMap<String,Integer> attrEntriesMap = controller.getEntriesMap();
+//            if (newCategory != null && !newCategory.isBlank()) {
+//
+//                if (!categories.contains(newCategory)) {
+//
+//                    categoryService.createCategory(newCategory);   // INSERT INTO DB
+//
+//                    loadCategoriesFromDB(); // refresh state
+//
+//                    categoriesMap.put(newCategory, newProperties);
+//                }
+//                for (Map.Entry<String, Integer> entry : attrEntriesMap.entrySet()) {
+//
+//                    String key = entry.getKey();
+//                    Integer value = entry.getValue();
+//
+//                    defaultRowsMap.put(key,value);
+//                }
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private void handleDeleteCategory() {
 

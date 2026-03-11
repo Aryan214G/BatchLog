@@ -38,7 +38,7 @@
 
             <Label styleClass="section-title" text="Add property" />
 
-            <Button onAction="#handleNewAttribute" prefWidth="180" styleClass="primary-btn" text="New property" />
+            <Button onAction="#handleNewProperty" prefWidth="180" styleClass="primary-btn" text="New property" />
          </VBox>
 
       </VBox>

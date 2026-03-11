@@ -7,20 +7,20 @@ import javafx.stage.Stage;
 public class AddPropertiesPopupController {
 
     @FXML
-    private TextField attributeNameField;
+    private TextField propertyNameField;
 
     @FXML
-    private TextField attributeEntriesField;
+    private TextField propertyEntriesField;
 
     private String propertyName;
-    private Double attributeEntries;   // numeric value
+    private Double propertyEntries;   // numeric value
 
     public String getPropertyName() {
         return propertyName;
     }
 
-    public Double getAttributeEntries() {
-        return attributeEntries;
+    public Double getPropertyEntries() {
+        return propertyEntries;
     }
 
     @FXML
@@ -28,27 +28,27 @@ public class AddPropertiesPopupController {
 
         boolean valid = true;
 
-        String nameInput = attributeNameField.getText();
-        String entriesInput = attributeEntriesField.getText();
+        String nameInput = propertyNameField.getText();
+        String entriesInput = propertyEntriesField.getText();
 
         // ===== Validate name =====
         if (nameInput == null || nameInput.trim().isEmpty()) {
-            attributeNameField.setStyle("-fx-border-color: red;");
+            propertyNameField.setStyle("-fx-border-color: red;");
             valid = false;
         } else {
-            attributeNameField.setStyle(null);
+            propertyNameField.setStyle(null);
         }
 
         // ===== Validate numeric input =====
         if (entriesInput == null || entriesInput.trim().isEmpty()) {
-            attributeEntriesField.setStyle("-fx-border-color: red;");
+            propertyEntriesField.setStyle("-fx-border-color: red;");
             valid = false;
         } else {
             try {
-                attributeEntries = Double.parseDouble(entriesInput.trim());
-                attributeEntriesField.setStyle(null);
+                propertyEntries = Double.parseDouble(entriesInput.trim());
+                propertyEntriesField.setStyle(null);
             } catch (NumberFormatException e) {
-                attributeEntriesField.setStyle("-fx-border-color: red;");
+                propertyEntriesField.setStyle("-fx-border-color: red;");
                 valid = false;
             }
         }
@@ -56,8 +56,8 @@ public class AddPropertiesPopupController {
         if (!valid) return;
 
         propertyName = nameInput.trim();
-        System.out.println(attributeEntries);
-        Stage stage = (Stage) attributeNameField.getScene().getWindow();
+        System.out.println(propertyEntries);
+        Stage stage = (Stage) propertyNameField.getScene().getWindow();
         stage.close();
 
     }
@@ -65,9 +65,9 @@ public class AddPropertiesPopupController {
     @FXML
     private void handleCancel() {
         propertyName = null;
-        attributeEntries = null;
+        propertyEntries = null;
 
-        Stage stage = (Stage) attributeNameField.getScene().getWindow();
+        Stage stage = (Stage) propertyNameField.getScene().getWindow();
         stage.close();
     }
 }
