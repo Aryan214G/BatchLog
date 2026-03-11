@@ -89,8 +89,6 @@ public class CategoriesPageController {
             propertiesListView.setDisable(false);
         }
 
-        loadTempData();
-
         categoriesListView.setItems(categories);
         CategorySelectionListener();
         PropertySelectionListener();
@@ -104,14 +102,6 @@ public class CategoriesPageController {
         deleteItem.setOnAction(e -> handleDeleteCategory());
 
         editMenu = new ContextMenu(addItem, deleteItem);
-    }
-
-    private void loadTempData(){
-        tempDataService.loadTempData();
-        categoriesMap = instance.getCategoriesMap();
-
-        tempDataService.loadDefaultRowsTempData();
-        defaultRowsMap = DMapInstance.getDefaultRowsMap();
     }
 
     @FXML
