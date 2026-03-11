@@ -3,11 +3,13 @@ package com.log.ui;
 import com.log.core.AppState;
 import com.log.core.DefaultMapState;
 import com.log.core.SelectedState;
+import com.log.model.Category;
 import com.log.model.PropertyState;
 import com.log.model.PropertyView;
 import com.log.model.Reading;
 import com.log.service.*;
 import com.log.ui.util.AlertUtil;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -49,7 +51,7 @@ public class CategoriesPageController {
     private Label propertiesLabel;
 
     private HashMap<String, ObservableList<String>> categoriesMap = instance.getCategoriesMap();
-    private ObservableList<String> categories;
+    private ObservableList<String> categories = instance.getCategories();
 
 
 
@@ -82,14 +84,13 @@ public class CategoriesPageController {
     @FXML
     public void initialize() throws IOException {
 
+        loadCategoriesFromDB();
+
         if(!instance.isProjectCreated()) {
             categoriesListView.setDisable(false);
             propertiesListView.setDisable(false);
         }
 
-        loadTempData();
-
-        categoriesListView.setItems(categories);
         CategorySelectionListener();
         PropertySelectionListener();
 
@@ -104,9 +105,7 @@ public class CategoriesPageController {
         editMenu = new ContextMenu(addItem, deleteItem);
     }
 
-    List<String> categoriesList;
     private void loadTempData(){
-        categories = tempDataService.loadCategoriesList();
         tempDataService.loadDefaultRowsTempData();
         defaultRowsMap = DMapInstance.getDefaultRowsMap();
     }
@@ -140,7 +139,11 @@ public class CategoriesPageController {
             if (newCategory != null && !newCategory.isBlank()) {
 
                 if (!categories.contains(newCategory)) {
-                    categories.add(newCategory);
+
+                    categoryService.createCategory(newCategory);   // INSERT INTO DB
+
+                    loadCategoriesFromDB(); // refresh state
+
                     categoriesMap.put(newCategory, newAttributes);
                 }
                 for (Map.Entry<String, Integer> entry : attrEntriesMap.entrySet()) {
@@ -164,8 +167,18 @@ public class CategoriesPageController {
 
         if (selectedCategory == null) return;
 
-        categories.remove(selectedCategory);
-        categoriesMap.remove(selectedCategory);
+        List<Category> dbCategories = categoryService.getAllCategories();
+
+        for (Category c : dbCategories) {
+
+            if (c.getCategoryName().equals(selectedCategory)) {
+
+                categoryService.deleteCategory(c.getCategoryId());
+                break;
+            }
+        }
+
+        loadCategoriesFromDB();
     }
 
     private void CategorySelectionListener() {
@@ -438,6 +451,15 @@ public class CategoriesPageController {
             metrics = null;
             metricsController = null;
         }
+    }
+
+    private CategoryService categoryService = new CategoryService();
+
+    private void loadCategoriesFromDB() {
+
+        categoryService.refreshCategoriesState();
+
+        categoriesListView.setItems(instance.getCategories());
     }
 
     private List<Double> getCurrentPropertyValues() {
