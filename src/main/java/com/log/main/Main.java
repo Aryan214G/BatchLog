@@ -24,7 +24,6 @@ public class Main extends Application {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-
     }
 
     @Override

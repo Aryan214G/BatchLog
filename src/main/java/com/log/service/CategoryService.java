@@ -3,12 +3,17 @@ package com.log.service;
 import com.log.core.AppState;
 import com.log.dao.CategoryDAO;
 import com.log.model.Category;
+import com.log.model.PropertyView;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.util.List;
 
     public class CategoryService {
 
+        private final AppState state = AppState.getInstance();
+
+        private PropertyService propertyService = new PropertyService();
         private final CategoryDAO categoryDAO;
 
         public CategoryService() {
@@ -32,7 +37,7 @@ import java.util.List;
 
         public void refreshCategoriesState() {
 
-            AppState state = AppState.getInstance();
+
 
             List<Category> dbCategories = categoryDAO.getAllCategories();
 
@@ -43,10 +48,12 @@ import java.util.List;
 
                 state.getCategories().add(c.getCategoryName());
 
+                ObservableList<PropertyView> properties = propertyService.getPropertiesByCategory(c.getCategoryName());
+
                 if (!state.getCategoriesMap().containsKey(c.getCategoryName())) {
                     state.getCategoriesMap().put(
                             c.getCategoryName(),
-                            FXCollections.observableArrayList()
+                            properties
                     );
                 }
             }
