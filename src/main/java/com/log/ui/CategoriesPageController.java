@@ -83,12 +83,12 @@ public class CategoriesPageController {
     @FXML
     public void initialize() throws IOException {
 
-        loadCategoriesFromDB();
 
         if(!instance.isProjectCreated()) {
-            categoriesListView.setDisable(false);
-            propertiesListView.setDisable(false);
+            categoriesListView.setDisable(true);
+            propertiesListView.setDisable(true);
         }
+        loadCategoriesFromDB();
 
         CategorySelectionListener();
         PropertySelectionListener();
