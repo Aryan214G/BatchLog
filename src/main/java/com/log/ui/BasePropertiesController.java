@@ -72,7 +72,7 @@ public class BasePropertiesController {
         bpropState.setFileName(fileName.getText());
 
         appState.setProjectCreated(true);
-        // TODO: Navigate to next screen
+
         loadCategoriesPage();
 
     }

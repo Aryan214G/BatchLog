@@ -36,12 +36,12 @@
                   styleClass="input-field-container">
 
                 <Label text="Property Name" />
-                <TextField fx:id="attributeNameField"
+                <TextField fx:id="propertyNameField"
                            maxWidth="Infinity"
                            styleClass="input-field" />
 
                 <Label text="Default Fields" />
-                <TextField fx:id="attributeEntriesField"
+                <TextField fx:id="propertyEntriesField"
                            maxWidth="Infinity"
                            styleClass="input-field" />
 
