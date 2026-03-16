@@ -136,4 +136,30 @@ public class BatchDAO {
         }
     }
 
+
+    public int getBatchCode(int BatchId, String TestDate, String TestSite, int ProjectId, int ProductCode){
+        String sql = "SELECT Batch_CODE FROM Batch WHERE Batch_ID=? AND Test_date=? AND Test_site=? AND Project_ID=? AND Product_CODE=?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, BatchId);
+            stmt.setString(2, TestDate);
+            stmt.setString(3, TestSite);
+            stmt.setInt(4, ProjectId);
+            stmt.setInt(5, ProductCode);
+
+            stmt.executeQuery();
+            ResultSet rs = stmt.getGeneratedKeys();
+            if(rs.next()){
+                return rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+
+
+    }
+
 }
