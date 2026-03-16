@@ -85,11 +85,10 @@ public class CategoriesPageController {
 
 
         if(!instance.isProjectCreated()) {
-            categoriesListView.setDisable(true);
-            propertiesListView.setDisable(true);
+            categoriesListView.setDisable(false);
+            propertiesListView.setDisable(false);
         }
         loadCategoriesFromDB();
-
         CategorySelectionListener();
         PropertySelectionListener();
 
@@ -195,16 +194,17 @@ public class CategoriesPageController {
                 });
     }
     private void HandleCategoryChange(String newCategory){
+        loadCategoriesFromDB();
         saveCurrentPropertyValues(selectedState.getSelectedProperty());
         clearUIComponents();
 
-        ObservableList<PropertyView> props = propertyService.getPropertiesByCategory(newCategory);
+        ObservableList<PropertyView> properties = instance.getCategoriesMap().get(newCategory);
 
-        System.out.println("Properties loaded size: " + props.size());
+        System.out.println("Properties loaded size: " + properties.size());
         System.out.println("Category: " + newCategory);
-        System.out.println("Properties loaded: " + props);
+        System.out.println("Properties loaded: " + properties);
 
-        propertiesListView.setItems(props);
+        propertiesListView.setItems(properties);
         propertiesLabel.setText(newCategory);
         selectedState.setSelectedCategory(newCategory);
 
