@@ -20,7 +20,7 @@ public class ProductDAO {
     }
 
     // INSERT
-    public void insertProduct(Product product) {
+    public int insertProduct(Product product) {
 
         String sql = "INSERT INTO Product(Product_ID, Product_name, Project_ID) VALUES (?, ?, ?)";
 
@@ -31,10 +31,17 @@ public class ProductDAO {
             stmt.setInt(3, product.getProjectId());
 
             stmt.executeUpdate();
+            ResultSet rs = stmt.getGeneratedKeys();
+
+            if(rs.next()){
+                return rs.getInt(1);
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        return -1;
     }
 
     // SELECT ONE
@@ -127,5 +134,26 @@ public class ProductDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getProductCode(int productId, String productName, int projectId){
+        String sql = "SELECT Product_code FROM Product WHERE Product_ID=? AND Product_name=? AND Project_ID=?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, productId);
+            stmt.setString(2,productName);
+            stmt.setInt(3,projectId);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if(rs.next()){
+                return rs.getInt(1);
+            }
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return -1;
+
     }
 }
