@@ -194,7 +194,6 @@ public class CategoriesPageController {
                 });
     }
     private void HandleCategoryChange(String newCategory){
-        loadCategoriesFromDB();
         saveCurrentPropertyValues(selectedState.getSelectedProperty());
         clearUIComponents();
 
