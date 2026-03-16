@@ -6,6 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BatchDAO {
+    private Connection conn;
+
+    public BatchDAO(){
+        try {
+            this.conn = DBUtil.getConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void insertBatch(Batch batch) {
 
         String sql = "INSERT INTO Batch VALUES (?, ?, ?, ?, ?, ?)";
@@ -25,6 +35,30 @@ public class BatchDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public int insertBatch(int BatchId, String TestDate, String TestSite, int ProjectId, int ProductCode) {
+
+        String sql = "INSERT INTO Batch (Batch_ID, Test_date, Test_site, Project_ID, Product_CODE) VALUES (?, ?, ?, ?, ?)";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, BatchId);
+            stmt.setString(2, TestDate);
+            stmt.setString(3, TestSite);
+            stmt.setInt(4, ProjectId);
+            stmt.setInt(5, ProductCode);
+
+            stmt.executeUpdate();
+            ResultSet rs = stmt.getGeneratedKeys();
+            if(rs.next()){
+                return rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 
     public Batch getBatch(int batchCode) {
