@@ -11,6 +11,7 @@ public class PropertyView {
     private double temperature;
     private String direction;
     private String unit;
+    private int rows;
 
     public PropertyView(int propertyId, String propertyName,
                         String categoryName, double temperature,
@@ -23,10 +24,11 @@ public class PropertyView {
         this.unit = unit;
     }
 
-    public PropertyView(int propertyId, String propertyName, String categoryName) {
+    public PropertyView(int propertyId, String propertyName, String categoryName, int rows) {
         this.propertyId = propertyId;
         this.propertyName = propertyName;
         this.categoryName = categoryName;
+        this.rows = rows;
     }
 
     public int getPropertyId() {
@@ -52,6 +54,8 @@ public class PropertyView {
     public String getUnit() {
         return unit;
     }
+
+    public int getRows() { return rows; }
 
     @Override
     public String toString() {

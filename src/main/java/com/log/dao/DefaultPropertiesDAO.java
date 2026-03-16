@@ -21,7 +21,8 @@ public class DefaultPropertiesDAO {
                     SELECT
                         p.Def_PropID,
                         p.Def_PropName,
-                        c.Category_name
+                        c.Category_name,
+                        p.rows
                     FROM Default_Properties p
                     JOIN Category c ON p.Category_ID = c.Category_ID
                     WHERE c.Category_name = ?
@@ -56,8 +57,8 @@ public class DefaultPropertiesDAO {
                     int id = rs.getInt("Def_PropID");
                     String propName = rs.getString("Def_PropName");
                     String catName = rs.getString("Category_name");
-
-                    properties.add(new PropertyView(id, propName, catName));
+                    int rows = rs.getInt("rows");
+                    properties.add(new PropertyView(id, propName, catName, rows));
                 }
             }
         } catch (SQLException e) {

@@ -193,11 +193,13 @@ public class CategoriesPageController {
                     }
                 });
     }
+
+    ObservableList<PropertyView> properties;
     private void HandleCategoryChange(String newCategory){
         saveCurrentPropertyValues(selectedState.getSelectedProperty());
         clearUIComponents();
 
-        ObservableList<PropertyView> properties = instance.getCategoriesMap().get(newCategory);
+        properties = instance.getCategoriesMap().get(newCategory);
 
         System.out.println("Properties loaded size: " + properties.size());
         System.out.println("Category: " + newCategory);
@@ -223,6 +225,7 @@ public class CategoriesPageController {
                 });
     }
 
+
     private void HandlePropertyChange(PropertyView newProperty,PropertyView oldProperty){
         saveCurrentPropertyValues(oldProperty);
         clearUIComponents();
@@ -230,7 +233,12 @@ public class CategoriesPageController {
 
         selectedState.setSelectedProperty(newProperty);
 
-        int defaultRows = DMapInstance.getDefaultRowsMap().get(newProperty.getPropertyName());
+        PropertyView property = properties.stream()
+                .filter(p -> p.getPropertyName().equals(newProperty.getPropertyName()))
+                .findFirst()
+                .orElse(null);
+
+        int defaultRows = property.getRows();
 
         try {
             loadMetrics();
@@ -242,7 +250,6 @@ public class CategoriesPageController {
         {
             throw new RuntimeException(e);
         }
-
         updateInfoBar();
     }
 
@@ -457,9 +464,8 @@ public class CategoriesPageController {
     private CategoryService categoryService = new CategoryService();
 
     private void loadCategoriesFromDB() {
-
         categoryService.refreshCategoriesState();
-
+        categoriesMap = instance.getCategoriesMap();
         categoriesListView.setItems(instance.getCategories());
     }
 
