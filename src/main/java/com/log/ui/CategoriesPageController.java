@@ -85,11 +85,10 @@ public class CategoriesPageController {
 
 
         if(!instance.isProjectCreated()) {
-            categoriesListView.setDisable(true);
-            propertiesListView.setDisable(true);
+            categoriesListView.setDisable(false);
+            propertiesListView.setDisable(false);
         }
         loadCategoriesFromDB();
-
         CategorySelectionListener();
         PropertySelectionListener();
 
@@ -202,17 +201,19 @@ public class CategoriesPageController {
                     }
                 });
     }
+
+    ObservableList<PropertyView> properties;
     private void HandleCategoryChange(String newCategory){
         saveCurrentPropertyValues(selectedState.getSelectedProperty());
         clearUIComponents();
 
-        ObservableList<PropertyView> props = propertyService.getPropertiesByCategory(newCategory);
+        properties = instance.getCategoriesMap().get(newCategory);
 
-        System.out.println("Properties loaded size: " + props.size());
+        System.out.println("Properties loaded size: " + properties.size());
         System.out.println("Category: " + newCategory);
-        System.out.println("Properties loaded: " + props);
+        System.out.println("Properties loaded: " + properties);
 
-        propertiesListView.setItems(props);
+        propertiesListView.setItems(properties);
         propertiesLabel.setText(newCategory);
         selectedState.setSelectedCategory(newCategory);
 
@@ -232,6 +233,7 @@ public class CategoriesPageController {
                 });
     }
 
+
     private void HandlePropertyChange(PropertyView newProperty,PropertyView oldProperty){
         saveCurrentPropertyValues(oldProperty);
         clearUIComponents();
@@ -239,7 +241,12 @@ public class CategoriesPageController {
 
         selectedState.setSelectedProperty(newProperty);
 
-        int defaultRows = DMapInstance.getDefaultRowsMap().get(newProperty.getPropertyName());
+        PropertyView property = properties.stream()
+                .filter(p -> p.getPropertyName().equals(newProperty.getPropertyName()))
+                .findFirst()
+                .orElse(null);
+
+        int defaultRows = property.getRows();
 
         try {
             loadMetrics();
@@ -251,7 +258,6 @@ public class CategoriesPageController {
         {
             throw new RuntimeException(e);
         }
-
         updateInfoBar();
     }
 
@@ -466,9 +472,8 @@ public class CategoriesPageController {
     private CategoryService categoryService = new CategoryService();
 
     private void loadCategoriesFromDB() {
-
         categoryService.refreshCategoriesState();
-
+        categoriesMap = instance.getCategoriesMap();
         categoriesListView.setItems(instance.getCategories());
     }
 

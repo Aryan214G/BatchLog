@@ -34,49 +34,50 @@ public class  PropertyDAO {
         }
     }
 
-    public List<PropertyView> getPropertiesByBatch(int batchCode) throws SQLException {
-        List<PropertyView> properties = new ArrayList<>();
-
-        String sql = """
-                SELECT
-                    p.Property_ID,
-                    p.Property_name,
-                    c.Category_name,
-                    t.Temp_VAL,
-                    d.Dir_VAL,
-                    u.Unit
-                FROM Property p
-                JOIN Category c ON p.Category_ID = c.Category_ID
-                JOIN Units u ON p.Unit_ID = u.Unit_ID
-                JOIN Direction d ON p.Dir_ID = d.Dir_ID
-                JOIN Temperature t ON p.Temp_ID = t.Temp_ID
-                WHERE p.Batch_CODE = ?
-                """;
-
-        try(Connection conn = DBUtil.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, batchCode);
-            ResultSet rs = stmt.executeQuery();
-
-            while(rs.next()){
-                    int id = rs.getInt("Property_ID");
-                    String propertyName = rs.getString("Property_name");
-                    String categoryName = rs.getString("Category_name");
-                    double tempValue = rs.getDouble("Temp_VAL");
-                    String direction = rs.getString("Dir_VAL");
-                    String propertyUnit = rs.getString("Unit");
-
-                    properties.add(new PropertyView(id, propertyName, categoryName, tempValue,
-                            direction, propertyUnit));
-
-            }
-        } catch (SQLException e) {
-            throw new SQLException("Failed to fetch properties for batch " + batchCode, e);
-        }
-
-        return properties;
-    }
+    //TODO: fix later
+//    public List<PropertyView> getPropertiesByBatch(int batchCode) throws SQLException {
+//        List<PropertyView> properties = new ArrayList<>();
+//
+//        String sql = """
+//                SELECT
+//                    p.Property_ID,
+//                    p.Property_name,
+//                    c.Category_name,
+//                    t.Temp_VAL,
+//                    d.Dir_VAL,
+//                    u.Unit
+//                FROM Property p
+//                JOIN Category c ON p.Category_ID = c.Category_ID
+//                JOIN Units u ON p.Unit_ID = u.Unit_ID
+//                JOIN Direction d ON p.Dir_ID = d.Dir_ID
+//                JOIN Temperature t ON p.Temp_ID = t.Temp_ID
+//                WHERE p.Batch_CODE = ?
+//                """;
+//
+//        try(Connection conn = DBUtil.getConnection();
+//            PreparedStatement stmt = conn.prepareStatement(sql)) {
+//
+//            stmt.setInt(1, batchCode);
+//            ResultSet rs = stmt.executeQuery();
+//
+//            while(rs.next()){
+//                    int id = rs.getInt("Property_ID");
+//                    String propertyName = rs.getString("Property_name");
+//                    String categoryName = rs.getString("Category_name");
+//                    double tempValue = rs.getDouble("Temp_VAL");
+//                    String direction = rs.getString("Dir_VAL");
+//                    String propertyUnit = rs.getString("Unit");
+//
+//                    properties.add(new PropertyView(id, propertyName, categoryName, tempValue,
+//                            direction, propertyUnit));
+//
+//            }
+//        } catch (SQLException e) {
+//            throw new SQLException("Failed to fetch properties for batch " + batchCode, e);
+//        }
+//
+//        return properties;
+//    }
 
     void updateProperty(Property property){
     }

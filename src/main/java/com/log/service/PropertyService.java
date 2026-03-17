@@ -18,9 +18,10 @@ public class PropertyService {
         this.defaultPropertiesDAO = new DefaultPropertiesDAO();
     }
 
-    public List<PropertyView> getPropertiesByBatch(int batchCode) throws SQLException {
-        return propertyDAO.getPropertiesByBatch(batchCode);
-    }
+    // TODO: uncoment after enabling the method in the DAO class
+//    public List<PropertyView> getPropertiesByBatch(int batchCode) throws SQLException {
+//        return propertyDAO.getPropertiesByBatch(batchCode);
+//    }
 
     public ObservableList<PropertyView> getPropertiesByCategory(String categoryName){
         return defaultPropertiesDAO.getDefaultProperties(categoryName);
