@@ -25,7 +25,9 @@ public class ProductService {
 
         Product product = new Product(productId, productName.trim(), projectId);
 
-        productDAO.insertProduct(product);
+        int productCode = productDAO.insertProduct(product);
+
+        product.setProductCode(productCode);
     }
 
     public List<Product> getAllProducts() {

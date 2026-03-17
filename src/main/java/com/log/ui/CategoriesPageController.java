@@ -111,7 +111,15 @@ public class CategoriesPageController {
 
     @FXML
     private void handleEditClick() {
+        if(instance.isProjectCreated())
+        {
         editMenu.show(editButton, Side.BOTTOM, 0, 0);
+        }
+        else if(!instance.isProjectCreated())
+        {
+            AlertUtil.showError("Please create a project before editing categories.");
+        }
+
     }
 
     // ======================= CATEGORY POPUP ==============================
