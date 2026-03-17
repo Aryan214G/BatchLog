@@ -140,7 +140,7 @@
 -fx-max-width: Infinity;
 }
 
-.add-entry-button {
+.submit-button {
 -fx-background-color: #000000;
 -fx-text-fill: #ffffff;
 -fx-padding: 10 16;

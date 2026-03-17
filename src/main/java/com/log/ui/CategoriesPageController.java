@@ -62,6 +62,9 @@ public class CategoriesPageController {
     private HBox headerBox;
 
     @FXML
+    private Button submitButton;
+
+    @FXML
     private InfoBarController infoBarController;
 
     private List<InputRow> inputRows = new ArrayList<>();
@@ -84,7 +87,7 @@ public class CategoriesPageController {
     @FXML
     public void initialize() throws IOException {
 
-
+        isSubmitButtonVisible(false);
         if(!instance.isProjectCreated()) {
             categoriesListView.setDisable(false);
             propertiesListView.setDisable(false);
@@ -103,6 +106,11 @@ public class CategoriesPageController {
         deleteItem.setOnAction(e -> handleDeleteCategory());
 
         editMenu = new ContextMenu(addItem, deleteItem);
+    }
+
+    private void isSubmitButtonVisible(boolean value){
+        submitButton.setVisible(value);
+        submitButton.setManaged(value);
     }
 
     private void loadTempData(){
@@ -239,9 +247,9 @@ public class CategoriesPageController {
         saveCurrentPropertyValues(oldProperty);
         clearUIComponents();
         inputRows.clear();
+        isSubmitButtonVisible(true);
 
         selectedState.setSelectedProperty(newProperty);
-
         PropertyView property = properties.stream()
                 .filter(p -> p.getPropertyName().equals(newProperty.getPropertyName()))
                 .findFirst()
@@ -273,7 +281,9 @@ public class CategoriesPageController {
     private void addInputRow(int rowCount, String property) throws IOException {
 
         TextField field = new TextField();
+
         field.getStyleClass().add("input-field");
+
 
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/com/log/ui/components/unitsDropdown.fxml")
@@ -389,12 +399,14 @@ public class CategoriesPageController {
         );
     }
 
+
+
     private void loadPropertyFields(int defaultRows, String property) throws IOException {
 
         inputRows.clear();
         entriesGrid.getChildren().clear();
-
         PropertyState state = stateManager.getState(property);
+
 
         if (state == null) {
             for (int i = 0; i < defaultRows; i++) {
@@ -426,6 +438,7 @@ public class CategoriesPageController {
     private MetricsController metricsController;
 
     private Parent metrics;
+
     private void loadMetrics() throws IOException {
 
         if (metrics != null) return;
@@ -462,6 +475,7 @@ public class CategoriesPageController {
     private void clearUIComponents(){
         headerBox.getChildren().clear();
         entriesGrid.getChildren().clear();
+        isSubmitButtonVisible(false);
 
         if (metrics != null) {
             entriesPanel.getChildren().remove(metrics);
@@ -499,6 +513,6 @@ public class CategoriesPageController {
     }
 
     public void handleEntrySubmit(ActionEvent actionEvent) {
-        
+
     }
 }
