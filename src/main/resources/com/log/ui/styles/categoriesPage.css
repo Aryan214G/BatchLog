@@ -140,6 +140,14 @@
 -fx-max-width: Infinity;
 }
 
+.add-entry-button {
+-fx-background-color: #000000;
+-fx-text-fill: #ffffff;
+-fx-padding: 10 16;
+-fx-background-radius: 8;
+-fx-max-width: USE_PREF_SIZE;
+}
+
 .sidebar-panel-btn {
 -fx-background-color: transparent;
 -fx-max-width: Infinity;

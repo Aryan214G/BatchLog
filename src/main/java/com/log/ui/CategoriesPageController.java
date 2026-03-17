@@ -10,6 +10,7 @@ import com.log.model.Reading;
 import com.log.service.*;
 import com.log.ui.util.AlertUtil;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -497,4 +498,7 @@ public class CategoriesPageController {
         return values;
     }
 
+    public void handleEntrySubmit(ActionEvent actionEvent) {
+        
+    }
 }

@@ -81,6 +81,7 @@
                                     </columnConstraints>
 
                                 </GridPane>
+                                <Button fx:id="submitButton" alignment="CENTER" contentDisplay="CENTER" onAction="#handleEntrySubmit" styleClass="add-entry-button" text="Submit" />
 
                             </VBox>
                         </content>
