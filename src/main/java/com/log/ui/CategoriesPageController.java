@@ -388,10 +388,14 @@ public class CategoriesPageController {
         }
         int tempVal = 0;
 
-        try {
-            tempVal = Integer.parseInt(temperatureField.getText().trim());
-        } catch (NumberFormatException e) {
-            AlertUtil.showError("Please enter a valid temperature.");
+        String text = temperatureField.getText();
+
+        if (text != null && !text.isBlank()) {
+            try {
+                tempVal = Integer.parseInt(text.trim());
+            } catch (NumberFormatException e) {
+                AlertUtil.showError("Please enter a valid temperature.");
+            }
         }
 
         stateManager.saveState(
