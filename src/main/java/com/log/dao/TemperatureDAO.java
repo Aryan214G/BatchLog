@@ -12,14 +12,13 @@ public class TemperatureDAO {
 
     public void insertTemperature(Temperature temperature) {
 
-        String sql = "INSERT INTO Temperature (Temp_ID, Temp_VAL, Temp_UNIT) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO Temperature (Temp_VAL, Temp_UNIT) VALUES (?, ?)";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, temperature.getTempId());
-            stmt.setInt(2, temperature.getTempVal());
-            stmt.setInt(3, temperature.getTempUnit());
+            stmt.setInt(1, temperature.getTempVal());
+            stmt.setInt(2, temperature.getTempUnit());
 
             stmt.executeUpdate();
 

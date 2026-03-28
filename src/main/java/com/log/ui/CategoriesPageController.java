@@ -3,10 +3,7 @@ package com.log.ui;
 import com.log.core.AppState;
 import com.log.core.DefaultMapState;
 import com.log.core.SelectedState;
-import com.log.model.Category;
-import com.log.model.PropertyState;
-import com.log.model.PropertyView;
-import com.log.model.Reading;
+import com.log.model.*;
 import com.log.service.*;
 import com.log.ui.util.AlertUtil;
 import javafx.collections.ObservableList;
@@ -513,6 +510,13 @@ public class CategoriesPageController {
     }
 
     public void handleEntrySubmit(ActionEvent actionEvent) {
+        PropertyView selectedProperty = selectedState.getSelectedProperty();
+        saveCurrentPropertyValues(selectedProperty);
+        PropertyState propertyState = stateManager.getState(selectedProperty.getPropertyName());
+
+//        Property property = new Property();
+
+
 
     }
 }
