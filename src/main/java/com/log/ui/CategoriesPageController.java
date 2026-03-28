@@ -426,7 +426,7 @@ public class CategoriesPageController {
         String temp = String.valueOf(state.getTemperature().getTempVal());
 
         temperatureField.setText(temp);
-        tempUnitController.setSelectedUnit(state.getTemperatureUnit());
+        tempUnitController.setSelectedUnit(state.getTemperature().getTempUnit());
         directionController.setSelectedDirection(state.getDirection());
 
         for (int i = 0; i < state.getReadings().size(); i++) {
