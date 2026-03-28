@@ -18,7 +18,7 @@ public class TemperatureDAO {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, temperature.getTempVal());
-            stmt.setInt(2, temperature.getTempUnit());
+            stmt.setString(2, temperature.getTempUnit());
 
             stmt.executeUpdate();
 
@@ -42,7 +42,7 @@ public class TemperatureDAO {
                 return new Temperature(
                         rs.getInt("Temp_ID"),
                         rs.getInt("Temp_VAL"),
-                        rs.getInt("Temp_UNIT")
+                        rs.getString("Temp_UNIT")
                 );
             }
 
@@ -68,7 +68,7 @@ public class TemperatureDAO {
                 Temperature temp = new Temperature(
                         rs.getInt("Temp_ID"),
                         rs.getInt("Temp_VAL"),
-                        rs.getInt("Temp_UNIT")
+                        rs.getString("Temp_UNIT")
                 );
 
                 temperatures.add(temp);
@@ -89,7 +89,7 @@ public class TemperatureDAO {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, temperature.getTempVal());
-            stmt.setInt(2, temperature.getTempUnit());
+            stmt.setString(2, temperature.getTempUnit());
             stmt.setInt(3, temperature.getTempId());
 
             stmt.executeUpdate();

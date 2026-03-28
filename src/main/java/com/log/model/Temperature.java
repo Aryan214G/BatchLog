@@ -4,10 +4,15 @@ public class Temperature {
 
     private int tempId;
     private int tempVal;
-    private int tempUnit;
+    private String tempUnit;
 
-    public Temperature(int tempId, int tempVal, int tempUnit) {
+    public Temperature(int tempId, int tempVal, String tempUnit) {
         this.tempId = tempId;
+        this.tempVal = tempVal;
+        this.tempUnit = tempUnit;
+    }
+
+    public Temperature(int tempVal, String tempUnit) {
         this.tempVal = tempVal;
         this.tempUnit = tempUnit;
     }
@@ -28,11 +33,11 @@ public class Temperature {
         this.tempVal = tempVal;
     }
 
-    public int getTempUnit() {
+    public String getTempUnit() {
         return tempUnit;
     }
 
-    public void setTempUnit(int tempUnit) {
+    public void setTempUnit(String tempUnit) {
         this.tempUnit = tempUnit;
     }
 

@@ -78,7 +78,7 @@ public class CategoriesPageController {
 
     private TempDataService tempDataService = new TempDataService();
     private PropertyService propertyService = new PropertyService();
-
+    private TemperatureService temperatureService = new TemperatureService();
     // ======================= END OF VARIABLES DECLARATION ==============================
 
     @FXML
@@ -386,12 +386,19 @@ public class CategoriesPageController {
                     row.getUnitController().getComboBox().getValue()
             ));
         }
+        int tempVal = 0;
+
+        try {
+            tempVal = Integer.parseInt(temperatureField.getText().trim());
+        } catch (NumberFormatException e) {
+            AlertUtil.showError("Please enter a valid temperature.");
+        }
 
         stateManager.saveState(
                 property.getPropertyName(),
                 readings,
-                temperatureField.getText(),
-                tempUnitController.getComboBox().getValue(),
+                new Temperature(tempVal,
+                        tempUnitController.getComboBox().getValue()),
                 directionController.getSelectedDirection()
         );
     }
@@ -412,7 +419,9 @@ public class CategoriesPageController {
             return;
         }
 
-        temperatureField.setText(state.getTemperature());
+        String temp = String.valueOf(state.getTemperature().getTempVal());
+
+        temperatureField.setText(temp);
         tempUnitController.setSelectedUnit(state.getTemperatureUnit());
         directionController.setSelectedDirection(state.getDirection());
 
@@ -513,6 +522,8 @@ public class CategoriesPageController {
         PropertyView selectedProperty = selectedState.getSelectedProperty();
         saveCurrentPropertyValues(selectedProperty);
         PropertyState propertyState = stateManager.getState(selectedProperty.getPropertyName());
+
+        temperatureService.createTemperature(propertyState.getTemperature());
 
 //        Property property = new Property();
 
