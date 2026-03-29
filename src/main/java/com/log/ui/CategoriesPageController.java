@@ -81,6 +81,7 @@ public class CategoriesPageController {
     private PropertyService propertyService = new PropertyService();
     private TemperatureService temperatureService = new TemperatureService();
     private DirectionService directionService = new DirectionService();
+    private PropertySubmissionService propertySubmissionService = new PropertySubmissionService(temperatureService, directionService);
     // ======================= END OF VARIABLES DECLARATION ==============================
 
     @FXML
@@ -528,29 +529,10 @@ public class CategoriesPageController {
     public void handleEntrySubmit(ActionEvent actionEvent) {
         PropertyView selectedProperty = selectedState.getSelectedProperty();
         saveCurrentPropertyValues(selectedProperty);
-        PropertyState propertyState = stateManager.getState(selectedProperty.getPropertyName());
 
-        //TODO: only call the methods whose values have been changed
-        temperatureSubmitHelper(propertyState);
-        directionSubmitHelper(propertyState);
+        PropertyState propertyState =
+                stateManager.getState(selectedProperty.getPropertyName());
 
-    }
-
-    public void temperatureSubmitHelper(PropertyState propertyState){
-        if(propertyState.getTemperature().getTempId() == null){
-            temperatureService.createTemperature(propertyState.getTemperature());
-        }
-        else{
-            temperatureService.updateTemperature(propertyState.getTemperature());
-        }
-    }
-
-    public void directionSubmitHelper(PropertyState propertyState){
-        if(propertyState.getDirection().getDirId() == null){
-            directionService.createDirectionValue(propertyState.getDirection());
-        }
-        else{
-            directionService.updateDirectionValue(propertyState.getDirection());
-        }
+        propertySubmissionService.submit(propertyState);
     }
 }
