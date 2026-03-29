@@ -1,6 +1,7 @@
 package com.log.service;
 
 import com.log.dao.DirectionDAO;
+import com.log.dao.DirectionValuesDAO;
 import com.log.model.Direction;
 
 import java.util.List;
@@ -8,9 +9,11 @@ import java.util.List;
 public class DirectionService {
 
     private DirectionDAO directionDAO;
+    private DirectionValuesDAO directionValuesDAO;
 
     public DirectionService() {
         this.directionDAO = new DirectionDAO();
+        this.directionValuesDAO = new DirectionValuesDAO();
     }
 
     public void createDirection(Direction direction) {
@@ -60,4 +63,33 @@ public class DirectionService {
 
         directionDAO.deleteDirection(dirId);
     }
+
+    //================ DirectionValues ==================
+
+    public void createDirectionValue(Direction direction) {
+
+        if (direction == null) {
+            throw new IllegalArgumentException("Direction cannot be null");
+        }
+
+        if (direction.getDirVal() == null || direction.getDirVal().isBlank()) {
+            throw new IllegalArgumentException("Direction value cannot be empty");
+        }
+
+        directionValuesDAO.insertDirection(direction);
+    }
+
+    public void updateDirectionValue(Direction direction) {
+
+        if (direction == null) {
+            throw new IllegalArgumentException("Direction cannot be null");
+        }
+
+        if (direction.getDirVal() == null || direction.getDirVal().isBlank()) {
+            throw new IllegalArgumentException("Direction value cannot be empty");
+        }
+
+        directionValuesDAO.updateDirection(direction);
+    }
+
 }

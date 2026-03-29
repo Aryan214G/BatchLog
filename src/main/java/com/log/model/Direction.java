@@ -2,7 +2,7 @@ package com.log.model;
 
 public class Direction {
 
-    private int dirId;
+    private Integer dirId;
     private String dirVal;
 
     public Direction(int dirId, String dirVal) {
@@ -14,11 +14,11 @@ public class Direction {
         this.dirVal = dirVal;
     }
 
-    public int getDirId() {
+    public Integer getDirId() {
         return dirId;
     }
 
-    public void setDirId(int dirId) {
+    public void setDirId(Integer dirId) {
         this.dirId = dirId;
     }
 
