@@ -1,10 +1,8 @@
 package com.log.service;
 
-import com.log.model.Direction;
-import com.log.model.PropertyState;
-import com.log.model.Temperature;
-import com.log.service.DirectionService;
-import com.log.service.TemperatureService;
+import com.log.model.*;
+
+import java.util.List;
 
 public class PropertySubmissionService {
 
@@ -19,9 +17,10 @@ public class PropertySubmissionService {
         this.directionService = directionService;
     }
 
-    public void submit(PropertyState propertyState) {
+    public void submit(PropertyState propertyState, String propertyName) {
         handleTemperature(propertyState.getTemperature());
         handleDirection(propertyState.getDirection());
+        handleProperty(propertyState.getReadings(), propertyName);
     }
 
     private void handleTemperature(Temperature temp) {
@@ -35,9 +34,11 @@ public class PropertySubmissionService {
 
     private void handleDirection(Direction dir) {
         if (dir.getDirId() == null) {
-            directionService.createDirectionValue(dir);
-        } else {
-            directionService.updateDirectionValue(dir);
+            this.directionId = directionService.getDirectionByName(dir.getDirVal()).getDirId();
         }
+    }
+
+    private void handleProperty(List<Reading> readings, String propertyName){
+        Property property = new Property(propertyName, );
     }
 }

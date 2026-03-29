@@ -27,7 +27,7 @@ public class CategoryDAO {
     }
 
     // SELECT ONE
-    public Category getCategory(int categoryId) {
+    public Category getCategoryById(int categoryId) {
 
         String sql = "SELECT * FROM Category WHERE Category_ID = ?";
 
@@ -53,6 +53,25 @@ public class CategoryDAO {
         return null;
     }
 
+    public Category getCategoryByName(String category){
+        String sql = "SELECT Category_ID FROM Category WHERE Category_name = ?";
+
+        try(Connection conn = DBUtil.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)){
+            stmt.setString(1, category);
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                return new Category(
+                        rs.getInt(1),
+                        category
+                );
+            }
+        } catch(SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
     // SELECT ALL
     public List<Category> getAllCategories() {
 

@@ -59,8 +59,8 @@ import java.util.List;
             }
         }
 
-        public Category getCategory(int categoryId) {
-            return categoryDAO.getCategory(categoryId);
+        public Category getCategory(String category) {
+            return categoryDAO.getCategoryByName(category);
         }
 
         public void deleteCategory(int categoryId) {

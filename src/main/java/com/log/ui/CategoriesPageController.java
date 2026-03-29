@@ -533,6 +533,6 @@ public class CategoriesPageController {
         PropertyState propertyState =
                 stateManager.getState(selectedProperty.getPropertyName());
 
-        propertySubmissionService.submit(propertyState);
+        propertySubmissionService.submit(propertyState, selectedProperty.getPropertyName());
     }
 }
