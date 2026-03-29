@@ -8,19 +8,22 @@ public class PropertySubmissionService {
 
     private TemperatureService temperatureService;
     private DirectionService directionService;
+    private CategoryService categoryService;
 
     private int tempId;
     private int directionId;
     public PropertySubmissionService(TemperatureService temperatureService,
-                                     DirectionService directionService) {
+                                     DirectionService directionService,
+                                     CategoryService categoryService) {
         this.temperatureService = temperatureService;
         this.directionService = directionService;
+        this.categoryService = categoryService;
     }
 
-    public void submit(PropertyState propertyState, String propertyName) {
+    public void submit(PropertyState propertyState, String propertyName, String selectedCategory) {
         handleTemperature(propertyState.getTemperature());
         handleDirection(propertyState.getDirection());
-        handleProperty(propertyState.getReadings(), propertyName);
+        handleProperty(propertyState.getReadings(), propertyName, selectedCategory);
     }
 
     private void handleTemperature(Temperature temp) {
@@ -38,7 +41,13 @@ public class PropertySubmissionService {
         }
     }
 
-    private void handleProperty(List<Reading> readings, String propertyName){
-        Property property = new Property(propertyName, );
+    private void handleProperty(List<Reading> readings, String propertyName, String selectedCategory){
+        Property property = new Property(
+                propertyName,
+                categoryService.getCategory(selectedCategory).getCategoryId(),
+                tempId,
+                directionId,
+
+        );
     }
 }
