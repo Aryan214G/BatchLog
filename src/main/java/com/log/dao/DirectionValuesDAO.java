@@ -8,11 +8,11 @@ import java.util.List;
 import com.log.database.DBUtil;
 import com.log.model.Direction;
 
-public class DirectionDAO {
+public class DirectionValuesDAO {
 
     public void insertDirection(Direction direction) {
 
-        String sql = "INSERT INTO Direction (Dir_VAL) VALUES (?)";
+        String sql = "INSERT INTO Direction_values (Dir_VAL) VALUES (?)";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -29,7 +29,7 @@ public class DirectionDAO {
 
     public Direction getDirection(int dirId) {
 
-        String sql = "SELECT * FROM Direction WHERE Dir_ID = ?";
+        String sql = "SELECT * FROM Direction_values WHERE Dir_ID = ?";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -57,7 +57,7 @@ public class DirectionDAO {
 
         List<Direction> directions = new ArrayList<>();
 
-        String sql = "SELECT * FROM Direction";
+        String sql = "SELECT * FROM Direction_values";
 
         try (Connection conn = DBUtil.getConnection();
              Statement stmt = conn.createStatement();
@@ -83,7 +83,7 @@ public class DirectionDAO {
 
     public void updateDirection(Direction direction) {
 
-        String sql = "UPDATE Direction SET Dir_VAL = ? WHERE Dir_ID = ?";
+        String sql = "UPDATE Direction_values SET Dir_VAL = ? WHERE Dir_ID = ?";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -101,7 +101,7 @@ public class DirectionDAO {
 
     public void deleteDirection(int dirId) {
 
-        String sql = "DELETE FROM Direction WHERE Dir_ID = ?";
+        String sql = "DELETE FROM Direction_values WHERE Dir_ID = ?";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

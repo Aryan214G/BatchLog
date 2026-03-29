@@ -1,5 +1,6 @@
 package com.log.service;
 
+import com.log.model.Direction;
 import com.log.model.PropertyState;
 import com.log.model.Reading;
 import com.log.model.Temperature;
@@ -16,7 +17,7 @@ public class PropertyStateManager {
             String property,
             List<Reading> readings,
             Temperature temperature,
-            String direction
+            Direction direction
     ) {
         if (property == null) return;
 

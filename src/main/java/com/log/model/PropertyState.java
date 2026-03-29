@@ -8,7 +8,7 @@ public class PropertyState {
     private List<Reading> readings = new ArrayList<>();
 
     private Temperature temperature;
-    private String direction;
+    private Direction direction;
 
     public List<Reading> getReadings() {
         return readings;
@@ -22,7 +22,7 @@ public class PropertyState {
         this.temperature = temperature;
     }
 
-    public void setDirection(String direction) {
+    public void setDirection(Direction direction) {
         this.direction = direction;
     }
 
@@ -31,7 +31,7 @@ public class PropertyState {
     }
 
 
-    public String getDirection() {
+    public Direction getDirection() {
         return direction;
     }
 }
