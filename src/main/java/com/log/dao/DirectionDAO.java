@@ -12,13 +12,12 @@ public class DirectionDAO {
 
     public void insertDirection(Direction direction) {
 
-        String sql = "INSERT INTO Direction (Dir_ID, Dir_VAL) VALUES (?, ?)";
+        String sql = "INSERT INTO Direction (Dir_VAL) VALUES (?)";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, direction.getDirId());
-            stmt.setString(2, direction.getDirVal());
+            stmt.setString(1, direction.getDirVal());
 
             stmt.executeUpdate();
 
