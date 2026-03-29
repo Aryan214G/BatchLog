@@ -527,11 +527,12 @@ public class CategoriesPageController {
         saveCurrentPropertyValues(selectedProperty);
         PropertyState propertyState = stateManager.getState(selectedProperty.getPropertyName());
 
-        temperatureService.createTemperature(propertyState.getTemperature());
-
-//        Property property = new Property();
-
-
+        if(propertyState.getTemperature().getTempId() == null){
+          temperatureService.createTemperature(propertyState.getTemperature());
+        }
+        else{
+            temperatureService.updateTemperature(propertyState.getTemperature());
+        }
 
     }
 }

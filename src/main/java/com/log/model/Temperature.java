@@ -2,7 +2,7 @@ package com.log.model;
 
 public class Temperature {
 
-    private int tempId;
+    private Integer tempId;
     private int tempVal;
     private String tempUnit;
 
@@ -17,11 +17,11 @@ public class Temperature {
         this.tempUnit = tempUnit;
     }
 
-    public int getTempId() {
+    public Integer getTempId() {
         return tempId;
     }
 
-    public void setTempId(int tempId) {
+    public void setTempId(Integer tempId) {
         this.tempId = tempId;
     }
 
