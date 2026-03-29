@@ -2,6 +2,7 @@ package com.log.service;
 
 import com.log.model.PropertyState;
 import com.log.model.Reading;
+import com.log.model.Temperature;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,15 +15,13 @@ public class PropertyStateManager {
     public void saveState(
             String property,
             List<Reading> readings,
-            String temperature,
-            String tempUnit,
+            Temperature temperature,
             String direction
     ) {
         if (property == null) return;
 
         PropertyState state = new PropertyState();
         state.setTemperature(temperature);
-        state.setTemperatureUnit(tempUnit);
         state.setDirection(direction);
         state.setReadings(readings);
 

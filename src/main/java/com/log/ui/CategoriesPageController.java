@@ -3,13 +3,11 @@ package com.log.ui;
 import com.log.core.AppState;
 import com.log.core.DefaultMapState;
 import com.log.core.SelectedState;
-import com.log.model.Category;
-import com.log.model.PropertyState;
-import com.log.model.PropertyView;
-import com.log.model.Reading;
+import com.log.model.*;
 import com.log.service.*;
 import com.log.ui.util.AlertUtil;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -61,6 +59,9 @@ public class CategoriesPageController {
     private HBox headerBox;
 
     @FXML
+    private Button submitButton;
+
+    @FXML
     private InfoBarController infoBarController;
 
     private List<InputRow> inputRows = new ArrayList<>();
@@ -77,13 +78,13 @@ public class CategoriesPageController {
 
     private TempDataService tempDataService = new TempDataService();
     private PropertyService propertyService = new PropertyService();
-
+    private TemperatureService temperatureService = new TemperatureService();
     // ======================= END OF VARIABLES DECLARATION ==============================
 
     @FXML
     public void initialize() throws IOException {
 
-
+        isSubmitButtonVisible(false);
         if(!instance.isProjectCreated()) {
             categoriesListView.setDisable(false);
             propertiesListView.setDisable(false);
@@ -102,6 +103,11 @@ public class CategoriesPageController {
         deleteItem.setOnAction(e -> handleDeleteCategory());
 
         editMenu = new ContextMenu(addItem, deleteItem);
+    }
+
+    private void isSubmitButtonVisible(boolean value){
+        submitButton.setVisible(value);
+        submitButton.setManaged(value);
     }
 
     private void loadTempData(){
@@ -238,9 +244,9 @@ public class CategoriesPageController {
         saveCurrentPropertyValues(oldProperty);
         clearUIComponents();
         inputRows.clear();
+        isSubmitButtonVisible(true);
 
         selectedState.setSelectedProperty(newProperty);
-
         PropertyView property = properties.stream()
                 .filter(p -> p.getPropertyName().equals(newProperty.getPropertyName()))
                 .findFirst()
@@ -272,7 +278,9 @@ public class CategoriesPageController {
     private void addInputRow(int rowCount, String property) throws IOException {
 
         TextField field = new TextField();
+
         field.getStyleClass().add("input-field");
+
 
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/com/log/ui/components/unitsDropdown.fxml")
@@ -378,22 +386,35 @@ public class CategoriesPageController {
                     row.getUnitController().getComboBox().getValue()
             ));
         }
+        int tempVal = 0;
+
+        String text = temperatureField.getText();
+
+        if (text != null && !text.isBlank()) {
+            try {
+                tempVal = Integer.parseInt(text.trim());
+            } catch (NumberFormatException e) {
+                AlertUtil.showError("Please enter a valid temperature.");
+            }
+        }
 
         stateManager.saveState(
                 property.getPropertyName(),
                 readings,
-                temperatureField.getText(),
-                tempUnitController.getComboBox().getValue(),
+                new Temperature(tempVal,
+                        tempUnitController.getComboBox().getValue()),
                 directionController.getSelectedDirection()
         );
     }
+
+
 
     private void loadPropertyFields(int defaultRows, String property) throws IOException {
 
         inputRows.clear();
         entriesGrid.getChildren().clear();
-
         PropertyState state = stateManager.getState(property);
+
 
         if (state == null) {
             for (int i = 0; i < defaultRows; i++) {
@@ -402,8 +423,10 @@ public class CategoriesPageController {
             return;
         }
 
-        temperatureField.setText(state.getTemperature());
-        tempUnitController.setSelectedUnit(state.getTemperatureUnit());
+        String temp = String.valueOf(state.getTemperature().getTempVal());
+
+        temperatureField.setText(temp);
+        tempUnitController.setSelectedUnit(state.getTemperature().getTempUnit());
         directionController.setSelectedDirection(state.getDirection());
 
         for (int i = 0; i < state.getReadings().size(); i++) {
@@ -425,6 +448,7 @@ public class CategoriesPageController {
     private MetricsController metricsController;
 
     private Parent metrics;
+
     private void loadMetrics() throws IOException {
 
         if (metrics != null) return;
@@ -461,6 +485,7 @@ public class CategoriesPageController {
     private void clearUIComponents(){
         headerBox.getChildren().clear();
         entriesGrid.getChildren().clear();
+        isSubmitButtonVisible(false);
 
         if (metrics != null) {
             entriesPanel.getChildren().remove(metrics);
@@ -497,4 +522,16 @@ public class CategoriesPageController {
         return values;
     }
 
+    public void handleEntrySubmit(ActionEvent actionEvent) {
+        PropertyView selectedProperty = selectedState.getSelectedProperty();
+        saveCurrentPropertyValues(selectedProperty);
+        PropertyState propertyState = stateManager.getState(selectedProperty.getPropertyName());
+
+        temperatureService.createTemperature(propertyState.getTemperature());
+
+//        Property property = new Property();
+
+
+
+    }
 }

@@ -7,8 +7,7 @@ public class PropertyState {
 
     private List<Reading> readings = new ArrayList<>();
 
-    private String temperature;
-    private String temperatureUnit;
+    private Temperature temperature;
     private String direction;
 
     public List<Reading> getReadings() {
@@ -19,25 +18,18 @@ public class PropertyState {
         this.readings = readings;
     }
 
-    public void setTemperature(String temperature) {
+    public void setTemperature(Temperature temperature) {
         this.temperature = temperature;
-    }
-
-    public void setTemperatureUnit(String temperatureUnit) {
-        this.temperatureUnit = temperatureUnit;
     }
 
     public void setDirection(String direction) {
         this.direction = direction;
     }
 
-    public String getTemperature() {
+    public Temperature getTemperature() {
         return temperature;
     }
 
-    public String getTemperatureUnit() {
-        return temperatureUnit;
-    }
 
     public String getDirection() {
         return direction;

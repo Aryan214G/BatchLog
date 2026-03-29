@@ -12,14 +12,13 @@ public class TemperatureDAO {
 
     public void insertTemperature(Temperature temperature) {
 
-        String sql = "INSERT INTO Temperature (Temp_ID, Temp_VAL, Temp_UNIT) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO Temperature (Temp_VAL, Temp_UNIT) VALUES (?, ?)";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, temperature.getTempId());
-            stmt.setInt(2, temperature.getTempVal());
-            stmt.setInt(3, temperature.getTempUnit());
+            stmt.setInt(1, temperature.getTempVal());
+            stmt.setString(2, temperature.getTempUnit());
 
             stmt.executeUpdate();
 
@@ -43,7 +42,7 @@ public class TemperatureDAO {
                 return new Temperature(
                         rs.getInt("Temp_ID"),
                         rs.getInt("Temp_VAL"),
-                        rs.getInt("Temp_UNIT")
+                        rs.getString("Temp_UNIT")
                 );
             }
 
@@ -69,7 +68,7 @@ public class TemperatureDAO {
                 Temperature temp = new Temperature(
                         rs.getInt("Temp_ID"),
                         rs.getInt("Temp_VAL"),
-                        rs.getInt("Temp_UNIT")
+                        rs.getString("Temp_UNIT")
                 );
 
                 temperatures.add(temp);
@@ -90,7 +89,7 @@ public class TemperatureDAO {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, temperature.getTempVal());
-            stmt.setInt(2, temperature.getTempUnit());
+            stmt.setString(2, temperature.getTempUnit());
             stmt.setInt(3, temperature.getTempId());
 
             stmt.executeUpdate();
