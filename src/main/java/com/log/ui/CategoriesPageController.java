@@ -550,7 +550,7 @@ public class CategoriesPageController {
             directionService.createDirectionValue(propertyState.getDirection());
         }
         else{
-            directionService.updateDirection(propertyState.getDirection());
+            directionService.updateDirectionValue(propertyState.getDirection());
         }
     }
 }
