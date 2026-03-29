@@ -398,12 +398,13 @@ public class CategoriesPageController {
             }
         }
 
+
         stateManager.saveState(
                 property.getPropertyName(),
                 readings,
                 new Temperature(tempVal,
                         tempUnitController.getComboBox().getValue()),
-                directionController.getSelectedDirection()
+                new Direction(directionController.getSelectedDirection())
         );
     }
 
@@ -427,7 +428,7 @@ public class CategoriesPageController {
 
         temperatureField.setText(temp);
         tempUnitController.setSelectedUnit(state.getTemperature().getTempUnit());
-        directionController.setSelectedDirection(state.getDirection());
+        directionController.setSelectedDirection(state.getDirection().getDirVal());
 
         for (int i = 0; i < state.getReadings().size(); i++) {
 

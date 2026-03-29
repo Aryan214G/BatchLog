@@ -10,6 +10,10 @@ public class Direction {
         this.dirVal = dirVal;
     }
 
+    public Direction(String dirVal) {
+        this.dirVal = dirVal;
+    }
+
     public int getDirId() {
         return dirId;
     }
