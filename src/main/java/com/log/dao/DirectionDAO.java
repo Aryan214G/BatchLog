@@ -52,6 +52,27 @@ public class DirectionDAO {
         return null;
     }
 
+    public Direction getDirection(String direction){
+
+        String sql = "SELECT Dir_ID FROM Direction WHERE Dir_VAL = ?";
+
+        try(Connection conn = DBUtil.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)){
+
+            stmt.setString(1, direction);
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                return new Direction(
+                        rs.getInt(1),
+                        direction
+                );
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public List<Direction> getAllDirections() {
 

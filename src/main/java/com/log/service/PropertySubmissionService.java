@@ -12,6 +12,7 @@ public class PropertySubmissionService {
     private DirectionService directionService;
 
     private int tempId;
+    private int directionId;
     public PropertySubmissionService(TemperatureService temperatureService,
                                      DirectionService directionService) {
         this.temperatureService = temperatureService;
