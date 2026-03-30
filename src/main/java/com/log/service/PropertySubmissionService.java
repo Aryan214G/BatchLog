@@ -11,7 +11,8 @@ public class PropertySubmissionService {
     private DirectionService directionService;
     private CategoryService categoryService;
     private UnitsService unitsService;
-    private BasePropertiesState basePropertiesState;
+    private PropertyService propertyService;
+    private BasePropertiesState bsinstance = BasePropertiesState.getInstance();
 
     private int tempId;
     private int directionId;
@@ -45,13 +46,15 @@ public class PropertySubmissionService {
     }
 
     private void handleProperty(List<Reading> readings, String propertyName, String selectedCategory){
-//        Property property = new Property(
-//                propertyName,
-//                categoryService.getCategory(selectedCategory).getCategoryId(),
-//                tempId,
-//                directionId,
-//                unitsService.getUnit(readings.getFirst().getUnit()),
-//
-//        );
+        Property property = new Property(
+                propertyName,
+                categoryService.getCategory(selectedCategory).getCategoryId(),
+                tempId,
+                directionId,
+                unitsService.getUnit(readings.get(0).getUnit()).getUnitId(),
+                bsinstance.getBatchCode()
+        );
+
+        propertyService.insertProperty(property);
     }
 }
