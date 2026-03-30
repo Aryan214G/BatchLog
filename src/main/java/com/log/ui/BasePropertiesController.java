@@ -27,6 +27,7 @@ public class BasePropertiesController {
     private final basePropertiesState bpropState = basePropertiesState.getInstance();
     private ProjectService projectService = new ProjectService();
 
+
     // ===== INITIALIZATION =====
     @FXML
     public void initialize() {
@@ -52,17 +53,6 @@ public class BasePropertiesController {
         LocalDate date = testDate.getValue();
         String place = placeOfTesting.getText();
         String file = fileName.getText();
-
-        handleCreateProject(project);
-
-        int productId = Integer.parseInt(productID.getText());
-        productService.createProduct(productId, product);
-
-        // Example: store something in AppState if needed
-        System.out.println("Project: " + project);
-        System.out.println("Batch: " + batch);
-
-        // TODO: Save to AppState / Database / Model
         bpropState.setProjectName(projectName.getText());
         bpropState.setBatchNo(batchNo.getText());
         bpropState.setProductName(productName.getText());
@@ -71,11 +61,32 @@ public class BasePropertiesController {
         bpropState.setPlaceOfTesting(placeOfTesting.getText());
         bpropState.setFileName(fileName.getText());
 
+        handleCreateProject(project);
+
+        String productId = productID.getText();
+        productService.createProduct(productId, product);
+
+        handleCreateBatch();
+        // Example: store something in AppState if needed
+        System.out.println("Project: " + project);
+        System.out.println("Batch: " + batch);
+
+        // TODO: Save to AppState / Database / Model
+
+
         appState.setProjectCreated(true);
 
         loadCategoriesPage();
 
+
     }
+
+    private void handleCreateBatch() {
+        int batchNo = Integer.parseInt(bpropState.getBatchNo());
+        int projectID = bpropState.getProjectId();
+
+    }
+
     private void loadCategoriesPage() {
 
         try {
