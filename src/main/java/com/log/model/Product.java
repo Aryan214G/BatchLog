@@ -3,20 +3,20 @@ package com.log.model;
 public class Product {
 
     private int productCode;
-    private int productId;
+    private String productId;
     private String productName;
     private int projectId;
 
     public Product() {
     }
 
-    public Product(int productId, String productName, int projectId) {
+    public Product(String productId, String productName, int projectId) {
         this.productId = productId;
         this.productName = productName;
         this.projectId = projectId;
     }
 
-    public Product(int productCode, int productId, String productName, int projectId) {
+    public Product(int productCode, String productId, String productName, int projectId) {
         this.productCode = productCode;
         this.productId = productId;
         this.productName = productName;
@@ -31,11 +31,11 @@ public class Product {
         this.productCode = productCode;
     }
 
-    public int getProductId() {
+    public String getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 

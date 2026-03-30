@@ -2,6 +2,8 @@ package com.log.ui;
 
 import com.log.core.AppState;
 import com.log.core.basePropertiesState;
+import com.log.dao.BatchDAO;
+import com.log.dao.ProductDAO;
 import com.log.service.ProjectService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,6 +28,9 @@ public class BasePropertiesController {
     private final AppState appState = AppState.getInstance();
     private final basePropertiesState bpropState = basePropertiesState.getInstance();
     private ProjectService projectService = new ProjectService();
+    private ProductDAO productDAO = new ProductDAO();
+    private BatchDAO batchDAO = new BatchDAO();
+
 
     // ===== INITIALIZATION =====
     @FXML
@@ -34,9 +39,7 @@ public class BasePropertiesController {
         setDefaultProject();
         System.out.println("Base Properties Loaded");
     }
-
     // ===== BUTTON ACTIONS =====
-
     @FXML
     private void handleNext() {
 
@@ -52,17 +55,6 @@ public class BasePropertiesController {
         LocalDate date = testDate.getValue();
         String place = placeOfTesting.getText();
         String file = fileName.getText();
-
-        handleCreateProject(project);
-
-        int productId = Integer.parseInt(productID.getText());
-        productService.createProduct(productId, product);
-
-        // Example: store something in AppState if needed
-        System.out.println("Project: " + project);
-        System.out.println("Batch: " + batch);
-
-        // TODO: Save to AppState / Database / Model
         bpropState.setProjectName(projectName.getText());
         bpropState.setBatchNo(batchNo.getText());
         bpropState.setProductName(productName.getText());
@@ -71,11 +63,30 @@ public class BasePropertiesController {
         bpropState.setPlaceOfTesting(placeOfTesting.getText());
         bpropState.setFileName(fileName.getText());
 
-        appState.setProjectCreated(true);
+        handleCreateProject(project);
 
+        String productId = productID.getText();
+        productService.createProduct(productId, product);
+        handleCreateBatch();
+        // Example: store something in AppState if needed
+        System.out.println("Project: " + project);
+        System.out.println("Batch: " + batch);
+        // TODO: Save to AppState / Database / Model
+        appState.setProjectCreated(true);
         loadCategoriesPage();
 
+
     }
+
+    private void handleCreateBatch() {
+        int batchID = Integer.parseInt(bpropState.getBatchNo());
+        int projectID = bpropState.getProjectId();
+        String TestDate = bpropState.getTestDate().toString();
+        String TestSite = bpropState.getPlaceOfTesting();
+        int productCode = productDAO.getProductCode(bpropState.getProductID(),bpropState.getProductName(),bpropState.getProjectId());
+        batchDAO.insertBatch(batchID,TestDate,TestSite,projectID,productCode);
+    }
+
     private void loadCategoriesPage() {
 
         try {

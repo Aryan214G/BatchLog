@@ -26,7 +26,7 @@ public class ProductDAO {
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, product.getProductId());
+            stmt.setString(1, product.getProductId());
             stmt.setString(2, product.getProductName());
             stmt.setInt(3, product.getProjectId());
 
@@ -58,7 +58,7 @@ public class ProductDAO {
             if (rs.next()) {
                 return new Product(
                         rs.getInt("Product_code"),
-                        rs.getInt("Product_ID"),
+                        rs.getString("Product_ID"),
                         rs.getString("Product_name"),
                         rs.getInt("Project_ID")
                 );
@@ -86,7 +86,7 @@ public class ProductDAO {
 
                 Product p = new Product(
                         rs.getInt("Product_code"),
-                        rs.getInt("Product_ID"),
+                        rs.getString("Product_ID"),
                         rs.getString("Product_name"),
                         rs.getInt("Project_ID")
                 );
@@ -108,7 +108,7 @@ public class ProductDAO {
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, product.getProductId());
+            stmt.setString(1, product.getProductId());
             stmt.setString(2, product.getProductName());
             stmt.setInt(3, product.getProjectId());
             stmt.setInt(4, product.getProductCode());
@@ -136,11 +136,11 @@ public class ProductDAO {
         }
     }
 
-    public int getProductCode(int productId, String productName, int projectId){
+    public int getProductCode(String productId, String productName, int projectId){
         String sql = "SELECT Product_code FROM Product WHERE Product_ID=? AND Product_name=? AND Project_ID=?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, productId);
+            stmt.setString(1, productId);
             stmt.setString(2,productName);
             stmt.setInt(3,projectId);
 

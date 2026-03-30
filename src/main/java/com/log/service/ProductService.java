@@ -15,7 +15,7 @@ public class ProductService {
         this.productDAO = new ProductDAO();
     }
 
-    public void createProduct(int productId, String productName) {
+    public void createProduct(String productId, String productName) {
 
         if (productName == null || productName.trim().isEmpty()) {
             throw new IllegalArgumentException("Product name cannot be empty");
