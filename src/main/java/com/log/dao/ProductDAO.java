@@ -136,11 +136,11 @@ public class ProductDAO {
         }
     }
 
-    public int getProductCode(int productId, String productName, int projectId){
+    public int getProductCode(String productId, String productName, int projectId){
         String sql = "SELECT Product_code FROM Product WHERE Product_ID=? AND Product_name=? AND Project_ID=?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, productId);
+            stmt.setString(1, productId);
             stmt.setString(2,productName);
             stmt.setInt(3,projectId);
 

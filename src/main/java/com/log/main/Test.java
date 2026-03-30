@@ -35,7 +35,7 @@ public class Test extends Application {
             ProductDAO productDAO = new ProductDAO();
 //            productDAO.getProductCode(23,"name2",12);
             BatchDAO batchDAO = new BatchDAO();
-            System.out.println(batchDAO.insertBatch(12,"12-12-12","Lab-2",12,productDAO.getProductCode(23,"name2",12)));
+            //System.out.println(batchDAO.insertBatch(12,"12-12-12","Lab-2",12,productDAO.getProductCode(23,"name2",12)));
         }
     }
 
