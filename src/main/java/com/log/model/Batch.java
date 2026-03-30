@@ -20,6 +20,14 @@ public class Batch {
         this.productCode = productCode;
     }
 
+    public Batch(int batchId, String testDate, String testSite, int projectId, int productCode) {
+        this.batchId = batchId;
+        this.testDate = testDate;
+        this.testSite = testSite;
+        this.projectId = projectId;
+        this.productCode = productCode;
+    }
+
     public int getBatchCode() { return batchCode; }
     public int getBatchId() { return batchId; }
     public String getTestDate() { return testDate; }

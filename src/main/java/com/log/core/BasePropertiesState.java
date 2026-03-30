@@ -2,12 +2,12 @@ package com.log.core;
 
 import java.time.LocalDate;
 
-public class basePropertiesState {
-    private static final basePropertiesState instance = new basePropertiesState();
+public class BasePropertiesState {
+    private static final BasePropertiesState instance = new BasePropertiesState();
 
-    basePropertiesState(){};
+    BasePropertiesState(){};
 
-    public static basePropertiesState getInstance() {
+    public static BasePropertiesState getInstance() {
         return instance;
     }
     private int projectId;

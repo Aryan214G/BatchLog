@@ -18,8 +18,7 @@ public class BatchService {
         if (batch == null) {
             throw new IllegalArgumentException("Batch cannot be null");
         }
-
-        batchDAO.insertBatch(batch);
+        batchDAO.insertBatchByID(batch);
     }
 
     public Batch getBatchByCode(int batchCode) {

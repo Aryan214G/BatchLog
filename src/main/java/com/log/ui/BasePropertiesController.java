@@ -1,9 +1,11 @@
 package com.log.ui;
 
 import com.log.core.AppState;
-import com.log.core.basePropertiesState;
+import com.log.core.BasePropertiesState;
 import com.log.dao.BatchDAO;
 import com.log.dao.ProductDAO;
+import com.log.model.Batch;
+import com.log.service.BatchService;
 import com.log.service.ProjectService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,10 +28,10 @@ public class BasePropertiesController {
     @FXML private TextField fileName;
 
     private final AppState appState = AppState.getInstance();
-    private final basePropertiesState bpropState = basePropertiesState.getInstance();
+    private final BasePropertiesState bpropState = BasePropertiesState.getInstance();
     private ProjectService projectService = new ProjectService();
     private ProductDAO productDAO = new ProductDAO();
-    private BatchDAO batchDAO = new BatchDAO();
+    private BatchService batchService = new BatchService();
 
 
     // ===== INITIALIZATION =====
@@ -84,7 +86,13 @@ public class BasePropertiesController {
         String TestDate = bpropState.getTestDate().toString();
         String TestSite = bpropState.getPlaceOfTesting();
         int productCode = productDAO.getProductCode(bpropState.getProductID(),bpropState.getProductName(),bpropState.getProjectId());
-        batchDAO.insertBatch(batchID,TestDate,TestSite,projectID,productCode);
+        batchService.createBatch(new Batch(
+                batchID,
+                TestDate,
+                TestSite,
+                projectID,
+                productCode
+        ));
     }
 
     private void loadCategoriesPage() {

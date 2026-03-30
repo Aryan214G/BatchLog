@@ -2,14 +2,14 @@ package com.log.service;
 
 import com.log.dao.ProductDAO;
 import com.log.model.Product;
-import com.log.core.basePropertiesState;
+import com.log.core.BasePropertiesState;
 
 import java.util.List;
 
 public class ProductService {
 
     private final ProductDAO productDAO;
-    private final basePropertiesState bpropState = basePropertiesState.getInstance();
+    private final BasePropertiesState bpropState = BasePropertiesState.getInstance();
 
     public ProductService() {
         this.productDAO = new ProductDAO();

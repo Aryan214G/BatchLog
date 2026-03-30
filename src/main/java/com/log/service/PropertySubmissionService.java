@@ -1,5 +1,6 @@
 package com.log.service;
 
+import com.log.core.BasePropertiesState;
 import com.log.model.*;
 
 import java.util.List;
@@ -10,6 +11,7 @@ public class PropertySubmissionService {
     private DirectionService directionService;
     private CategoryService categoryService;
     private UnitsService unitsService;
+    private BasePropertiesState basePropertiesState;
 
     private int tempId;
     private int directionId;
@@ -43,13 +45,13 @@ public class PropertySubmissionService {
     }
 
     private void handleProperty(List<Reading> readings, String propertyName, String selectedCategory){
-        Property property = new Property(
-                propertyName,
-                categoryService.getCategory(selectedCategory).getCategoryId(),
-                tempId,
-                directionId,
-                unitsService.getUnit(readings.getFirst().getUnit()),
-
-        );
+//        Property property = new Property(
+//                propertyName,
+//                categoryService.getCategory(selectedCategory).getCategoryId(),
+//                tempId,
+//                directionId,
+//                unitsService.getUnit(readings.getFirst().getUnit()),
+//
+//        );
     }
 }
