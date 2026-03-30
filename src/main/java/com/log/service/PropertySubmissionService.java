@@ -9,6 +9,7 @@ public class PropertySubmissionService {
     private TemperatureService temperatureService;
     private DirectionService directionService;
     private CategoryService categoryService;
+    private UnitsService unitsService;
 
     private int tempId;
     private int directionId;
@@ -47,6 +48,7 @@ public class PropertySubmissionService {
                 categoryService.getCategory(selectedCategory).getCategoryId(),
                 tempId,
                 directionId,
+                unitsService.getUnit(readings.getFirst().getUnit()),
 
         );
     }
