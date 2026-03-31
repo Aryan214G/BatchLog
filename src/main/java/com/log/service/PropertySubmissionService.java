@@ -1,25 +1,33 @@
 package com.log.service;
 
-import com.log.model.Direction;
-import com.log.model.PropertyState;
-import com.log.model.Temperature;
-import com.log.service.DirectionService;
-import com.log.service.TemperatureService;
+import com.log.core.BasePropertiesState;
+import com.log.model.*;
+
+import java.util.List;
 
 public class PropertySubmissionService {
 
     private TemperatureService temperatureService;
     private DirectionService directionService;
+    private CategoryService categoryService;
+    private UnitsService unitsService;
+    private PropertyService propertyService;
+    private BasePropertiesState bsinstance = BasePropertiesState.getInstance();
 
+    private int tempId;
+    private int directionId;
     public PropertySubmissionService(TemperatureService temperatureService,
-                                     DirectionService directionService) {
+                                     DirectionService directionService,
+                                     CategoryService categoryService) {
         this.temperatureService = temperatureService;
         this.directionService = directionService;
+        this.categoryService = categoryService;
     }
 
-    public void submit(PropertyState propertyState) {
+    public void submit(PropertyState propertyState, String propertyName, String selectedCategory) {
         handleTemperature(propertyState.getTemperature());
         handleDirection(propertyState.getDirection());
+        handleProperty(propertyState.getReadings(), propertyName, selectedCategory);
     }
 
     private void handleTemperature(Temperature temp) {
@@ -28,13 +36,25 @@ public class PropertySubmissionService {
         } else {
             temperatureService.updateTemperature(temp);
         }
+        this.tempId = temperatureService.getTempId();
     }
 
     private void handleDirection(Direction dir) {
         if (dir.getDirId() == null) {
-            directionService.createDirectionValue(dir);
-        } else {
-            directionService.updateDirectionValue(dir);
+            this.directionId = directionService.getDirectionByName(dir.getDirVal()).getDirId();
         }
+    }
+
+    private void handleProperty(List<Reading> readings, String propertyName, String selectedCategory){
+        Property property = new Property(
+                propertyName,
+                categoryService.getCategory(selectedCategory).getCategoryId(),
+                tempId,
+                directionId,
+                unitsService.getUnit(readings.get(0).getUnit()).getUnitId(),
+                bsinstance.getBatchCode()
+        );
+
+        propertyService.insertProperty(property);
     }
 }

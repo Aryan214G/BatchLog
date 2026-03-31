@@ -56,4 +56,6 @@ public class TemperatureService {
 
         temperatureDAO.deleteTemperature(tempId);
     }
+
+    public int getTempId(){ return temperatureDAO.getTempId();}
 }

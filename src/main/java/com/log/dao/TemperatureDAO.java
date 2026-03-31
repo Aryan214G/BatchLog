@@ -10,18 +10,31 @@ import com.log.model.Temperature;
 
 public class TemperatureDAO {
 
+    private int tempId;
+
+    public int getTempId() {
+        return tempId;
+    }
+
     public void insertTemperature(Temperature temperature) {
 
         String sql = "INSERT INTO Temperature (Temp_VAL, Temp_UNIT) VALUES (?, ?)";
 
         try (Connection conn = DBUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setInt(1, temperature.getTempVal());
             stmt.setString(2, temperature.getTempUnit());
 
             stmt.executeUpdate();
 
+            ResultSet rs = stmt.getGeneratedKeys();
+            int tempId = -1;
+
+            if(rs.next()){
+                tempId = rs.getInt(1);
+            }
+            this.tempId = tempId;
         } catch (SQLException e) {
             e.printStackTrace();
         }

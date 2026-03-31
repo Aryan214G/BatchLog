@@ -26,13 +26,8 @@ public class UnitsService {
         unitsDAO.insertUnit(unit);
     }
 
-    public Unit getUnitById(int unitId) {
-
-        if (unitId <= 0) {
-            throw new IllegalArgumentException("Invalid Unit ID");
-        }
-
-        return unitsDAO.getUnit(unitId);
+    public Unit getUnit(String unit) {
+        return unitsDAO.getUnitByName(unit);
     }
 
     public List<Unit> getAllUnits() {

@@ -9,18 +9,8 @@ import java.util.List;
 
 public class ProductDAO {
 
-    private Connection conn;
-
-    public ProductDAO() {
-        try {
-            this.conn = DBUtil.getConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     // INSERT
-    public int insertProduct(Product product) {
+    public int insertProduct(Connection conn, Product product) {
 
         String sql = "INSERT INTO Product(Product_ID, Product_name, Project_ID) VALUES (?, ?, ?)";
 
@@ -45,7 +35,7 @@ public class ProductDAO {
     }
 
     // SELECT ONE
-    public Product getProduct(int productCode) {
+    public Product getProduct(Connection conn, int productCode) {
 
         String sql = "SELECT * FROM Product WHERE Product_code = ?";
 
@@ -72,7 +62,7 @@ public class ProductDAO {
     }
 
     // SELECT ALL
-    public List<Product> getAllProducts() {
+    public List<Product> getAllProducts(Connection conn) {
 
         String sql = "SELECT * FROM Product";
 
@@ -102,7 +92,7 @@ public class ProductDAO {
     }
 
     // UPDATE
-    public void updateProduct(Product product) {
+    public void updateProduct(Connection conn, Product product) {
 
         String sql = "UPDATE Product SET Product_ID=?, Product_name=?, Project_ID=? WHERE Product_code=?";
 
@@ -121,7 +111,7 @@ public class ProductDAO {
     }
 
     // DELETE
-    public void deleteProduct(int productCode) {
+    public void deleteProduct(Connection conn, int productCode) {
 
         String sql = "DELETE FROM Product WHERE Product_code=?";
 
@@ -136,7 +126,7 @@ public class ProductDAO {
         }
     }
 
-    public int getProductCode(String productId, String productName, int projectId){
+    public int getProductCode(Connection conn, String productId, String productName, int projectId){
         String sql = "SELECT Product_code FROM Product WHERE Product_ID=? AND Product_name=? AND Project_ID=?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 

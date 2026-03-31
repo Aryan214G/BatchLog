@@ -3,6 +3,8 @@ package com.log.dao;
 import com.log.database.DBUtil;
 import com.log.model.Unit;
 
+import javax.security.auth.login.AppConfigurationEntry;
+import java.net.ConnectException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +29,7 @@ public class UnitsDAO {
     }
 
 
-    public Unit getUnit(int unitId) {
+    public Unit getUnitById(int unitId) {
 
         String sql = "SELECT * FROM Units WHERE Unit_ID = ?";
 
@@ -52,6 +54,25 @@ public class UnitsDAO {
         return null;
     }
 
+    public Unit getUnitByName(String unit){
+        String sql = "SELECT Unit_ID FROM Units WHERE Unit = ?";
+
+        try(Connection conn = DBUtil.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)){
+            stmt.setString(1, unit);
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                return new Unit(
+                  rs.getInt(1),
+                        unit
+                );
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public List<Unit> getAllUnits() {
 

@@ -2,12 +2,9 @@ package com.log.service;
 
 import com.log.dao.DefaultPropertiesDAO;
 import com.log.dao.PropertyDAO;
+import com.log.model.Property;
 import com.log.model.PropertyView;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
-import java.sql.SQLException;
-import java.util.List;
 
 public class PropertyService {
     private final PropertyDAO propertyDAO;
@@ -25,5 +22,9 @@ public class PropertyService {
 
     public ObservableList<PropertyView> getPropertiesByCategory(String categoryName){
         return defaultPropertiesDAO.getDefaultProperties(categoryName);
+    }
+
+    public void insertProperty(Property property){
+        propertyDAO.insertProperty(property);
     }
 }

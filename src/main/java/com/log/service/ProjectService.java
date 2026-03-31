@@ -3,7 +3,7 @@ package com.log.service;
 import com.log.dao.ProjectDAO;
 import com.log.model.Project;
 
-import java.util.ArrayList;
+import java.sql.Connection;
 import java.util.List;
 
 public class ProjectService {
@@ -13,14 +13,14 @@ public class ProjectService {
         this.projectDAO = new ProjectDAO();
     }
 
-    public int createProject(String projectName){
+    public int createProject(Connection conn, String projectName){
 
         if (projectName == null || projectName.trim().isEmpty()) {
             throw new IllegalArgumentException("Project name cannot be empty");
         }
 
         Project project = new Project(projectName.trim());
-        return projectDAO.insertProject(project);
+        return projectDAO.insertProject(conn, project);
     }
 
     public List<Project> getAllProjects(){

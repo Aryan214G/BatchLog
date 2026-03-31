@@ -1,9 +1,11 @@
 package com.log.ui;
 
 import com.log.core.AppState;
-import com.log.core.basePropertiesState;
-import com.log.dao.BatchDAO;
+import com.log.core.BasePropertiesState;
 import com.log.dao.ProductDAO;
+import com.log.database.DBUtil;
+import com.log.model.Batch;
+import com.log.service.BatchService;
 import com.log.service.ProjectService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,6 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 
+import java.sql.Connection;
 import java.time.LocalDate;
 import com.log.service.ProductService;
 
@@ -26,10 +29,10 @@ public class BasePropertiesController {
     @FXML private TextField fileName;
 
     private final AppState appState = AppState.getInstance();
-    private final basePropertiesState bpropState = basePropertiesState.getInstance();
+    private final BasePropertiesState bpropState = BasePropertiesState.getInstance();
     private ProjectService projectService = new ProjectService();
     private ProductDAO productDAO = new ProductDAO();
-    private BatchDAO batchDAO = new BatchDAO();
+    private BatchService batchService = new BatchService();
 
 
     // ===== INITIALIZATION =====
@@ -63,11 +66,44 @@ public class BasePropertiesController {
         bpropState.setPlaceOfTesting(placeOfTesting.getText());
         bpropState.setFileName(fileName.getText());
 
-        handleCreateProject(project);
+        //manual transaction handling to prevent DB lock issues
+        Connection conn = null;
 
-        String productId = productID.getText();
-        productService.createProduct(productId, product);
-        handleCreateBatch();
+        try {
+            conn = DBUtil.getConnection();
+            conn.setAutoCommit(false);
+
+            handleCreateProject(conn, project);
+
+            String productId = productID.getText();
+            productService.createProduct(conn, productId, product);
+
+            handleCreateBatch(conn);
+
+            conn.commit();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (Exception rollbackEx) {
+                    rollbackEx.printStackTrace();
+                }
+            }
+
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+
         // Example: store something in AppState if needed
         System.out.println("Project: " + project);
         System.out.println("Batch: " + batch);
@@ -78,13 +114,20 @@ public class BasePropertiesController {
 
     }
 
-    private void handleCreateBatch() {
+    private void handleCreateBatch(Connection conn) {
         int batchID = Integer.parseInt(bpropState.getBatchNo());
         int projectID = bpropState.getProjectId();
         String TestDate = bpropState.getTestDate().toString();
         String TestSite = bpropState.getPlaceOfTesting();
-        int productCode = productDAO.getProductCode(bpropState.getProductID(),bpropState.getProductName(),bpropState.getProjectId());
-        batchDAO.insertBatch(batchID,TestDate,TestSite,projectID,productCode);
+        //TODO: call service class and not DAO class
+        int productCode = productService.getProductCode(conn, bpropState.getProductID(),bpropState.getProductName(),bpropState.getProjectId());
+        batchService.createBatch(conn, new Batch(
+                batchID,
+                TestDate,
+                TestSite,
+                projectID,
+                productCode
+        ));
     }
 
     private void loadCategoriesPage() {
@@ -141,9 +184,9 @@ public class BasePropertiesController {
 
     }
 
-    private void handleCreateProject(String project) {
+    private void handleCreateProject(Connection conn, String project) {
 
-        int projectId = projectService.createProject(project);
+        int projectId = projectService.createProject(conn, project);
 
         bpropState.setProjectId(projectId);
 
