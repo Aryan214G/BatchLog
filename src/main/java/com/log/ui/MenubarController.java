@@ -20,6 +20,11 @@ public class MenubarController {
         String path = "/com/log/ui/views/BaseProperties.fxml";
         loadScene(event, path);
     }
+    @FXML
+    private void loadNewBatchView(ActionEvent event) throws IOException {
+        String path = "/com/log/ui/views/NewBatch.fxml";
+        loadScene(event, path);
+    }
     private void loadScene(ActionEvent event, String path) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
         Parent root = loader.load();
