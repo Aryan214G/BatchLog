@@ -8,14 +8,6 @@ import java.util.List;
 public class BatchDAO {
     private Connection conn;
 
-    public BatchDAO(){
-        try {
-            this.conn = DBUtil.getConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void insertBatchByCODE(Batch batch) {
 
         //TODO: recheck this query. Use WHERE batchCode keyword
@@ -38,11 +30,11 @@ public class BatchDAO {
         }
     }
 
-    public int insertBatchByID(Batch batch) {
+    public int insertBatchByID(Connection conn, Batch batch) {
 
         String sql = "INSERT INTO Batch (Batch_ID, Test_date, Test_site, Project_ID, Product_CODE) VALUES (?, ?, ?, ?, ?)";
 
-        try (PreparedStatement stmt = conn.prepareStatement(
+        try (PreparedStatement stmt = this.conn.prepareStatement(
                 sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setInt(1, batch.getBatchId());

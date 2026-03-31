@@ -67,19 +67,41 @@ public class BasePropertiesController {
         bpropState.setFileName(fileName.getText());
 
         //manual transaction handling to prevent DB lock issues
-        try(Connection conn = DBUtil.getConnection()){
+        Connection conn = null;
+
+        try {
+            conn = DBUtil.getConnection();
             conn.setAutoCommit(false);
-        handleCreateProject(conn, project);
 
-        String productId = productID.getText();
-        productService.createProduct(productId, product);
+            handleCreateProject(conn, project);
 
-        handleCreateBatch();
+            String productId = productID.getText();
+            productService.createProduct(conn, productId, product);
 
-        conn.commit();
+            handleCreateBatch(conn);
 
-        }catch (Exception e) {
+            conn.commit();
+
+        } catch (Exception e) {
+
             e.printStackTrace();
+
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (Exception rollbackEx) {
+                    rollbackEx.printStackTrace();
+                }
+            }
+
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
         }
 
         // Example: store something in AppState if needed
@@ -92,14 +114,14 @@ public class BasePropertiesController {
 
     }
 
-    private void handleCreateBatch() {
+    private void handleCreateBatch(Connection conn) {
         int batchID = Integer.parseInt(bpropState.getBatchNo());
         int projectID = bpropState.getProjectId();
         String TestDate = bpropState.getTestDate().toString();
         String TestSite = bpropState.getPlaceOfTesting();
         //TODO: call service class and not DAO class
-        int productCode = productDAO.getProductCode(bpropState.getProductID(),bpropState.getProductName(),bpropState.getProjectId());
-        batchService.createBatch(new Batch(
+        int productCode = productDAO.getProductCode(conn, bpropState.getProductID(),bpropState.getProductName(),bpropState.getProjectId());
+        batchService.createBatch(conn, new Batch(
                 batchID,
                 TestDate,
                 TestSite,

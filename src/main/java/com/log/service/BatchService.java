@@ -4,6 +4,7 @@ import com.log.core.BasePropertiesState;
 import com.log.dao.BatchDAO;
 import com.log.model.Batch;
 
+import java.sql.Connection;
 import java.util.List;
 
 public class BatchService {
@@ -15,12 +16,12 @@ public class BatchService {
         this.batchDAO = new BatchDAO();
     }
 
-    public void createBatch(Batch batch) {
+    public void createBatch(Connection conn, Batch batch) {
 
         if (batch == null) {
             throw new IllegalArgumentException("Batch cannot be null");
         }
-        bpinstance.setBatchCode(batchDAO.insertBatchByID(batch));
+        bpinstance.setBatchCode(batchDAO.insertBatchByID(conn, batch));
     }
 
     public Batch getBatchByCode(int batchCode) {
