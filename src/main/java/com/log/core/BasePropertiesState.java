@@ -2,22 +2,31 @@ package com.log.core;
 
 import java.time.LocalDate;
 
-public class basePropertiesState {
-    private static final basePropertiesState instance = new basePropertiesState();
+public class BasePropertiesState {
+    private static final BasePropertiesState instance = new BasePropertiesState();
 
-    basePropertiesState(){};
+    BasePropertiesState(){};
 
-    public static basePropertiesState getInstance() {
+    public static BasePropertiesState getInstance() {
         return instance;
     }
     private int projectId;
     private String projectName;
     private String batchNo;
+    private int batchCode;
     private String productName;
     private String productID;
     private LocalDate testDate;
     private String placeOfTesting;
     private String fileName;
+
+    public int getBatchCode() {
+        return batchCode;
+    }
+
+    public void setBatchCode(int batchCode) {
+        this.batchCode = batchCode;
+    }
 
     public String getProjectName() { return projectName; }
     public void setProjectName(String projectName) { this.projectName = projectName; }

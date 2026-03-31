@@ -9,12 +9,11 @@ import java.util.List;
 
 public class ProjectDAO {
 
-    public int insertProject(Project project) {
+    public int insertProject(Connection conn, Project project) {
 
         String sql = "INSERT INTO Project (Project_name) VALUES (?)";
 
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, project.getProjectName());
             stmt.executeUpdate();

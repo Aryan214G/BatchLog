@@ -81,7 +81,8 @@ public class CategoriesPageController {
     private PropertyService propertyService = new PropertyService();
     private TemperatureService temperatureService = new TemperatureService();
     private DirectionService directionService = new DirectionService();
-    private PropertySubmissionService propertySubmissionService = new PropertySubmissionService(temperatureService, directionService);
+    private CategoryService categoryService = new CategoryService();
+    private PropertySubmissionService propertySubmissionService = new PropertySubmissionService(temperatureService, directionService, categoryService);
     // ======================= END OF VARIABLES DECLARATION ==============================
 
     @FXML
@@ -498,7 +499,7 @@ public class CategoriesPageController {
         }
     }
 
-    private CategoryService categoryService = new CategoryService();
+
 
     private void loadCategoriesFromDB() {
         categoryService.refreshCategoriesState();
@@ -533,6 +534,10 @@ public class CategoriesPageController {
         PropertyState propertyState =
                 stateManager.getState(selectedProperty.getPropertyName());
 
-        propertySubmissionService.submit(propertyState);
+        propertySubmissionService.submit(
+                propertyState,
+                selectedProperty.getPropertyName(),
+                selectedState.getSelectedCategory()
+        );
     }
 }
