@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BatchDAO {
-    private Connection conn;
 
     public void insertBatchByCODE(Batch batch) {
 
@@ -34,7 +33,7 @@ public class BatchDAO {
 
         String sql = "INSERT INTO Batch (Batch_ID, Test_date, Test_site, Project_ID, Product_CODE) VALUES (?, ?, ?, ?, ?)";
 
-        try (PreparedStatement stmt = this.conn.prepareStatement(
+        try (PreparedStatement stmt = conn.prepareStatement(
                 sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setInt(1, batch.getBatchId());
@@ -131,7 +130,7 @@ public class BatchDAO {
     }
 
 
-    public int getBatchCode(int BatchId, String TestDate, String TestSite, int ProjectId, int ProductCode){
+    public int getBatchCode(Connection conn, int BatchId, String TestDate, String TestSite, int ProjectId, int ProductCode){
         String sql = "SELECT Batch_CODE FROM Batch WHERE Batch_ID=? AND Test_date=? AND Test_site=? AND Project_ID=? AND Product_CODE=?";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
