@@ -26,7 +26,11 @@ public class PropertyService {
         return defaultPropertiesDAO.getDefaultProperties(categoryName);
     }
 
-    public void insertProperty(Connection conn, Property property){
-        propertyDAO.insertProperty(conn, property);
+    public int insertProperty(Connection conn, Property property){
+        return propertyDAO.insertProperty(conn, property);
+    }
+
+    public void insertPropertyValues(Connection conn){
+
     }
 }

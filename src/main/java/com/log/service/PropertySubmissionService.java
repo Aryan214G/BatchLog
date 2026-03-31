@@ -90,6 +90,7 @@ public class PropertySubmissionService {
                 bsinstance.getBatchCode()
         );
 
-        propertyService.insertProperty(conn, property);
+        int propertyID = propertyService.insertProperty(conn, property);
+        propertyService.insertPropertyValues(conn);
     }
 }
