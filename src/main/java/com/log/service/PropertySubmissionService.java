@@ -1,8 +1,10 @@
 package com.log.service;
 
 import com.log.core.BasePropertiesState;
+import com.log.database.DBUtil;
 import com.log.model.*;
 
+import java.sql.Connection;
 import java.util.List;
 
 public class PropertySubmissionService {
@@ -18,43 +20,77 @@ public class PropertySubmissionService {
     private int directionId;
     public PropertySubmissionService(TemperatureService temperatureService,
                                      DirectionService directionService,
-                                     CategoryService categoryService) {
+                                     CategoryService categoryService,
+                                     UnitsService unitsService,
+                                     PropertyService propertyService) {
         this.temperatureService = temperatureService;
         this.directionService = directionService;
         this.categoryService = categoryService;
+        this.unitsService = unitsService;
+        this.propertyService = propertyService;
     }
 
     public void submit(PropertyState propertyState, String propertyName, String selectedCategory) {
-        handleTemperature(propertyState.getTemperature());
-        handleDirection(propertyState.getDirection());
-        handleProperty(propertyState.getReadings(), propertyName, selectedCategory);
+        Connection conn = null;
+
+        try {
+            conn = DBUtil.getConnection();
+            conn.setAutoCommit(false);
+
+            handleTemperature(conn, propertyState.getTemperature());
+            handleDirection(conn, propertyState.getDirection());
+            handleProperty(conn, propertyState.getReadings(), propertyName, selectedCategory);
+
+            conn.commit();
+
+        }  catch (Exception e) {
+
+            e.printStackTrace();
+
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (Exception rollbackEx) {
+                    rollbackEx.printStackTrace();
+                }
+            }
+
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
     }
 
-    private void handleTemperature(Temperature temp) {
+    private void handleTemperature(Connection conn, Temperature temp) {
         if (temp.getTempId() == null) {
-            temperatureService.createTemperature(temp);
+           this.tempId = temperatureService.createTemperature(conn, temp);
         } else {
-            temperatureService.updateTemperature(temp);
+            temperatureService.updateTemperature(conn, temp);
         }
-        this.tempId = temperatureService.getTempId();
     }
 
-    private void handleDirection(Direction dir) {
+    private void handleDirection(Connection conn, Direction dir) {
         if (dir.getDirId() == null) {
-            this.directionId = directionService.getDirectionByName(dir.getDirVal()).getDirId();
+            this.directionId = directionService.getDirectionByName(conn, dir.getDirVal()).getDirId();
         }
     }
 
-    private void handleProperty(List<Reading> readings, String propertyName, String selectedCategory){
+    private void handleProperty(Connection conn, List<Reading> readings, String propertyName, String selectedCategory){
         Property property = new Property(
                 propertyName,
-                categoryService.getCategory(selectedCategory).getCategoryId(),
+                categoryService.getCategory(conn, selectedCategory).getCategoryId(),
                 tempId,
                 directionId,
-                unitsService.getUnit(readings.get(0).getUnit()).getUnitId(),
+                unitsService.getUnit(conn, readings.get(0).getUnit()).getUnitId(),
                 bsinstance.getBatchCode()
         );
 
-        propertyService.insertProperty(property);
+        int propertyID = propertyService.insertProperty(conn, property);
+        propertyService.insertPropertyValues(conn, propertyID, readings);
     }
 }

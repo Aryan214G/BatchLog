@@ -27,12 +27,11 @@ public class DirectionDAO {
     }
 
 
-    public Direction getDirection(int dirId) {
+    public Direction getDirection(Connection conn, int dirId) {
 
         String sql = "SELECT * FROM Direction WHERE Dir_ID = ?";
 
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, dirId);
 
@@ -52,12 +51,11 @@ public class DirectionDAO {
         return null;
     }
 
-    public Direction getDirection(String direction){
+    public Direction getDirection(Connection conn, String direction){
 
         String sql = "SELECT Dir_ID FROM Direction WHERE Dir_VAL = ?";
 
-        try(Connection conn = DBUtil.getConnection();
-        PreparedStatement stmt = conn.prepareStatement(sql)){
+        try(PreparedStatement stmt = conn.prepareStatement(sql)){
 
             stmt.setString(1, direction);
             ResultSet rs = stmt.executeQuery();

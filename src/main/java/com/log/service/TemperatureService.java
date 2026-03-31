@@ -3,6 +3,7 @@ package com.log.service;
 import com.log.dao.TemperatureDAO;
 import com.log.model.Temperature;
 
+import java.sql.Connection;
 import java.util.List;
 
 public class TemperatureService {
@@ -13,13 +14,13 @@ public class TemperatureService {
         this.temperatureDAO = new TemperatureDAO();
     }
 
-    public void createTemperature(Temperature temperature) {
+    public int createTemperature(Connection conn, Temperature temperature) {
 
         if (temperature == null) {
             throw new IllegalArgumentException("Temperature cannot be null");
         }
 
-        temperatureDAO.insertTemperature(temperature);
+        return temperatureDAO.insertTemperature(conn, temperature);
     }
 
     public Temperature getTemperatureById(int tempId) {
@@ -35,7 +36,7 @@ public class TemperatureService {
         return temperatureDAO.getAllTemperatures();
     }
 
-    public void updateTemperature(Temperature temperature) {
+    public void updateTemperature(Connection conn, Temperature temperature) {
 
         if (temperature == null) {
             throw new IllegalArgumentException("Temperature cannot be null");
@@ -45,7 +46,7 @@ public class TemperatureService {
             throw new IllegalArgumentException("Invalid temperature ID");
         }
 
-        temperatureDAO.updateTemperature(temperature);
+        temperatureDAO.updateTemperature(conn, temperature);
     }
 
     public void deleteTemperature(int tempId) {

@@ -2,23 +2,19 @@ package com.log.dao;
 
 import com.log.database.DBUtil;
 import com.log.model.Property;
-import com.log.model.PropertyView;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class  PropertyDAO {
 
-    public void insertProperty(Property property) {
+    public int insertProperty(Connection conn, Property property) {
         String sql = """
                 INSERT INTO Property
                 (Property_name, Category_ID, Temp_ID, Dir_ID, Unit_ID, Batch_CODE)
                 VALUES (?, ?, ?, ?, ?, ?)
                 """;
 
-        try(Connection conn = DBUtil.getConnection();
-            PreparedStatement statement = conn.prepareStatement(sql)) {
+        try(PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             statement.setString(1, property.getPropertyName());
             statement.setInt(2, property.getCategoryID());
@@ -28,10 +24,15 @@ public class  PropertyDAO {
             statement.setInt(6, property.getBatchCode());
 
             statement.executeUpdate();
+            ResultSet rs = statement.getGeneratedKeys();
+            while(rs.next()){
+                return rs.getInt(1);
+            }
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return 0;
     }
 
     //TODO: fix later

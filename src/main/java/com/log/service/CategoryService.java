@@ -4,9 +4,9 @@ import com.log.core.AppState;
 import com.log.dao.CategoryDAO;
 import com.log.model.Category;
 import com.log.model.PropertyView;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.sql.Connection;
 import java.util.List;
 
     public class CategoryService {
@@ -59,8 +59,8 @@ import java.util.List;
             }
         }
 
-        public Category getCategory(String category) {
-            return categoryDAO.getCategoryByName(category);
+        public Category getCategory(Connection conn, String category) {
+            return categoryDAO.getCategoryByName(conn, category);
         }
 
         public void deleteCategory(int categoryId) {

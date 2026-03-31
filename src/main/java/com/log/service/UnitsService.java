@@ -3,6 +3,7 @@ package com.log.service;
 import com.log.dao.UnitsDAO;
 import com.log.model.Unit;
 
+import java.sql.Connection;
 import java.util.List;
 
 public class UnitsService {
@@ -26,8 +27,8 @@ public class UnitsService {
         unitsDAO.insertUnit(unit);
     }
 
-    public Unit getUnit(String unit) {
-        return unitsDAO.getUnitByName(unit);
+    public Unit getUnit(Connection conn, String unit) {
+        return unitsDAO.getUnitByName(conn, unit);
     }
 
     public List<Unit> getAllUnits() {
