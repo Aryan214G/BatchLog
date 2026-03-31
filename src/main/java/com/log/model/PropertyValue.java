@@ -1,17 +1,17 @@
 package com.log.model;
 
-public class PropertyValues {
+public class PropertyValue {
     private int propertyValID;
     private int propertyVAL;
     private int propertyID;
 
-    public PropertyValues(int propertyValID, int propertyVAL, int propertyID) {
+    public PropertyValue(int propertyValID, int propertyVAL, int propertyID) {
         this.propertyValID = propertyValID;
         this.propertyVAL = propertyVAL;
         this.propertyID = propertyID;
     }
 
-    public PropertyValues(int propertyVAL, int propertyID) {
+    public PropertyValue(int propertyVAL, int propertyID) {
         this.propertyVAL = propertyVAL;
         this.propertyID = propertyID;
     }

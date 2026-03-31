@@ -2,19 +2,25 @@ package com.log.service;
 
 import com.log.dao.DefaultPropertiesDAO;
 import com.log.dao.PropertyDAO;
+import com.log.dao.PropertyValuesDAO;
 import com.log.model.Property;
+import com.log.model.PropertyValue;
 import com.log.model.PropertyView;
+import com.log.model.Reading;
 import javafx.collections.ObservableList;
 
 import java.sql.Connection;
+import java.util.List;
 
 public class PropertyService {
     private final PropertyDAO propertyDAO;
     private final DefaultPropertiesDAO defaultPropertiesDAO;
+    private final PropertyValuesDAO propertyValuesDAO;
 
     public PropertyService(){
         this.propertyDAO = new PropertyDAO();
         this.defaultPropertiesDAO = new DefaultPropertiesDAO();
+        this.propertyValuesDAO = new PropertyValuesDAO();
     }
 
     // TODO: uncoment after enabling the method in the DAO class
@@ -30,7 +36,10 @@ public class PropertyService {
         return propertyDAO.insertProperty(conn, property);
     }
 
-    public void insertPropertyValues(Connection conn){
-
+    public void insertPropertyValues(Connection conn, int propertyID, List<Reading> readings){
+        for(Reading input : readings){
+            PropertyValue propertyValue = new PropertyValue(Integer.parseInt(input.getValue()), propertyID);
+            propertyValuesDAO.insertValue(conn, propertyValue);
+        }
     }
 }

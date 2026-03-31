@@ -91,6 +91,6 @@ public class PropertySubmissionService {
         );
 
         int propertyID = propertyService.insertProperty(conn, property);
-        propertyService.insertPropertyValues(conn);
+        propertyService.insertPropertyValues(conn, propertyID, readings);
     }
 }
