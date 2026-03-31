@@ -38,4 +38,8 @@ public class ProductService {
     public void deleteProduct(Connection conn, int productCode) {
         productDAO.deleteProduct(conn, productCode);
     }
+
+    public int getProductCode(Connection conn, String productID, String productName, int projectId) {
+        return productDAO.getProductCode(conn, productID, productName, projectId);
+    }
 }

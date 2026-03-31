@@ -120,7 +120,7 @@ public class BasePropertiesController {
         String TestDate = bpropState.getTestDate().toString();
         String TestSite = bpropState.getPlaceOfTesting();
         //TODO: call service class and not DAO class
-        int productCode = productDAO.getProductCode(conn, bpropState.getProductID(),bpropState.getProductName(),bpropState.getProjectId());
+        int productCode = productService.getProductCode(conn, bpropState.getProductID(),bpropState.getProductName(),bpropState.getProjectId());
         batchService.createBatch(conn, new Batch(
                 batchID,
                 TestDate,
