@@ -16,12 +16,11 @@ public class TemperatureDAO {
         return tempId;
     }
 
-    public void insertTemperature(Temperature temperature) {
+    public int insertTemperature(Connection conn, Temperature temperature) {
 
         String sql = "INSERT INTO Temperature (Temp_VAL, Temp_UNIT) VALUES (?, ?)";
 
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setInt(1, temperature.getTempVal());
             stmt.setString(2, temperature.getTempUnit());
@@ -32,12 +31,13 @@ public class TemperatureDAO {
             int tempId = -1;
 
             if(rs.next()){
-                tempId = rs.getInt(1);
+                return tempId = rs.getInt(1);
             }
             this.tempId = tempId;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return 0;
     }
 
     public Temperature getTemperature(int tempId) {
@@ -94,12 +94,11 @@ public class TemperatureDAO {
         return temperatures;
     }
 
-    public void updateTemperature(Temperature temperature) {
+    public void updateTemperature(Connection conn, Temperature temperature) {
 
         String sql = "UPDATE Temperature SET Temp_VAL = ?, Temp_UNIT = ? WHERE Temp_ID = ?";
 
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, temperature.getTempVal());
             stmt.setString(2, temperature.getTempUnit());

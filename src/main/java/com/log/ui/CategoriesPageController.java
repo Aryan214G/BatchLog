@@ -82,7 +82,14 @@ public class CategoriesPageController {
     private TemperatureService temperatureService = new TemperatureService();
     private DirectionService directionService = new DirectionService();
     private CategoryService categoryService = new CategoryService();
-    private PropertySubmissionService propertySubmissionService = new PropertySubmissionService(temperatureService, directionService, categoryService);
+    private UnitsService unitsService = new UnitsService();
+    private PropertySubmissionService propertySubmissionService = new PropertySubmissionService(
+            temperatureService,
+            directionService,
+            categoryService,
+            unitsService,
+            propertyService
+            );
     // ======================= END OF VARIABLES DECLARATION ==============================
 
     @FXML

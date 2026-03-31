@@ -6,6 +6,8 @@ import com.log.model.Property;
 import com.log.model.PropertyView;
 import javafx.collections.ObservableList;
 
+import java.sql.Connection;
+
 public class PropertyService {
     private final PropertyDAO propertyDAO;
     private final DefaultPropertiesDAO defaultPropertiesDAO;
@@ -24,7 +26,7 @@ public class PropertyService {
         return defaultPropertiesDAO.getDefaultProperties(categoryName);
     }
 
-    public void insertProperty(Property property){
-        propertyDAO.insertProperty(property);
+    public void insertProperty(Connection conn, Property property){
+        propertyDAO.insertProperty(conn, property);
     }
 }

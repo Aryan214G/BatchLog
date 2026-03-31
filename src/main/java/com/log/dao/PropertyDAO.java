@@ -2,23 +2,19 @@ package com.log.dao;
 
 import com.log.database.DBUtil;
 import com.log.model.Property;
-import com.log.model.PropertyView;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class  PropertyDAO {
 
-    public void insertProperty(Property property) {
+    public void insertProperty(Connection conn, Property property) {
         String sql = """
                 INSERT INTO Property
                 (Property_name, Category_ID, Temp_ID, Dir_ID, Unit_ID, Batch_CODE)
                 VALUES (?, ?, ?, ?, ?, ?)
                 """;
 
-        try(Connection conn = DBUtil.getConnection();
-            PreparedStatement statement = conn.prepareStatement(sql)) {
+        try(PreparedStatement statement = conn.prepareStatement(sql)) {
 
             statement.setString(1, property.getPropertyName());
             statement.setInt(2, property.getCategoryID());

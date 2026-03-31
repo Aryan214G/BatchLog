@@ -1,9 +1,9 @@
 package com.log.service;
 
 import com.log.dao.DirectionDAO;
-import com.log.dao.DirectionValuesDAO;
 import com.log.model.Direction;
 
+import java.sql.Connection;
 import java.util.List;
 
 public class DirectionService {
@@ -27,17 +27,17 @@ public class DirectionService {
         directionDAO.insertDirection(direction);
     }
 
-    public Direction getDirectionById(int dirId) {
+    public Direction getDirectionById(Connection conn, int dirId) {
 
         if (dirId <= 0) {
             throw new IllegalArgumentException("Invalid direction ID");
         }
 
-        return directionDAO.getDirection(dirId);
+        return directionDAO.getDirection(conn, dirId);
     }
 
-    public Direction getDirectionByName(String direction){
-        return directionDAO.getDirection(direction);
+    public Direction getDirectionByName(Connection conn, String direction){
+        return directionDAO.getDirection(conn, direction);
     }
 
     public List<Direction> getAllDirections() {

@@ -53,11 +53,10 @@ public class CategoryDAO {
         return null;
     }
 
-    public Category getCategoryByName(String category){
+    public Category getCategoryByName(Connection conn, String category){
         String sql = "SELECT Category_ID FROM Category WHERE Category_name = ?";
 
-        try(Connection conn = DBUtil.getConnection();
-        PreparedStatement stmt = conn.prepareStatement(sql)){
+        try(PreparedStatement stmt = conn.prepareStatement(sql)){
             stmt.setString(1, category);
             ResultSet rs = stmt.executeQuery();
 
