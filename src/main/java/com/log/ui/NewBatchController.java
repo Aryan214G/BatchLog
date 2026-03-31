@@ -1,6 +1,6 @@
 package com.log.ui;
 
-import com.log.core.basePropertiesState;
+import com.log.core.BasePropertiesState;
 import com.log.dao.BatchDAO;
 import com.log.dao.ProductDAO;
 import com.log.service.ProjectService;
@@ -19,7 +19,7 @@ public class NewBatchController {
     @FXML private TextField fileName;
 
 
-    private final basePropertiesState bpropState = basePropertiesState.getInstance();
+    private final BasePropertiesState bpropState = BasePropertiesState.getInstance();
     private ProjectService projectService = new ProjectService();
     private ProductDAO productDAO = new ProductDAO();
     private BatchDAO batchDAO = new BatchDAO();
