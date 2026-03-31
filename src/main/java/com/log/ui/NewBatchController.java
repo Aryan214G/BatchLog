@@ -3,13 +3,19 @@ package com.log.ui;
 import com.log.core.BasePropertiesState;
 import com.log.dao.BatchDAO;
 import com.log.dao.ProductDAO;
+import com.log.database.DBUtil;
+import com.log.model.Batch;
 import com.log.service.ProjectService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import com.log.database.DBUtil.*;
 
+import javax.swing.plaf.basic.BasicTabbedPaneUI;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class NewBatchController {
@@ -23,6 +29,15 @@ public class NewBatchController {
     private ProjectService projectService = new ProjectService();
     private ProductDAO productDAO = new ProductDAO();
     private BatchDAO batchDAO = new BatchDAO();
+    private Connection conn;
+    {
+        try {
+            conn = DBUtil.getConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     @FXML
     private void handleNext() {
@@ -56,8 +71,9 @@ public class NewBatchController {
         int projectID = bpropState.getProjectId();
         String TestDate = bpropState.getTestDate().toString();
         String TestSite = bpropState.getPlaceOfTesting();
-        int productCode = productDAO.getProductCode(bpropState.getProductID(),bpropState.getProductName(),bpropState.getProjectId());
-        batchDAO.insertBatch(batchID,TestDate,TestSite,projectID,productCode);
+        int productCode = productDAO.getProductCode(conn,bpropState.getProductID(),bpropState.getProductName(),bpropState.getProjectId());
+        Batch batch = new Batch(batchID,TestDate,TestSite,projectID,productCode);
+        batchDAO.insertBatchByID(conn,batch);
     }
     private boolean validateInputs() {
 
