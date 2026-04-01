@@ -116,6 +116,29 @@ public class UnitsDAO {
         }
     }
 
+    public Unit getUnitById(Connection conn, int unitId) {
+
+        String query = "SELECT * FROM Units WHERE Unit_ID = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setInt(1, unitId);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return new Unit(
+                        rs.getInt("Unit_ID"),
+                        rs.getString("Unit_Name")
+                );
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 
     public void deleteUnit(int unitId) {
 
