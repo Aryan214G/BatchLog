@@ -3,6 +3,7 @@ package com.log.service;
 import com.log.core.BasePropertiesState;
 import com.log.database.DBUtil;
 import com.log.model.*;
+import javafx.scene.control.Alert;
 
 import java.sql.Connection;
 import java.util.List;
@@ -42,8 +43,9 @@ public class PropertySubmissionService {
             handleProperty(conn, propertyState.getReadings(), propertyName, selectedCategory);
 
             conn.commit();
-
+            showAlert("Success", "Submission completed successfully!");
         }  catch (Exception e) {
+            showAlert("Submit not successful",e.toString());
 
             e.printStackTrace();
 
@@ -92,5 +94,13 @@ public class PropertySubmissionService {
 
         int propertyID = propertyService.insertProperty(conn, property);
         propertyService.insertPropertyValues(conn, propertyID, readings);
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

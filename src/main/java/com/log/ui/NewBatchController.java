@@ -24,7 +24,6 @@ public class NewBatchController {
     @FXML private TextField placeOfTesting;
     @FXML private TextField fileName;
 
-
     private final BasePropertiesState bpropState = BasePropertiesState.getInstance();
     private ProjectService projectService = new ProjectService();
     private ProductDAO productDAO = new ProductDAO();

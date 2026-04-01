@@ -547,4 +547,6 @@ public class CategoriesPageController {
                 selectedState.getSelectedCategory()
         );
     }
+
+
 }
