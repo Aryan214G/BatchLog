@@ -1,6 +1,7 @@
 package com.log.service;
 
 import com.log.dao.UnitsDAO;
+import com.log.database.DBUtil;
 import com.log.model.Unit;
 
 import java.sql.Connection;
@@ -25,6 +26,22 @@ public class UnitsService {
         }
 
         unitsDAO.insertUnit(unit);
+    }
+    public String getUnitNameById(int unitId) {
+
+        try (Connection conn = DBUtil.getConnection()) {
+
+            Unit unit = unitsDAO.getUnitById(conn, unitId);
+
+            if (unit != null) {
+                return unit.getUnit();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public Unit getUnit(Connection conn, String unit) {

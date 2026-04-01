@@ -3,6 +3,7 @@ package com.log.ui;
 import com.log.core.AppState;
 import com.log.core.DefaultMapState;
 import com.log.core.SelectedState;
+import com.log.database.DBUtil;
 import com.log.model.*;
 import com.log.service.*;
 import com.log.ui.util.AlertUtil;
@@ -35,9 +36,9 @@ public class CategoriesPageController {
     private ContextMenu editMenu;
 
     AppState instance = AppState.getInstance();
-    DefaultMapState DMapInstance = DefaultMapState.getInstance();
     SelectedState selectedState = SelectedState.getInstance();
-
+    private DefaultPropertyService defaultPropertyService = new DefaultPropertyService();
+    private Map<Integer, Map<String, DefaultProperty>> defaultPropertiesMap;
     @FXML
     private ListView<String> categoriesListView;
 
@@ -66,9 +67,6 @@ public class CategoriesPageController {
 
     private List<InputRow> inputRows = new ArrayList<>();
 
-    private HashMap<String, Integer> defaultRowsMap = DMapInstance.getDefaultRowsMap();
-
-    private HashMap<String, String> defaultUnits = DMapInstance.getDefaultUnitsMap();
     @FXML
     private Button printButton;
 
@@ -76,8 +74,7 @@ public class CategoriesPageController {
     private UnitsDropdownController tempUnitController;
     private DirectionDropdownController directionController;
 
-    // === import services ===
-    private TempDataService tempDataService = new TempDataService();
+    // === import services ===//
     private PropertyService propertyService = new PropertyService();
     private TemperatureService temperatureService = new TemperatureService();
     private DirectionService directionService = new DirectionService();
@@ -103,6 +100,7 @@ public class CategoriesPageController {
         loadCategoriesFromDB();
         CategorySelectionListener();
         PropertySelectionListener();
+        defaultPropertiesMap = defaultPropertyService.getDefaultsGrouped();
 
 
         // EDIT MENU SETUP
@@ -119,11 +117,6 @@ public class CategoriesPageController {
     private void isSubmitButtonVisible(boolean value){
         submitButton.setVisible(value);
         submitButton.setManaged(value);
-    }
-
-    private void loadTempData(){
-        tempDataService.loadDefaultRowsTempData();
-        defaultRowsMap = DMapInstance.getDefaultRowsMap();
     }
 
     @FXML
@@ -234,6 +227,20 @@ public class CategoriesPageController {
         propertiesLabel.setText(newCategory);
         selectedState.setSelectedCategory(newCategory);
 
+        try {
+            Category categoryObj = categoryService.getCategory(
+                    DBUtil.getConnection(),
+                    newCategory
+            );
+
+            if (categoryObj != null) {
+                selectedState.setSelectedCategoryId(categoryObj.getCategoryId());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         updateInfoBar();
 
     }
@@ -258,17 +265,21 @@ public class CategoriesPageController {
         isSubmitButtonVisible(true);
 
         selectedState.setSelectedProperty(newProperty);
-        PropertyView property = properties.stream()
-                .filter(p -> p.getPropertyName().equals(newProperty.getPropertyName()))
-                .findFirst()
-                .orElse(null);
 
-        int defaultRows = property.getRows();
+        int categoryId = selectedState.getSelectedCategoryId();
+        String propertyName = newProperty.getPropertyName();
 
+        DefaultProperty dp = null;
+
+        if (defaultPropertiesMap.containsKey(categoryId)) {
+            dp = defaultPropertiesMap.get(categoryId).get(propertyName);
+        }
+
+        int defaultRows = (dp != null) ? dp.getRows() : 1;
         try {
             loadMetrics();
             addHeaderControls();
-            loadPropertyFields(defaultRows, newProperty.getPropertyName());
+            loadPropertyFields(defaultRows, newProperty.getPropertyName(), dp);
             updateMetrics();   // force refresh after load
         }
         catch (IOException e)
@@ -286,7 +297,7 @@ public class CategoriesPageController {
 
 
     //TODO: check if editing the values of previous fields update the inputRows
-    private void addInputRow(int rowCount, String property) throws IOException {
+    private void addInputRow(int rowCount, String property, DefaultProperty dp) throws IOException {
 
         TextField field = new TextField();
 
@@ -300,6 +311,10 @@ public class CategoriesPageController {
         Parent units = loader.load();
         UnitsDropdownController controller = loader.getController();
         controller.setUnits(property);
+        if (dp != null && rowCount == 0) {
+            String unitName = unitsService.getUnitNameById(dp.getUnitId());
+            controller.setSelectedUnit(unitName);
+        }
 
         entriesGrid.add(field, 0, rowCount);
         if(rowCount < 1)
@@ -316,7 +331,7 @@ public class CategoriesPageController {
                     && inputRows.get(inputRows.size() - 1).getField() == field) {
 
                 try {
-                    addInputRow(rowCount+1, property);
+                    addInputRow(rowCount+1, property, dp);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -421,29 +436,34 @@ public class CategoriesPageController {
 
 
 
-    private void loadPropertyFields(int defaultRows, String property) throws IOException {
+    private void loadPropertyFields(int defaultRows, String property, DefaultProperty dp) throws IOException {
 
         inputRows.clear();
         entriesGrid.getChildren().clear();
+
         PropertyState state = stateManager.getState(property);
 
-
+        // ================= NO SAVED STATE =================
         if (state == null) {
+
             for (int i = 0; i < defaultRows; i++) {
-                addInputRow(i, property);
+                addInputRow(i, property, dp);
             }
+
             return;
         }
 
+        // ================= RESTORE HEADER =================
         String temp = String.valueOf(state.getTemperature().getTempVal());
 
         temperatureField.setText(temp);
         tempUnitController.setSelectedUnit(state.getTemperature().getTempUnit());
         directionController.setSelectedDirection(state.getDirection().getDirVal());
 
+        // ================= RESTORE ROWS =================
         for (int i = 0; i < state.getReadings().size(); i++) {
 
-            addInputRow(i, property);
+            addInputRow(i, property, dp);
 
             inputRows.get(i).getField()
                     .setText(state.getReadings().get(i).getValue());
