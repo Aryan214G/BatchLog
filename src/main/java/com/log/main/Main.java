@@ -11,6 +11,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Main extends Application {
 
@@ -45,12 +48,23 @@ public class Main extends Application {
         stage.show();
     }
 
+    private void handleJavaFXLogging(){
+        Logger rootLogger = Logger.getLogger("");
 
+        for (Handler handler : rootLogger.getHandlers()) {
+            handler.setFilter(record -> {
+                String msg = record.getMessage();
+                if (msg != null && msg.contains("Loading FXML document with JavaFX API of version")) {
+                    return false; // ❌ block this specific warning
+                }
+                return true; // ✅ allow everything else
+            });
+        }
+    }
+    public static void main(String[] args) throws SQLException {
+        Main obj = new Main();
+        obj.handleJavaFXLogging();
 
-
-
-
-    public static void main(String[] args) {
         launch();
     }
 }
