@@ -13,7 +13,6 @@ public class DBUtil {
     private static final String URL = "jdbc:sqlite:" + DB_PATH.toAbsolutePath();
 
     public static Connection getConnection() throws SQLException {
-        System.out.println("DB PATH: " + DB_PATH.toAbsolutePath());
 
         Connection conn = DriverManager.getConnection(URL);
 
