@@ -14,7 +14,7 @@ public class DefaultPropertiesDAO {
 
     public ObservableList<PropertyView> getDefaultProperties(String categoryName){
 
-        System.out.println("DAO received category: [" + categoryName + "]");
+
         ObservableList<PropertyView> properties = FXCollections.observableArrayList();
 
         String sql = """
@@ -28,21 +28,9 @@ public class DefaultPropertiesDAO {
                     WHERE c.Category_name = ?
                     """;
 
-        System.out.println("Executing query for category: " + categoryName);
 
         try(Connection conn = DBUtil.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            Statement debugStmt = conn.createStatement();
-            ResultSet debugRs = debugStmt.executeQuery("SELECT Category_ID, Category_name FROM Category");
-            while (debugRs.next()) {
-                System.out.println(debugRs.getInt(1) + " : " + debugRs.getString(2));
-            }
-
-            if (debugRs.next()) {
-                System.out.println("Default_Properties row count = " + debugRs.getInt(1));
-            }
-
 
             stmt.setString(1, categoryName);
 
