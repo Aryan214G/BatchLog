@@ -145,7 +145,6 @@
 -fx-text-fill: #ffffff;
 -fx-padding: 10 16;
 -fx-background-radius: 8;
--fx-max-width: USE_PREF_SIZE;
 }
 
 .sidebar-panel-btn {
