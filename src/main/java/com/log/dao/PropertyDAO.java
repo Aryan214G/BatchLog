@@ -80,6 +80,30 @@ public class  PropertyDAO {
 //        return properties;
 //    }
 
+    public Property getProperty(Connection conn, int id){
+        String sql = "SELECT * FROM Property WHERE Property_ID = ?";
+
+        try(PreparedStatement stmt = conn.prepareStatement(sql)){
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()){
+                return new Property(
+                        rs.getInt(1),
+                        rs.getString("Property_name"),
+                        rs.getInt("Category_ID"),
+                        rs.getInt("Temp_ID"),
+                        rs.getInt("Dir_ID"),
+                        rs.getInt("Unit_ID"),
+                        rs.getInt("Batch_CODE")
+                );
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        throw new RuntimeException("Property not found");
+    }
+
     void updateProperty(Property property){
     }
 

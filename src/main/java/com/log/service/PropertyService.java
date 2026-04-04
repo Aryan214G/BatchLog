@@ -36,6 +36,9 @@ public class PropertyService {
         return propertyDAO.insertProperty(conn, property);
     }
 
+    public Property getProperty(Connection conn, int id){
+        return propertyDAO.getProperty(conn, id);
+    }
     public void insertPropertyValues(Connection conn, int propertyID, List<Reading> readings){
         for(Reading input : readings){
             PropertyValue propertyValue = new PropertyValue(Integer.parseInt(input.getValue()), propertyID);
