@@ -14,6 +14,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import com.log.service.ProductService;
 
@@ -34,37 +35,63 @@ public class BasePropertiesController {
     private ProductDAO productDAO = new ProductDAO();
     private BatchService batchService = new BatchService();
 
+    //disable this when you want to ignore debugging operations such as preloading base properties fields.
+    private boolean debug = true;
 
     // ===== INITIALIZATION =====
     @FXML
     public void initialize() {
-        // You can preload data here if needed
-        setDefaultProject();
-        System.out.println("Base Properties Loaded");
+        if(debug){
+        // preload base properties
+        handleNext();
+        }
     }
     // ===== BUTTON ACTIONS =====
     @FXML
     private void handleNext() {
 
-        if (!validateInputs()) {
-            System.out.println("Validation failed");
-            return;
+        if(!debug){
+            if (!validateInputs()) {
+                System.out.println("Validation failed");
+                return;
+            }
         }
 
-        String project = projectName.getText();
-        String batch = batchNo.getText();
-        String product = productName.getText();
-        String component = productID.getText();
-        LocalDate date = testDate.getValue();
-        String place = placeOfTesting.getText();
-        String file = fileName.getText();
-        bpropState.setProjectName(projectName.getText());
-        bpropState.setBatchNo(batchNo.getText());
-        bpropState.setProductName(productName.getText());
-        bpropState.setProductID(productID.getText());
-        bpropState.setTestDate(testDate.getValue());
-        bpropState.setPlaceOfTesting(placeOfTesting.getText());
-        bpropState.setFileName(fileName.getText());
+        String project = null;
+        String batch = null;
+        String product = null;
+        String productId = null;
+        LocalDate date = null;
+        String place = null;
+        String file = null;
+
+        if(!debug){
+             project = projectName.getText();
+             batch = batchNo.getText();
+             product = productName.getText();
+             productId = productID.getText();
+             date = testDate.getValue();
+             place = placeOfTesting.getText();
+             file = fileName.getText();
+
+            bpropState.setProjectName(projectName.getText());
+            bpropState.setBatchNo(batchNo.getText());
+            bpropState.setProductName(productName.getText());
+            bpropState.setProductID(productID.getText());
+            bpropState.setTestDate(testDate.getValue());
+            bpropState.setPlaceOfTesting(placeOfTesting.getText());
+            bpropState.setFileName(fileName.getText());
+        }
+        else{
+            setDefaultProject();
+            project = bpropState.getProjectName();
+            batch = bpropState.getBatchNo();
+            product = bpropState.getProductName();
+            productId = bpropState.getProductID();
+            date = testDate.getValue();
+            place = bpropState.getPlaceOfTesting();
+            file = bpropState.getFileName();
+        }
 
         //manual transaction handling to prevent DB lock issues
         Connection conn = null;
@@ -75,7 +102,6 @@ public class BasePropertiesController {
 
             handleCreateProject(conn, project);
 
-            String productId = productID.getText();
             productService.createProduct(conn, productId, product);
 
             handleCreateBatch(conn);
@@ -174,17 +200,17 @@ public class BasePropertiesController {
         testDate.setValue(null);
     }
     public void setDefaultProject(){
-        bpropState.setProjectName("Project");
-        bpropState.setBatchNo("456");
-        bpropState.setProductName("Product");
-        bpropState.setProductID("1738");
+        bpropState.setProjectName("project6april");
+        bpropState.setBatchNo("6");
+        bpropState.setProductName("Product6");
+        bpropState.setProductID("6");
         bpropState.setTestDate(LocalDate.now());
-        bpropState.setPlaceOfTesting("Lab 4");
+        bpropState.setPlaceOfTesting("Lab 6");
         bpropState.setFileName("TestFile");
 
     }
 
-    private void handleCreateProject(Connection conn, String project) {
+    private void handleCreateProject(Connection conn, String project) throws SQLException {
 
         int projectId = projectService.createProject(conn, project);
 
