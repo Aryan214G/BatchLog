@@ -84,5 +84,6 @@ public class  PropertyDAO {
     }
 
     void deleteProperty(int propertyId){
+
     }
 }

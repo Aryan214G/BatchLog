@@ -6,7 +6,6 @@ import com.log.model.*;
 import javafx.scene.control.Alert;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 public class PropertySubmissionService {
@@ -83,25 +82,18 @@ public class PropertySubmissionService {
         }
     }
 
-    private void handleProperty(Connection conn, List<Reading> readings,
-                                String propertyName, String selectedCategory) throws SQLException {
-
-        int categoryId = categoryService.getCategory(conn, selectedCategory).getCategoryId();
-        int unitId = unitsService.getUnit(conn, readings.get(0).getUnit()).getUnitId();
-
+    private void handleProperty(Connection conn, List<Reading> readings, String propertyName, String selectedCategory){
         Property property = new Property(
                 propertyName,
-                categoryId,
+                categoryService.getCategory(conn, selectedCategory).getCategoryId(),
                 tempId,
                 directionId,
-                unitId,
+                unitsService.getUnit(conn, readings.get(0).getUnit()).getUnitId(),
                 bsinstance.getBatchCode()
         );
 
-        // ✅ Now uses your model properly
-        int propertyID = propertyService.getOrCreateProperty(conn, property);
-
-        propertyService.insertPropertyValuesIfNotExists(conn, propertyID, readings);
+        int propertyID = propertyService.insertProperty(conn, property);
+        propertyService.insertPropertyValues(conn, propertyID, readings);
     }
 
     private void showAlert(String title, String message) {
