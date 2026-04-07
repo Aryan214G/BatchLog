@@ -42,56 +42,28 @@ public class BasePropertiesController {
     @FXML
     public void initialize() {
         if(debug){
-        // preload base properties
-        handleNext();
+            setDefaultProject();
+            System.out.println("Temporary Base Properties Loaded");
         }
     }
     // ===== BUTTON ACTIONS =====
     @FXML
     private void handleNext() {
 
-        if(!debug){
-            if (!validateInputs()) {
-                System.out.println("Validation failed");
-                return;
-            }
-        }
-
-        String project = null;
-        String batch = null;
-        String product = null;
-        String productId = null;
-        LocalDate date = null;
-        String place = null;
-        String file = null;
-
-        if(!debug){
-             project = projectName.getText();
-             batch = batchNo.getText();
-             product = productName.getText();
-             productId = productID.getText();
-             date = testDate.getValue();
-             place = placeOfTesting.getText();
-             file = fileName.getText();
-
-            bpropState.setProjectName(projectName.getText());
-            bpropState.setBatchNo(batchNo.getText());
-            bpropState.setProductName(productName.getText());
-            bpropState.setProductID(productID.getText());
-            bpropState.setTestDate(testDate.getValue());
-            bpropState.setPlaceOfTesting(placeOfTesting.getText());
-            bpropState.setFileName(fileName.getText());
-        }
-        else{
-            setDefaultProject();
-            project = bpropState.getProjectName();
-            batch = bpropState.getBatchNo();
-            product = bpropState.getProductName();
-            productId = bpropState.getProductID();
-            date = testDate.getValue();
-            place = bpropState.getPlaceOfTesting();
-            file = bpropState.getFileName();
-        }
+        String project = projectName.getText();
+        String batch = batchNo.getText();
+        String product = productName.getText();
+        String component = productID.getText();
+        LocalDate date = testDate.getValue();
+        String place = placeOfTesting.getText();
+        String file = fileName.getText();
+        bpropState.setProjectName(projectName.getText());
+        bpropState.setBatchNo(batchNo.getText());
+        bpropState.setProductName(productName.getText());
+        bpropState.setProductID(productID.getText());
+        bpropState.setTestDate(testDate.getValue());
+        bpropState.setPlaceOfTesting(placeOfTesting.getText());
+        bpropState.setFileName(fileName.getText());
 
         //manual transaction handling to prevent DB lock issues
         Connection conn = null;
@@ -102,6 +74,7 @@ public class BasePropertiesController {
 
             handleCreateProject(conn, project);
 
+            String productId = productID.getText();
             productService.createProduct(conn, productId, product);
 
             handleCreateBatch(conn);
@@ -136,8 +109,6 @@ public class BasePropertiesController {
         // TODO: Save to AppState / Database / Model
         appState.setProjectCreated(true);
         loadCategoriesPage();
-
-
     }
 
     private void handleCreateBatch(Connection conn) {
@@ -200,14 +171,14 @@ public class BasePropertiesController {
         testDate.setValue(null);
     }
     public void setDefaultProject(){
-        bpropState.setProjectName("project6april");
-        bpropState.setBatchNo("6");
-        bpropState.setProductName("Product6");
-        bpropState.setProductID("6");
-        bpropState.setTestDate(LocalDate.now());
-        bpropState.setPlaceOfTesting("Lab 6");
-        bpropState.setFileName("TestFile");
 
+        projectName.setText("project6april");
+        batchNo.setText("6");
+        productName.setText("Product6");
+        productID.setText("6");
+        testDate.setValue(LocalDate.now());
+        placeOfTesting.setText("Lab 6");
+        fileName.setText("TestFile");
     }
 
     private void handleCreateProject(Connection conn, String project) throws SQLException {
