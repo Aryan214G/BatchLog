@@ -71,4 +71,24 @@ public class ProjectDAO {
             e.printStackTrace();
         }
     }
+
+    public int getProject(Connection conn, String projectName){
+
+        String sql = "SELECT * FROM Project WHERE Project_name = ?";
+
+        try(PreparedStatement stmt = conn.prepareStatement(sql)){
+            stmt.setString(1, projectName);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                System.out.println(rs.getInt("Project_id") + " -> " + rs.getString("Project_name"));
+                return rs.getInt("Project_id");
+
+            }
+
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return -1;
+    }
 }

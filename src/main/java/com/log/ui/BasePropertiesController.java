@@ -14,6 +14,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import com.log.service.ProductService;
 
@@ -34,22 +35,20 @@ public class BasePropertiesController {
     private ProductDAO productDAO = new ProductDAO();
     private BatchService batchService = new BatchService();
 
+    //disable this when you want to ignore debugging operations such as preloading base properties fields.
+    private boolean debug = true;
 
     // ===== INITIALIZATION =====
     @FXML
     public void initialize() {
-        // You can preload data here if needed
-        setDefaultProject();
-        System.out.println("Base Properties Loaded");
+        if(debug){
+            setDefaultProject();
+            System.out.println("Temporary Base Properties Loaded");
+        }
     }
     // ===== BUTTON ACTIONS =====
     @FXML
     private void handleNext() {
-
-        if (!validateInputs()) {
-            System.out.println("Validation failed");
-            return;
-        }
 
         String project = projectName.getText();
         String batch = batchNo.getText();
@@ -110,8 +109,6 @@ public class BasePropertiesController {
         // TODO: Save to AppState / Database / Model
         appState.setProjectCreated(true);
         loadCategoriesPage();
-
-
     }
 
     private void handleCreateBatch(Connection conn) {
@@ -174,17 +171,17 @@ public class BasePropertiesController {
         testDate.setValue(null);
     }
     public void setDefaultProject(){
-        bpropState.setProjectName("Project");
-        bpropState.setBatchNo("456");
-        bpropState.setProductName("Product");
-        bpropState.setProductID("1738");
-        bpropState.setTestDate(LocalDate.now());
-        bpropState.setPlaceOfTesting("Lab 4");
-        bpropState.setFileName("TestFile");
 
+        projectName.setText("project6april");
+        batchNo.setText("6");
+        productName.setText("Product6");
+        productID.setText("6");
+        testDate.setValue(LocalDate.now());
+        placeOfTesting.setText("Lab 6");
+        fileName.setText("TestFile");
     }
 
-    private void handleCreateProject(Connection conn, String project) {
+    private void handleCreateProject(Connection conn, String project) throws SQLException {
 
         int projectId = projectService.createProject(conn, project);
 
