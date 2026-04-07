@@ -129,7 +129,7 @@ public class UnitsDAO {
             if (rs.next()) {
                 return new Unit(
                         rs.getInt("Unit_ID"),
-                        rs.getString("Unit_Name")
+                        rs.getString("Unit")
                 );
             }
 
