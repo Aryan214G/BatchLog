@@ -10,7 +10,7 @@ public class BatchDAO {
     public void insertBatchByCODE(Batch batch) {
 
         //TODO: recheck this query. Use WHERE batchCode keyword
-        String sql = "INSERT INTO Batch VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Batch VALUES (?, ?, ?, ?)";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -29,16 +29,14 @@ public class BatchDAO {
 
     public int insertBatchByID(Connection conn, Batch batch) {
 
-        String sql = "INSERT INTO Batch (Batch_ID, Test_date, Test_site, Project_ID, Product_CODE) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Batch (Batch_ID, Project_ID, Product_CODE) VALUES (?, ?, ?)";
 
         try (PreparedStatement stmt = conn.prepareStatement(
                 sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setInt(1, batch.getBatchId());
-            stmt.setString(2, batch.getTestDate());
-            stmt.setString(3, batch.getTestSite());
-            stmt.setInt(4, batch.getProjectId());
-            stmt.setInt(5, batch.getProductCode());
+            stmt.setInt(2, batch.getProjectId());
+            stmt.setInt(3, batch.getProductCode());
 
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
