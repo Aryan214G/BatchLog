@@ -17,10 +17,8 @@ public class BatchDAO {
 
             stmt.setInt(1, batch.getBatchCode());
             stmt.setInt(2, batch.getBatchId());
-            stmt.setString(3, batch.getTestDate());
-            stmt.setString(4, batch.getTestSite());
-            stmt.setInt(5, batch.getProjectId());
-            stmt.setInt(6, batch.getProductCode());
+            stmt.setInt(3, batch.getProjectId());
+            stmt.setInt(4, batch.getProductCode());
 
             stmt.executeUpdate();
 
