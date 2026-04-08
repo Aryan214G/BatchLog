@@ -120,8 +120,6 @@ public class BasePropertiesController {
         int productCode = productService.getProductCode(conn, bpropState.getProductID(),bpropState.getProductName(),bpropState.getProjectId());
         batchService.createBatch(conn, new Batch(
                 batchID,
-                TestDate,
-                TestSite,
                 projectID,
                 productCode
         ));

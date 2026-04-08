@@ -71,7 +71,7 @@ public class NewBatchController {
         String TestDate = bpropState.getTestDate().toString();
         String TestSite = bpropState.getPlaceOfTesting();
         int productCode = productDAO.getProductCode(conn,bpropState.getProductID(),bpropState.getProductName(),bpropState.getProjectId());
-        Batch batch = new Batch(batchID,TestDate,TestSite,projectID,productCode);
+        Batch batch = new Batch(batchID, projectID,productCode);
         batchDAO.insertBatchByID(conn,batch);
     }
     private boolean validateInputs() {
