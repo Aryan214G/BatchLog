@@ -65,8 +65,6 @@ public class BatchDAO {
                 return new Batch(
                         rs.getInt("Batch_CODE"),
                         rs.getInt("Batch_ID"),
-                        rs.getString("Test_date"),
-                        rs.getString("Test_site"),
                         rs.getInt("Project_ID"),
                         rs.getInt("Product_CODE")
                 );
