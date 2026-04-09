@@ -92,10 +92,10 @@ public class CategoriesPageController {
     @FXML
     public void initialize() throws IOException {
 
-        isSubmitButtonVisible(false);
         if(!instance.isProjectCreated()) {
-            categoriesListView.setDisable(false);
-            propertiesListView.setDisable(false);
+            isSubmitButtonVisible(false);
+            categoriesListView.setDisable(true);
+            propertiesListView.setDisable(true);
         }
         loadCategoriesFromDB();
         CategorySelectionListener();

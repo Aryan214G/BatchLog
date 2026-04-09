@@ -1,6 +1,7 @@
 package com.log.dao;
 
 import com.log.database.DBUtil;
+import com.log.model.DefaultProperty;
 import com.log.model.PropertyView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,6 +30,7 @@ public class DefaultPropertiesDAO {
                     """;
 
 
+
         try(Connection conn = DBUtil.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -54,5 +56,31 @@ public class DefaultPropertiesDAO {
         }
 
         return properties;
+    }
+
+    public List<DefaultProperty> fetchFromDB() {
+
+        List<DefaultProperty> list = new ArrayList<>();
+
+        String query = "SELECT Def_PropName, Unit_ID, Category_ID, Rows FROM Default_Properties";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                list.add(new DefaultProperty(
+                        rs.getString("Def_PropName"),
+                        rs.getInt("Unit_ID"),
+                        rs.getInt("Category_ID"),
+                        rs.getInt("Rows")
+                ));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
     }
 }

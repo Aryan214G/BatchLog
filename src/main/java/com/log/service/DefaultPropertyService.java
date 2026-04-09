@@ -2,6 +2,7 @@ package com.log.service;
 
 import com.log.database.DBUtil;
 import com.log.model.DefaultProperty;
+import com.log.dao.DefaultPropertiesDAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,11 +13,13 @@ import java.util.List;
 import java.util.Map;
 
 public class DefaultPropertyService {
+    private DefaultPropertiesDAO DPdao=new DefaultPropertiesDAO();
     private CategoryService categoryService = new CategoryService();
 
     public Map<Integer, Map<String, DefaultProperty>> getDefaultsGrouped() {
 
-        List<DefaultProperty> list = fetchFromDB();
+        List<DefaultProperty> list = DPdao.fetchFromDB();
+
 
         Map<Integer, Map<String, DefaultProperty>> result = new HashMap<>();
 
@@ -30,29 +33,5 @@ public class DefaultPropertyService {
         return result;
     }
 
-    private List<DefaultProperty> fetchFromDB() {
 
-        List<DefaultProperty> list = new ArrayList<>();
-
-        String query = "SELECT Def_PropName, Unit_ID, Category_ID, Rows FROM Default_Properties";
-
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query);
-             ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                list.add(new DefaultProperty(
-                        rs.getString("Def_PropName"),
-                        rs.getInt("Unit_ID"),
-                        rs.getInt("Category_ID"),
-                        rs.getInt("Rows")
-                ));
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return list;
-    }
 }
