@@ -14,7 +14,7 @@ public class BatchTestDAO {
 
             stmt.setInt(1, batchTest.getBatchCode());
             stmt.setString(2, batchTest.getTestDate());
-            stmt.setString(3, batchTest.getTestDate());
+            stmt.setString(3, batchTest.getTestSite());
 
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
