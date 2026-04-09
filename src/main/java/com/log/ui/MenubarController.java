@@ -86,4 +86,20 @@ public class MenubarController {
 
         popupStage.showAndWait();
     }
+
+    @FXML
+    private void openRetrievalPage(ActionEvent event) throws IOException {
+
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/com/log/ui/views/RetrievalPage.fxml")
+        );
+
+        Parent root = loader.load();
+
+        Scene scene = new Scene(root);
+
+        Stage stage = (Stage) menuBar.getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
+    }
 }
