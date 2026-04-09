@@ -1,0 +1,70 @@
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Button?>
+<BorderPane prefWidth="1200" prefHeight="800"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.log.ui.RetrievalPageController">
+
+    <!-- TOP MENU -->
+    <top>
+            <fx:include source="../components/menubar.fxml"/>
+    </top>
+
+    <!-- LEFT SIDEBAR (FULL HEIGHT BELOW MENU) -->
+    <left>
+        <AnchorPane>
+
+            <!-- Sidebar -->
+            <VBox fx:id="sidebar"
+                  prefWidth="250"
+                  spacing="10"
+                  style="-fx-background-color: #2c3e50; -fx-padding: 15;"
+                  AnchorPane.topAnchor="0"
+                  AnchorPane.bottomAnchor="0">
+
+                <Label text="Filters" style="-fx-text-fill: white; -fx-font-size: 16;" />
+
+                <Label text="Project Name" style="-fx-text-fill: white;" />
+                <TextField fx:id="projectField" />
+
+                <Label text="Product Name" style="-fx-text-fill: white;" />
+                <TextField fx:id="productField" />
+
+                <Label text="Batch ID" style="-fx-text-fill: white;" />
+                <TextField fx:id="BatchIDfield" />
+
+                <Label text="Date of testing" style="-fx-text-fill: white;" />
+                <TextField fx:id="Dateoftestingfield" />
+
+                <Label text="Place of testing" style="-fx-text-fill: white;" />
+                <TextField fx:id="Placeoftestingfield" />
+
+                <Button text="Search"
+                        onAction="#handleSearch"
+                        maxWidth="Infinity"/>
+            </VBox>
+
+            <!-- Toggle button -->
+            <Button fx:id="toggleBtn"
+                    text="☰"
+                    onAction="#toggleSidebar"
+                    layoutX="250"
+                    layoutY="10"/>
+
+        </AnchorPane>
+    </left>
+
+    <!-- CENTER CONTENT -->
+    <center>
+        <AnchorPane>
+            <!-- Your future TableView goes here -->
+        </AnchorPane>
+    </center>
+
+</BorderPane>
