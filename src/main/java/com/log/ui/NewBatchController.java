@@ -71,7 +71,7 @@ public class NewBatchController {
     }
 
     private void handleCreateBatch() {
-        int batchID = Integer.parseInt(bpropState.getBatchNo());
+        String batchID = bpropState.getBatchNo();
         int projectID = bpropState.getProjectId();
         String TestDate = bpropState.getTestDate().toString();
         String TestSite = bpropState.getPlaceOfTesting();

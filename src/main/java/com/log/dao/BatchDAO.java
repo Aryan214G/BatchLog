@@ -16,7 +16,7 @@ public class BatchDAO {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, batch.getBatchCode());
-            stmt.setInt(2, batch.getBatchId());
+            stmt.setString(2, batch.getBatchId());
             stmt.setInt(3, batch.getProjectId());
             stmt.setInt(4, batch.getProductCode());
 
@@ -34,7 +34,7 @@ public class BatchDAO {
         try (PreparedStatement stmt = conn.prepareStatement(
                 sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            stmt.setInt(1, batch.getBatchId());
+            stmt.setString(1, batch.getBatchId());
             stmt.setInt(2, batch.getProjectId());
             stmt.setInt(3, batch.getProductCode());
 
@@ -64,7 +64,7 @@ public class BatchDAO {
             if (rs.next()) {
                 return new Batch(
                         rs.getInt("Batch_CODE"),
-                        rs.getInt("Batch_ID"),
+                        rs.getString("Batch_ID"),
                         rs.getInt("Project_ID"),
                         rs.getInt("Product_CODE")
                 );
@@ -91,7 +91,7 @@ public class BatchDAO {
 
                 Batch batch = new Batch(
                         rs.getInt("Batch_CODE"),
-                        rs.getInt("Batch_ID"),
+                        rs.getString("Batch_ID"),
                         rs.getInt("Project_ID"),
                         rs.getInt("Product_CODE")
                 );
@@ -127,7 +127,7 @@ public class BatchDAO {
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, batch.getBatchId());
+            stmt.setString(1, batch.getBatchId());
             stmt.setInt(2, batch.getProjectId());
             stmt.setInt(3, batch.getProductCode());
 
