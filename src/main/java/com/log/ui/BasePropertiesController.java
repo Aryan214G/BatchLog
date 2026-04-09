@@ -6,6 +6,7 @@ import com.log.dao.ProductDAO;
 import com.log.database.DBUtil;
 import com.log.model.Batch;
 import com.log.model.BatchTest;
+import com.log.model.Product;
 import com.log.service.BatchService;
 import com.log.service.BatchTestService;
 import com.log.service.ProjectService;
@@ -119,7 +120,11 @@ public class BasePropertiesController {
         String TestDate = bpropState.getTestDate().toString();
         String TestSite = bpropState.getPlaceOfTesting();
 
-        int productCode = productService.getProductCode(conn, bpropState.getProductID(),bpropState.getProductName(),bpropState.getProjectId());
+        int productCode = productService.getProductCodeFromDB(conn, new Product(
+                bpropState.getProductID(),
+                bpropState.getProductName(),
+                bpropState.getProjectId()
+        ));
         batchService.createBatch(conn, new Batch(
                 batchID,
                 projectID,
