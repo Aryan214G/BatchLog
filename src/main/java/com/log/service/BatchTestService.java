@@ -22,6 +22,7 @@ public class BatchTestService {
         if(id != -1){
             System.out.println("Batch Test values already exist in DB");
             bpInstance.setTestId(id);
+            return;
         }
          bpInstance.setTestId(batchTestDAO.insertBatchTest(conn, batchTest));
     }

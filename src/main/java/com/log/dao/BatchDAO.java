@@ -131,10 +131,9 @@ public class BatchDAO {
             stmt.setInt(2, batch.getProjectId());
             stmt.setInt(3, batch.getProductCode());
 
-            stmt.executeQuery();
-            ResultSet rs = stmt.getGeneratedKeys();
+            ResultSet rs = stmt.executeQuery();
             if(rs.next()){
-                return rs.getInt(1);
+                return rs.getInt("Batch_CODE");
             }
 
         } catch (SQLException e) {

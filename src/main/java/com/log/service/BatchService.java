@@ -25,6 +25,7 @@ public class BatchService {
         if(batchCode != -1){
             System.out.println("Batch already exists in DB");
             bpinstance.setBatchCode(batchCode);
+            return;
         }
         bpinstance.setBatchCode(batchDAO.insertBatchByID(conn, batch));
     }

@@ -38,10 +38,9 @@ public class BatchTestDAO {
             stmt.setString(2, batchTest.getTestDate());
             stmt.setString(3, batchTest.getTestSite());
 
-            stmt.executeQuery();
-            ResultSet rs = stmt.getGeneratedKeys();
+            ResultSet rs = stmt.executeQuery();
             if(rs.next()){
-                return rs.getInt(1);
+                return rs.getInt("Test_ID");
             }
 
         } catch (SQLException e) {

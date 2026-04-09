@@ -26,7 +26,7 @@
             <Label text="Project Name" />
             <TextField fx:id="projectName" alignment="CENTER" maxWidth="700.0" />
 
-            <Label text="Batch No." />
+            <Label text="Batch ID" />
             <TextField fx:id="batchNo" alignment="CENTER" maxWidth="700.0" />
 
             <Label text="Product Name" />
