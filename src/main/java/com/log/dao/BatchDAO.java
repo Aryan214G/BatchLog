@@ -122,16 +122,14 @@ public class BatchDAO {
     }
 
 
-    public int getBatchCode(Connection conn, int BatchId, String TestDate, String TestSite, int ProjectId, int ProductCode){
-        String sql = "SELECT Batch_CODE FROM Batch WHERE Batch_ID=? AND Test_date=? AND Test_site=? AND Project_ID=? AND Product_CODE=?";
+    public int getBatchCode(Connection conn, Batch batch){
+        String sql = "SELECT Batch_CODE FROM Batch WHERE Batch_ID=? AND Project_ID=? AND Product_CODE=?";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, BatchId);
-            stmt.setString(2, TestDate);
-            stmt.setString(3, TestSite);
-            stmt.setInt(4, ProjectId);
-            stmt.setInt(5, ProductCode);
+            stmt.setInt(1, batch.getBatchId());
+            stmt.setInt(2, batch.getProjectId());
+            stmt.setInt(3, batch.getProductCode());
 
             stmt.executeQuery();
             ResultSet rs = stmt.getGeneratedKeys();
