@@ -9,7 +9,7 @@ import java.sql.Statement;
 
 public class DBUtil {
 
-    private static final Path DB_PATH = Paths.get("database", "BatchLog.db");
+    private static final Path DB_PATH = Paths.get("database", "BatchLog_test.db");
     private static final String URL = "jdbc:sqlite:" + DB_PATH.toAbsolutePath();
 
     public static Connection getConnection() throws SQLException {
