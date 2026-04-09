@@ -6,21 +6,18 @@ public class BatchTest {
     private String testDate;
     private String testSite;
 
-
-    public void BatchTest(int batchCode, String testDate, String testSite) {
-        this.batchCode = batchCode;
-        this.testDate = testDate;
-        this.testSite = testSite;
-    }
-
-
-    public void BatchTest(int testId, int batchCode, String testDate, String testSite) {
+    public BatchTest(int testId, int batchCode, String testDate, String testSite) {
         this.testId = testId;
         this.batchCode = batchCode;
         this.testDate = testDate;
         this.testSite = testSite;
     }
 
+    public BatchTest(int batchCode, String testDate, String testSite) {
+        this.batchCode = batchCode;
+        this.testDate = testDate;
+        this.testSite = testSite;
+    }
 
     public int getTestId() {
         return testId;
