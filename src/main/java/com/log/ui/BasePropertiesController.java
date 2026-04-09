@@ -114,11 +114,11 @@ public class BasePropertiesController {
     }
 
     private void handleCreateBatch(Connection conn) {
-        int batchID = Integer.parseInt(bpropState.getBatchNo());
+        String batchID = bpropState.getBatchNo();
         int projectID = bpropState.getProjectId();
         String TestDate = bpropState.getTestDate().toString();
         String TestSite = bpropState.getPlaceOfTesting();
-        //TODO: call service class and not DAO class
+
         int productCode = productService.getProductCode(conn, bpropState.getProductID(),bpropState.getProductName(),bpropState.getProjectId());
         batchService.createBatch(conn, new Batch(
                 batchID,

@@ -21,6 +21,12 @@ public class BatchService {
         if (batch == null) {
             throw new IllegalArgumentException("Batch cannot be null");
         }
+        int batchCode = getBatchCode(conn, batch);
+        if(batchCode != -1){
+            System.out.println("Batch already exists in DB");
+            bpinstance.setBatchCode(batchCode);
+            return;
+        }
         bpinstance.setBatchCode(batchDAO.insertBatchByID(conn, batch));
     }
 
@@ -44,5 +50,9 @@ public class BatchService {
         }
 
         batchDAO.deleteBatch(batchCode);
+    }
+
+    public int getBatchCode(Connection conn, Batch batch){
+        return batchDAO.getBatchCode(conn, batch);
     }
 }

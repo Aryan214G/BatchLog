@@ -16,7 +16,7 @@ public class BatchDAO {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, batch.getBatchCode());
-            stmt.setInt(2, batch.getBatchId());
+            stmt.setString(2, batch.getBatchId());
             stmt.setInt(3, batch.getProjectId());
             stmt.setInt(4, batch.getProductCode());
 
@@ -34,7 +34,7 @@ public class BatchDAO {
         try (PreparedStatement stmt = conn.prepareStatement(
                 sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            stmt.setInt(1, batch.getBatchId());
+            stmt.setString(1, batch.getBatchId());
             stmt.setInt(2, batch.getProjectId());
             stmt.setInt(3, batch.getProductCode());
 
@@ -64,7 +64,7 @@ public class BatchDAO {
             if (rs.next()) {
                 return new Batch(
                         rs.getInt("Batch_CODE"),
-                        rs.getInt("Batch_ID"),
+                        rs.getString("Batch_ID"),
                         rs.getInt("Project_ID"),
                         rs.getInt("Product_CODE")
                 );
@@ -91,7 +91,7 @@ public class BatchDAO {
 
                 Batch batch = new Batch(
                         rs.getInt("Batch_CODE"),
-                        rs.getInt("Batch_ID"),
+                        rs.getString("Batch_ID"),
                         rs.getInt("Project_ID"),
                         rs.getInt("Product_CODE")
                 );
@@ -122,21 +122,18 @@ public class BatchDAO {
     }
 
 
-    public int getBatchCode(Connection conn, int BatchId, String TestDate, String TestSite, int ProjectId, int ProductCode){
-        String sql = "SELECT Batch_CODE FROM Batch WHERE Batch_ID=? AND Test_date=? AND Test_site=? AND Project_ID=? AND Product_CODE=?";
+    public int getBatchCode(Connection conn, Batch batch){
+        String sql = "SELECT Batch_CODE FROM Batch WHERE Batch_ID=? AND Project_ID=? AND Product_CODE=?";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, BatchId);
-            stmt.setString(2, TestDate);
-            stmt.setString(3, TestSite);
-            stmt.setInt(4, ProjectId);
-            stmt.setInt(5, ProductCode);
+            stmt.setString(1, batch.getBatchId());
+            stmt.setInt(2, batch.getProjectId());
+            stmt.setInt(3, batch.getProductCode());
 
-            stmt.executeQuery();
-            ResultSet rs = stmt.getGeneratedKeys();
+            ResultSet rs = stmt.executeQuery();
             if(rs.next()){
-                return rs.getInt(1);
+                return rs.getInt("Batch_CODE");
             }
 
         } catch (SQLException e) {

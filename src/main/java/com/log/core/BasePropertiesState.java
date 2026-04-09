@@ -19,6 +19,15 @@ public class BasePropertiesState {
     private LocalDate testDate;
     private String placeOfTesting;
     private String fileName;
+    private int testId;
+
+    public int getTestId() {
+        return testId;
+    }
+
+    public void setTestId(int testId) {
+        this.testId = testId;
+    }
 
     public int getBatchCode() {
         return batchCode;

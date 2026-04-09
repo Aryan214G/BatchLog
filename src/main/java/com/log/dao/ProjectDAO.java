@@ -81,9 +81,7 @@ public class ProjectDAO {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                System.out.println(rs.getInt("Project_id") + " -> " + rs.getString("Project_name"));
                 return rs.getInt("Project_id");
-
             }
 
         } catch (SQLException e){
