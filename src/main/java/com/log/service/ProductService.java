@@ -26,9 +26,13 @@ public class ProductService {
 
         Product product = new Product(productId, productName.trim(), projectId);
 
-        int productCode = productDAO.insertProduct(conn, product);
-
-        product.setProductCode(productCode);
+        int productCode = getProductCodeFromDB(conn, product);
+        if (productCode != -1){
+            System.out.println("Product already exists in DB");
+            bpropState.setProductCode(productCode);
+            return;
+        }
+        bpropState.setProductCode(productDAO.insertProduct(conn, product));
     }
 
     public List<Product> getAllProducts(Connection conn) {
@@ -39,7 +43,7 @@ public class ProductService {
         productDAO.deleteProduct(conn, productCode);
     }
 
-    public int getProductCode(Connection conn, String productID, String productName, int projectId) {
-        return productDAO.getProductCode(conn, productID, productName, projectId);
+    public int getProductCodeFromDB(Connection conn, Product product) {
+        return productDAO.getProductCode(conn, product);
     }
 }

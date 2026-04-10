@@ -126,18 +126,18 @@ public class ProductDAO {
         }
     }
 
-    public int getProductCode(Connection conn, String productId, String productName, int projectId){
+    public int getProductCode(Connection conn, Product product){
         String sql = "SELECT Product_code FROM Product WHERE Product_ID=? AND Product_name=? AND Project_ID=?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, productId);
-            stmt.setString(2,productName);
-            stmt.setInt(3,projectId);
+            stmt.setString(1, product.getProductId());
+            stmt.setString(2,product.getProductName());
+            stmt.setInt(3,product.getProjectId());
 
             ResultSet rs = stmt.executeQuery();
 
             if(rs.next()){
-                return rs.getInt(1);
+                return rs.getInt("Product_code");
             }
 
         }catch(SQLException e){

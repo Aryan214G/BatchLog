@@ -7,6 +7,7 @@ import com.log.dao.ProductDAO;
 import com.log.database.DBUtil;
 import com.log.model.Batch;
 import com.log.model.BatchTest;
+import com.log.model.Product;
 import com.log.service.BatchService;
 import com.log.service.BatchTestService;
 import com.log.service.ProjectService;
@@ -72,10 +73,15 @@ public class NewBatchController {
 
     private void handleCreateBatch() {
         String batchID = bpropState.getBatchNo();
+        int projectID = bpropState.getProjectId();
         String TestDate = bpropState.getTestDate().toString();
         String TestSite = bpropState.getPlaceOfTesting();
-        int productCode = productDAO.getProductCode(conn,bpropState.getProductID(),bpropState.getProductName(),bpropState.getProjectId());
-        Batch batch = new Batch(batchID, productCode);
+        int productCode = productDAO.getProductCode(conn, new Product(
+                bpropState.getProductID(),
+                bpropState.getProductName(),
+                bpropState.getProjectId()
+        ));
+        Batch batch = new Batch(batchID, projectID,productCode);
         batchService.createBatch(conn,batch);
         batchTestService.createBatchTest(conn, new BatchTest(
                 bpropState.getBatchCode(),
