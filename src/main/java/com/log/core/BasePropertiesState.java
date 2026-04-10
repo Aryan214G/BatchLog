@@ -16,6 +16,7 @@ public class BasePropertiesState {
     private int batchCode;
     private String productName;
     private String productID;
+    private int productCode;
     private LocalDate testDate;
     private String placeOfTesting;
     private String fileName;
@@ -62,6 +63,11 @@ public class BasePropertiesState {
 
     public void setProjectId(int projectId) {this.projectId = projectId;}
 
+    public int getProductCode() {
+        return productCode;
+    }
 
-
+    public void setProductCode(int productCode) {
+        this.productCode = productCode;
+    }
 }
