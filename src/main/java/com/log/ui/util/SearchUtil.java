@@ -37,7 +37,7 @@ public class SearchUtil {
         }
 
         if (batchId != null) {
-            sql.append(" AND b.Batch_CODE = ?");
+            sql.append(" AND b.Batch_ID = ?");
             params.add(batchId);
         }
 
@@ -79,4 +79,6 @@ public class SearchUtil {
                 rs.getInt("Product_ID")
         );
     }
+
+
 }
