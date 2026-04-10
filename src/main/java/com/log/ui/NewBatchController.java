@@ -81,7 +81,7 @@ public class NewBatchController {
                 bpropState.getProductName(),
                 bpropState.getProjectId()
         ));
-        Batch batch = new Batch(batchID, projectID,productCode);
+        Batch batch = new Batch(batchID, productCode);
         batchService.createBatch(conn,batch);
         batchTestService.createBatchTest(conn, new BatchTest(
                 bpropState.getBatchCode(),

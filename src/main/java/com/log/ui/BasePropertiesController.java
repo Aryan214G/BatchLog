@@ -127,7 +127,6 @@ public class BasePropertiesController {
         ));
         batchService.createBatch(conn, new Batch(
                 batchID,
-                projectID,
                 productCode
         ));
 
