@@ -5,7 +5,9 @@ import com.log.core.BasePropertiesState;
 import com.log.dao.ProductDAO;
 import com.log.database.DBUtil;
 import com.log.model.Batch;
+import com.log.model.BatchTest;
 import com.log.service.BatchService;
+import com.log.service.BatchTestService;
 import com.log.service.ProjectService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -34,7 +36,7 @@ public class BasePropertiesController {
     private ProjectService projectService = new ProjectService();
     private ProductDAO productDAO = new ProductDAO();
     private BatchService batchService = new BatchService();
-
+    private BatchTestService batchTestService = new BatchTestService();
     //disable this when you want to ignore debugging operations such as preloading base properties fields.
     private boolean debug = true;
 
@@ -112,19 +114,24 @@ public class BasePropertiesController {
     }
 
     private void handleCreateBatch(Connection conn) {
-        int batchID = Integer.parseInt(bpropState.getBatchNo());
+        String batchID = bpropState.getBatchNo();
         int projectID = bpropState.getProjectId();
         String TestDate = bpropState.getTestDate().toString();
         String TestSite = bpropState.getPlaceOfTesting();
-        //TODO: call service class and not DAO class
+
         int productCode = productService.getProductCode(conn, bpropState.getProductID(),bpropState.getProductName(),bpropState.getProjectId());
         batchService.createBatch(conn, new Batch(
                 batchID,
-                TestDate,
-                TestSite,
                 projectID,
                 productCode
         ));
+
+        int batchCODE = bpropState.getBatchCode();
+        batchTestService.createBatchTest(conn, new BatchTest(
+                batchCODE,
+                TestDate,
+                TestSite
+                ));
     }
 
     private void loadCategoriesPage() {

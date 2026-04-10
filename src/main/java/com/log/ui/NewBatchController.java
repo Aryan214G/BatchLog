@@ -2,9 +2,13 @@ package com.log.ui;
 
 import com.log.core.BasePropertiesState;
 import com.log.dao.BatchDAO;
+import com.log.dao.BatchTestDAO;
 import com.log.dao.ProductDAO;
 import com.log.database.DBUtil;
 import com.log.model.Batch;
+import com.log.model.BatchTest;
+import com.log.service.BatchService;
+import com.log.service.BatchTestService;
 import com.log.service.ProjectService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,7 +31,8 @@ public class NewBatchController {
     private final BasePropertiesState bpropState = BasePropertiesState.getInstance();
     private ProjectService projectService = new ProjectService();
     private ProductDAO productDAO = new ProductDAO();
-    private BatchDAO batchDAO = new BatchDAO();
+    private BatchService batchService = new BatchService();
+    private BatchTestService batchTestService = new BatchTestService();
     private Connection conn;
     {
         try {
@@ -66,13 +71,18 @@ public class NewBatchController {
     }
 
     private void handleCreateBatch() {
-        int batchID = Integer.parseInt(bpropState.getBatchNo());
+        String batchID = bpropState.getBatchNo();
         int projectID = bpropState.getProjectId();
         String TestDate = bpropState.getTestDate().toString();
         String TestSite = bpropState.getPlaceOfTesting();
         int productCode = productDAO.getProductCode(conn,bpropState.getProductID(),bpropState.getProductName(),bpropState.getProjectId());
-        Batch batch = new Batch(batchID,TestDate,TestSite,projectID,productCode);
-        batchDAO.insertBatchByID(conn,batch);
+        Batch batch = new Batch(batchID, projectID,productCode);
+        batchService.createBatch(conn,batch);
+        batchTestService.createBatchTest(conn, new BatchTest(
+                bpropState.getBatchCode(),
+                TestDate,
+                TestSite
+        ));
     }
     private boolean validateInputs() {
 
