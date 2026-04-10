@@ -61,24 +61,24 @@ public class SearchUtil {
 
         List<Batch> results = new ArrayList<>();
 
-        while (rs.next()) {
-            results.add(mapToBatch(rs)); // you implement this
-        }
+//        while (rs.next()) {
+//            results.add(mapToBatch(rs)); // you implement this
+//        }
 
         return results;
     }
 
 
-    private Batch mapToBatch(ResultSet rs) throws SQLException {
-        return new Batch(
-                rs.getInt("Batch_CODE"),
-                rs.getInt("Batch_ID"),
-                rs.getString("Test_Date"),
-                rs.getString("Test_Site"),
-                rs.getInt("Project_ID"),
-                rs.getInt("Product_ID")
-        );
-    }
+//    private Batch mapToBatch(ResultSet rs) throws SQLException {
+//        return new Batch(
+//                rs.getInt("Batch_CODE"),
+//                rs.getInt("Batch_ID"),
+//                rs.getString("Test_Date"),
+//                rs.getString("Test_Site"),
+//                rs.getInt("Project_ID"),
+//                rs.getInt("Product_ID")
+//        );
+//    }
 
 
 }
