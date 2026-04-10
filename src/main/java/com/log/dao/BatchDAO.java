@@ -10,14 +10,13 @@ public class BatchDAO {
     public void insertBatchByCODE(Batch batch) {
 
         //TODO: recheck this query. Use WHERE batchCode keyword
-        String sql = "INSERT INTO Batch VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Batch VALUES (?, ?, ?)";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, batch.getBatchCode());
             stmt.setString(2, batch.getBatchId());
-            stmt.setInt(3, batch.getProjectId());
             stmt.setInt(4, batch.getProductCode());
 
             stmt.executeUpdate();
@@ -29,13 +28,12 @@ public class BatchDAO {
 
     public int insertBatchByID(Connection conn, Batch batch) {
 
-        String sql = "INSERT INTO Batch (Batch_ID, Project_ID, Product_CODE) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO Batch (Batch_ID, Product_CODE) VALUES (?, ?)";
 
         try (PreparedStatement stmt = conn.prepareStatement(
                 sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, batch.getBatchId());
-            stmt.setInt(2, batch.getProjectId());
             stmt.setInt(3, batch.getProductCode());
 
             stmt.executeUpdate();
@@ -65,7 +63,6 @@ public class BatchDAO {
                 return new Batch(
                         rs.getInt("Batch_CODE"),
                         rs.getString("Batch_ID"),
-                        rs.getInt("Project_ID"),
                         rs.getInt("Product_CODE")
                 );
             }
@@ -92,7 +89,6 @@ public class BatchDAO {
                 Batch batch = new Batch(
                         rs.getInt("Batch_CODE"),
                         rs.getString("Batch_ID"),
-                        rs.getInt("Project_ID"),
                         rs.getInt("Product_CODE")
                 );
 
@@ -123,12 +119,11 @@ public class BatchDAO {
 
 
     public int getBatchCode(Connection conn, Batch batch){
-        String sql = "SELECT Batch_CODE FROM Batch WHERE Batch_ID=? AND Project_ID=? AND Product_CODE=?";
+        String sql = "SELECT Batch_CODE FROM Batch WHERE Batch_ID=? AND Product_CODE=?";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, batch.getBatchId());
-            stmt.setInt(2, batch.getProjectId());
             stmt.setInt(3, batch.getProductCode());
 
             ResultSet rs = stmt.executeQuery();

@@ -115,14 +115,12 @@ public class BasePropertiesController {
 
     private void handleCreateBatch(Connection conn) {
         String batchID = bpropState.getBatchNo();
-        int projectID = bpropState.getProjectId();
         String TestDate = bpropState.getTestDate().toString();
         String TestSite = bpropState.getPlaceOfTesting();
 
         int productCode = productService.getProductCode(conn, bpropState.getProductID(),bpropState.getProductName(),bpropState.getProjectId());
         batchService.createBatch(conn, new Batch(
                 batchID,
-                projectID,
                 productCode
         ));
 
