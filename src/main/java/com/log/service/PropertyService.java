@@ -10,6 +10,7 @@ import com.log.model.Reading;
 import javafx.collections.ObservableList;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PropertyService {
@@ -36,10 +37,16 @@ public class PropertyService {
         return propertyDAO.insertProperty(conn, property);
     }
 
-    public void insertPropertyValues(Connection conn, int propertyID, List<Reading> readings){
+    public List<PropertyValue> insertPropertyValues(Connection conn, int propertyID, List<Reading> readings){
+        List<PropertyValue> propertyValues = new ArrayList<>();
+
         for(Reading input : readings){
             PropertyValue propertyValue = new PropertyValue(Integer.parseInt(input.getValue()), propertyID);
-            propertyValuesDAO.insertValue(conn, propertyValue);
+            propertyValue.setPropertyValID(
+                    propertyValuesDAO.insertValue(conn, propertyValue)
+            );
+            propertyValues.add(propertyValue);
         }
+        return propertyValues;
     }
 }
