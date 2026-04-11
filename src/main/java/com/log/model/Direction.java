@@ -29,4 +29,9 @@ public class Direction {
     public void setDirVal(String dirVal) {
         this.dirVal = dirVal;
     }
+
+    @Override
+    public String toString() {
+        return dirVal;
+    }
 }
