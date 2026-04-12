@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.ScrollPane?>
 <BorderPane prefHeight="800" prefWidth="1200" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/25" fx:controller="com.log.ui.RetrievalPageController">
 
     <!-- TOP MENU -->
@@ -51,7 +52,28 @@
     <!-- CENTER CONTENT -->
     <center>
         <AnchorPane>
-            <!-- Your future TableView goes here -->
+            <VBox spacing="15"
+                  AnchorPane.topAnchor="20"
+                  AnchorPane.leftAnchor="50"
+                  AnchorPane.rightAnchor="50">
+
+                <!-- Title -->
+                <Label text="Results"
+                       style="-fx-font-size: 28; -fx-font-weight: bold;" />
+
+                <!-- Scrollable Results -->
+                <ScrollPane fitToWidth="true"
+                            AnchorPane.topAnchor="80"
+                            AnchorPane.bottomAnchor="0"
+                            AnchorPane.leftAnchor="0"
+                            AnchorPane.rightAnchor="0">
+
+                    <VBox fx:id="resultsContainer"
+                          spacing="10"
+                          style="-fx-padding: 10;" />
+                </ScrollPane>
+
+            </VBox>
         </AnchorPane>
     </center>
 

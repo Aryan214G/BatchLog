@@ -1,6 +1,7 @@
 package com.log.ui.util;
 
 import com.log.model.Batch;
+import com.log.model.BatchTest;
 import com.log.model.Property;
 
 import java.sql.*;
@@ -9,18 +10,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SearchUtil {
-    public List<Batch> searchBatches(Connection conn,
-                                     String projectName,
-                                     String productName,
-                                     Integer batchId,
-                                     LocalDate testDate,
-                                     String testSite) throws SQLException {
+    public List<BatchTest> searchBatches(Connection conn,
+                                         String projectName,
+                                         String productName,
+                                         String batchId,
+                                         String testDate,
+                                         String testSite) throws SQLException {
 
         StringBuilder sql = new StringBuilder("""
-        SELECT DISTINCT b.*
-        FROM Batch b
-        JOIN Project pr ON b.Project_ID = pr.Project_ID
+        SELECT DISTINCT bt.*
+        FROM BatchTest bt
+        JOIN Batch b ON bt.Batch_CODE = b.Batch_CODE
         JOIN Product pd ON b.Product_ID = pd.Product_ID
+        JOIN Project pr ON pd.Project_ID = pr.Project_ID
         WHERE 1=1
     """);
 
@@ -36,18 +38,18 @@ public class SearchUtil {
             params.add("%" + productName.toLowerCase() + "%");
         }
 
-        if (batchId != null) {
+        if (batchId != null && !batchId.isBlank()) {
             sql.append(" AND b.Batch_ID = ?");
             params.add(batchId);
         }
 
-        if (testDate != null) {
-            sql.append(" AND b.Test_Date = ?");
-            params.add(Date.valueOf(testDate));
+        if (testDate != null && !testDate.isBlank()) {
+            sql.append(" AND bt.Test_Date = ?");
+            params.add(testDate);
         }
 
         if (testSite != null && !testSite.isBlank()) {
-            sql.append(" AND LOWER(b.Test_Site) LIKE ?");
+            sql.append(" AND LOWER(bt.Test_Site) LIKE ?");
             params.add("%" + testSite.toLowerCase() + "%");
         }
 
@@ -59,26 +61,24 @@ public class SearchUtil {
 
         ResultSet rs = stmt.executeQuery();
 
-        List<Batch> results = new ArrayList<>();
+        List<BatchTest> results = new ArrayList<>();
 
-//        while (rs.next()) {
-//            results.add(mapToBatch(rs)); // you implement this
-//        }
+        while (rs.next()) {
+            results.add(mapToBatchTest(rs));
+        }
 
         return results;
     }
 
 
-//    private Batch mapToBatch(ResultSet rs) throws SQLException {
-//        return new Batch(
-//                rs.getInt("Batch_CODE"),
-//                rs.getInt("Batch_ID"),
-//                rs.getString("Test_Date"),
-//                rs.getString("Test_Site"),
-//                rs.getInt("Project_ID"),
-//                rs.getInt("Product_ID")
-//        );
-//    }
+    private BatchTest mapToBatchTest(ResultSet rs) throws SQLException {
+        return new BatchTest(
+                rs.getInt("Test_ID"),
+                rs.getInt("Batch_CODE"),
+                rs.getString("Test_Date"),
+                rs.getString("Test_Site")
+        );
+    }
 
 
 }
