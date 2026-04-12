@@ -19,9 +19,9 @@ public class SearchUtil {
 
         StringBuilder sql = new StringBuilder("""
         SELECT DISTINCT bt.*
-        FROM BatchTest bt
+        FROM Batch_Test bt
         JOIN Batch b ON bt.Batch_CODE = b.Batch_CODE
-        JOIN Product pd ON b.Product_ID = pd.Product_ID
+        JOIN Product pd ON b.Product_CODE = pd.Product_CODE
         JOIN Project pr ON pd.Project_ID = pr.Project_ID
         WHERE 1=1
     """);

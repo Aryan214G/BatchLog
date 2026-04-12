@@ -50,4 +50,15 @@ public class BatchTest {
     public void setTestSite(String testSite) {
         this.testSite = testSite;
     }
+
+
+    @Override
+    public String toString() {
+        return "BatchTest{" +
+                "testId=" + testId +
+                ", batchCode=" + batchCode +
+                ", testDate='" + testDate + '\'' +
+                ", testSite='" + testSite + '\'' +
+                '}';
+    }
 }
