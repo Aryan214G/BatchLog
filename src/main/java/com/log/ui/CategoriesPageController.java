@@ -407,10 +407,8 @@ public class CategoriesPageController {
         List<Reading> readings = new ArrayList<>();
 
         for (InputRow row : inputRows) {
-            readings.add(new Reading(
-                    row.getField().getText(),
-                    row.getUnitController().getComboBox().getValue()
-            ));
+            double propertyVal = Double.parseDouble(row.getField().getText());
+            row.getPropertyValue().setPropertyVAL(propertyVal);
         }
         int tempVal = 0;
 
