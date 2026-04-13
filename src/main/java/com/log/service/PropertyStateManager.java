@@ -25,7 +25,7 @@ public class PropertyStateManager {
         PropertyState state = new PropertyState();
         state.setTemperature(temperature);
         state.setDirection(direction);
-        state.setReadings(readings);
+        state.setInputRows(inputRows);
 
         propertyStates.put(property, state);
     }
