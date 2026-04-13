@@ -3,6 +3,7 @@ package com.log.service;
 import com.log.dao.DefaultPropertiesDAO;
 import com.log.dao.PropertyDAO;
 import com.log.dao.PropertyValuesDAO;
+import com.log.database.DBUtil;
 import com.log.model.Property;
 import com.log.model.PropertyValue;
 import com.log.model.PropertyView;
@@ -10,6 +11,7 @@ import com.log.model.Reading;
 import javafx.collections.ObservableList;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 public class PropertyService {
@@ -24,9 +26,10 @@ public class PropertyService {
     }
 
     // TODO: uncoment after enabling the method in the DAO class
-//    public List<PropertyView> getPropertiesByBatch(int batchCode) throws SQLException {
-//        return propertyDAO.getPropertiesByBatch(batchCode);
-//    }
+    public List<Property> getPropertiesByBatch(int batchCode) throws SQLException {
+        Connection conn = DBUtil.getConnection();
+        return propertyDAO.getPropertiesByBatch(conn,batchCode);
+    }
 
     public ObservableList<PropertyView> getPropertiesByCategory(String categoryName){
         return defaultPropertiesDAO.getDefaultProperties(categoryName);

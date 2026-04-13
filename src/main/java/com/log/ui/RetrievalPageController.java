@@ -2,6 +2,8 @@ package com.log.ui;
 
 import com.log.database.DBUtil;
 import com.log.model.BatchTest;
+import com.log.model.Property;
+import com.log.service.PropertyService;
 import com.log.ui.util.SearchUtil;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
@@ -45,6 +47,10 @@ public class RetrievalPageController {
     @FXML
     private VBox resultsContainer;
 
+    private PropertyService propertyService = new PropertyService();
+
+
+
     public void populateResults(List<BatchTest> results) {
 
         // Clear previous results
@@ -83,11 +89,18 @@ public class RetrievalPageController {
     }
 
     private void handleBatchClick(BatchTest batch) {
-        System.out.println("Clicked batch: " + batch.getBatchCode());
 
-        // Later:
-        // load properties for this batch
-        // navigate to detail page
+
+        try {
+            List<Property> properties =
+                    propertyService.getPropertiesByBatch(batch.getBatchCode());
+
+            // next step → display these
+            System.out.println(properties);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -118,6 +131,7 @@ public class RetrievalPageController {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
         SearchUtil searchUtil = new SearchUtil();
         List<BatchTest> results = null;
         try {

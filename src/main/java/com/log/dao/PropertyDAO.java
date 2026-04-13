@@ -4,6 +4,8 @@ import com.log.database.DBUtil;
 import com.log.model.Property;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class  PropertyDAO {
 
@@ -35,7 +37,10 @@ public class  PropertyDAO {
         return 0;
     }
 
-    //TODO: fix later
+
+    // idk what this fuckahh method is, leaving it untouched
+
+
 //    public List<PropertyView> getPropertiesByBatch(int batchCode) throws SQLException {
 //        List<PropertyView> properties = new ArrayList<>();
 //
@@ -79,6 +84,37 @@ public class  PropertyDAO {
 //
 //        return properties;
 //    }
+
+
+    public List<Property> getPropertiesByBatch(Connection conn, int batchCode) throws SQLException {
+
+        String sql = "SELECT * FROM Property WHERE Batch_CODE = ?";
+
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1, batchCode);
+
+        ResultSet rs = stmt.executeQuery();
+
+        List<Property> properties = new ArrayList<>();
+
+        while (rs.next()) {
+            properties.add(mapToProperty(rs));
+        }
+
+        return properties;
+    }
+
+    private Property mapToProperty(ResultSet rs) throws SQLException {
+        return new Property(
+                rs.getInt("Property_ID"),
+                rs.getString("Property_name"),
+                rs.getInt("Category_ID"),
+                rs.getInt("Temp_ID"),
+                rs.getInt("Dir_ID"),
+                rs.getInt("Unit_ID"),
+                rs.getInt("Batch_CODE")
+        );
+    }
 
     void updateProperty(Property property){
     }

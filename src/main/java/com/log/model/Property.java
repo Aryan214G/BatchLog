@@ -84,4 +84,18 @@ private int batchCode;
     public void setBatchCode(int batchCode) {
         this.batchCode = batchCode;
     }
+
+    @Override
+    public String toString() {
+        return "Property{" +
+                "id=" + propertyID +
+                ", name='" + propertyName + '\'' +
+                ", categoryID=" + categoryID +
+                ", tempID=" + tempID +
+                ", dirID=" + dirID +
+                ", unitID=" + unitID +
+                ", batchCode=" + batchCode +
+                '}';
+    }
+
 }
