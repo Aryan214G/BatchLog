@@ -1,12 +1,14 @@
 package com.log.model;
 
+import com.log.ui.InputRow;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class PropertyState {
 
     private List<Reading> readings = new ArrayList<>();
-
+    private List<InputRow> inputRows = new ArrayList<>();
     private Temperature temperature;
     private Direction direction;
 
@@ -30,6 +32,13 @@ public class PropertyState {
         return temperature;
     }
 
+    public List<InputRow> getInputRows() {
+        return inputRows;
+    }
+
+    public void setInputRows(List<InputRow> inputRows) {
+        this.inputRows = inputRows;
+    }
 
     public Direction getDirection() {
         return direction;

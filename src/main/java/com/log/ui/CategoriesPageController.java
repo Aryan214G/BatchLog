@@ -425,7 +425,7 @@ public class CategoriesPageController {
 
         stateManager.saveState(
                 property.getPropertyName(),
-                readings,
+                inputRows,
                 new Temperature(tempVal,
                         tempUnitController.getComboBox().getValue()),
                 new Direction(directionController.getSelectedDirection())
