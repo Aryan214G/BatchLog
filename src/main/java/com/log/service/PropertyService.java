@@ -7,6 +7,7 @@ import com.log.model.Property;
 import com.log.model.PropertyValue;
 import com.log.model.PropertyView;
 import com.log.model.Reading;
+import com.log.ui.InputRow;
 import javafx.collections.ObservableList;
 
 import java.sql.Connection;
@@ -37,16 +38,13 @@ public class PropertyService {
         return propertyDAO.insertProperty(conn, property);
     }
 
-    public List<PropertyValue> insertPropertyValues(Connection conn, int propertyID, List<Reading> readings){
-        List<PropertyValue> propertyValues = new ArrayList<>();
+    public void insertPropertyValues(Connection conn, int propertyID, List<InputRow> inputRows){
 
-        for(Reading input : readings){
-            PropertyValue propertyValue = new PropertyValue(Integer.parseInt(input.getValue()), propertyID);
-            propertyValue.setPropertyValID(
-                    propertyValuesDAO.insertValue(conn, propertyValue)
-            );
-            propertyValues.add(propertyValue);
+        for(InputRow row : inputRows){
+            PropertyValue propertyValue = new PropertyValue(Double.parseDouble(row.getField().getText()), propertyID);
+            int propertyValId = propertyValuesDAO.insertValue(conn, propertyValue);
+            row.getPropertyValue().setPropertyValID(propertyValId);
         }
-        return propertyValues;
+
     }
 }

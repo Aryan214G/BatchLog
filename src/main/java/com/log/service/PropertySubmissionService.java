@@ -3,6 +3,7 @@ package com.log.service;
 import com.log.core.BasePropertiesState;
 import com.log.database.DBUtil;
 import com.log.model.*;
+import com.log.ui.InputRow;
 import javafx.scene.control.Alert;
 
 import java.sql.Connection;
@@ -40,7 +41,7 @@ public class PropertySubmissionService {
 
             handleTemperature(conn, propertyState.getTemperature());
             handleDirection(conn, propertyState.getDirection());
-            handleProperty(conn, propertyState.getReadings(), propertyName, selectedCategory);
+            handleProperty(conn, propertyState.getInputRows(), propertyName, selectedCategory);
 
             conn.commit();
             showAlert("Success", "Submission completed successfully!");
@@ -82,18 +83,18 @@ public class PropertySubmissionService {
         }
     }
 
-    private void handleProperty(Connection conn, List<Reading> readings, String propertyName, String selectedCategory){
+    private void handleProperty(Connection conn, List<InputRow> inputRows, String propertyName, String selectedCategory){
         Property property = new Property(
                 propertyName,
                 categoryService.getCategory(conn, selectedCategory).getCategoryId(),
                 tempId,
                 directionId,
-                unitsService.getUnit(conn, readings.get(0).getUnit()).getUnitId(),
+                unitsService.getUnit(conn, inputRows.get(0).getUnitController().getComboBox().getValue()).getUnitId(),
                 bsinstance.getBatchCode()
         );
 
         int propertyID = propertyService.insertProperty(conn, property);
-        propertyService.insertPropertyValues(conn, propertyID, readings);
+        propertyService.insertPropertyValues(conn, propertyID, inputRows);
     }
 
     private void showAlert(String title, String message) {
