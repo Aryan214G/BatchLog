@@ -6,12 +6,10 @@ import com.log.dao.PropertyValuesDAO;
 import com.log.model.Property;
 import com.log.model.PropertyValue;
 import com.log.model.PropertyView;
-import com.log.model.Reading;
 import com.log.ui.InputRow;
 import javafx.collections.ObservableList;
 
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
 
 public class PropertyService {
@@ -38,13 +36,19 @@ public class PropertyService {
         return propertyDAO.insertProperty(conn, property);
     }
 
-    public void insertPropertyValues(Connection conn, int propertyID, List<InputRow> inputRows){
+    public void insertPropertyValue(Connection conn, int propertyID, InputRow row){
 
-        for(InputRow row : inputRows){
             row.getPropertyValue().setPropertyID(propertyID);
+
             PropertyValue propertyValue = row.getPropertyValue();
             int propertyValId = propertyValuesDAO.insertValue(conn, propertyValue);
             row.getPropertyValue().setPropertyValID(propertyValId);
-        }
+    }
+
+    public void updatePropertyValue(Connection conn, int propertyID, InputRow row) {
+
+        row.getPropertyValue().setPropertyID(propertyID);
+        PropertyValue propertyValue = row.getPropertyValue();
+        propertyValuesDAO.updatePropertyValue(conn, propertyValue);
     }
 }

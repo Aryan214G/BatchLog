@@ -94,7 +94,17 @@ public class PropertySubmissionService {
         );
 
         int propertyID = propertyService.insertProperty(conn, property);
-        propertyService.insertPropertyValues(conn, propertyID, inputRows);
+
+        for (InputRow row : inputRows){
+
+            //check if propertyValue exists in DB
+            if(row.getPropertyValue().getPropertyValID() != -1){
+                propertyService.updatePropertyValue(conn, propertyID, row);
+            }
+            else {
+                propertyService.insertPropertyValue(conn, propertyID, row);
+            }
+        }
     }
 
     private void showAlert(String title, String message) {

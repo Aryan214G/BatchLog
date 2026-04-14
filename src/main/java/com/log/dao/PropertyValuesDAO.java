@@ -26,4 +26,27 @@ public class PropertyValuesDAO {
         }
         return 0;
     }
+
+    public void updatePropertyValue(Connection conn, PropertyValue propertyValue) {
+
+        String sql = "UPDATE Property_Values SET Prop_VAL = ?, Property_ID = ? WHERE Property_Value_ID = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setDouble(1, propertyValue.getPropertyVAL());
+            stmt.setInt(2, propertyValue.getPropertyID());
+            stmt.setInt(3, propertyValue.getPropertyValID());
+
+            int rowsAffected = stmt.executeUpdate();
+
+            System.out.println(
+                    (rowsAffected > 0)
+                            ? "Updated property value"
+                            : "Failed to update property value"
+            );
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
