@@ -25,11 +25,10 @@
                 <Label text="BatchLog" styleClass="app-title" />
 
                 <!-- Buttons -->
-                <Button text="New Batch Entry" styleClass="sidebar-button" maxWidth="Infinity"/>
-                <Button text="New Product" styleClass="sidebar-button" maxWidth="Infinity"/>
-                <Button text="Retrieval Page" styleClass="sidebar-button" maxWidth="Infinity"/>
-                <Button text="Settings" styleClass="sidebar-button" maxWidth="Infinity"/>
-                <Button text="Help" styleClass="sidebar-button" maxWidth="Infinity"/>
+                <Button text="New Batch Entry" styleClass="sidebar-button" maxWidth="Infinity" fx:id="newBatchEntryBtn"/>
+                <Button text="Retrieval Page" styleClass="sidebar-button" maxWidth="Infinity" fx:id="retrievalPageBtn"/>
+                <Button text="Settings" styleClass="sidebar-button" maxWidth="Infinity" fx:id="settingsPageBtn"/>
+                <Button text="Help" styleClass="sidebar-button" maxWidth="Infinity" fx:id="helpPageBtn"/>
 
             </children>
 
