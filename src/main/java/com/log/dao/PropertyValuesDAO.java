@@ -3,6 +3,8 @@ package com.log.dao;
 import com.log.model.PropertyValue;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PropertyValuesDAO {
 
@@ -73,5 +75,37 @@ public class PropertyValuesDAO {
         }
 
         return -1; // not found
+    }
+
+    public List<PropertyValue> getValuesByProperty(Connection conn, int propertyId) {
+
+        List<PropertyValue> list = new ArrayList<>();
+
+        String sql = """
+        SELECT Prop_VAL_ID, Prop_VAL
+        FROM Property_Values
+        WHERE Property_ID = ?
+    """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, propertyId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                PropertyValue val = new PropertyValue(
+                        rs.getInt("Prop_VAL_ID"),
+                        rs.getDouble("Prop_VAL"),
+                        propertyId
+                );
+
+                list.add(val);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
     }
 }
