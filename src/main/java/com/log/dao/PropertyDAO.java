@@ -79,7 +79,40 @@ public class  PropertyDAO {
 //        return properties;
 //    }
 
-    public void updateProperty(Connection conn, Property property){
+    public void updateProperty(Connection conn, Property property) {
+
+        String sql = """
+            UPDATE Property
+            SET Property_name = ?, 
+                Category_ID = ?, 
+                Temp_ID = ?, 
+                Dir_ID = ?, 
+                Unit_ID = ?, 
+                Batch_CODE = ?
+            WHERE Property_ID = ?
+            """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, property.getPropertyName());
+            stmt.setInt(2, property.getCategoryID());
+            stmt.setInt(3, property.getTempID());
+            stmt.setInt(4, property.getDirID());
+            stmt.setInt(5, property.getUnitID());
+            stmt.setInt(6, property.getBatchCode());
+            stmt.setInt(7, property.getPropertyID());
+
+            int rowsAffected = stmt.executeUpdate();
+
+            System.out.println(
+                    (rowsAffected > 0)
+                            ? "Updated property"
+                            : "Failed to update property"
+            );
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     void deleteProperty(int propertyId){
