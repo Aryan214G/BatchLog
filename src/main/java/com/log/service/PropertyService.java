@@ -36,6 +36,10 @@ public class PropertyService {
         return propertyDAO.insertProperty(conn, property);
     }
 
+    public int getPropertyId(Connection conn, Property property){
+        return propertyDAO.getPropertyId(conn, property);
+    }
+
     public void insertPropertyValue(Connection conn, int propertyID, InputRow row){
 
             row.getPropertyValue().setPropertyID(propertyID);
