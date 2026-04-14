@@ -68,6 +68,9 @@ public class PropertyService {
         propertyValuesDAO.updatePropertyValue(conn, propertyValue);
     }
 
+    public int getPropertyValueId(Connection conn, int propertyID){
+        return propertyValuesDAO.getPropertyValueId(conn, propertyID);
+    }
     public void updateProperty(Connection conn, Property property) {
         propertyDAO.updateProperty(conn, property);
     }

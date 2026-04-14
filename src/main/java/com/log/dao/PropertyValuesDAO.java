@@ -29,7 +29,7 @@ public class PropertyValuesDAO {
 
     public void updatePropertyValue(Connection conn, PropertyValue propertyValue) {
 
-        String sql = "UPDATE Property_Values SET Prop_VAL = ?, Property_ID = ? WHERE Property_Value_ID = ?";
+        String sql = "UPDATE Property_Values SET Prop_VAL = ?, Property_ID = ? WHERE Prop_VAL_ID = ?";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -48,5 +48,30 @@ public class PropertyValuesDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getPropertyValueId(Connection conn, int propertyId) {
+
+        String sql = """
+            SELECT Prop_VAL_ID
+            FROM Property_Values
+            WHERE Property_ID = ?
+            """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, propertyId);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("Prop_VAL_ID");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return -1; // not found
     }
 }

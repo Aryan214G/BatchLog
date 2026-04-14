@@ -102,7 +102,10 @@ public class PropertySubmissionService {
         for (InputRow row : inputRows){
 
             //check if propertyValue exists in DB
-            if(row.getPropertyValue().getPropertyValID() != -1){
+            if(row.getPropertyValue().getPropertyValID() != -1
+                    || propertyService.getPropertyValueId(conn, propertyID) != -1){
+                //exists
+                System.out.println("Property value already exists, updating value");
                 propertyService.updatePropertyValue(conn, propertyID, row);
             }
             else {
