@@ -3,6 +3,7 @@ package com.log.service;
 import com.log.core.BasePropertiesState;
 import com.log.database.DBUtil;
 import com.log.model.*;
+import com.log.ui.InputRow;
 import javafx.scene.control.Alert;
 
 import java.sql.Connection;
@@ -40,7 +41,7 @@ public class PropertySubmissionService {
 
             handleTemperature(conn, propertyState.getTemperature());
             handleDirection(conn, propertyState.getDirection());
-            handleProperty(conn, propertyState.getReadings(), propertyName, selectedCategory);
+            handleProperty(conn, propertyState.getInputRows(), propertyName, selectedCategory);
 
             conn.commit();
             showAlert("Success", "Submission completed successfully!");
@@ -82,18 +83,40 @@ public class PropertySubmissionService {
         }
     }
 
-    private void handleProperty(Connection conn, List<Reading> readings, String propertyName, String selectedCategory){
+    private void handleProperty(Connection conn, List<InputRow> inputRows, String propertyName, String selectedCategory){
         Property property = new Property(
                 propertyName,
                 categoryService.getCategory(conn, selectedCategory).getCategoryId(),
                 tempId,
                 directionId,
-                unitsService.getUnit(conn, readings.get(0).getUnit()).getUnitId(),
+                unitsService.getUnit(conn, inputRows.get(0).getUnitController().getComboBox().getValue()).getUnitId(),
                 bsinstance.getBatchCode()
         );
 
         int propertyID = propertyService.insertProperty(conn, property);
-        propertyService.insertPropertyValues(conn, propertyID, readings);
+        if(propertyID != -1) {
+            System.out.println("Updating Property");
+            property.setPropertyID(propertyID);
+            propertyService.updateProperty(conn, property);
+        }
+
+        for (InputRow row : inputRows){
+
+            int propertyValID = propertyService.getPropertyValueId(conn, propertyID);
+            row.getPropertyValue().setPropertyValID(propertyValID);
+            row.getPropertyValue().setPropertyID(propertyID);
+
+            //check if propertyValue exists in DB
+            if(row.getPropertyValue().getPropertyValID() != -1
+                    || propertyValID != -1){
+                //exists
+                System.out.println("Property value already exists, updating value");
+                propertyService.updatePropertyValue(conn, row);
+            }
+            else {
+                propertyService.insertPropertyValue(conn, row);
+            }
+        }
     }
 
     private void showAlert(String title, String message) {

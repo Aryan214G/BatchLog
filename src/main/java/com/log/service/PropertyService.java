@@ -6,7 +6,7 @@ import com.log.dao.PropertyValuesDAO;
 import com.log.model.Property;
 import com.log.model.PropertyValue;
 import com.log.model.PropertyView;
-import com.log.model.Reading;
+import com.log.ui.InputRow;
 import javafx.collections.ObservableList;
 
 import java.sql.Connection;
@@ -33,13 +33,46 @@ public class PropertyService {
     }
 
     public int insertProperty(Connection conn, Property property){
-        return propertyDAO.insertProperty(conn, property);
+
+        int propertyId = getPropertyId(conn, property);
+
+        if (propertyId != -1) {
+            // already exists
+            System.out.println("Property already exists in DB. Returning id");
+            return propertyId;
+        } else {
+            // insert new
+            return propertyDAO.insertProperty(conn, property);
+        }
+
     }
 
-    public void insertPropertyValues(Connection conn, int propertyID, List<Reading> readings){
-        for(Reading input : readings){
-            PropertyValue propertyValue = new PropertyValue(Integer.parseInt(input.getValue()), propertyID);
-            propertyValuesDAO.insertValue(conn, propertyValue);
-        }
+
+    public int getPropertyId(Connection conn, Property property){
+        return propertyDAO.getPropertyId(conn, property);
+    }
+
+    public void insertPropertyValue(Connection conn, InputRow row){
+
+            PropertyValue propertyValue = row.getPropertyValue();
+            int propertyValId = propertyValuesDAO.insertValue(conn, propertyValue);
+            row.getPropertyValue().setPropertyValID(propertyValId);
+    }
+
+    public void updatePropertyValue(Connection conn, InputRow row) {
+
+        PropertyValue propertyValue = row.getPropertyValue();
+        propertyValuesDAO.updatePropertyValue(conn, propertyValue);
+    }
+
+    public int getPropertyValueId(Connection conn, int propertyID){
+        return propertyValuesDAO.getPropertyValueId(conn, propertyID);
+    }
+    public void updateProperty(Connection conn, Property property) {
+        propertyDAO.updateProperty(conn, property);
+    }
+
+    public List<PropertyValue> getValuesByProperty(Connection conn, Property property){
+        return propertyValuesDAO.getValuesByProperty(conn, property.getPropertyID());
     }
 }

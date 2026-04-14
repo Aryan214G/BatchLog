@@ -1,6 +1,5 @@
 package com.log.dao;
 
-import com.log.database.DBUtil;
 import com.log.model.Property;
 
 import java.sql.*;
@@ -80,10 +79,72 @@ public class  PropertyDAO {
 //        return properties;
 //    }
 
-    void updateProperty(Property property){
+    public void updateProperty(Connection conn, Property property) {
+
+        String sql = """
+            UPDATE Property
+            SET Property_name = ?, 
+                Category_ID = ?, 
+                Temp_ID = ?, 
+                Dir_ID = ?, 
+                Unit_ID = ?, 
+                Batch_CODE = ?
+            WHERE Property_ID = ?
+            """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, property.getPropertyName());
+            stmt.setInt(2, property.getCategoryID());
+            stmt.setInt(3, property.getTempID());
+            stmt.setInt(4, property.getDirID());
+            stmt.setInt(5, property.getUnitID());
+            stmt.setInt(6, property.getBatchCode());
+            stmt.setInt(7, property.getPropertyID());
+
+            int rowsAffected = stmt.executeUpdate();
+
+            System.out.println(
+                    (rowsAffected > 0)
+                            ? "Updated property"
+                            : "Failed to update property"
+            );
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     void deleteProperty(int propertyId){
 
+    }
+
+    public int getPropertyId(Connection conn, Property property) {
+
+        String sql = """
+            SELECT Property_ID 
+            FROM Property 
+            WHERE Property_name = ? 
+              AND Category_ID = ? 
+              AND Batch_CODE = ?
+            """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, property.getPropertyName());
+            stmt.setInt(2, property.getCategoryID());
+            stmt.setInt(3, property.getBatchCode());
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("Property_ID"); // found
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return -1; // not found
     }
 }

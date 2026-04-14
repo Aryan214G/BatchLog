@@ -16,8 +16,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import com.log.service.ProductService;
 
@@ -200,5 +199,7 @@ public class BasePropertiesController {
 
         System.out.println("Project created with ID: " + projectId);
     }
+
+
 
 }

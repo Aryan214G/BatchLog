@@ -4,6 +4,7 @@ import com.log.model.Direction;
 import com.log.model.PropertyState;
 import com.log.model.Reading;
 import com.log.model.Temperature;
+import com.log.ui.InputRow;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +16,7 @@ public class PropertyStateManager {
 
     public void saveState(
             String property,
-            List<Reading> readings,
+            List<InputRow> inputRows,
             Temperature temperature,
             Direction direction
     ) {
@@ -24,7 +25,7 @@ public class PropertyStateManager {
         PropertyState state = new PropertyState();
         state.setTemperature(temperature);
         state.setDirection(direction);
-        state.setReadings(readings);
+        state.setInputRows(inputRows);
 
         propertyStates.put(property, state);
     }

@@ -9,6 +9,9 @@ private int dirID;
 private int unitID;
 private int batchCode;
 
+    public Property() {
+    }
+
     public Property(int propertyID, String propertyName, int categoryID, int tempID, int dirID, int unitID, int batchCode) {
         this.propertyID = propertyID;
         this.propertyName = propertyName;

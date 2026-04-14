@@ -1,11 +1,14 @@
 package com.log.ui;
 
+import com.log.model.PropertyState;
+import com.log.model.PropertyValue;
 import javafx.scene.control.TextField;
 
 public class InputRow {
 
-    private final TextField field;
-    private final UnitsDropdownController unitController;
+    private TextField field;
+    private UnitsDropdownController unitController;
+    private PropertyValue propertyValue;
 
     public InputRow(TextField field, UnitsDropdownController unitController) {
         this.field = field;
@@ -18,5 +21,13 @@ public class InputRow {
 
     public UnitsDropdownController getUnitController() {
         return unitController;
+    }
+
+    public PropertyValue getPropertyValue() {
+        return propertyValue;
+    }
+
+    public void setPropertyValue(PropertyValue propertyValue) {
+        this.propertyValue = propertyValue;
     }
 }
