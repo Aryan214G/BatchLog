@@ -200,39 +200,6 @@ public class BasePropertiesController {
         System.out.println("Project created with ID: " + projectId);
     }
 
-    private int createTestBatch(Connection conn) throws Exception {
 
-        Statement stmt = conn.createStatement();
-
-        stmt.execute("INSERT INTO Project (Project_name) VALUES ('TestProject')");
-        ResultSet rs = stmt.executeQuery("SELECT last_insert_rowid()");
-        rs.next();
-        int projectId = rs.getInt(1);
-
-        PreparedStatement ps = conn.prepareStatement("""
-        INSERT INTO Product (Product_ID, Product_name, Project_ID)
-        VALUES (?, ?, ?)
-    """);
-        ps.setString(1, "P1");
-        ps.setString(2, "TestProduct");
-        ps.setInt(3, projectId);
-        ps.executeUpdate();
-
-        rs = stmt.executeQuery("SELECT last_insert_rowid()");
-        rs.next();
-        int productCode = rs.getInt(1);
-
-        ps = conn.prepareStatement("""
-        INSERT INTO Batch (Batch_ID, Product_CODE)
-        VALUES (?, ?)
-    """);
-        ps.setString(1, "B1");
-        ps.setInt(2, productCode);
-        ps.executeUpdate();
-
-        rs = stmt.executeQuery("SELECT last_insert_rowid()");
-        rs.next();
-        return rs.getInt(1); // Batch_CODE
-    }
 
 }
