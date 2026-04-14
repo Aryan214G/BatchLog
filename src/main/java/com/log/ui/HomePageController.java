@@ -6,7 +6,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
@@ -75,30 +77,64 @@ public class HomePageController implements Initializable {
 
     private void loadRecentProjects() {
         // TODO: Replace with real project data from your data layer
-        String[] sampleProjects = {"Project Alpha", "Project Beta", "Project Gamma"};
+        String[] sampleProjects = {
+                "Fuel cell Batch:LS-245", "Fuel cell Batch:LS-284",
+                "Jet brake fluid Batch:AP-123", "Jet Brake Fluid Batch:AP-145",
+                "Label text", "Label text"
+        };
 
         int col = 0, row = 0;
-        final int maxCols = 3;
+        final int maxCols = 2;
 
         for (String projectName : sampleProjects) {
             projectsGrid.add(createProjectCard(projectName), col, row);
             if (++col >= maxCols) { col = 0; row++; }
         }
+
+        // Make both columns share width equally
+        ColumnConstraints cc = new ColumnConstraints();
+        cc.setPercentWidth(50);
+        projectsGrid.getColumnConstraints().addAll(cc, cc);
     }
 
-    private VBox createProjectCard(String projectName) {
+    private HBox createProjectCard(String projectName) {
+        // Left: circle icon
+        Label icon = new Label();
+        icon.getStyleClass().add("card-icon");
+
+        // Center: project name (grows to fill space)
         Label nameLabel = new Label(projectName);
-        nameLabel.getStyleClass().add("card-title");
+        nameLabel.getStyleClass().add("card-name");
+        HBox.setHgrow(nameLabel, javafx.scene.layout.Priority.ALWAYS);
 
-        Label dateLabel = new Label("Last modified: N/A");
-        dateLabel.getStyleClass().add("card-subtitle");
+        // Right: shortcut label
+        Label shortcut = new Label("⌘C");
+        shortcut.getStyleClass().add("card-shortcut");
 
-        Button openButton = new Button("Open");
-        openButton.getStyleClass().add("card-button");
-        openButton.setOnAction(e -> System.out.println("Opening: " + projectName));
+        // Right: three-dot menu button
+        Button menuBtn = new Button("⋮");
+        menuBtn.getStyleClass().add("card-menu-btn");
+        menuBtn.setOnAction(e -> handleCardMenu(projectName, menuBtn));
 
-        VBox card = new VBox(8, nameLabel, dateLabel, openButton);
+        HBox card = new HBox(10, icon, nameLabel, shortcut, menuBtn);
         card.getStyleClass().add("project-card");
+        card.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
         return card;
+    }
+
+    private void handleCardMenu(String projectName, Button anchor) {
+        javafx.scene.control.ContextMenu contextMenu = new javafx.scene.control.ContextMenu();
+
+        javafx.scene.control.MenuItem openItem = new javafx.scene.control.MenuItem("Open");
+        javafx.scene.control.MenuItem renameItem = new javafx.scene.control.MenuItem("Rename");
+        javafx.scene.control.MenuItem deleteItem = new javafx.scene.control.MenuItem("Delete");
+
+        openItem.setOnAction(e -> System.out.println("Open: " + projectName));
+        renameItem.setOnAction(e -> System.out.println("Rename: " + projectName));
+        deleteItem.setOnAction(e -> System.out.println("Delete: " + projectName));
+
+        contextMenu.getItems().addAll(openItem, renameItem, deleteItem);
+        contextMenu.show(anchor, javafx.geometry.Side.BOTTOM, 0, 0);
     }
 }

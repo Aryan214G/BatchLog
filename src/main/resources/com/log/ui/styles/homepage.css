@@ -27,3 +27,43 @@
 .projects-grid {
     -fx-background-color: transparent;
 }
+
+.project-card {
+    -fx-background-color: #f3eefa;
+    -fx-background-radius: 8;
+    -fx-padding: 10 14 10 14;
+    -fx-cursor: hand;
+}
+
+.project-card:hover {
+    -fx-background-color: #e8daf5;
+}
+
+.card-icon {
+    -fx-min-width: 20;
+    -fx-min-height: 20;
+    -fx-background-color: transparent;
+    /* swap for an ImageView if you have an SVG/PNG icon */
+}
+
+.card-name {
+    -fx-font-size: 14px;
+    -fx-text-fill: #1a1a1a;
+}
+
+.card-shortcut {
+    -fx-font-size: 12px;
+    -fx-text-fill: #888888;
+}
+
+.card-menu-btn {
+    -fx-background-color: transparent;
+    -fx-font-size: 16px;
+    -fx-text-fill: #555555;
+    -fx-cursor: hand;
+    -fx-padding: 0 4 0 4;
+}
+
+.card-menu-btn:hover {
+    -fx-text-fill: #1a1a1a;
+}
