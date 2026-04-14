@@ -1,0 +1,29 @@
+.root-layout {
+    -fx-background-color: #f5f5f5;
+}
+
+.sidebar {
+    -fx-background-color: #c9c2d9;
+    -fx-pref-width: 250;
+}
+
+.app-title {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+}
+
+.sidebar-button {
+    -fx-background-color: #2c2c2c;
+    -fx-text-fill: white;
+    -fx-padding: 10;
+    -fx-background-radius: 6;
+}
+
+.section-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.projects-grid {
+    -fx-background-color: transparent;
+}

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="800" prefWidth="1200"
+            xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.log.ui.HomePageController"
+            stylesheets="@../styles/homepage.css">
+
+    <!-- ================= LEFT SIDEBAR ================= -->
+    <left>
+        <VBox spacing="15" styleClass="sidebar" BorderPane.alignment="CENTER">
+
+            <children>
+
+                <!-- App Title -->
+                <Label text="BatchLog" styleClass="app-title" />
+
+                <!-- Buttons -->
+                <Button text="New Batch Entry" styleClass="sidebar-button" maxWidth="Infinity"/>
+                <Button text="New Product" styleClass="sidebar-button" maxWidth="Infinity"/>
+                <Button text="Retrieval Page" styleClass="sidebar-button" maxWidth="Infinity"/>
+                <Button text="Settings" styleClass="sidebar-button" maxWidth="Infinity"/>
+                <Button text="Help" styleClass="sidebar-button" maxWidth="Infinity"/>
+
+            </children>
+
+            <padding>
+                <Insets top="20" left="15" right="15" bottom="20"/>
+            </padding>
+
+        </VBox>
+    </left>
+
+    <!-- ================= CENTER CONTENT ================= -->
+    <center>
+        <VBox spacing="20" styleClass="content-area">
+
+            <children>
+
+                <!-- Title -->
+                <Label text="Recent Projects" styleClass="section-title"/>
+
+                <!-- Scrollable Grid -->
+                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+
+                    <content>
+                        <GridPane fx:id="projectsGrid"
+                                  hgap="20"
+                                  vgap="20"
+                                  styleClass="projects-grid">
+
+                            <padding>
+                                <Insets top="10" left="10" right="10" bottom="10"/>
+                            </padding>
+
+                        </GridPane>
+                    </content>
+
+                </ScrollPane>
+
+            </children>
+
+            <padding>
+                <Insets top="20" left="20" right="20" bottom="20"/>
+            </padding>
+
+        </VBox>
+    </center>
+
+</BorderPane>

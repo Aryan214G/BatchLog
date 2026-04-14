@@ -17,6 +17,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+
 public class RetrievalPageController {
 
     @FXML
@@ -48,8 +49,6 @@ public class RetrievalPageController {
     private VBox resultsContainer;
 
     private PropertyService propertyService = new PropertyService();
-
-
 
     public void populateResults(List<BatchTest> results) {
 
@@ -146,7 +145,6 @@ public class RetrievalPageController {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
         populateResults(results);
     }
 }
