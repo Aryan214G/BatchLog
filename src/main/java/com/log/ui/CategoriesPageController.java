@@ -251,7 +251,7 @@ public class CategoriesPageController {
                 .addListener((obs, oldProperty, newProperty) -> {
 
                     if (newProperty != null)
-                    {
+                    {https://www.reddit.com/r/PSP/comments/1skxu67/nonlaminated_ips_viewing_angles/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
                         HandlePropertyChange(newProperty,oldProperty);
                     }
                 });
@@ -408,7 +408,7 @@ public class CategoriesPageController {
 
         for (InputRow row : inputRows) {
             double propertyVal = Double.parseDouble(row.getField().getText());
-            row.getPropertyValue().setPropertyVAL(propertyVal);
+            row.setPropertyValue(new PropertyValue(propertyVal, -1));
         }
         int tempVal = 0;
 
@@ -524,8 +524,6 @@ public class CategoriesPageController {
         }
     }
 
-
-
     private void loadCategoriesFromDB() {
         categoryService.refreshCategoriesState();
         categoriesMap = instance.getCategoriesMap();
@@ -565,6 +563,5 @@ public class CategoriesPageController {
                 selectedState.getSelectedCategory()
         );
     }
-
 
 }

@@ -41,10 +41,10 @@ public class PropertyService {
     public void insertPropertyValues(Connection conn, int propertyID, List<InputRow> inputRows){
 
         for(InputRow row : inputRows){
-            PropertyValue propertyValue = new PropertyValue(Double.parseDouble(row.getField().getText()), propertyID);
+            row.getPropertyValue().setPropertyID(propertyID);
+            PropertyValue propertyValue = row.getPropertyValue();
             int propertyValId = propertyValuesDAO.insertValue(conn, propertyValue);
             row.getPropertyValue().setPropertyValID(propertyValId);
         }
-
     }
 }

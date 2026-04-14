@@ -1,5 +1,6 @@
 package com.log.ui;
 
+import com.log.model.PropertyState;
 import com.log.model.PropertyValue;
 import javafx.scene.control.TextField;
 
