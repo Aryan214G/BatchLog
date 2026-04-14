@@ -94,6 +94,10 @@ public class PropertySubmissionService {
         );
 
         int propertyID = propertyService.insertProperty(conn, property);
+        if(propertyID != -1) {
+            System.out.println("Updating Property");
+            propertyService.updateProperty(conn, property);
+        }
 
         for (InputRow row : inputRows){
 

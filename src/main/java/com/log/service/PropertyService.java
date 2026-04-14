@@ -33,8 +33,20 @@ public class PropertyService {
     }
 
     public int insertProperty(Connection conn, Property property){
-        return propertyDAO.insertProperty(conn, property);
+
+        int propertyId = getPropertyId(conn, property);
+
+        if (propertyId != -1) {
+            // already exists
+            System.out.println("Property already exists in DB. Returning id");
+            return propertyId;
+        } else {
+            // insert new
+            return propertyDAO.insertProperty(conn, property);
+        }
+
     }
+
 
     public int getPropertyId(Connection conn, Property property){
         return propertyDAO.getPropertyId(conn, property);
@@ -54,5 +66,9 @@ public class PropertyService {
         row.getPropertyValue().setPropertyID(propertyID);
         PropertyValue propertyValue = row.getPropertyValue();
         propertyValuesDAO.updatePropertyValue(conn, propertyValue);
+    }
+
+    public void updateProperty(Connection conn, Property property) {
+        propertyDAO.updateProperty(conn, property);
     }
 }

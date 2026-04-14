@@ -1,6 +1,5 @@
 package com.log.dao;
 
-import com.log.database.DBUtil;
 import com.log.model.Property;
 
 import java.sql.*;
@@ -80,7 +79,7 @@ public class  PropertyDAO {
 //        return properties;
 //    }
 
-    void updateProperty(Property property){
+    public void updateProperty(Connection conn, Property property){
     }
 
     void deleteProperty(int propertyId){
