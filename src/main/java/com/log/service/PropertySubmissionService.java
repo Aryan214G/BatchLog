@@ -96,20 +96,25 @@ public class PropertySubmissionService {
         int propertyID = propertyService.insertProperty(conn, property);
         if(propertyID != -1) {
             System.out.println("Updating Property");
+            property.setPropertyID(propertyID);
             propertyService.updateProperty(conn, property);
         }
 
         for (InputRow row : inputRows){
 
+            int propertyValID = propertyService.getPropertyValueId(conn, propertyID);
+            row.getPropertyValue().setPropertyValID(propertyValID);
+            row.getPropertyValue().setPropertyID(propertyID);
+
             //check if propertyValue exists in DB
             if(row.getPropertyValue().getPropertyValID() != -1
-                    || propertyService.getPropertyValueId(conn, propertyID) != -1){
+                    || propertyValID != -1){
                 //exists
                 System.out.println("Property value already exists, updating value");
-                propertyService.updatePropertyValue(conn, propertyID, row);
+                propertyService.updatePropertyValue(conn, row);
             }
             else {
-                propertyService.insertPropertyValue(conn, propertyID, row);
+                propertyService.insertPropertyValue(conn, row);
             }
         }
     }

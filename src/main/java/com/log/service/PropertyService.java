@@ -10,7 +10,6 @@ import com.log.ui.InputRow;
 import javafx.collections.ObservableList;
 
 import java.sql.Connection;
-import java.util.List;
 
 public class PropertyService {
     private final PropertyDAO propertyDAO;
@@ -52,7 +51,7 @@ public class PropertyService {
         return propertyDAO.getPropertyId(conn, property);
     }
 
-    public void insertPropertyValue(Connection conn, int propertyID, InputRow row){
+    public void insertPropertyValue(Connection conn, InputRow row){
 
             row.getPropertyValue().setPropertyID(propertyID);
 
@@ -61,7 +60,7 @@ public class PropertyService {
             row.getPropertyValue().setPropertyValID(propertyValId);
     }
 
-    public void updatePropertyValue(Connection conn, int propertyID, InputRow row) {
+    public void updatePropertyValue(Connection conn, InputRow row) {
 
         row.getPropertyValue().setPropertyID(propertyID);
         PropertyValue propertyValue = row.getPropertyValue();
