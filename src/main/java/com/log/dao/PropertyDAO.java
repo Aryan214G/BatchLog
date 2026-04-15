@@ -1,8 +1,11 @@
 package com.log.dao;
 
+import com.log.database.DBUtil;
 import com.log.model.Property;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class  PropertyDAO {
 
@@ -34,7 +37,10 @@ public class  PropertyDAO {
         return 0;
     }
 
-    //TODO: fix later
+
+    // idk what this fuckahh method is, leaving it untouched
+
+
 //    public List<PropertyView> getPropertiesByBatch(int batchCode) throws SQLException {
 //        List<PropertyView> properties = new ArrayList<>();
 //
@@ -79,72 +85,41 @@ public class  PropertyDAO {
 //        return properties;
 //    }
 
-    public void updateProperty(Connection conn, Property property) {
 
-        String sql = """
-            UPDATE Property
-            SET Property_name = ?, 
-                Category_ID = ?, 
-                Temp_ID = ?, 
-                Dir_ID = ?, 
-                Unit_ID = ?, 
-                Batch_CODE = ?
-            WHERE Property_ID = ?
-            """;
+    public List<Property> getPropertiesByBatch(Connection conn, int batchCode) throws SQLException {
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        String sql = "SELECT * FROM Property WHERE Batch_CODE = ?";
 
-            stmt.setString(1, property.getPropertyName());
-            stmt.setInt(2, property.getCategoryID());
-            stmt.setInt(3, property.getTempID());
-            stmt.setInt(4, property.getDirID());
-            stmt.setInt(5, property.getUnitID());
-            stmt.setInt(6, property.getBatchCode());
-            stmt.setInt(7, property.getPropertyID());
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1, batchCode);
 
-            int rowsAffected = stmt.executeUpdate();
+        ResultSet rs = stmt.executeQuery();
 
-            System.out.println(
-                    (rowsAffected > 0)
-                            ? "Updated property"
-                            : "Failed to update property"
-            );
+        List<Property> properties = new ArrayList<>();
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+        while (rs.next()) {
+            properties.add(mapToProperty(rs));
         }
+
+        return properties;
+    }
+
+    private Property mapToProperty(ResultSet rs) throws SQLException {
+        return new Property(
+                rs.getInt("Property_ID"),
+                rs.getString("Property_name"),
+                rs.getInt("Category_ID"),
+                rs.getInt("Temp_ID"),
+                rs.getInt("Dir_ID"),
+                rs.getInt("Unit_ID"),
+                rs.getInt("Batch_CODE")
+        );
+    }
+
+    void updateProperty(Property property){
     }
 
     void deleteProperty(int propertyId){
 
-    }
-
-    public int getPropertyId(Connection conn, Property property) {
-
-        String sql = """
-            SELECT Property_ID 
-            FROM Property 
-            WHERE Property_name = ? 
-              AND Category_ID = ? 
-              AND Batch_CODE = ?
-            """;
-
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, property.getPropertyName());
-            stmt.setInt(2, property.getCategoryID());
-            stmt.setInt(3, property.getBatchCode());
-
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return rs.getInt("Property_ID"); // found
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return -1; // not found
     }
 }
