@@ -22,7 +22,7 @@ public class TemperatureDAO {
 
         try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            stmt.setInt(1, temperature.getTempVal());
+            stmt.setDouble(1, temperature.getTempVal());
             stmt.setInt(2, temperature.getTempUnitID());
 
             stmt.executeUpdate();
@@ -42,7 +42,16 @@ public class TemperatureDAO {
 
     public Temperature getTemperature(int tempId) {
 
-        String sql = "SELECT * FROM Temperature WHERE Temp_ID = ?";
+        String sql = """
+                        SELECT 
+                            t.Temp_ID,
+                            t.Temp_VAL,
+                            t.Temp_Unit_ID,
+                            u.Unit AS Temp_Unit
+                        FROM Temperature t
+                        JOIN Units u ON t.Temp_Unit_ID = u.Unit_ID
+                        WHERE t.Temp_ID = ?
+                    """;
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -52,10 +61,17 @@ public class TemperatureDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
+                tempId = rs.getInt("Temp_ID");
+                int tempVal = rs.getInt("Temp_VAL");
+
+                int tempUnitId = rs.getInt("Temp_Unit_ID");
+                String tempUnitVal = rs.getString("Temp_Unit");
+
                 return new Temperature(
-                        rs.getInt("Temp_ID"),
-                        rs.getInt("Temp_VAL"),
-                        rs.getInt("Temp_Unit_ID")
+                        tempId,
+                        tempVal,
+                        tempUnitId,
+                        tempUnitVal
                 );
             }
 
@@ -66,33 +82,35 @@ public class TemperatureDAO {
         return null;
     }
 
-    public List<Temperature> getAllTemperatures() {
+    //Uncomment if needed
 
-        List<Temperature> temperatures = new ArrayList<>();
-
-        String sql = "SELECT * FROM Temperature";
-
-        try (Connection conn = DBUtil.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            while (rs.next()) {
-
-                Temperature temp = new Temperature(
-                        rs.getInt("Temp_ID"),
-                        rs.getInt("Temp_VAL"),
-                        rs.getInt("Temp_Unit_ID")
-                );
-
-                temperatures.add(temp);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return temperatures;
-    }
+//    public List<Temperature> getAllTemperatures() {
+//
+//        List<Temperature> temperatures = new ArrayList<>();
+//
+//        String sql = "SELECT * FROM Temperature";
+//
+//        try (Connection conn = DBUtil.getConnection();
+//             Statement stmt = conn.createStatement();
+//             ResultSet rs = stmt.executeQuery(sql)) {
+//
+//            while (rs.next()) {
+//
+//                Temperature temp = new Temperature(
+//                        rs.getInt("Temp_ID"),
+//                        rs.getInt("Temp_VAL"),
+//                        rs.getInt("Temp_Unit_ID")
+//                );
+//
+//                temperatures.add(temp);
+//            }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return temperatures;
+//    }
 
     public void updateTemperature(Connection conn, Temperature temperature) {
 
@@ -100,7 +118,7 @@ public class TemperatureDAO {
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, temperature.getTempVal());
+            stmt.setDouble(1, temperature.getTempVal());
             stmt.setInt(2, temperature.getTempUnitID());
             stmt.setInt(3, temperature.getTempId());
 

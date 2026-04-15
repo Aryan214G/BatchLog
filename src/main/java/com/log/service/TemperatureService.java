@@ -32,9 +32,10 @@ public class TemperatureService {
         return temperatureDAO.getTemperature(tempId);
     }
 
-    public List<Temperature> getAllTemperatures() {
-        return temperatureDAO.getAllTemperatures();
-    }
+    // uncomment after enabling the method in DAO
+//    public List<Temperature> getAllTemperatures() {
+//        return temperatureDAO.getAllTemperatures();
+//    }
 
     public void updateTemperature(Connection conn, Temperature temperature) {
 
