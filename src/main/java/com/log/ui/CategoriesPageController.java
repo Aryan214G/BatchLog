@@ -125,26 +125,16 @@ public class CategoriesPageController {
         int batchCode = basePropertiesState.getBatchCode();
         propertiesViews = propertyService.getPropertiesByBatch(batchCode);
 
-        //iterate through propertiesViews and store in statemanager
+        //=========== iterate through propertiesViews and store in statemanager ================
         for(PropertyView propertyView : propertiesViews){
 
-            //store temperature variables
+            // ====== store temperature variables =========
             double tempVal = propertyView.getTemperature();
             String tempUnitval = propertyView.getTempUnit();
 
-            //TODO: populate inputrows
+            // ============== Populate input rows =================
             try (Connection conn = DBUtil.getConnection()) {
-
-                //create property object
-                Property property = new Property();
-                property.setPropertyName(propertyView.getPropertyName());
-                property.setBatchCode(basePropertiesState.getBatchCode());
-                property.setCategoryID(categoryService
-                        .getCategory(conn, selectedState.getSelectedCategory())
-                        .getCategoryId());
-
-                int propertyID = propertyService.getPropertyId(conn, property);
-                List<PropertyValue> propertyValues  = propertyService.getValuesByProperty(conn, propertyID);
+                populateInputRowsHelper(propertyView, conn);
             }
             catch (SQLException e){
                 throw new RuntimeException(e);
@@ -161,6 +151,34 @@ public class CategoriesPageController {
             );
         }
     }
+
+    private Property propertyObjectGenerator(PropertyView propertyView, Connection conn){
+        Property property = new Property();
+        property.setPropertyName(propertyView.getPropertyName());
+        property.setBatchCode(basePropertiesState.getBatchCode());
+        property.setCategoryID(categoryService
+                .getCategory(conn, selectedState.getSelectedCategory())
+                .getCategoryId());
+
+        return property;
+    }
+
+    public void populateInputRowsHelper(PropertyView propertyView, Connection conn){
+        inputRows.clear();
+
+        //======== create property object ==========
+        Property property = propertyObjectGenerator(propertyView, conn);
+
+        int propertyID = propertyService.getPropertyId(conn, property);
+        List<PropertyValue> propertyValues  = propertyService.getValuesByProperty(conn, propertyID);
+
+        for(PropertyValue value : propertyValues){
+            InputRow inputRow = new InputRow();
+            inputRow.setPropertyValue(value);
+            inputRows.add(inputRow);
+        }
+    }
+
 
     private void isSubmitButtonVisible(boolean value){
         submitButton.setVisible(value);

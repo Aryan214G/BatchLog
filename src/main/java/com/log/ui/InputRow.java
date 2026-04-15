@@ -10,6 +10,9 @@ public class InputRow {
     private UnitsDropdownController unitController;
     private PropertyValue propertyValue;
 
+    public InputRow() {
+    }
+
     public InputRow(TextField field, UnitsDropdownController unitController) {
         this.field = field;
         this.unitController = unitController;
