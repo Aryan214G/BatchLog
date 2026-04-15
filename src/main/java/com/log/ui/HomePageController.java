@@ -1,5 +1,7 @@
 package com.log.ui;
 
+import com.log.model.Project;
+import com.log.service.ProjectService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -15,6 +17,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class HomePageController implements Initializable {
@@ -76,18 +79,15 @@ public class HomePageController implements Initializable {
     // ── Projects Grid ─────────────────────────────────────────────────────────
 
     private void loadRecentProjects() {
-        // TODO: Replace with real project data from your data layer
-        String[] sampleProjects = {
-                "Fuel cell Batch:LS-245", "Fuel cell Batch:LS-284",
-                "Jet brake fluid Batch:AP-123", "Jet Brake Fluid Batch:AP-145",
-                "Label text", "Label text"
-        };
+        ProjectService ps = new ProjectService();
+
+        List<Project> projects= ps.getAllProjects();
 
         int col = 0, row = 0;
         final int maxCols = 2;
 
-        for (String projectName : sampleProjects) {
-            projectsGrid.add(createProjectCard(projectName), col, row);
+        for (Project project : projects) {
+            projectsGrid.add(createProjectCard(project.getProjectName()), col, row);
             if (++col >= maxCols) { col = 0; row++; }
         }
 
