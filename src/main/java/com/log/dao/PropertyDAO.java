@@ -48,13 +48,15 @@ public class  PropertyDAO {
                     p.Property_name,
                     c.Category_name,
                     t.Temp_VAL,
+                    tu.Unit AS Temp_Unit,
                     d.Dir_VAL,
-                    u.Unit
+                    u.Unit AS Property_Unit
                 FROM Property p
                 JOIN Category c ON p.Category_ID = c.Category_ID
                 JOIN Units u ON p.Unit_ID = u.Unit_ID
                 JOIN Direction d ON p.Dir_ID = d.Dir_ID
                 JOIN Temperature t ON p.Temp_ID = t.Temp_ID
+                JOIN Units tu ON t.Temp_UNIT = tu.Unit_ID
                 WHERE p.Batch_CODE = ?
                 """;
 
@@ -65,14 +67,18 @@ public class  PropertyDAO {
             ResultSet rs = stmt.executeQuery();
 
             while(rs.next()){
-                    int id = rs.getInt("Property_ID");
-                    String propertyName = rs.getString("Property_name");
-                    String categoryName = rs.getString("Category_name");
-                    double tempValue = rs.getDouble("Temp_VAL");
-                    String direction = rs.getString("Dir_VAL");
-                    String propertyUnit = rs.getString("Unit");
+                int id = rs.getInt("Property_ID");
+                String propertyName = rs.getString("Property_name");
+                String categoryName = rs.getString("Category_name");
 
-                    properties.add(new PropertyView(id, propertyName, categoryName, tempValue,
+                double tempValue = rs.getDouble("Temp_VAL");
+                String tempUnit = rs.getString("Temp_Unit");
+
+                String direction = rs.getString("Dir_VAL");
+
+                String propertyUnit = rs.getString("Property_Unit");
+
+                properties.add(new PropertyView(id, propertyName, categoryName, tempValue, tempUnit,
                             direction, propertyUnit));
 
             }

@@ -12,6 +12,15 @@ public class PropertyState {
     private Temperature temperature;
     private Direction direction;
 
+    public PropertyState() {
+    }
+
+    public PropertyState(List<InputRow> inputRows, Temperature temperature, Direction direction) {
+        this.inputRows = inputRows;
+        this.temperature = temperature;
+        this.direction = direction;
+    }
+
     public List<Reading> getReadings() {
         return readings;
     }

@@ -103,8 +103,7 @@ public class CategoriesPageController {
             propertiesListView.setDisable(true);
         }
         else {
-            int batchCode = basePropertiesState.getBatchCode();
-            propertiesViews = propertyService.getPropertiesByBatch(batchCode);
+            loadPropertiesFromDB();
         }
         loadCategoriesFromDB();
 
@@ -124,6 +123,20 @@ public class CategoriesPageController {
         deleteItem.setOnAction(e -> handleDeleteCategory());
 
         editMenu = new ContextMenu(addItem, deleteItem);
+    }
+
+    private void loadPropertiesFromDB() throws SQLException {
+        int batchCode = basePropertiesState.getBatchCode();
+        propertiesViews = propertyService.getPropertiesByBatch(batchCode);
+
+        //iterate through propertiesViews and store in statemanager
+        for(PropertyView propertyView : propertiesViews){
+            Temperature temperature = new Temperature(propertyView.getTemperature());
+            PropertyState state = new PropertyState(
+                    inputRows,
+
+            )
+        }
     }
 
     private void isSubmitButtonVisible(boolean value){

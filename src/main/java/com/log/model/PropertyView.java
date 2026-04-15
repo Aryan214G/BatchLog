@@ -9,17 +9,19 @@ public class PropertyView {
     private String propertyName;
     private String categoryName;
     private double temperature;
+    private String tempUnit;
     private String direction;
     private String unit;
     private int rows;
 
     public PropertyView(int propertyId, String propertyName,
-                        String categoryName, double temperature,
+                        String categoryName, double temperature, String tempUnit,
                         String direction, String unit) {
         this.propertyId = propertyId;
         this.propertyName = propertyName;
         this.categoryName = categoryName;
         this.temperature = temperature;
+        this.tempUnit = tempUnit;
         this.direction = direction;
         this.unit = unit;
     }
@@ -45,6 +47,14 @@ public class PropertyView {
 
     public double getTemperature() {
         return temperature;
+    }
+
+    public String getTempUnit() {
+        return tempUnit;
+    }
+
+    public void setTempUnit(String tempUnit) {
+        this.tempUnit = tempUnit;
     }
 
     public String getDirection() {
