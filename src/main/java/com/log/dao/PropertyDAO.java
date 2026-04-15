@@ -1,5 +1,6 @@
 package com.log.dao;
 
+import com.log.database.DBUtil;
 import com.log.model.Property;
 import com.log.model.PropertyView;
 
@@ -38,7 +39,7 @@ public class  PropertyDAO {
     }
 
 
-    public List<PropertyView> getPropertiesByBatch(Connection conn, int batchCode) throws SQLException {
+    public List<PropertyView> getPropertiesByBatch(int batchCode) throws SQLException {
         List<PropertyView> properties = new ArrayList<>();
 
         String sql = """
@@ -57,7 +58,8 @@ public class  PropertyDAO {
                 WHERE p.Batch_CODE = ?
                 """;
 
-        try(PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try(Connection conn = DBUtil.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, batchCode);
             ResultSet rs = stmt.executeQuery();

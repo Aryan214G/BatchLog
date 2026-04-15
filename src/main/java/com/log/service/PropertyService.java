@@ -10,6 +10,7 @@ import com.log.ui.InputRow;
 import javafx.collections.ObservableList;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 public class PropertyService {
@@ -24,8 +25,8 @@ public class PropertyService {
     }
 
 
-    public List<PropertyView> getPropertiesByBatch(Connection conn, int batchCode) {
-        return propertyDAO.getPropertiesByBatch(conn, batchCode);
+    public List<PropertyView> getPropertiesByBatch(int batchCode) throws SQLException {
+        return propertyDAO.getPropertiesByBatch(batchCode);
     }
 
     public ObservableList<PropertyView> getPropertiesByCategory(String categoryName){

@@ -1,6 +1,7 @@
 package com.log.ui;
 
 import com.log.core.AppState;
+import com.log.core.BasePropertiesState;
 import com.log.core.DefaultMapState;
 import com.log.core.SelectedState;
 import com.log.database.DBUtil;
@@ -23,6 +24,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +40,7 @@ public class CategoriesPageController {
 
     AppState instance = AppState.getInstance();
     SelectedState selectedState = SelectedState.getInstance();
+    BasePropertiesState basePropertiesState = BasePropertiesState.getInstance();
     private DefaultPropertyService defaultPropertyService = new DefaultPropertyService();
     private Map<Integer, Map<String, DefaultProperty>> defaultPropertiesMap;
     @FXML
@@ -66,7 +70,7 @@ public class CategoriesPageController {
     private InfoBarController infoBarController;
 
     private List<InputRow> inputRows = new ArrayList<>();
-
+    List<PropertyView> propertiesViews;
     @FXML
     private Button printButton;
 
@@ -80,6 +84,7 @@ public class CategoriesPageController {
     private DirectionService directionService = new DirectionService();
     private CategoryService categoryService = new CategoryService();
     private UnitsService unitsService = new UnitsService();
+    private BatchService batchService = new BatchService();
     private PropertySubmissionService propertySubmissionService = new PropertySubmissionService(
             temperatureService,
             directionService,
@@ -90,14 +95,21 @@ public class CategoriesPageController {
     // ======================= END OF VARIABLES DECLARATION ==============================
 
     @FXML
-    public void initialize() throws IOException {
+    public void initialize() throws IOException, SQLException {
 
             isSubmitButtonVisible(false);
         if(!instance.isProjectCreated()) {
             categoriesListView.setDisable(true);
             propertiesListView.setDisable(true);
         }
+        else {
+            int batchCode = basePropertiesState.getBatchCode();
+            propertiesViews = propertyService.getPropertiesByBatch(batchCode);
+        }
         loadCategoriesFromDB();
+
+
+
         CategorySelectionListener();
         PropertySelectionListener();
         defaultPropertiesMap = defaultPropertyService.getDefaultsGrouped();
@@ -251,7 +263,7 @@ public class CategoriesPageController {
                 .addListener((obs, oldProperty, newProperty) -> {
 
                     if (newProperty != null)
-                    {https://www.reddit.com/r/PSP/comments/1skxu67/nonlaminated_ips_viewing_angles/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+                    {
                         HandlePropertyChange(newProperty,oldProperty);
                     }
                 });

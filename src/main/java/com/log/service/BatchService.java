@@ -52,7 +52,8 @@ public class BatchService {
         batchDAO.deleteBatch(batchCode);
     }
 
-    public int getBatchCode(Connection conn, Batch batch){
+    public int getBatchCode(Connection conn, Batch batch)
+    {
         return batchDAO.getBatchCode(conn, batch);
     }
 }
