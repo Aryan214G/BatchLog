@@ -127,10 +127,28 @@ public class CategoriesPageController {
 
         //iterate through propertiesViews and store in statemanager
         for(PropertyView propertyView : propertiesViews){
+
+            //store temperature variables
             double tempVal = propertyView.getTemperature();
             String tempUnitval = propertyView.getTempUnit();
 
             //TODO: populate inputrows
+            try (Connection conn = DBUtil.getConnection()) {
+
+                //create property object
+                Property property = new Property();
+                property.setPropertyName(propertyView.getPropertyName());
+                property.setBatchCode(basePropertiesState.getBatchCode());
+                property.setCategoryID(categoryService
+                        .getCategory(conn, selectedState.getSelectedCategory())
+                        .getCategoryId());
+
+                int propertyID = propertyService.getPropertyId(conn, property);
+                List<PropertyValue> propertyValues  = propertyService.getValuesByProperty(conn, propertyID);
+            }
+            catch (SQLException e){
+                throw new RuntimeException(e);
+            }
 
             Temperature temperature = new Temperature(tempVal, tempUnitval);
             Direction direction = new Direction(propertyView.getDirection());

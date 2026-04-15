@@ -73,7 +73,7 @@ public class PropertyService {
         propertyDAO.updateProperty(conn, property);
     }
 
-    public List<PropertyValue> getValuesByProperty(Connection conn, Property property){
-        return propertyValuesDAO.getValuesByProperty(conn, property.getPropertyID());
+    public List<PropertyValue> getValuesByProperty(Connection conn, int propertyID){
+        return propertyValuesDAO.getValuesByProperty(conn, propertyID);
     }
 }
