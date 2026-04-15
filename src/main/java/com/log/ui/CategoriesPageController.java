@@ -2,7 +2,6 @@ package com.log.ui;
 
 import com.log.core.AppState;
 import com.log.core.BasePropertiesState;
-import com.log.core.DefaultMapState;
 import com.log.core.SelectedState;
 import com.log.database.DBUtil;
 import com.log.model.*;
@@ -18,10 +17,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.geometry.Side;
-import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -131,11 +127,20 @@ public class CategoriesPageController {
 
         //iterate through propertiesViews and store in statemanager
         for(PropertyView propertyView : propertiesViews){
-            Temperature temperature = new Temperature(propertyView.getTemperature());
-            PropertyState state = new PropertyState(
-                    inputRows,
+            double tempVal = propertyView.getTemperature();
+            String tempUnitval = propertyView.getTempUnit();
 
-            )
+            //TODO: populate inputrows
+
+            Temperature temperature = new Temperature(tempVal, tempUnitval);
+            Direction direction = new Direction(propertyView.getDirection());
+
+            stateManager.saveState(
+                    propertyView.getPropertyName(),
+                    inputRows,
+                    temperature,
+                    direction
+            );
         }
     }
 
@@ -447,12 +452,31 @@ public class CategoriesPageController {
             }
         }
 
+        int tempUnitID;
+        String tempUnitVal;
+        try (Connection conn = DBUtil.getConnection()) {
+
+            tempUnitVal = tempUnitController.getComboBox().getValue();
+
+            if (tempUnitVal == null) {
+                throw new IllegalStateException("Temperature unit not selected");
+            }
+
+            Unit unit = unitsService.getUnit(conn, tempUnitVal);
+
+            if (unit == null) {
+                throw new IllegalStateException("Unit not found in DB: " + tempUnitVal);
+            }
+
+            tempUnitID = unit.getUnitId();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
         stateManager.saveState(
                 property.getPropertyName(),
                 inputRows,
-                new Temperature(tempVal,
-                        tempUnitController.getComboBox().getValue()),
+                new Temperature(tempVal, tempUnitID, tempUnitVal),
                 new Direction(directionController.getSelectedDirection())
         );
     }
@@ -480,7 +504,7 @@ public class CategoriesPageController {
         String temp = String.valueOf(state.getTemperature().getTempVal());
 
         temperatureField.setText(temp);
-        tempUnitController.setSelectedUnit(state.getTemperature().getTempUnit());
+        tempUnitController.setSelectedUnit(state.getTemperature().getTempUnitVal());
         directionController.setSelectedDirection(state.getDirection().getDirVal());
 
         // ================= RESTORE ROWS =================

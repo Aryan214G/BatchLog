@@ -18,12 +18,12 @@ public class TemperatureDAO {
 
     public int insertTemperature(Connection conn, Temperature temperature) {
 
-        String sql = "INSERT INTO Temperature (Temp_VAL, Temp_UNIT) VALUES (?, ?)";
+        String sql = "INSERT INTO Temperature (Temp_VAL, Temp_Unit_ID) VALUES (?, ?)";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setInt(1, temperature.getTempVal());
-            stmt.setString(2, temperature.getTempUnit());
+            stmt.setInt(2, temperature.getTempUnitID());
 
             stmt.executeUpdate();
 
@@ -55,7 +55,7 @@ public class TemperatureDAO {
                 return new Temperature(
                         rs.getInt("Temp_ID"),
                         rs.getInt("Temp_VAL"),
-                        rs.getString("Temp_UNIT")
+                        rs.getInt("Temp_Unit_ID")
                 );
             }
 
@@ -81,7 +81,7 @@ public class TemperatureDAO {
                 Temperature temp = new Temperature(
                         rs.getInt("Temp_ID"),
                         rs.getInt("Temp_VAL"),
-                        rs.getString("Temp_UNIT")
+                        rs.getInt("Temp_Unit_ID")
                 );
 
                 temperatures.add(temp);
@@ -96,12 +96,12 @@ public class TemperatureDAO {
 
     public void updateTemperature(Connection conn, Temperature temperature) {
 
-        String sql = "UPDATE Temperature SET Temp_VAL = ?, Temp_UNIT = ? WHERE Temp_ID = ?";
+        String sql = "UPDATE Temperature SET Temp_VAL = ?, Temp_Unit_ID = ? WHERE Temp_ID = ?";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, temperature.getTempVal());
-            stmt.setString(2, temperature.getTempUnit());
+            stmt.setInt(2, temperature.getTempUnitID());
             stmt.setInt(3, temperature.getTempId());
 
             stmt.executeUpdate();
