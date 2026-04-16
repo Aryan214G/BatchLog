@@ -480,7 +480,14 @@ public class CategoriesPageController {
 
         for (InputRow row : inputRows) {
             double propertyVal = Double.parseDouble(row.getField().getText());
-            row.setPropertyValue(new PropertyValue(propertyVal, -1));
+
+            //check if row has a propertyValue object, which indiacates that it has been fetched from DB.
+            if(row.getPropertyValue() == null){
+                row.setPropertyValue(new PropertyValue(propertyVal, -1));
+            }
+            else{ //update the property value in the existing object which holds the DB ID
+                row.getPropertyValue().setPropertyVAL(propertyVal);
+            }
         }
         int tempVal = 0;
 
