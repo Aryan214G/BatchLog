@@ -11,7 +11,6 @@ public class PropertyState {
     private List<InputRow> inputRows = new ArrayList<>();
     private Temperature temperature;
     private Direction direction;
-    private Unit unit;
 
     public PropertyState() {
     }
@@ -52,13 +51,5 @@ public class PropertyState {
 
     public Direction getDirection() {
         return direction;
-    }
-
-    public Unit getUnit() {
-        return unit;
-    }
-
-    public void setUnit(Unit unit) {
-        this.unit = unit;
     }
 }

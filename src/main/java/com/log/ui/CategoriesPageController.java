@@ -142,16 +142,13 @@ public class CategoriesPageController {
 
             Temperature temperature = new Temperature(tempVal, tempUnitval);
             Direction direction = new Direction(propertyView.getDirection());
-            Unit unit = new Unit();
-            unit.setUnit(propertyView.getUnit());
 
             //================= save state ==================
             stateManager.saveState(
                     propertyView.getPropertyName(),
                     inputRows,
                     temperature,
-                    direction,
-                    unit
+                    direction
             );
         }
     }
@@ -178,9 +175,13 @@ public class CategoriesPageController {
 
         for(PropertyValue value : propertyValues){
             InputRow inputRow = new InputRow();
-            //TODO: store unit value in inputRows
-
             inputRow.setPropertyValue(value);
+
+            //store unit
+            Unit unit = new Unit();
+            unit.setUnit(propertyView.getUnit());
+            inputRow.setUnit(unit);
+
             inputRows.add(inputRow);
         }
     }
@@ -368,8 +369,8 @@ public class CategoriesPageController {
     }
 
 
-    //TODO: check if editing the values of previous fields update the inputRows
-    private void addInputRow(int rowCount, String property, DefaultProperty dp) throws IOException {
+
+    private void addInputRow(int rowCount, String property, DefaultProperty dp, InputRow inputRow) throws IOException {
 
         TextField field = new TextField();
 
@@ -394,7 +395,9 @@ public class CategoriesPageController {
             entriesGrid.add(units, 1, rowCount);
         }
 
-        inputRows.add(new InputRow(field, controller));
+        inputRow.setField(field);
+        inputRow.setUnitController(controller);
+        inputRows.add(inputRow);
 
         // ENTER adds new row dynamically
         field.setOnKeyPressed(event -> {
@@ -403,7 +406,7 @@ public class CategoriesPageController {
                     && inputRows.get(inputRows.size() - 1).getField() == field) {
 
                 try {
-                    addInputRow(rowCount+1, property, dp);
+                    addInputRow(rowCount+1, property, dp, new InputRow());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -481,13 +484,7 @@ public class CategoriesPageController {
         for (InputRow row : inputRows) {
             double propertyVal = Double.parseDouble(row.getField().getText());
 
-            //check if row has a propertyValue object, which indiacates that it has been fetched from DB.
-            if(row.getPropertyValue() == null){
-                row.setPropertyValue(new PropertyValue(propertyVal, -1));
-            }
-            else{ //update the property value in the existing object which holds the DB ID
                 row.getPropertyValue().setPropertyVAL(propertyVal);
-            }
         }
         int tempVal = 0;
 
@@ -526,8 +523,7 @@ public class CategoriesPageController {
                 property.getPropertyName(),
                 inputRows,
                 new Temperature(tempVal, tempUnitID, tempUnitVal),
-                new Direction(directionController.getSelectedDirection()),
-                null //unit is stored in inputRows
+                new Direction(directionController.getSelectedDirection())
         );
     }
 
@@ -544,7 +540,7 @@ public class CategoriesPageController {
         if (state == null) {
 
             for (int i = 0; i < defaultRows; i++) {
-                addInputRow(i, property, dp);
+                addInputRow(i, property, dp, new InputRow());
             }
 
             return;
@@ -560,22 +556,25 @@ public class CategoriesPageController {
         // ================= RESTORE ROWS =================
         for (int i = 0; i < defaultRows; i++) {
 
-            addInputRow(i, property, dp);
+            InputRow inputRow;
 
-            InputRow inputRow = state.getInputRows().get(i);
-            String inputValue = String.valueOf(inputRow.getPropertyValue().getPropertyVAL());
-            inputRows.get(i).getField().setText(inputValue);
+            if (i < state.getInputRows().size()) {
+                inputRow = state.getInputRows().get(i);
+            } else {
+                inputRow = new InputRow();
+            }
+            addInputRow(i, property, dp, inputRow);
 
-            UnitsDropdownController controller = inputRow.getUnitController();
-            ComboBox<String> unitsCombo = (controller != null) ? controller.getComboBox() : null;
+            PropertyValue pv = inputRow.getPropertyValue();
 
-            //if units combo is null then it means that the project has just been initialized
-            String unit = (unitsCombo != null && unitsCombo.getValue() != null)
-                    ? unitsCombo.getValue()
-                    : state.getUnit().getUnit();
+            String inputValue = (pv != null)
+                    ? String.valueOf(pv.getPropertyVAL())
+                    : "";
+            inputRow.getField().setText(inputValue);
 
-            inputRows.get(i).getUnitController()
-                    .setSelectedUnit(unit);
+            String unit = state.getInputRows().get(0).getUnit().getUnit();
+
+            inputRow.getUnitController().setSelectedUnit(unit);
         }
     }
 
