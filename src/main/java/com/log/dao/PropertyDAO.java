@@ -56,7 +56,7 @@ public class  PropertyDAO {
                 JOIN Units u ON p.Unit_ID = u.Unit_ID
                 JOIN Direction d ON p.Dir_ID = d.Dir_ID
                 JOIN Temperature t ON p.Temp_ID = t.Temp_ID
-                JOIN Units tu ON t.Temp_UNIT = tu.Unit_ID
+                JOIN Units tu ON t.Temp_Unit_ID = tu.Unit_ID
                 WHERE p.Batch_CODE = ?
                 """;
 
