@@ -14,9 +14,7 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.log.ui.HomePageController"
             stylesheets="@../styles/homepage.css">
-    <top>
-        <fx:include source="../components/menubar.fxml" />
-    </top>
+
     <!-- ================= LEFT SIDEBAR ================= -->
     <left>
         <VBox spacing="15" styleClass="sidebar" BorderPane.alignment="CENTER">
