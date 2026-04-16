@@ -28,6 +28,7 @@ public class HomePageController implements Initializable {
     @FXML private Button retrievalPageBtn;
     @FXML private Button settingsPageBtn;
     @FXML private Button helpPageBtn;
+    @FXML private Button newProjectBtn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -37,6 +38,7 @@ public class HomePageController implements Initializable {
         retrievalPageBtn.setOnAction(e -> navigateTo("/com/log/ui/views/RetrievalPage.fxml"));
         settingsPageBtn.setOnAction(e -> openSettingsPopup());
         helpPageBtn.setOnAction(e -> handleHelp());
+        newProjectBtn.setOnAction(actionEvent ->openNewProjectPopup() );
     }
 
     // ── Navigation ────────────────────────────────────────────────────────────
@@ -62,6 +64,24 @@ public class HomePageController implements Initializable {
 
             Stage popupStage = new Stage();
             popupStage.setTitle("Settings");
+            popupStage.setScene(new Scene(root));
+            popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            popupStage.initOwner(projectsGrid.getScene().getWindow());
+            popupStage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void openNewProjectPopup(){
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/log/ui/views/NewProjectPopup.fxml")
+            );
+            Parent root = loader.load();
+
+            Stage popupStage = new Stage();
+            popupStage.setTitle("New Project");
             popupStage.setScene(new Scene(root));
             popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
             popupStage.initOwner(projectsGrid.getScene().getWindow());

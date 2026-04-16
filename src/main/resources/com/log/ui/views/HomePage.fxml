@@ -27,6 +27,7 @@
                 <Label text="BatchLog" styleClass="app-title" />
 
                 <!-- Buttons -->
+                <Button text="New Project" styleClass="sidebar-button" maxWidth="Infinity" fx:id="newProjectBtn"/>
                 <Button text="New Batch Entry" styleClass="sidebar-button" maxWidth="Infinity" fx:id="newBatchEntryBtn"/>
                 <Button text="Retrieval Page" styleClass="sidebar-button" maxWidth="Infinity" fx:id="retrievalPageBtn"/>
                 <Button text="Settings" styleClass="sidebar-button" maxWidth="Infinity" fx:id="settingsPageBtn"/>
