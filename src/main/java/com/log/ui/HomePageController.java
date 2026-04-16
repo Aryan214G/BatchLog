@@ -1,5 +1,6 @@
 package com.log.ui;
 
+import com.log.database.DBUtil;
 import com.log.model.Project;
 import com.log.service.ProjectService;
 import javafx.fxml.FXML;
@@ -17,6 +18,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -155,9 +158,25 @@ public class HomePageController implements Initializable {
 
         openItem.setOnAction(e -> System.out.println("Open: " + projectName));
         renameItem.setOnAction(e -> System.out.println("Rename: " + projectName));
-        deleteItem.setOnAction(e -> System.out.println("Delete: " + projectName));
+        deleteItem.setOnAction(e -> handleProjectCardDelete(projectName));
 
         contextMenu.getItems().addAll(openItem, renameItem, deleteItem);
         contextMenu.show(anchor, javafx.geometry.Side.BOTTOM, 0, 0);
+    }
+
+    private void handleProjectCardDelete(String projectName){
+        ProjectService ps = new ProjectService();
+
+        Connection connection;
+        try {
+            connection = DBUtil.getConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        ps.deleteProject(ps.getProjectId(connection,projectName));
+        refreshProjects();;
+        return;
     }
 }
