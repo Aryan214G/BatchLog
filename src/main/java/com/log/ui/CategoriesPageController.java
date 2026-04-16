@@ -99,9 +99,9 @@ public class CategoriesPageController {
             propertiesListView.setDisable(true);
         }
         else {
+            loadCategoriesFromDB();
             loadPropertiesFromDB();
         }
-        loadCategoriesFromDB();
 
 
 
@@ -157,7 +157,7 @@ public class CategoriesPageController {
         property.setPropertyName(propertyView.getPropertyName());
         property.setBatchCode(basePropertiesState.getBatchCode());
         property.setCategoryID(categoryService
-                .getCategory(conn, selectedState.getSelectedCategory())
+                .getCategory(conn, propertyView.getCategoryName())
                 .getCategoryId());
 
         return property;
