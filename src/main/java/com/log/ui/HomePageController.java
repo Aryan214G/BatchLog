@@ -152,31 +152,48 @@ public class HomePageController implements Initializable {
     private void handleCardMenu(String projectName, Button anchor) {
         javafx.scene.control.ContextMenu contextMenu = new javafx.scene.control.ContextMenu();
 
-        javafx.scene.control.MenuItem openItem = new javafx.scene.control.MenuItem("Open");
+        javafx.scene.control.MenuItem openItem   = new javafx.scene.control.MenuItem("Open");
         javafx.scene.control.MenuItem renameItem = new javafx.scene.control.MenuItem("Rename");
         javafx.scene.control.MenuItem deleteItem = new javafx.scene.control.MenuItem("Delete");
 
         openItem.setOnAction(e -> System.out.println("Open: " + projectName));
-        renameItem.setOnAction(e -> System.out.println("Rename: " + projectName));
+        renameItem.setOnAction(e -> handleProjectCardEdit(projectName));  // was println before
         deleteItem.setOnAction(e -> handleProjectCardDelete(projectName));
 
         contextMenu.getItems().addAll(openItem, renameItem, deleteItem);
         contextMenu.show(anchor, javafx.geometry.Side.BOTTOM, 0, 0);
     }
 
-    private void handleProjectCardDelete(String projectName){
-        ProjectService ps = new ProjectService();
-
-        Connection connection;
-        try {
-            connection = DBUtil.getConnection();
+    private void handleProjectCardDelete(String projectName) {
+        try (Connection connection = DBUtil.getConnection()) {
+            ProjectService ps = new ProjectService();
+            ps.deleteProject(ps.getProjectId(connection, projectName));
+            refreshProjects();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
+    }
 
+    private void handleProjectCardEdit(String projectName) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/log/ui/views/EditProjectPopup.fxml")
+            );
+            Parent root = loader.load();
 
-        ps.deleteProject(ps.getProjectId(connection,projectName));
-        refreshProjects();;
-        return;
+            EditProjectPopupController controller = loader.getController();
+            controller.setOriginalProjectName(projectName);   // pass current name for lookup + pre-fill
+            controller.setOnProjectUpdate(this::refreshProjects);  // refresh grid on save
+
+            Stage popupStage = new Stage();
+            popupStage.setTitle("Edit Project");
+            popupStage.setScene(new Scene(root));
+            popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            popupStage.initOwner(projectsGrid.getScene().getWindow());
+            popupStage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

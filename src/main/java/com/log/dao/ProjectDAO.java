@@ -89,4 +89,27 @@ public class ProjectDAO {
         }
         return -1;
     }
+
+
+    public boolean updateProjectName(int projectId, String newName) {
+
+        String sql = "UPDATE Project SET Project_name = ? WHERE Project_ID = ?";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, newName);
+            stmt.setInt(2, projectId);
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0; // true if update succeeded
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false; // indicates failure
+    }
+
+
 }
