@@ -142,13 +142,17 @@ public class CategoriesPageController {
 
             Temperature temperature = new Temperature(tempVal, tempUnitval);
             Direction direction = new Direction(propertyView.getDirection());
+            //store unit
+            Unit unit = new Unit();
+            unit.setUnit(propertyView.getUnit());
 
             //================= save state ==================
             stateManager.saveState(
                     propertyView.getPropertyName(),
                     inputRows,
                     temperature,
-                    direction
+                    direction,
+                    unit
             );
         }
     }
@@ -176,11 +180,6 @@ public class CategoriesPageController {
         for(PropertyValue value : propertyValues){
             InputRow inputRow = new InputRow();
             inputRow.setPropertyValue(value);
-
-            //store unit
-            Unit unit = new Unit();
-            unit.setUnit(propertyView.getUnit());
-            inputRow.setUnit(unit);
 
             inputRows.add(inputRow);
         }
@@ -479,8 +478,6 @@ public class CategoriesPageController {
             return;
         }
 
-        List<Reading> readings = new ArrayList<>();
-
         for (InputRow row : inputRows) {
             double propertyVal = Double.parseDouble(row.getField().getText());
 
@@ -519,11 +516,20 @@ public class CategoriesPageController {
             throw new RuntimeException(e);
         }
 
+        //Unit
+        String unitValue = unitValue = inputRows.get(0)
+                    .getUnitController()
+                    .getComboBox()
+                    .getValue();
+        Unit unit = new Unit();
+        unit.setUnit(unitValue);
+
         stateManager.saveState(
                 property.getPropertyName(),
                 inputRows,
                 new Temperature(tempVal, tempUnitID, tempUnitVal),
-                new Direction(directionController.getSelectedDirection())
+                new Direction(directionController.getSelectedDirection()),
+                unit
         );
     }
 
@@ -572,7 +578,7 @@ public class CategoriesPageController {
                     : "";
             inputRow.getField().setText(inputValue);
 
-            String unit = state.getInputRows().get(0).getUnit().getUnit();
+            String unit = state.getUnit().getUnit();
 
             inputRow.getUnitController().setSelectedUnit(unit);
         }

@@ -15,7 +15,8 @@ public class PropertyStateManager {
             String property,
             List<InputRow> inputRows,
             Temperature temperature,
-            Direction direction
+            Direction direction,
+            Unit unit
     ) {
         if (property == null) return;
 
@@ -23,7 +24,7 @@ public class PropertyStateManager {
         state.setTemperature(temperature);
         state.setDirection(direction);
         state.setInputRows(inputRows);
-
+        state.setUnit(unit);
         propertyStates.put(property, state);
     }
 
