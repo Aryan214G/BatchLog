@@ -10,7 +10,6 @@ public class InputRow {
     private TextField field;
     private UnitsDropdownController unitController;
     private PropertyValue propertyValue;
-    private Unit unit;
 
     public InputRow() {
         this.propertyValue = new PropertyValue();
@@ -46,11 +45,4 @@ public class InputRow {
         this.unitController = unitController;
     }
 
-    public Unit getUnit() {
-        return unit;
-    }
-
-    public void setUnit(Unit unit) {
-        this.unit = unit;
-    }
 }
