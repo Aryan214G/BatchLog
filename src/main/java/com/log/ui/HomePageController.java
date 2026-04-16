@@ -73,12 +73,16 @@ public class HomePageController implements Initializable {
         }
     }
 
-    private void openNewProjectPopup(){
+    private void openNewProjectPopup() {
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/log/ui/views/NewProjectPopup.fxml")
             );
             Parent root = loader.load();
+
+            // Pass the refresh callback BEFORE showing the popup
+            NewProjectPopupController controller = loader.getController();
+            controller.setOnProjectSaved(this::refreshProjects);
 
             Stage popupStage = new Stage();
             popupStage.setTitle("New Project");
@@ -100,8 +104,7 @@ public class HomePageController implements Initializable {
 
     private void loadRecentProjects() {
         ProjectService ps = new ProjectService();
-
-        List<Project> projects= ps.getAllProjects();
+        List<Project> projects = ps.getAllProjects();
 
         int col = 0, row = 0;
         final int maxCols = 2;
@@ -110,11 +113,11 @@ public class HomePageController implements Initializable {
             projectsGrid.add(createProjectCard(project.getProjectName()), col, row);
             if (++col >= maxCols) { col = 0; row++; }
         }
+    }
 
-        // Make both columns share width equally
-        ColumnConstraints cc = new ColumnConstraints();
-        cc.setPercentWidth(50);
-        projectsGrid.getColumnConstraints().addAll(cc, cc);
+    private void refreshProjects() {
+        projectsGrid.getChildren().clear();   // wipe existing cards
+        loadRecentProjects();                 // reload from data layer
     }
 
     private HBox createProjectCard(String projectName) {

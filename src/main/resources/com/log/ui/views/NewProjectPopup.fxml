@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="600.0" prefWidth="800.0" styleClass="root-layout" stylesheets="@../styles/AddCategoriesStyles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.AddCategoriesPopupController">
+<BorderPane prefHeight="600.0" prefWidth="800.0" styleClass="root-layout" stylesheets="@../styles/AddCategoriesStyles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.NewProjectPopupController">
 
     <!-- ===== TITLE ===== -->
     <top>
@@ -26,10 +26,10 @@
             <!-- Property Name -->
             <VBox maxWidth="600" spacing="6" styleClass="input-field-container">
                 <Label text="Project Name" />
-                <TextField fx:id="propertyNameField" promptText="Value" styleClass="input-field" />
+                <TextField fx:id="projectNameField" promptText="Value" styleClass="input-field" />
             </VBox>
 
-            <Button onAction="#handleSaveProperty" prefWidth="200" styleClass="primary-btn" text="Save Project" />
+            <Button onAction="#handleSaveProject" prefWidth="200" styleClass="primary-btn" text="Save Project" />
 
         </VBox>
     </center>
