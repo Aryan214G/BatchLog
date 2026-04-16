@@ -5,6 +5,9 @@ public class Unit {
     private int unitId;
     private String unit;
 
+    public Unit() {
+    }
+
     public Unit(int unitId, String unit) {
         this.unitId = unitId;
         this.unit = unit;

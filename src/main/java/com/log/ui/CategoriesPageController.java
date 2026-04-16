@@ -142,12 +142,16 @@ public class CategoriesPageController {
 
             Temperature temperature = new Temperature(tempVal, tempUnitval);
             Direction direction = new Direction(propertyView.getDirection());
+            Unit unit = new Unit();
+            unit.setUnit(propertyView.getUnit());
 
+            //================= save state ==================
             stateManager.saveState(
                     propertyView.getPropertyName(),
                     inputRows,
                     temperature,
-                    direction
+                    direction,
+                    unit
             );
         }
     }
@@ -174,6 +178,8 @@ public class CategoriesPageController {
 
         for(PropertyValue value : propertyValues){
             InputRow inputRow = new InputRow();
+            //TODO: store unit value in inputRows
+
             inputRow.setPropertyValue(value);
             inputRows.add(inputRow);
         }
@@ -513,7 +519,8 @@ public class CategoriesPageController {
                 property.getPropertyName(),
                 inputRows,
                 new Temperature(tempVal, tempUnitID, tempUnitVal),
-                new Direction(directionController.getSelectedDirection())
+                new Direction(directionController.getSelectedDirection()),
+                null //unit is stored in inputRows
         );
     }
 
@@ -544,15 +551,24 @@ public class CategoriesPageController {
         directionController.setSelectedDirection(state.getDirection().getDirVal());
 
         // ================= RESTORE ROWS =================
-        for (int i = 0; i < state.getReadings().size(); i++) {
+        for (int i = 0; i < defaultRows; i++) {
 
             addInputRow(i, property, dp);
 
-            inputRows.get(i).getField()
-                    .setText(state.getReadings().get(i).getValue());
+            InputRow inputRow = state.getInputRows().get(i);
+            String inputValue = String.valueOf(inputRow.getPropertyValue().getPropertyVAL());
+            inputRows.get(i).getField().setText(inputValue);
+
+            UnitsDropdownController controller = inputRow.getUnitController();
+            ComboBox<String> unitsCombo = (controller != null) ? controller.getComboBox() : null;
+
+            //if units combo is null then it means that the project has just been initialized
+            String unit = (unitsCombo != null && unitsCombo.getValue() != null)
+                    ? unitsCombo.getValue()
+                    : state.getUnit().getUnit();
 
             inputRows.get(i).getUnitController()
-                    .setSelectedUnit(state.getReadings().get(i).getUnit());
+                    .setSelectedUnit(unit);
         }
     }
 
