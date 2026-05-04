@@ -156,7 +156,7 @@ public class HomePageController implements Initializable {
         javafx.scene.control.MenuItem renameItem = new javafx.scene.control.MenuItem("Rename");
         javafx.scene.control.MenuItem deleteItem = new javafx.scene.control.MenuItem("Delete");
 
-        openItem.setOnAction(e -> System.out.println("Open: " + projectName));
+        openItem.setOnAction(e -> handleProjectCardOpen(projectName));
         renameItem.setOnAction(e -> handleProjectCardEdit(projectName));  // was println before
         deleteItem.setOnAction(e -> handleProjectCardDelete(projectName));
 
@@ -191,6 +191,25 @@ public class HomePageController implements Initializable {
             popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
             popupStage.initOwner(projectsGrid.getScene().getWindow());
             popupStage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleProjectCardOpen(String projectName) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/log/ui/views/ProjectPage.fxml")
+            );
+            Parent root = loader.load();
+
+            ProjectPageController controller = loader.getController();
+            controller.loadProject(projectName);
+
+            Stage stage = (Stage) projectsGrid.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
 
         } catch (IOException e) {
             e.printStackTrace();

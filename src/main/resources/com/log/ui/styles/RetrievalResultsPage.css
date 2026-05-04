@@ -94,3 +94,12 @@
 .back-btn:hover {
     -fx-background-color: #6a3da8;
 }
+
+
+.clickable-row {
+    -fx-cursor: hand;
+}
+
+.clickable-row:hover {
+    -fx-background-color: #dcd0f0;
+}

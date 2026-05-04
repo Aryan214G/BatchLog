@@ -164,12 +164,17 @@ public class RetrievalResultsController {
 
     // ── Back button ───────────────────────────────────────────────────────────
 
+    // In RetrievalResultsController
+    private String backDestination = "/com/log/ui/views/RetrievalPage.fxml"; // default
+
+    public void setBackDestination(String fxmlPath) {
+        this.backDestination = fxmlPath;
+    }
+
     @FXML
     private void handleBack() {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/log/ui/views/RetrievalPage.fxml")
-            );
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(backDestination));
             Parent root = loader.load();
             Stage stage = (Stage) propertiesGrid.getScene().getWindow();
             stage.setScene(new Scene(root));
