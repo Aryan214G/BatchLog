@@ -108,7 +108,6 @@ public class RetrievalResultsController {
 
         String[] headers = {"Property", "Category", "Temperature", "Direction", "Unit", "Value"};
 
-        // Equal-width columns
         for (int i = 0; i < headers.length; i++) {
             ColumnConstraints cc = new ColumnConstraints();
             cc.setPercentWidth(100.0 / headers.length);
@@ -124,25 +123,34 @@ public class RetrievalResultsController {
         // Data rows
         int row = 1;
         for (PropertyRow p : rows) {
-            propertiesGrid.add(makeCell(p.name),        0, row);
-            propertiesGrid.add(makeCell(p.category),    1, row);
-            propertiesGrid.add(makeCell(p.temperature), 2, row);
-            propertiesGrid.add(makeCell(p.direction),   3, row);
-            propertiesGrid.add(makeCell(p.unit),        4, row);
-            propertiesGrid.add(makeCell(p.value),       5, row);
+            boolean isAlt = (row % 2 == 0);  // alternate every other row
+            propertiesGrid.add(makeCell(p.name,        isAlt), 0, row);
+            propertiesGrid.add(makeCell(p.category,    isAlt), 1, row);
+            propertiesGrid.add(makeCell(p.temperature, isAlt), 2, row);
+            propertiesGrid.add(makeCell(p.direction,   isAlt), 3, row);
+            propertiesGrid.add(makeCell(p.unit,        isAlt), 4, row);
+            propertiesGrid.add(makeCell(p.value,       isAlt), 5, row);
             row++;
         }
 
         if (rows.isEmpty()) {
             Label empty = new Label("No properties found for this batch.");
             empty.getStyleClass().add("empty-label");
-            propertiesGrid.add(empty, 0, 1, headers.length, 1); // span all columns
+            propertiesGrid.add(empty, 0, 1, headers.length, 1);
         }
     }
 
     private Label makeHeader(String text) {
         Label label = new Label(text);
         label.getStyleClass().add("grid-header");
+        label.setMaxWidth(Double.MAX_VALUE);
+        return label;
+    }
+
+    private Label makeCell(String text, boolean isAlt) {
+        Label label = new Label(text != null ? text : "—");
+        label.getStyleClass().add("grid-cell");
+        if (isAlt) label.getStyleClass().add("grid-cell-alt");
         label.setMaxWidth(Double.MAX_VALUE);
         return label;
     }
