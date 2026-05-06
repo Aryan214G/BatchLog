@@ -158,7 +158,7 @@ public class ProjectPageController {
             controller.loadBatch(batch);
 
             controller.loadBatch(batch);
-            controller.setBackDestination("/com/log/ui/views/ProjectPage.fxml"); // go back to project
+            controller.setBackDestination("/com/log/ui/views/ProjectPage.fxml"); // go back to projectchrr
 
             Stage stage = (Stage) batchesGrid.getScene().getWindow();
             stage.setScene(new Scene(root));

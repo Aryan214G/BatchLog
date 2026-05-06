@@ -1,8 +1,6 @@
 package com.log.ui;
 
 import com.log.core.BasePropertiesState;
-import com.log.dao.BatchDAO;
-import com.log.dao.BatchTestDAO;
 import com.log.dao.ProductDAO;
 import com.log.database.DBUtil;
 import com.log.model.Batch;
@@ -16,14 +14,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
-import com.log.database.DBUtil.*;
 
-import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.time.LocalDate;
 
 public class NewBatchController {
+
+    @FXML private TextField productField;
     @FXML private TextField batchNo;
     @FXML private DatePicker testDate;
     @FXML private TextField placeOfTesting;
@@ -34,6 +31,7 @@ public class NewBatchController {
     private ProductDAO productDAO = new ProductDAO();
     private BatchService batchService = new BatchService();
     private BatchTestService batchTestService = new BatchTestService();
+
     private Connection conn;
     {
         try {
@@ -43,78 +41,65 @@ public class NewBatchController {
         }
     }
 
-
     @FXML
     private void handleNext() {
-
         if (!validateInputs()) {
             System.out.println("Validation failed");
             return;
         }
 
-
-        String batch = batchNo.getText();
-        LocalDate date = testDate.getValue();
-        String place = placeOfTesting.getText();
-        String file = fileName.getText();
+        bpropState.setProductName(productField.getText().trim());
         bpropState.setBatchNo(batchNo.getText());
         bpropState.setTestDate(testDate.getValue());
         bpropState.setPlaceOfTesting(placeOfTesting.getText());
         bpropState.setFileName(fileName.getText());
 
-
         handleCreateBatch();
-
-        System.out.println("Batch: " + batch);
         loadCategoriesPage();
-
-
     }
 
     private void handleCreateBatch() {
-        String batchID = bpropState.getBatchNo();
-        int projectID = bpropState.getProjectId();
-        String TestDate = bpropState.getTestDate().toString();
-        String TestSite = bpropState.getPlaceOfTesting();
+        String batchID  = bpropState.getBatchNo();
+        String testDate = bpropState.getTestDate().toString();
+        String testSite = bpropState.getPlaceOfTesting();
+
         int productCode = productDAO.getProductCode(conn, new Product(
                 bpropState.getProductID(),
                 bpropState.getProductName(),
                 bpropState.getProjectId()
         ));
+
         Batch batch = new Batch(batchID, productCode);
-        batchService.createBatch(conn,batch);
+        batchService.createBatch(conn, batch);
         batchTestService.createBatchTest(conn, new BatchTest(
                 bpropState.getBatchCode(),
-                TestDate,
-                TestSite
+                testDate,
+                testSite
         ));
     }
-    private boolean validateInputs() {
 
-        if (placeOfTesting.getText().isEmpty()) return false;
+    private boolean validateInputs() {
+        if (productField.getText().isEmpty()) return false;
         if (batchNo.getText().isEmpty()) return false;
+        if (placeOfTesting.getText().isEmpty()) return false;
         if (fileName.getText().isEmpty()) return false;
         return true;
     }
-    private void loadCategoriesPage() {
 
+    private void loadCategoriesPage() {
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/log/ui/views/CategoriesPage.fxml")
             );
-
             Parent root = loader.load();
-
-            // Replace current scene content
             batchNo.getScene().setRoot(root);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     @FXML
     private void handleCancel() {
         loadCategoriesPage();
     }
-
 }
