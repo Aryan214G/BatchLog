@@ -407,29 +407,21 @@ public class CategoriesPageController {
         List<Reading> readings = new ArrayList<>();
 
         for (InputRow row : inputRows) {
-            double propertyVal = Double.parseDouble(row.getField().getText());
-            row.setPropertyValue(new PropertyValue(propertyVal, -1));
-        }
-        int tempVal = 0;
 
-        String text = temperatureField.getText();
+            String text = row.getField().getText();
 
-        if (text != null && !text.isBlank()) {
+            if (text == null || text.isBlank()) {
+                continue;
+            }
+
             try {
-                tempVal = Integer.parseInt(text.trim());
+                double propertyVal = Double.parseDouble(text.trim());
+                row.setPropertyValue(new PropertyValue(propertyVal, -1));
+
             } catch (NumberFormatException e) {
-                AlertUtil.showError("Please enter a valid temperature.");
+                AlertUtil.showError("Invalid number: " + text);
             }
         }
-
-
-        stateManager.saveState(
-                property.getPropertyName(),
-                inputRows,
-                new Temperature(tempVal,
-                        tempUnitController.getComboBox().getValue()),
-                new Direction(directionController.getSelectedDirection())
-        );
     }
 
 

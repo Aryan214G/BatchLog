@@ -14,9 +14,7 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.log.ui.HomePageController"
             stylesheets="@../styles/homepage.css">
-    <top>
-        <fx:include source="../components/menubar.fxml" />
-    </top>
+
     <!-- ================= LEFT SIDEBAR ================= -->
     <left>
         <VBox spacing="15" styleClass="sidebar" BorderPane.alignment="CENTER">
@@ -27,7 +25,6 @@
                 <Label text="BatchLog" styleClass="app-title" />
 
                 <!-- Buttons -->
-                <Button text="New Project" styleClass="sidebar-button" maxWidth="Infinity" fx:id="newProjectBtn"/>
                 <Button text="New Batch Entry" styleClass="sidebar-button" maxWidth="Infinity" fx:id="newBatchEntryBtn"/>
                 <Button text="Retrieval Page" styleClass="sidebar-button" maxWidth="Infinity" fx:id="retrievalPageBtn"/>
                 <Button text="Settings" styleClass="sidebar-button" maxWidth="Infinity" fx:id="settingsPageBtn"/>

@@ -1,5 +1,8 @@
 package com.log.ui;
 
+import com.log.database.DBUtil;
+import com.log.model.Project;
+import com.log.service.ProjectService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -15,6 +18,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class HomePageController implements Initializable {
@@ -25,6 +31,7 @@ public class HomePageController implements Initializable {
     @FXML private Button retrievalPageBtn;
     @FXML private Button settingsPageBtn;
     @FXML private Button helpPageBtn;
+    @FXML private Button newProjectBtn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -34,6 +41,7 @@ public class HomePageController implements Initializable {
         retrievalPageBtn.setOnAction(e -> navigateTo("/com/log/ui/views/RetrievalPage.fxml"));
         settingsPageBtn.setOnAction(e -> openSettingsPopup());
         helpPageBtn.setOnAction(e -> handleHelp());
+        newProjectBtn.setOnAction(actionEvent ->openNewProjectPopup() );
     }
 
     // ── Navigation ────────────────────────────────────────────────────────────
@@ -68,6 +76,28 @@ public class HomePageController implements Initializable {
         }
     }
 
+    private void openNewProjectPopup() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/log/ui/views/NewProjectPopup.fxml")
+            );
+            Parent root = loader.load();
+
+            // Pass the refresh callback BEFORE showing the popup
+            NewProjectPopupController controller = loader.getController();
+            controller.setOnProjectSaved(this::refreshProjects);
+
+            Stage popupStage = new Stage();
+            popupStage.setTitle("New Project");
+            popupStage.setScene(new Scene(root));
+            popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            popupStage.initOwner(projectsGrid.getScene().getWindow());
+            popupStage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void handleHelp() {
         // TODO: open help dialog or navigate to help page
         System.out.println("Help clicked");
@@ -76,25 +106,21 @@ public class HomePageController implements Initializable {
     // ── Projects Grid ─────────────────────────────────────────────────────────
 
     private void loadRecentProjects() {
-        // TODO: Replace with real project data from your data layer
-        String[] sampleProjects = {
-                "Fuel cell Batch:LS-245", "Fuel cell Batch:LS-284",
-                "Jet brake fluid Batch:AP-123", "Jet Brake Fluid Batch:AP-145",
-                "Label text", "Label text"
-        };
+        ProjectService ps = new ProjectService();
+        List<Project> projects = ps.getAllProjects();
 
         int col = 0, row = 0;
         final int maxCols = 2;
 
-        for (String projectName : sampleProjects) {
-            projectsGrid.add(createProjectCard(projectName), col, row);
+        for (Project project : projects) {
+            projectsGrid.add(createProjectCard(project.getProjectName()), col, row);
             if (++col >= maxCols) { col = 0; row++; }
         }
+    }
 
-        // Make both columns share width equally
-        ColumnConstraints cc = new ColumnConstraints();
-        cc.setPercentWidth(50);
-        projectsGrid.getColumnConstraints().addAll(cc, cc);
+    private void refreshProjects() {
+        projectsGrid.getChildren().clear();   // wipe existing cards
+        loadRecentProjects();                 // reload from data layer
     }
 
     private HBox createProjectCard(String projectName) {
@@ -126,15 +152,67 @@ public class HomePageController implements Initializable {
     private void handleCardMenu(String projectName, Button anchor) {
         javafx.scene.control.ContextMenu contextMenu = new javafx.scene.control.ContextMenu();
 
-        javafx.scene.control.MenuItem openItem = new javafx.scene.control.MenuItem("Open");
+        javafx.scene.control.MenuItem openItem   = new javafx.scene.control.MenuItem("Open");
         javafx.scene.control.MenuItem renameItem = new javafx.scene.control.MenuItem("Rename");
         javafx.scene.control.MenuItem deleteItem = new javafx.scene.control.MenuItem("Delete");
 
-        openItem.setOnAction(e -> System.out.println("Open: " + projectName));
-        renameItem.setOnAction(e -> System.out.println("Rename: " + projectName));
-        deleteItem.setOnAction(e -> System.out.println("Delete: " + projectName));
+        openItem.setOnAction(e -> handleProjectCardOpen(projectName));
+        renameItem.setOnAction(e -> handleProjectCardEdit(projectName));  // was println before
+        deleteItem.setOnAction(e -> handleProjectCardDelete(projectName));
 
         contextMenu.getItems().addAll(openItem, renameItem, deleteItem);
         contextMenu.show(anchor, javafx.geometry.Side.BOTTOM, 0, 0);
+    }
+
+    private void handleProjectCardDelete(String projectName) {
+        try (Connection connection = DBUtil.getConnection()) {
+            ProjectService ps = new ProjectService();
+            ps.deleteProject(ps.getProjectId(connection, projectName));
+            refreshProjects();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleProjectCardEdit(String projectName) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/log/ui/views/EditProjectPopup.fxml")
+            );
+            Parent root = loader.load();
+
+            EditProjectPopupController controller = loader.getController();
+            controller.setOriginalProjectName(projectName);   // pass current name for lookup + pre-fill
+            controller.setOnProjectUpdate(this::refreshProjects);  // refresh grid on save
+
+            Stage popupStage = new Stage();
+            popupStage.setTitle("Edit Project");
+            popupStage.setScene(new Scene(root));
+            popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            popupStage.initOwner(projectsGrid.getScene().getWindow());
+            popupStage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleProjectCardOpen(String projectName) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/log/ui/views/ProjectPage.fxml")
+            );
+            Parent root = loader.load();
+
+            ProjectPageController controller = loader.getController();
+            controller.loadProject(projectName);
+
+            Stage stage = (Stage) projectsGrid.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

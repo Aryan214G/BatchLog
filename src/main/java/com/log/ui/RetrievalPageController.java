@@ -7,12 +7,17 @@ import com.log.service.PropertyService;
 import com.log.ui.util.SearchUtil;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -87,17 +92,37 @@ public class RetrievalPageController {
                 " | Site: " + batch.getTestSite();
     }
 
+//    private void handleBatchClick(BatchTest batch) {
+//
+//
+//        try {
+//            List<Property> properties =
+//                    propertyService.getPropertiesByBatch(batch.getBatchCode());
+//
+//            // next step → display these
+//            System.out.println(properties);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+
     private void handleBatchClick(BatchTest batch) {
-
-
         try {
-            List<Property> properties =
-                    propertyService.getPropertiesByBatch(batch.getBatchCode());
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/log/ui/views/RetrievalResults.fxml")
+            );
+            Parent root = loader.load();
 
-            // next step → display these
-            System.out.println(properties);
+            RetrievalResultsController controller = loader.getController();
+            controller.loadBatch(batch);  // hand over the clicked batch
 
-        } catch (Exception e) {
+            Stage stage = (Stage) resultsContainer.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

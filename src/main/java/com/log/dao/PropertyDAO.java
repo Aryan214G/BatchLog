@@ -37,6 +37,33 @@ public class  PropertyDAO {
         return 0;
     }
 
+    public int getPropertyId(Connection conn, Property property) {
+
+        String sql = """
+            
+                SELECT Property_ID 
+            FROM Property 
+            WHERE Property_name = ? 
+              AND Category_ID = ? 
+              AND Batch_CODE = ?
+            """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, property.getPropertyName());
+            stmt.setInt(2, property.getCategoryID());
+            stmt.setInt(3, property.getBatchCode());
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("Property_ID"); // found
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+        }
 
     // idk what this fuckahh method is, leaving it untouched
 
@@ -116,10 +143,10 @@ public class  PropertyDAO {
         );
     }
 
-    void updateProperty(Property property){
+    public void updateProperty(Connection conn,Property property){
     }
 
-    void deleteProperty(int propertyId){
+    public void deleteProperty(int propertyId){
 
     }
 }
