@@ -200,4 +200,19 @@ public class ProjectPageController {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    private void handleNewBatch() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/log/ui/views/NewBatch.fxml")
+            );
+            Parent root = loader.load();
+            Stage stage = (Stage) batchesGrid.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
