@@ -124,10 +124,11 @@ public class CategoriesPageController {
 
     // Method used to restore values from the exisiting data (if any) of currently selected batch/record, and load them into the ui.
     private void loadPropertiesFromDB() throws SQLException {
-        int batchCode = basePropertiesState.getBatchCode();
-        propertiesList = propertyService.getPropertiesByTest(batchCode);
+        int testId = basePropertiesState.getTestId();
+        propertiesList = propertyService.getPropertiesByTest(testId);
 
         //=========== iterate through propertiesViews and store in statemanager ================
+        inputRows.clear();
         for(Property property : propertiesList){
 
             // ====== store temperature variables =========
@@ -151,7 +152,7 @@ public class CategoriesPageController {
             //================= save state ==================
             stateManager.saveState(
                     property.getPropertyName(),
-                    inputRows,
+                    new ArrayList<>(inputRows),
                     temperature,
                     direction,
                     unit
@@ -159,21 +160,9 @@ public class CategoriesPageController {
         }
     }
 
-    private Property propertyObjectGenerator(PropertyView propertyView, Connection conn){
-        Property property = new Property();
-        property.setPropertyName(propertyView.getPropertyName());
-        property.setBatchCode(basePropertiesState.getBatchCode());
-        property.setCategoryID(categoryService
-                .getCategory(conn, propertyView.getCategoryName())
-                .getCategoryId());
-
-        return property;
-    }
-
     public void populateInputRowsHelper(Property property, Connection conn){
-        inputRows.clear();
 
-        int propertyID = propertyService.getPropertyId(conn, property);
+        int propertyID = property.getPropertyID();
         List<PropertyValue> propertyValues  = propertyService.getValuesByProperty(conn, propertyID);
 
         for(PropertyValue value : propertyValues){

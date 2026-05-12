@@ -25,8 +25,8 @@ public class PropertyService {
     }
 
 
-    public List<Property> getPropertiesByTest(int batchCode) throws SQLException {
-        return propertyDAO.getPropertiesByTest(batchCode);
+    public List<Property> getPropertiesByTest(int testId) throws SQLException {
+        return propertyDAO.getPropertiesByTest(testId);
     }
 
     public ObservableList<PropertyView> getPropertiesByCategory(String categoryName){
