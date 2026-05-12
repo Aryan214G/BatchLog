@@ -2,7 +2,6 @@ package com.log.dao;
 
 import com.log.database.DBUtil;
 import com.log.model.Property;
-import com.log.model.PropertyView;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -39,55 +38,91 @@ public class  PropertyDAO {
     }
 
 
-    public List<PropertyView> getPropertiesByBatch(int batchCode) throws SQLException {
-        List<PropertyView> properties = new ArrayList<>();
+    public List<Property> getPropertiesByTest(int testId) throws SQLException {
 
-        String sql = """
-                SELECT
-                    p.Property_ID,
-                    p.Property_name,
-                    c.Category_name,
-                    t.Temp_VAL,
-                    tu.Unit AS Temp_Unit,
-                    d.Dir_VAL,
-                    u.Unit AS Property_Unit
-                FROM Property p
-                JOIN Category c ON p.Category_ID = c.Category_ID
-                JOIN Units u ON p.Unit_ID = u.Unit_ID
-                JOIN Direction d ON p.Dir_ID = d.Dir_ID
-                JOIN Temperature t ON p.Temp_ID = t.Temp_ID
-                JOIN Units tu ON t.Temp_Unit_ID = tu.Unit_ID
-                WHERE p.Batch_CODE = ?
-                """;
+    List<Property> properties = new ArrayList<>();
 
-        try(Connection conn = DBUtil.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+    String sql = """
+        SELECT
+            p.Property_ID,
+            p.Property_name,
 
-            stmt.setInt(1, batchCode);
-            ResultSet rs = stmt.executeQuery();
+            p.Category_ID,
+            c.Category_name,
 
-            while(rs.next()){
-                int id = rs.getInt("Property_ID");
-                String propertyName = rs.getString("Property_name");
-                String categoryName = rs.getString("Category_name");
+            p.Temp_ID,
+            t.Temp_VAL,
+            tu.Unit AS Temp_Unit,
 
-                double tempValue = rs.getDouble("Temp_VAL");
-                String tempUnit = rs.getString("Temp_Unit");
+            p.Dir_ID,
+            d.Dir_VAL,
 
-                String direction = rs.getString("Dir_VAL");
+            p.Unit_ID,
+            u.Unit AS Property_Unit,
 
-                String propertyUnit = rs.getString("Property_Unit");
+            p.Test_ID
 
-                properties.add(new PropertyView(id, propertyName, categoryName, tempValue, tempUnit,
-                            direction, propertyUnit));
+        FROM Property p
 
-            }
-        } catch (SQLException e) {
-            throw new SQLException("Failed to fetch properties for batch " + batchCode, e);
+        JOIN Category c
+            ON p.Category_ID = c.Category_ID
+
+        JOIN Units u
+            ON p.Unit_ID = u.Unit_ID
+
+        JOIN Direction d
+            ON p.Dir_ID = d.Dir_ID
+
+        JOIN Temperature t
+            ON p.Temp_ID = t.Temp_ID
+
+        JOIN Units tu
+            ON t.Temp_Unit_ID = tu.Unit_ID
+
+        WHERE p.Test_ID = ?
+        """;
+
+    try (Connection conn = DBUtil.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+        stmt.setInt(1, testId);
+
+        ResultSet rs = stmt.executeQuery();
+
+        while (rs.next()) {
+
+            Property property = new Property();
+
+            property.setPropertyID(rs.getInt("Property_ID"));
+            property.setPropertyName(rs.getString("Property_name"));
+
+            property.setCategoryID(rs.getInt("Category_ID"));
+            property.setCategoryName(rs.getString("Category_name"));
+
+            property.setTempID(rs.getInt("Temp_ID"));
+            property.setTempValue(rs.getDouble("Temp_VAL"));
+            property.setTempUnit(rs.getString("Temp_Unit"));
+
+            property.setDirID(rs.getInt("Dir_ID"));
+            property.setDirection(rs.getString("Dir_VAL"));
+
+            property.setUnitID(rs.getInt("Unit_ID"));
+            property.setPropertyUnit(rs.getString("Property_Unit"));
+
+            property.setTestID(rs.getInt("Test_ID"));
+
+            properties.add(property);
         }
 
-        return properties;
+    } catch (SQLException e) {
+        throw new SQLException(
+                "Failed to fetch properties for Test " + testId,
+                e
+        );
     }
+
+    return properties;
+}
 
     public void updateProperty(Connection conn, Property property) {
 

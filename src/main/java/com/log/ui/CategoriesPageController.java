@@ -125,7 +125,7 @@ public class CategoriesPageController {
     // Method used to restore values from the exisiting data (if any) of currently selected batch/record, and load them into the ui.
     private void loadPropertiesFromDB() throws SQLException {
         int batchCode = basePropertiesState.getBatchCode();
-        propertiesViews = propertyService.getPropertiesByBatch(batchCode);
+        propertiesViews = propertyService.getPropertiesByTest(batchCode);
 
         //=========== iterate through propertiesViews and store in statemanager ================
         for(PropertyView propertyView : propertiesViews){
