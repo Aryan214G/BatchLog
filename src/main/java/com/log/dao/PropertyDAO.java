@@ -19,10 +19,10 @@ public class  PropertyDAO {
         try(PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             statement.setString(1, property.getPropertyName());
-            statement.setInt(2, property.getCategoryID());
-            statement.setInt(3, property.getTempID());
-            statement.setInt(4, property.getDirID());
-            statement.setInt(5, property.getUnitID());
+            statement.setInt(2, property.getCategory().getCategoryId());
+            statement.setInt(3, property.getTemperature().getTempId());
+            statement.setInt(4, property.getDirection().getDirId());
+            statement.setInt(5, property.getUnit().getUnitId());
             statement.setInt(6, property.getTestID());
 
             statement.executeUpdate();
@@ -97,18 +97,18 @@ public class  PropertyDAO {
             property.setPropertyID(rs.getInt("Property_ID"));
             property.setPropertyName(rs.getString("Property_name"));
 
-            property.setCategoryID(rs.getInt("Category_ID"));
-            property.setCategoryName(rs.getString("Category_name"));
+            property.getCategory().setCategoryId(rs.getInt("Category_ID"));
+            property.getCategory().setCategoryName(rs.getString("Category_name"));
 
-            property.setTempID(rs.getInt("Temp_ID"));
-            property.setTempValue(rs.getDouble("Temp_VAL"));
-            property.setTempUnit(rs.getString("Temp_Unit"));
+            property.getTemperature().setTempId(rs.getInt("Temp_ID"));
+            property.getTemperature().setTempVal(rs.getDouble("Temp_VAL"));
+            property.getTemperature().setTempUnitVal(rs.getString("Temp_Unit"));
 
-            property.setDirID(rs.getInt("Dir_ID"));
-            property.setDirection(rs.getString("Dir_VAL"));
+            property.getDirection().setDirId(rs.getInt("Dir_ID"));
+            property.getDirection().setDirVal(rs.getString("Dir_VAL"));
 
-            property.setUnitID(rs.getInt("Unit_ID"));
-            property.setPropertyUnit(rs.getString("Property_Unit"));
+            property.getUnit().setUnitId(rs.getInt("Unit_ID"));
+            property.getUnit().setUnit(rs.getString("Property_Unit"));
 
             property.setTestID(rs.getInt("Test_ID"));
 
@@ -141,10 +141,10 @@ public class  PropertyDAO {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, property.getPropertyName());
-            stmt.setInt(2, property.getCategoryID());
-            stmt.setInt(3, property.getTempID());
-            stmt.setInt(4, property.getDirID());
-            stmt.setInt(5, property.getUnitID());
+            stmt.setInt(2, property.getCategory().getCategoryId());
+            stmt.setInt(3, property.getTemperature().getTempId());
+            stmt.setInt(4, property.getDirection().getDirId());
+            stmt.setInt(5, property.getUnit().getUnitId());
             stmt.setInt(6, property.getTestID());
             stmt.setInt(7, property.getPropertyID());
 
@@ -178,7 +178,7 @@ public class  PropertyDAO {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, property.getPropertyName());
-            stmt.setInt(2, property.getCategoryID());
+            stmt.setInt(2, property.getCategory().getCategoryId());
             stmt.setInt(3, property.getTestID());
 
             ResultSet rs = stmt.executeQuery();

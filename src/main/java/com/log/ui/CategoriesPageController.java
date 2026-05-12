@@ -146,7 +146,7 @@ public class CategoriesPageController {
                     new ArrayList<>(inputRows),
                     property.getTemperature(),
                     property.getDirection(),
-                    unit
+                    property.getUnit()
             );
         }
     }
