@@ -93,6 +93,7 @@ public class CategoriesPageController {
     @FXML
     public void initialize() throws IOException, SQLException {
 
+        //disable UI components when project is not created
             isSubmitButtonVisible(false);
         if(!instance.isProjectCreated()) {
             categoriesListView.setDisable(true);
@@ -121,6 +122,7 @@ public class CategoriesPageController {
         editMenu = new ContextMenu(addItem, deleteItem);
     }
 
+    // Method used to restore values from the exisiting data (if any) of currently selected batch/record, and load them into the ui.
     private void loadPropertiesFromDB() throws SQLException {
         int batchCode = basePropertiesState.getBatchCode();
         propertiesViews = propertyService.getPropertiesByBatch(batchCode);
