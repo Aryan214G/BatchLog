@@ -66,7 +66,7 @@ public class CategoriesPageController {
     private InfoBarController infoBarController;
 
     private List<InputRow> inputRows = new ArrayList<>();
-    List<PropertyView> propertiesViews;
+    List<Property> propertiesList;
     @FXML
     private Button printButton;
 
@@ -125,32 +125,32 @@ public class CategoriesPageController {
     // Method used to restore values from the exisiting data (if any) of currently selected batch/record, and load them into the ui.
     private void loadPropertiesFromDB() throws SQLException {
         int batchCode = basePropertiesState.getBatchCode();
-        propertiesViews = propertyService.getPropertiesByTest(batchCode);
+        propertiesList = propertyService.getPropertiesByTest(batchCode);
 
         //=========== iterate through propertiesViews and store in statemanager ================
-        for(PropertyView propertyView : propertiesViews){
+        for(Property property : propertiesList){
 
             // ====== store temperature variables =========
-            double tempVal = propertyView.getTemperature();
-            String tempUnitval = propertyView.getTempUnit();
+            double tempVal = property.getTempValue();
+            String tempUnitval = property.getTempUnit();
 
             // ============== Populate input rows =================
             try (Connection conn = DBUtil.getConnection()) {
-                populateInputRowsHelper(propertyView, conn);
+                populateInputRowsHelper(property, conn);
             }
             catch (SQLException e){
                 throw new RuntimeException(e);
             }
 
             Temperature temperature = new Temperature(tempVal, tempUnitval);
-            Direction direction = new Direction(propertyView.getDirection());
+            Direction direction = new Direction(property.getDirection());
             //store unit
             Unit unit = new Unit();
-            unit.setUnit(propertyView.getUnit());
+            unit.setUnit(property.getPropertyUnit());
 
             //================= save state ==================
             stateManager.saveState(
-                    propertyView.getPropertyName(),
+                    property.getPropertyName(),
                     inputRows,
                     temperature,
                     direction,
@@ -170,11 +170,8 @@ public class CategoriesPageController {
         return property;
     }
 
-    public void populateInputRowsHelper(PropertyView propertyView, Connection conn){
+    public void populateInputRowsHelper(Property property, Connection conn){
         inputRows.clear();
-
-        //======== create property object ==========
-        Property property = propertyObjectGenerator(propertyView, conn);
 
         int propertyID = propertyService.getPropertyId(conn, property);
         List<PropertyValue> propertyValues  = propertyService.getValuesByProperty(conn, propertyID);
