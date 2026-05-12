@@ -144,6 +144,8 @@ public class CategoriesPageController {
             }
 
             Temperature temperature = new Temperature(tempVal, tempUnitval);
+            temperature.setTempId(property.getTempID());
+            temperature.setTempUnitID(property.getid);
             Direction direction = new Direction(property.getDirection());
             //store unit
             Unit unit = new Unit();

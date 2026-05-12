@@ -1,42 +1,68 @@
 package com.log.model;
 
+import java.util.List;
+
 public class Property {
 
     // =========================
-    // Database fields
+    // Core Property Fields
     // =========================
 
     private int propertyID;
     private String propertyName;
 
-    private int categoryID;
-    private int tempID;
-    private int dirID;
-    private int unitID;
+    // =========================
+    // Related Entity IDs
+    // =========================
 
+    private int categoryID;
+    private int unitID;
     private int testID;
 
     // =========================
-    // Display/UI fields
+    // Display Values
     // =========================
 
     private String categoryName;
-
-    private double tempValue;
-    private String tempUnit;
-
-    private String direction;
-
     private String propertyUnit;
+
+    // =========================
+    // Related Objects
+    // =========================
+
+    private Temperature temperature;
+    private Direction direction;
+
+    // Optional: all values belonging to this property
+    private List<PropertyValue> propertyValues;
+
+    // =========================
+    // Constructors
+    // =========================
 
     public Property() {
     }
 
-    public Property(String propertyName, int categoryID, int tempID, int dirID, int unitID, int testID) {
+    public Property(int propertyID,
+                    String propertyName,
+                    int categoryID,
+                    int unitID,
+                    int testID) {
+
+        this.propertyID = propertyID;
         this.propertyName = propertyName;
         this.categoryID = categoryID;
-        this.tempID = tempID;
-        this.dirID = dirID;
+        this.unitID = unitID;
+        this.testID = testID;
+    }
+
+    public Property(String propertyName,
+                    int categoryID,
+                    int unitID,
+                    int testID) {
+
+        this.propertyName = propertyName;
+        this.categoryID = categoryID;
         this.unitID = unitID;
         this.testID = testID;
     }
@@ -69,22 +95,6 @@ public class Property {
         this.categoryID = categoryID;
     }
 
-    public int getTempID() {
-        return tempID;
-    }
-
-    public void setTempID(int tempID) {
-        this.tempID = tempID;
-    }
-
-    public int getDirID() {
-        return dirID;
-    }
-
-    public void setDirID(int dirID) {
-        this.dirID = dirID;
-    }
-
     public int getUnitID() {
         return unitID;
     }
@@ -109,35 +119,35 @@ public class Property {
         this.categoryName = categoryName;
     }
 
-    public double getTempValue() {
-        return tempValue;
-    }
-
-    public void setTempValue(double tempValue) {
-        this.tempValue = tempValue;
-    }
-
-    public String getTempUnit() {
-        return tempUnit;
-    }
-
-    public void setTempUnit(String tempUnit) {
-        this.tempUnit = tempUnit;
-    }
-
-    public String getDirection() {
-        return direction;
-    }
-
-    public void setDirection(String direction) {
-        this.direction = direction;
-    }
-
     public String getPropertyUnit() {
         return propertyUnit;
     }
 
     public void setPropertyUnit(String propertyUnit) {
         this.propertyUnit = propertyUnit;
+    }
+
+    public Temperature getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(Temperature temperature) {
+        this.temperature = temperature;
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+
+    public List<PropertyValue> getPropertyValues() {
+        return propertyValues;
+    }
+
+    public void setPropertyValues(List<PropertyValue> propertyValues) {
+        this.propertyValues = propertyValues;
     }
 }

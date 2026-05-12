@@ -52,6 +52,7 @@ public class  PropertyDAO {
 
             p.Temp_ID,
             t.Temp_VAL,
+            t.Temp_Unit_ID,
             tu.Unit AS Temp_Unit,
 
             p.Dir_ID,
