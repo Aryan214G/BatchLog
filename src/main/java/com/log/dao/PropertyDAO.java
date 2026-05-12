@@ -171,14 +171,14 @@ public class  PropertyDAO {
             FROM Property
             WHERE Property_name = ?
               AND Category_ID = ?
-              AND Batch_CODE = ?
+              AND Test_ID = ?
             """;
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, property.getPropertyName());
             stmt.setInt(2, property.getCategoryID());
-            stmt.setInt(3, property.getBatchCode());
+            stmt.setInt(3, property.getTestID());
 
             ResultSet rs = stmt.executeQuery();
 
