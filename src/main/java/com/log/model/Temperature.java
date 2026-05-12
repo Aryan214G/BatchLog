@@ -7,6 +7,9 @@ public class Temperature {
     private int tempUnitID;
     private String tempUnitVal;
 
+    public Temperature() {
+    }
+
     public Temperature(Integer tempId, double tempVal, int tempUnitID, String tempUnitVal) {
         this.tempId = tempId;
         this.tempVal = tempVal;

@@ -131,10 +131,6 @@ public class CategoriesPageController {
         inputRows.clear();
         for(Property property : propertiesList){
 
-            // ====== store temperature variables =========
-            double tempVal = property.getTempValue();
-            String tempUnitval = property.getTempUnit();
-
             // ============== Populate input rows =================
             try (Connection conn = DBUtil.getConnection()) {
                 populateInputRowsHelper(property, conn);
@@ -143,20 +139,13 @@ public class CategoriesPageController {
                 throw new RuntimeException(e);
             }
 
-            Temperature temperature = new Temperature(tempVal, tempUnitval);
-            temperature.setTempId(property.getTempID());
-            temperature.setTempUnitID(property.getid);
-            Direction direction = new Direction(property.getDirection());
-            //store unit
-            Unit unit = new Unit();
-            unit.setUnit(property.getPropertyUnit());
 
             //================= save state ==================
             stateManager.saveState(
                     property.getPropertyName(),
                     new ArrayList<>(inputRows),
-                    temperature,
-                    direction,
+                    property.getTemperature(),
+                    property.getDirection(),
                     unit
             );
         }

@@ -5,6 +5,9 @@ public class Direction {
     private Integer dirId;
     private String dirVal;
 
+    public Direction() {
+    }
+
     public Direction(int dirId, String dirVal) {
         this.dirId = dirId;
         this.dirVal = dirVal;

@@ -11,29 +11,21 @@ public class Property {
     private int propertyID;
     private String propertyName;
 
-    // =========================
-    // Related Entity IDs
-    // =========================
-
-    private int categoryID;
-    private int unitID;
     private int testID;
-
-    // =========================
-    // Display Values
-    // =========================
-
-    private String categoryName;
-    private String propertyUnit;
 
     // =========================
     // Related Objects
     // =========================
 
+    private Unit unit;
+    private Category category;
     private Temperature temperature;
     private Direction direction;
 
-    // Optional: all values belonging to this property
+    // =========================
+    // Property Values
+    // =========================
+
     private List<PropertyValue> propertyValues;
 
     // =========================
@@ -45,26 +37,34 @@ public class Property {
 
     public Property(int propertyID,
                     String propertyName,
-                    int categoryID,
-                    int unitID,
-                    int testID) {
+                    Unit unit,
+                    int testID,
+                    Category category,
+                    Temperature temperature,
+                    Direction direction) {
 
         this.propertyID = propertyID;
         this.propertyName = propertyName;
-        this.categoryID = categoryID;
-        this.unitID = unitID;
+        this.unit = unit;
         this.testID = testID;
+        this.category = category;
+        this.temperature = temperature;
+        this.direction = direction;
     }
 
     public Property(String propertyName,
-                    int categoryID,
-                    int unitID,
-                    int testID) {
+                    Unit unit,
+                    int testID,
+                    Category category,
+                    Temperature temperature,
+                    Direction direction) {
 
         this.propertyName = propertyName;
-        this.categoryID = categoryID;
-        this.unitID = unitID;
+        this.unit = unit;
         this.testID = testID;
+        this.category = category;
+        this.temperature = temperature;
+        this.direction = direction;
     }
 
     // =========================
@@ -87,22 +87,6 @@ public class Property {
         this.propertyName = propertyName;
     }
 
-    public int getCategoryID() {
-        return categoryID;
-    }
-
-    public void setCategoryID(int categoryID) {
-        this.categoryID = categoryID;
-    }
-
-    public int getUnitID() {
-        return unitID;
-    }
-
-    public void setUnitID(int unitID) {
-        this.unitID = unitID;
-    }
-
     public int getTestID() {
         return testID;
     }
@@ -111,20 +95,20 @@ public class Property {
         this.testID = testID;
     }
 
-    public String getCategoryName() {
-        return categoryName;
+    public Unit getUnit() {
+        return unit;
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public void setUnit(Unit unit) {
+        this.unit = unit;
     }
 
-    public String getPropertyUnit() {
-        return propertyUnit;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setPropertyUnit(String propertyUnit) {
-        this.propertyUnit = propertyUnit;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public Temperature getTemperature() {

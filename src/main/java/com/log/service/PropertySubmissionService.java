@@ -84,13 +84,31 @@ public class PropertySubmissionService {
     }
 
     private void handleProperty(Connection conn, List<InputRow> inputRows, String propertyName, String selectedCategory){
+        Category category =
+        categoryService.getCategory(conn, selectedCategory);
+
+        Unit unit =
+                unitsService.getUnit(
+                        conn,
+                        inputRows.get(0)
+                                .getUnitController()
+                                .getComboBox()
+                                .getValue()
+                );
+
+        Temperature temperature = new Temperature();
+        temperature.setTempId(tempId);
+
+        Direction direction = new Direction();
+        direction.setDirId(directionId);
+
         Property property = new Property(
                 propertyName,
-                categoryService.getCategory(conn, selectedCategory).getCategoryId(),
-                tempId,
-                directionId,
-                unitsService.getUnit(conn, inputRows.get(0).getUnitController().getComboBox().getValue()).getUnitId(),
-                bsinstance.getBatchCode()
+                unit,
+                bsinstance.getTestId(),
+                category,
+                temperature,
+                direction
         );
 
         int propertyID = propertyService.insertProperty(conn, property);
