@@ -333,7 +333,8 @@ public class CategoriesPageController {
 
 
     private void HandlePropertyChange(PropertyView newProperty,PropertyView oldProperty){
-        saveCurrentPropertyValues(oldProperty);
+        if(oldProperty != null) { saveCurrentPropertyValues(oldProperty); }
+
         clearUIComponents();
         inputRows.clear();
         isSubmitButtonVisible(true);

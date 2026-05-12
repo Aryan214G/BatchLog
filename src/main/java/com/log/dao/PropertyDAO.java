@@ -132,10 +132,10 @@ public class  PropertyDAO {
     public int getPropertyId(Connection conn, Property property) {
 
         String sql = """
-            SELECT Property_ID 
-            FROM Property 
-            WHERE Property_name = ? 
-              AND Category_ID = ? 
+            SELECT Property_ID
+            FROM Property
+            WHERE Property_name = ?
+              AND Category_ID = ?
               AND Batch_CODE = ?
             """;
 
