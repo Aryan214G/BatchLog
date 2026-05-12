@@ -12,7 +12,7 @@ public class  PropertyDAO {
     public int insertProperty(Connection conn, Property property) {
         String sql = """
                 INSERT INTO Property
-                (Property_name, Category_ID, Temp_ID, Dir_ID, Unit_ID, Batch_CODE)
+                (Property_name, Category_ID, Temp_ID, Dir_ID, Unit_ID, Test_ID)
                 VALUES (?, ?, ?, ?, ?, ?)
                 """;
 
@@ -23,7 +23,7 @@ public class  PropertyDAO {
             statement.setInt(3, property.getTempID());
             statement.setInt(4, property.getDirID());
             statement.setInt(5, property.getUnitID());
-            statement.setInt(6, property.getBatchCode());
+            statement.setInt(6, property.getTestID());
 
             statement.executeUpdate();
             ResultSet rs = statement.getGeneratedKeys();
@@ -133,7 +133,7 @@ public class  PropertyDAO {
                 Temp_ID = ?, 
                 Dir_ID = ?, 
                 Unit_ID = ?, 
-                Batch_CODE = ?
+                Test_ID = ?
             WHERE Property_ID = ?
             """;
 
@@ -144,7 +144,7 @@ public class  PropertyDAO {
             stmt.setInt(3, property.getTempID());
             stmt.setInt(4, property.getDirID());
             stmt.setInt(5, property.getUnitID());
-            stmt.setInt(6, property.getBatchCode());
+            stmt.setInt(6, property.getTestID());
             stmt.setInt(7, property.getPropertyID());
 
             int rowsAffected = stmt.executeUpdate();
