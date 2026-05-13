@@ -364,6 +364,7 @@ public class CategoriesPageController {
         UnitsDropdownController controller = loader.getController();
         controller.setUnits(property);
         if (dp != null && rowCount == 0) {
+            //TODO: replace DB call. Use data available in Property object instead.
             String unitName = unitsService.getUnitNameById(dp.getUnitId());
             controller.setSelectedUnit(unitName);
         }

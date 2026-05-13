@@ -33,7 +33,11 @@ public class Property {
     // =========================
 
     public Property() {
-    }
+    this.category = new Category();
+    this.temperature = new Temperature();
+    this.direction = new Direction();
+    this.unit = new Unit();
+}
 
     public Property(int propertyID,
                     String propertyName,
