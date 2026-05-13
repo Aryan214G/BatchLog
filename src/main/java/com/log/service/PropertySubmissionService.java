@@ -84,6 +84,7 @@ public class PropertySubmissionService {
     }
 
     private void handleProperty(Connection conn, List<InputRow> inputRows, String propertyName, String selectedCategory){
+        //TODO: might need to replace this unecessary db call
         Category category =
         categoryService.getCategory(conn, selectedCategory);
 
@@ -111,27 +112,29 @@ public class PropertySubmissionService {
                 direction
         );
 
-        int propertyID = propertyService.insertProperty(conn, property);
-        if(propertyID != -1) {
-            System.out.println("Updating Property");
+        int propertyID = propertyService.getPropertyId(conn, property);
+
+        if(propertyID != -1){
             property.setPropertyID(propertyID);
             propertyService.updateProperty(conn, property);
+        }
+        else{
+            propertyID = propertyService.insertProperty(conn, property);
         }
 
         for (InputRow row : inputRows){
 
-            int propertyValID = propertyService.getPropertyValueId(conn, propertyID);
-            row.getPropertyValue().setPropertyValID(propertyValID);
-            row.getPropertyValue().setPropertyID(propertyID);
+            PropertyValue pv = row.getPropertyValue();
 
-            //check if propertyValue exists in DB
-            if(row.getPropertyValue().getPropertyValID() != -1
-                    || propertyValID != -1){
-                //exists
-                System.out.println("Property value already exists, updating value");
+            pv.setPropertyID(propertyID);
+
+            if (pv.getPropertyValID() != 0 && pv.getPropertyValID() != -1) {
+
+                System.out.println("Updating property value");
                 propertyService.updatePropertyValue(conn, row);
-            }
-            else {
+
+            } else {
+                System.out.println("Inserting property value");
                 propertyService.insertPropertyValue(conn, row);
             }
         }
