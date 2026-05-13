@@ -15,7 +15,7 @@
             xmlns="http://javafx.com/javafx/25"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.log.ui.FilterPopupController"
-            stylesheets="@../styles/retrievalResults.css">
+            stylesheets="@../styles/RetrievalResultsPage.css">
 
     <top>
         <VBox alignment="CENTER">

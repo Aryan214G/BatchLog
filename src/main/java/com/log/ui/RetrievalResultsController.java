@@ -205,7 +205,7 @@ public class RetrievalResultsController {
         List<String> headers = new ArrayList<>();
         if (columnStates.getOrDefault("Property",      true)) headers.add("Property");
         if (columnStates.getOrDefault("Category",      true)) headers.add("Category");
-        if (columnStates.getOrDefault("Temperature",   true)) headers.add("Temperature\n(unit)");
+        if (columnStates.getOrDefault("Temperature",   true)) headers.add("Temperature");
         if (columnStates.getOrDefault("Direction",     true)) headers.add("Direction");
         if (columnStates.getOrDefault("Average Value", true)) headers.add("Average Value");
 
