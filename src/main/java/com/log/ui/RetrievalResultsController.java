@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -24,6 +25,16 @@ public class RetrievalResultsController {
 
     @FXML private Label batchTitleLabel;
     @FXML private GridPane propertiesGrid;
+
+    @FXML private CheckBox showProperty;
+    @FXML private CheckBox showCategory;
+    @FXML private CheckBox showTemperature;
+    @FXML private CheckBox showDirection;
+    @FXML private CheckBox showAverage;
+    @FXML private CheckBox showValues;
+
+    // Store rows so we can rebuild without re-querying
+    private List<PropertyRow> cachedRows = new ArrayList<>();
 
     private String backDestination = "/com/log/ui/views/RetrievalPage.fxml";
 
@@ -56,6 +67,7 @@ public class RetrievalResultsController {
 
     // ── Entry point ───────────────────────────────────────────────────────────
 
+
     public void loadBatch(BatchTest batch) {
         batchTitleLabel.setText(
                 "Batch: " + batch.getBatchCode() +
@@ -64,10 +76,16 @@ public class RetrievalResultsController {
         );
 
         try (Connection conn = DBUtil.getConnection()) {
-            List<PropertyRow> rows = fetchProperties(conn, batch.getBatchCode());
-            populateGrid(rows);
+            cachedRows = fetchProperties(conn, batch.getBatchCode());
+            populateGrid(cachedRows);
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+
+        // Wire checkboxes to rebuild grid on toggle
+        for (CheckBox cb : List.of(showProperty, showCategory, showTemperature,
+                showDirection, showAverage, showValues)) {
+            cb.selectedProperty().addListener((obs, oldVal, newVal) -> populateGrid(cachedRows));
         }
     }
 
@@ -144,54 +162,57 @@ public class RetrievalResultsController {
             return;
         }
 
-        // Find max number of values across all properties for dynamic columns
-        int maxValues = rows.stream()
-                .mapToInt(r -> r.values.size())
-                .max()
-                .orElse(0);
+        // Build active column list dynamically based on checkboxes
+        List<String> headers = new ArrayList<>();
+        if (showProperty.isSelected())    headers.add("Property");
+        if (showCategory.isSelected())    headers.add("Category");
+        if (showTemperature.isSelected()) headers.add("Temperature\n(unit)");
+        if (showDirection.isSelected())   headers.add("Direction");
+        if (showAverage.isSelected())     headers.add("Average Value");
 
-        // Fixed columns: Property, Category, Temperature, Direction, Average Value
-        // Then dynamic value columns: Value 1, Value 2, ...
-        int fixedCols  = 5;
-        int totalCols  = fixedCols + maxValues;
+        int maxValues = rows.stream().mapToInt(r -> r.values.size()).max().orElse(0);
+        if (showValues.isSelected()) {
+            for (int i = 0; i < maxValues; i++) {
+                headers.add("Value " + (i + 1));
+            }
+        }
+
+        int totalCols = headers.size();
 
         for (int i = 0; i < totalCols; i++) {
             ColumnConstraints cc = new ColumnConstraints();
-            cc.setMinWidth(100);
-            cc.setPrefWidth(120);  // give each column a preferred width
+            cc.setMinWidth(80);
+            cc.setPrefWidth(headers.get(i).startsWith("Direction") ? 160 : 120);
             cc.setHgrow(Priority.ALWAYS);
             propertiesGrid.getColumnConstraints().add(cc);
         }
-        // ── Header row ────────────────────────────────────────────────────────
-        propertiesGrid.add(makeHeader("Property"),       0, 0);
-        propertiesGrid.add(makeHeader("Category"),       1, 0);
-        propertiesGrid.add(makeHeader("Temperature"), 2, 0);
-        propertiesGrid.add(makeHeader("Direction"),      3, 0);
-        propertiesGrid.add(makeHeader("Average Value"),  4, 0);
 
-        for (int i = 0; i < maxValues; i++) {
-            propertiesGrid.add(makeHeader("Value " + (i + 1)), fixedCols + i, 0);
+        // Header row
+        for (int i = 0; i < headers.size(); i++) {
+            propertiesGrid.add(makeHeader(headers.get(i)), i, 0);
         }
 
-        // ── Data rows ─────────────────────────────────────────────────────────
+        // Data rows
         int row = 1;
         for (PropertyRow p : rows) {
             boolean isAlt = (row % 2 == 0);
-
             String tempDisplay = p.temperature != null ? p.temperature : "—";
 
-            propertiesGrid.add(makeCell(p.name,        isAlt), 0, row);
-            propertiesGrid.add(makeCell(p.category,    isAlt), 1, row);
-            propertiesGrid.add(makeCell(tempDisplay,   isAlt), 2, row);
-            propertiesGrid.add(makeCell(p.direction,   isAlt), 3, row);
-            propertiesGrid.add(makeCell(formatDouble(p.average()) + " " + (p.unit != null ? p.unit : ""), isAlt), 4, row);
+            int col = 0;
+            if (showProperty.isSelected())    propertiesGrid.add(makeCell(p.name,        isAlt), col++, row);
+            if (showCategory.isSelected())    propertiesGrid.add(makeCell(p.category,    isAlt), col++, row);
+            if (showTemperature.isSelected()) propertiesGrid.add(makeCell(tempDisplay,   isAlt), col++, row);
+            if (showDirection.isSelected())   propertiesGrid.add(makeCell(p.direction,   isAlt), col++, row);
+            if (showAverage.isSelected())     propertiesGrid.add(makeCell(
+                    formatDouble(p.average()) + " " + (p.unit != null ? p.unit : ""), isAlt), col++, row);
 
-            // Fill ALL value columns, empty for missing values
-            for (int i = 0; i < maxValues; i++) {
-                String val = i < p.values.size()
-                        ? formatDouble(p.values.get(i)) + " " + (p.unit != null ? p.unit : "")
-                        : "";
-                propertiesGrid.add(makeCell(val, isAlt), fixedCols + i, row);
+            if (showValues.isSelected()) {
+                for (int i = 0; i < maxValues; i++) {
+                    String val = i < p.values.size()
+                            ? formatDouble(p.values.get(i)) + " " + (p.unit != null ? p.unit : "")
+                            : "";
+                    propertiesGrid.add(makeCell(val, isAlt), col++, row);
+                }
             }
 
             row++;
