@@ -27,7 +27,10 @@
             </padding>
 
             <!-- Back + Title -->
-            <Button text="← Back" onAction="#handleBack" styleClass="back-btn"/>
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Button text="← Back"    onAction="#handleBack"   styleClass="back-btn"/>
+                <Button text="⚙ Filter"  onAction="#handleFilter" styleClass="primary-btn"/>
+            </HBox>
             <Label fx:id="batchTitleLabel" styleClass="batch-title"/>
 
             <HBox spacing="12" alignment="CENTER_LEFT">

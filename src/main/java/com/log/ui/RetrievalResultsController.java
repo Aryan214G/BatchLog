@@ -6,7 +6,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -19,24 +18,29 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RetrievalResultsController {
 
     @FXML private Label batchTitleLabel;
     @FXML private GridPane propertiesGrid;
 
-    @FXML private CheckBox showProperty;
-    @FXML private CheckBox showCategory;
-    @FXML private CheckBox showTemperature;
-    @FXML private CheckBox showDirection;
-    @FXML private CheckBox showAverage;
-    @FXML private CheckBox showValues;
-
-    // Store rows so we can rebuild without re-querying
     private List<PropertyRow> cachedRows = new ArrayList<>();
 
     private String backDestination = "/com/log/ui/views/RetrievalPage.fxml";
+
+    private Map<String, Boolean> columnStates = new LinkedHashMap<>() {{
+        put("Property",      true);
+        put("Category",      true);
+        put("Temperature",   true);
+        put("Direction",     true);
+        put("Average Value", true);
+        put("Values",        true);
+    }};
+
+    private Map<String, Boolean> propertyStates = new LinkedHashMap<>();
 
     public void setBackDestination(String path) {
         this.backDestination = path;
@@ -67,7 +71,6 @@ public class RetrievalResultsController {
 
     // ── Entry point ───────────────────────────────────────────────────────────
 
-
     public void loadBatch(BatchTest batch) {
         batchTitleLabel.setText(
                 "Batch: " + batch.getBatchCode() +
@@ -77,23 +80,56 @@ public class RetrievalResultsController {
 
         try (Connection conn = DBUtil.getConnection()) {
             cachedRows = fetchProperties(conn, batch.getBatchCode());
+
+            // Build property filter state — all visible by default
+            propertyStates.clear();
+            for (PropertyRow r : cachedRows) {
+                propertyStates.put(r.name, true);
+            }
+
             populateGrid(cachedRows);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
 
-        // Wire checkboxes to rebuild grid on toggle
-        for (CheckBox cb : List.of(showProperty, showCategory, showTemperature,
-                showDirection, showAverage, showValues)) {
-            cb.selectedProperty().addListener((obs, oldVal, newVal) -> populateGrid(cachedRows));
+    // ── Filter button ─────────────────────────────────────────────────────────
+
+    @FXML
+    private void handleFilter() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/log/ui/views/FilterPopup.fxml")
+            );
+            Parent root = loader.load();
+
+            FilterPopupController controller = loader.getController();
+            controller.setColumnStates(columnStates);
+            controller.setPropertyStates(propertyStates);
+            controller.loadCheckboxes();
+            controller.setOnApply(result -> {
+                columnStates.clear();
+                columnStates.putAll(result.columnStates);
+                propertyStates.clear();
+                propertyStates.putAll(result.propertyStates);
+                populateGrid(cachedRows);
+            });
+
+            Stage popupStage = new Stage();
+            popupStage.setTitle("Filter");
+            popupStage.setScene(new Scene(root));
+            popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            popupStage.initOwner(propertiesGrid.getScene().getWindow());
+            popupStage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    // ── DB query ──────────────────────────────────────────────────────────────
+    // ── DB queries ────────────────────────────────────────────────────────────
 
     private List<PropertyRow> fetchProperties(Connection conn, int batchCode) throws SQLException {
-
-        // First fetch all properties for the batch
         String propSql = """
             SELECT
                 p.Property_ID,
@@ -124,8 +160,6 @@ public class RetrievalResultsController {
                         rs.getString("Dir_VAL"),
                         rs.getString("Unit")
                 );
-
-                // Fetch values for this property
                 row.values = fetchValues(conn, rs.getInt("Property_ID"));
                 rows.add(row);
             }
@@ -155,31 +189,34 @@ public class RetrievalResultsController {
         propertiesGrid.getChildren().clear();
         propertiesGrid.getColumnConstraints().clear();
 
-        if (rows.isEmpty()) {
-            Label empty = new Label("No properties found for this batch.");
+        // Filter rows by property visibility
+        List<PropertyRow> visibleRows = rows.stream()
+                .filter(r -> propertyStates.getOrDefault(r.name, true))
+                .toList();
+
+        if (visibleRows.isEmpty()) {
+            Label empty = new Label("No properties to display.");
             empty.getStyleClass().add("empty-label");
             propertiesGrid.add(empty, 0, 0);
             return;
         }
 
-        // Build active column list dynamically based on checkboxes
+        // Build active column headers
         List<String> headers = new ArrayList<>();
-        if (showProperty.isSelected())    headers.add("Property");
-        if (showCategory.isSelected())    headers.add("Category");
-        if (showTemperature.isSelected()) headers.add("Temperature\n(unit)");
-        if (showDirection.isSelected())   headers.add("Direction");
-        if (showAverage.isSelected())     headers.add("Average Value");
+        if (columnStates.getOrDefault("Property",      true)) headers.add("Property");
+        if (columnStates.getOrDefault("Category",      true)) headers.add("Category");
+        if (columnStates.getOrDefault("Temperature",   true)) headers.add("Temperature\n(unit)");
+        if (columnStates.getOrDefault("Direction",     true)) headers.add("Direction");
+        if (columnStates.getOrDefault("Average Value", true)) headers.add("Average Value");
 
-        int maxValues = rows.stream().mapToInt(r -> r.values.size()).max().orElse(0);
-        if (showValues.isSelected()) {
+        int maxValues = visibleRows.stream().mapToInt(r -> r.values.size()).max().orElse(0);
+        if (columnStates.getOrDefault("Values", true)) {
             for (int i = 0; i < maxValues; i++) {
                 headers.add("Value " + (i + 1));
             }
         }
 
-        int totalCols = headers.size();
-
-        for (int i = 0; i < totalCols; i++) {
+        for (int i = 0; i < headers.size(); i++) {
             ColumnConstraints cc = new ColumnConstraints();
             cc.setMinWidth(80);
             cc.setPrefWidth(headers.get(i).startsWith("Direction") ? 160 : 120);
@@ -194,19 +231,23 @@ public class RetrievalResultsController {
 
         // Data rows
         int row = 1;
-        for (PropertyRow p : rows) {
+        for (PropertyRow p : visibleRows) {
             boolean isAlt = (row % 2 == 0);
-            String tempDisplay = p.temperature != null ? p.temperature : "—";
-
             int col = 0;
-            if (showProperty.isSelected())    propertiesGrid.add(makeCell(p.name,        isAlt), col++, row);
-            if (showCategory.isSelected())    propertiesGrid.add(makeCell(p.category,    isAlt), col++, row);
-            if (showTemperature.isSelected()) propertiesGrid.add(makeCell(tempDisplay,   isAlt), col++, row);
-            if (showDirection.isSelected())   propertiesGrid.add(makeCell(p.direction,   isAlt), col++, row);
-            if (showAverage.isSelected())     propertiesGrid.add(makeCell(
-                    formatDouble(p.average()) + " " + (p.unit != null ? p.unit : ""), isAlt), col++, row);
 
-            if (showValues.isSelected()) {
+            if (columnStates.getOrDefault("Property",      true))
+                propertiesGrid.add(makeCell(p.name, isAlt), col++, row);
+            if (columnStates.getOrDefault("Category",      true))
+                propertiesGrid.add(makeCell(p.category, isAlt), col++, row);
+            if (columnStates.getOrDefault("Temperature",   true))
+                propertiesGrid.add(makeCell(p.temperature != null ? p.temperature : "—", isAlt), col++, row);
+            if (columnStates.getOrDefault("Direction",     true))
+                propertiesGrid.add(makeCell(p.direction, isAlt), col++, row);
+            if (columnStates.getOrDefault("Average Value", true))
+                propertiesGrid.add(makeCell(
+                        formatDouble(p.average()) + " " + (p.unit != null ? p.unit : ""), isAlt), col++, row);
+
+            if (columnStates.getOrDefault("Values", true)) {
                 for (int i = 0; i < maxValues; i++) {
                     String val = i < p.values.size()
                             ? formatDouble(p.values.get(i)) + " " + (p.unit != null ? p.unit : "")
@@ -219,8 +260,9 @@ public class RetrievalResultsController {
         }
     }
 
+    // ── Helpers ───────────────────────────────────────────────────────────────
+
     private String formatDouble(double value) {
-        // Show as integer if whole number, otherwise 2 decimal places
         if (value == Math.floor(value)) {
             return String.valueOf((int) value);
         }
@@ -240,7 +282,7 @@ public class RetrievalResultsController {
         label.getStyleClass().add("grid-cell");
         if (isAlt) label.getStyleClass().add("grid-cell-alt");
         label.setMaxWidth(Double.MAX_VALUE);
-        label.setWrapText(true);  // add this
+        label.setWrapText(true);
         return label;
     }
 
