@@ -464,13 +464,13 @@ public class CategoriesPageController {
 
                 row.getPropertyValue().setPropertyVAL(propertyVal);
         }
-        int tempVal = 0;
+        double tempVal = 0;
 
         String text = temperatureField.getText();
 
         if (text != null && !text.isBlank()) {
             try {
-                tempVal = Integer.parseInt(text.trim());
+                tempVal = Double.parseDouble(text.trim());
             } catch (NumberFormatException e) {
                 AlertUtil.showError("Please enter a valid temperature.");
             }
