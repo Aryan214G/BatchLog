@@ -459,86 +459,117 @@ public class CategoriesPageController {
 
     private void saveCurrentPropertyValues(PropertyView property) {
 
-        if (property == null || temperatureField == null) {
-            return;
-        }
+    if (property == null || temperatureField == null) {
+        return;
+    }
 
-        for (InputRow row : inputRows) {
+    // ================= SAVE PROPERTY VALUES =================
+    // Read values from all dynamic input rows and store them
+    // inside their corresponding PropertyValue objects.
+    for (InputRow row : inputRows) {
 
-    String valueText = row.getField().getText();
+        String valueText = row.getField().getText();
 
-            if (valueText != null && !valueText.isBlank())
-            {
+        // Ignore empty rows while navigating between properties/categories.
+        if (valueText != null && !valueText.isBlank()) {
 
-                try {
-
-                    double propertyVal = Double.parseDouble(valueText.trim());
-
-                    row.getPropertyValue().setPropertyVAL(propertyVal);
-
-                } catch (NumberFormatException e) {
-
-                    AlertUtil.showError("Invalid property value: " + valueText);
-                }
-            }
-        }
-        double tempVal = 0;
-
-        String text = temperatureField.getText();
-
-        if (text != null && !text.isBlank()) {
             try {
-                tempVal = Double.parseDouble(text.trim());
+
+                double propertyVal = Double.parseDouble(valueText.trim());
+
+                // Update the in-memory PropertyValue object.
+                row.getPropertyValue().setPropertyVAL(propertyVal);
+
             } catch (NumberFormatException e) {
-                AlertUtil.showError("Please enter a valid temperature.");
+
+                AlertUtil.showError("Invalid property value: " + valueText);
             }
         }
+    }
 
-        int tempUnitID;
-        String tempUnitVal;
-        try (Connection conn = DBUtil.getConnection()) {
+    // ================= SAVE TEMPERATURE =================
+    double tempVal = 0;
 
-            tempUnitVal = tempUnitController.getComboBox().getValue();
+    String text = temperatureField.getText();
 
-            if (tempUnitVal == null) {
-                throw new IllegalStateException("Temperature unit not selected");
-            }
+    // Temperature validation
+    if (text != null && !text.isBlank()) {
 
+        try {
+
+            tempVal = Double.parseDouble(text.trim());
+
+        } catch (NumberFormatException e) {
+
+            AlertUtil.showError("Please enter a valid temperature.");
+        }
+    }
+
+    int tempUnitID;
+    String tempUnitVal;
+
+    try (Connection conn = DBUtil.getConnection()) {
+
+        tempUnitVal = tempUnitController.getComboBox().getValue();
+
+        // During navigation, unit selection may still be incomplete.
+        // Avoid crashing state saving in that case.
+        if (tempUnitVal == null || tempUnitVal.isBlank()) {
+
+            tempUnitID = -1;
+            tempUnitVal = "";
+
+        } else {
+
+            // Fetch corresponding Unit object from DB.
             Unit unit = unitsService.getUnit(conn, tempUnitVal);
 
-            if (unit == null) {
-                throw new IllegalStateException("Unit not found in DB: " + tempUnitVal);
+            if (unit != null) {
+
+                tempUnitID = unit.getUnitId();
+
+            } else {
+
+                // Unit name not found in DB.
+                tempUnitID = -1;
             }
-
-            tempUnitID = unit.getUnitId();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
 
-        //Unit
-        String unitValue = "";
+    } catch (SQLException e) {
 
-        if (!inputRows.isEmpty()
-                && inputRows.get(0).getUnitController() != null
-                && inputRows.get(0).getUnitController().getComboBox() != null) {
-
-            unitValue = inputRows.get(0)
-                    .getUnitController()
-                    .getComboBox()
-                    .getValue();
-        }
-
-        Unit unit = new Unit();
-        unit.setUnit(unitValue);
-
-        stateManager.saveState(
-                property.getPropertyName(),
-                new ArrayList<>(inputRows),
-                new Temperature(tempVal, tempUnitID, tempUnitVal),
-                new Direction(directionController.getSelectedDirection()),
-                unit
-        );
+        throw new RuntimeException(e);
     }
+
+    // ================= SAVE PROPERTY UNIT =================
+    // Only the first row contains the unit dropdown because
+    // all rows of a property share the same unit.
+    String unitValue = "";
+
+    if (!inputRows.isEmpty()
+            && inputRows.get(0).getUnitController() != null
+            && inputRows.get(0).getUnitController().getComboBox() != null) {
+
+        unitValue = inputRows.get(0)
+                .getUnitController()
+                .getComboBox()
+                .getValue();
+    }
+
+    Unit unit = new Unit();
+    unit.setUnit(unitValue);
+
+    // ================= SAVE PROPERTY STATE =================
+
+    stateManager.saveState(
+            property.getPropertyName(),
+
+            new ArrayList<>(inputRows),
+
+            new Temperature(tempVal, tempUnitID, tempUnitVal),
+            new Direction(directionController.getSelectedDirection()),
+            unit
+    );
+}
 
 
 
