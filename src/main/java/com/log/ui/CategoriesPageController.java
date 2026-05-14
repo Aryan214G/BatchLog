@@ -265,7 +265,11 @@ public class CategoriesPageController {
 
     ObservableList<PropertyView> properties;
     private void HandleCategoryChange(String newCategory){
-        saveCurrentPropertyValues(selectedState.getSelectedProperty());
+        if (selectedState.getSelectedProperty() != null)
+        {
+            saveCurrentPropertyValues(selectedState.getSelectedProperty());
+        }
+
         clearUIComponents();
 
         properties = instance.getCategoriesMap().get(newCategory);
@@ -460,9 +464,23 @@ public class CategoriesPageController {
         }
 
         for (InputRow row : inputRows) {
-            double propertyVal = Double.parseDouble(row.getField().getText());
 
-                row.getPropertyValue().setPropertyVAL(propertyVal);
+    String valueText = row.getField().getText();
+
+            if (valueText != null && !valueText.isBlank())
+            {
+
+                try {
+
+                    double propertyVal = Double.parseDouble(valueText.trim());
+
+                    row.getPropertyValue().setPropertyVAL(propertyVal);
+
+                } catch (NumberFormatException e) {
+
+                    AlertUtil.showError("Invalid property value: " + valueText);
+                }
+            }
         }
         double tempVal = 0;
 
@@ -498,16 +516,24 @@ public class CategoriesPageController {
         }
 
         //Unit
-        String unitValue = unitValue = inputRows.get(0)
+        String unitValue = "";
+
+        if (!inputRows.isEmpty()
+                && inputRows.get(0).getUnitController() != null
+                && inputRows.get(0).getUnitController().getComboBox() != null) {
+
+            unitValue = inputRows.get(0)
                     .getUnitController()
                     .getComboBox()
                     .getValue();
+        }
+
         Unit unit = new Unit();
         unit.setUnit(unitValue);
 
         stateManager.saveState(
                 property.getPropertyName(),
-                inputRows,
+                new ArrayList<>(inputRows),
                 new Temperature(tempVal, tempUnitID, tempUnitVal),
                 new Direction(directionController.getSelectedDirection()),
                 unit
