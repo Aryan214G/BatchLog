@@ -30,6 +30,7 @@ public class BatchService {
         bpinstance.setBatchCode(batchDAO.insertBatchByID(conn, batch));
     }
 
+
     public Batch getBatchByCode(int batchCode) {
 
         if (batchCode <= 0) {

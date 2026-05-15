@@ -1,5 +1,6 @@
 package com.log.ui;
 
+import com.log.core.BasePropertiesState;
 import com.log.database.DBUtil;
 import com.log.model.Project;
 import com.log.service.ProjectService;
@@ -33,6 +34,9 @@ public class HomePageController implements Initializable {
     @FXML private Button helpPageBtn;
     @FXML private Button newProjectBtn;
 
+    private final BasePropertiesState bpropState = BasePropertiesState.getInstance();
+    private final ProjectService projectService = new ProjectService();
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loadRecentProjects();
@@ -41,7 +45,7 @@ public class HomePageController implements Initializable {
         retrievalPageBtn.setOnAction(e -> navigateTo("/com/log/ui/views/RetrievalPage.fxml"));
         settingsPageBtn.setOnAction(e -> openSettingsPopup());
         helpPageBtn.setOnAction(e -> handleHelp());
-        newProjectBtn.setOnAction(actionEvent ->openNewProjectPopup() );
+        newProjectBtn.setOnAction(e -> openNewProjectPopup());
     }
 
     // ── Navigation ────────────────────────────────────────────────────────────
@@ -83,7 +87,6 @@ public class HomePageController implements Initializable {
             );
             Parent root = loader.load();
 
-            // Pass the refresh callback BEFORE showing the popup
             NewProjectPopupController controller = loader.getController();
             controller.setOnProjectSaved(this::refreshProjects);
 
@@ -99,15 +102,18 @@ public class HomePageController implements Initializable {
     }
 
     private void handleHelp() {
-        // TODO: open help dialog or navigate to help page
         System.out.println("Help clicked");
     }
 
     // ── Projects Grid ─────────────────────────────────────────────────────────
 
     private void loadRecentProjects() {
-        ProjectService ps = new ProjectService();
-        List<Project> projects = ps.getAllProjects();
+        List<Project> projects = projectService.getAllProjects();
+
+        // Set column constraints once
+        ColumnConstraints cc = new ColumnConstraints();
+        cc.setPercentWidth(50);
+        projectsGrid.getColumnConstraints().addAll(cc, cc);
 
         int col = 0, row = 0;
         final int maxCols = 2;
@@ -119,25 +125,22 @@ public class HomePageController implements Initializable {
     }
 
     private void refreshProjects() {
-        projectsGrid.getChildren().clear();   // wipe existing cards
-        loadRecentProjects();                 // reload from data layer
+        projectsGrid.getChildren().clear();
+        projectsGrid.getColumnConstraints().clear();
+        loadRecentProjects();
     }
 
     private HBox createProjectCard(String projectName) {
-        // Left: circle icon
         Label icon = new Label();
         icon.getStyleClass().add("card-icon");
 
-        // Center: project name (grows to fill space)
         Label nameLabel = new Label(projectName);
         nameLabel.getStyleClass().add("card-name");
         HBox.setHgrow(nameLabel, javafx.scene.layout.Priority.ALWAYS);
 
-        // Right: shortcut label
         Label shortcut = new Label("⌘C");
         shortcut.getStyleClass().add("card-shortcut");
 
-        // Right: three-dot menu button
         Button menuBtn = new Button("⋮");
         menuBtn.getStyleClass().add("card-menu-btn");
         menuBtn.setOnAction(e -> handleCardMenu(projectName, menuBtn));
@@ -157,7 +160,7 @@ public class HomePageController implements Initializable {
         javafx.scene.control.MenuItem deleteItem = new javafx.scene.control.MenuItem("Delete");
 
         openItem.setOnAction(e -> handleProjectCardOpen(projectName));
-        renameItem.setOnAction(e -> handleProjectCardEdit(projectName));  // was println before
+        renameItem.setOnAction(e -> handleProjectCardEdit(projectName));
         deleteItem.setOnAction(e -> handleProjectCardDelete(projectName));
 
         contextMenu.getItems().addAll(openItem, renameItem, deleteItem);
@@ -166,8 +169,7 @@ public class HomePageController implements Initializable {
 
     private void handleProjectCardDelete(String projectName) {
         try (Connection connection = DBUtil.getConnection()) {
-            ProjectService ps = new ProjectService();
-            ps.deleteProject(ps.getProjectId(connection, projectName));
+            projectService.deleteProject(projectService.getProjectId(connection, projectName));
             refreshProjects();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -182,8 +184,8 @@ public class HomePageController implements Initializable {
             Parent root = loader.load();
 
             EditProjectPopupController controller = loader.getController();
-            controller.setOriginalProjectName(projectName);   // pass current name for lookup + pre-fill
-            controller.setOnProjectUpdate(this::refreshProjects);  // refresh grid on save
+            controller.setOriginalProjectName(projectName);
+            controller.setOnProjectUpdate(this::refreshProjects);
 
             Stage popupStage = new Stage();
             popupStage.setTitle("Edit Project");
@@ -199,6 +201,16 @@ public class HomePageController implements Initializable {
 
     private void handleProjectCardOpen(String projectName) {
         try {
+            // Look up project ID and store in state before navigating
+            try (Connection conn = DBUtil.getConnection()) {
+                int projectId = projectService.getProjectId(conn, projectName);
+                bpropState.setProjectId(projectId);
+                bpropState.setProjectName(projectName);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return;
+            }
+
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/log/ui/views/ProjectPage.fxml")
             );

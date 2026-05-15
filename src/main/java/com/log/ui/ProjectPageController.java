@@ -1,7 +1,9 @@
 package com.log.ui;
 
+import com.log.core.BasePropertiesState;
 import com.log.database.DBUtil;
 import com.log.model.BatchTest;
+import com.log.service.ProjectService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -26,6 +28,10 @@ public class ProjectPageController {
     @FXML private Label projectTitleLabel;
     @FXML private GridPane batchesGrid;
 
+    private String currentProjectName;
+    private final BasePropertiesState bpropState = BasePropertiesState.getInstance();
+    private final ProjectService projectService = new ProjectService();
+
     // ── Row model ─────────────────────────────────────────────────────────────
 
     private static class BatchRow {
@@ -42,12 +48,18 @@ public class ProjectPageController {
         }
     }
 
-    // ── Entry point called by HomePageController ──────────────────────────────
+    // ── Entry point ───────────────────────────────────────────────────────────
 
     public void loadProject(String projectName) {
+        this.currentProjectName = projectName;
         projectTitleLabel.setText(projectName);
 
+        // Ensure state is always current when this page loads
+        bpropState.setProjectName(projectName);
         try (Connection conn = DBUtil.getConnection()) {
+            int projectId = projectService.getProjectId(conn, projectName);
+            bpropState.setProjectId(projectId);
+
             List<BatchRow> batches = fetchBatches(conn, projectName);
             populateGrid(batches);
         } catch (SQLException e) {
@@ -107,22 +119,19 @@ public class ProjectPageController {
             batchesGrid.getColumnConstraints().add(cc);
         }
 
-        // Header row
         for (int i = 0; i < headers.length; i++) {
             batchesGrid.add(makeHeader(headers[i]), i, 0);
         }
 
-        // Data rows
         int row = 1;
         for (BatchRow b : rows) {
             boolean isAlt = (row % 2 == 0);
 
-            Label batchIdCell     = makeCell(b.batchId,     isAlt);
-            Label productCell     = makeCell(b.productName, isAlt);
-            Label testDateCell    = makeCell(b.testDate,    isAlt);
-            Label testSiteCell    = makeCell(b.testSite,    isAlt);
+            Label batchIdCell  = makeCell(b.batchId,     isAlt);
+            Label productCell  = makeCell(b.productName, isAlt);
+            Label testDateCell = makeCell(b.testDate,    isAlt);
+            Label testSiteCell = makeCell(b.testSite,    isAlt);
 
-            // Make every cell in the row clickable
             for (Label cell : List.of(batchIdCell, productCell, testDateCell, testSiteCell)) {
                 cell.getStyleClass().add("clickable-row");
                 cell.setOnMouseClicked(e -> openBatchResults(b));
@@ -142,7 +151,7 @@ public class ProjectPageController {
         }
     }
 
-// ── Open batch results ────────────────────────────────────────────────────────
+    // ── Open batch results ────────────────────────────────────────────────────
 
     private void openBatchResults(BatchRow b) {
         try {
@@ -151,14 +160,11 @@ public class ProjectPageController {
             );
             Parent root = loader.load();
 
-            // Build a BatchTest from the BatchRow data to pass to RetrievalResultsController
             BatchTest batch = new BatchTest(b.batchCode, b.testDate, b.testSite);
 
             RetrievalResultsController controller = loader.getController();
             controller.loadBatch(batch);
-
-            controller.loadBatch(batch);
-            controller.setBackDestination("/com/log/ui/views/ProjectPage.fxml"); // go back to projectchrr
+            controller.setBackDestination("/com/log/ui/views/ProjectPage.fxml");
 
             Stage stage = (Stage) batchesGrid.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -168,6 +174,8 @@ public class ProjectPageController {
             e.printStackTrace();
         }
     }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
 
     private Label makeHeader(String text) {
         Label label = new Label(text);
@@ -184,7 +192,7 @@ public class ProjectPageController {
         return label;
     }
 
-    // ── Back button ───────────────────────────────────────────────────────────
+    // ── Navigation ────────────────────────────────────────────────────────────
 
     @FXML
     private void handleBack() {
@@ -203,6 +211,7 @@ public class ProjectPageController {
 
     @FXML
     private void handleNewBatch() {
+        // State is already set in loadProject() — just navigate
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/log/ui/views/NewBatch.fxml")
@@ -212,6 +221,16 @@ public class ProjectPageController {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void refreshBatches() {
+        batchesGrid.getChildren().clear();
+        try (Connection conn = DBUtil.getConnection()) {
+            List<BatchRow> batches = fetchBatches(conn, currentProjectName);
+            populateGrid(batches);
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }

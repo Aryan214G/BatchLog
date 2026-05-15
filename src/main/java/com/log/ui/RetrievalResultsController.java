@@ -209,7 +209,7 @@ public class RetrievalResultsController {
         if (columnStates.getOrDefault("Category",      true)) headers.add("Category");
         if (columnStates.getOrDefault("Temperature",   true)) headers.add("Temperature");
         if (columnStates.getOrDefault("Direction",     true)) headers.add("Direction");
-        if (columnStates.getOrDefault("Average Value", true)) headers.add("Average Value");
+
 
         int maxValues = visibleRows.stream().mapToInt(r -> r.values.size()).max().orElse(0);
         if (columnStates.getOrDefault("Values", true)) {
@@ -217,6 +217,7 @@ public class RetrievalResultsController {
                 headers.add("Value " + (i + 1));
             }
         }
+        if (columnStates.getOrDefault("Average Value", true)) headers.add("Average Value");
 
         for (int i = 0; i < headers.size(); i++) {
             ColumnConstraints cc = new ColumnConstraints();
@@ -245,9 +246,7 @@ public class RetrievalResultsController {
                 propertiesGrid.add(makeCell(p.temperature != null ? p.temperature : "—", isAlt), col++, row);
             if (columnStates.getOrDefault("Direction",     true))
                 propertiesGrid.add(makeCell(p.direction, isAlt), col++, row);
-            if (columnStates.getOrDefault("Average Value", true))
-                propertiesGrid.add(makeCell(
-                        formatDouble(p.average()) + " " + (p.unit != null ? p.unit : ""), isAlt), col++, row);
+
 
             if (columnStates.getOrDefault("Values", true)) {
                 for (int i = 0; i < maxValues; i++) {
@@ -257,6 +256,10 @@ public class RetrievalResultsController {
                     propertiesGrid.add(makeCell(val, isAlt), col++, row);
                 }
             }
+
+            if (columnStates.getOrDefault("Average Value", true))
+                propertiesGrid.add(makeCell(
+                        formatDouble(p.average()) + " " + (p.unit != null ? p.unit : ""), isAlt), col++, row);
 
             row++;
         }
