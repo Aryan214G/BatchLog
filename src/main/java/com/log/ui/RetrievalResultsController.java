@@ -131,20 +131,22 @@ public class RetrievalResultsController {
 
     private List<PropertyRow> fetchProperties(Connection conn, int batchCode) throws SQLException {
         String propSql = """
-            SELECT
-                p.Property_ID,
-                p.Property_name,
-                c.Category_name,
-                t.Temp_VAL || ' ' || t.Temp_UNIT AS temperature,
-                d.Dir_VAL,
-                u.Unit
-            FROM Property p
-            LEFT JOIN Category    c  ON p.Category_ID = c.Category_ID
-            LEFT JOIN Temperature t  ON p.Temp_ID     = t.Temp_ID
-            LEFT JOIN Direction   d  ON p.Dir_ID      = d.Dir_ID
-            LEFT JOIN Units       u  ON p.Unit_ID     = u.Unit_ID
-            WHERE p.Batch_CODE = ?
-        """;
+        SELECT
+            p.Property_ID,
+            p.Property_name,
+            c.Category_name,
+            t.Temp_VAL || ' ' || u2.Unit AS temperature,
+            d.Dir_VAL,
+            u.Unit
+        FROM Property p
+        LEFT JOIN Category    c   ON p.Category_ID  = c.Category_ID
+        LEFT JOIN Temperature t   ON p.Temp_ID      = t.Temp_ID
+        LEFT JOIN Units       u2  ON t.Temp_Unit_ID = u2.Unit_ID
+        LEFT JOIN Direction   d   ON p.Dir_ID       = d.Dir_ID
+        LEFT JOIN Units       u   ON p.Unit_ID      = u.Unit_ID
+        JOIN Batch_Test       bt  ON p.Test_ID      = bt.Test_ID
+        WHERE bt.Batch_CODE = ?
+    """;
 
         List<PropertyRow> rows = new ArrayList<>();
 
@@ -207,7 +209,7 @@ public class RetrievalResultsController {
         if (columnStates.getOrDefault("Category",      true)) headers.add("Category");
         if (columnStates.getOrDefault("Temperature",   true)) headers.add("Temperature");
         if (columnStates.getOrDefault("Direction",     true)) headers.add("Direction");
-        if (columnStates.getOrDefault("Average Value", true)) headers.add("Average Value");
+
 
         int maxValues = visibleRows.stream().mapToInt(r -> r.values.size()).max().orElse(0);
         if (columnStates.getOrDefault("Values", true)) {
@@ -215,6 +217,7 @@ public class RetrievalResultsController {
                 headers.add("Value " + (i + 1));
             }
         }
+        if (columnStates.getOrDefault("Average Value", true)) headers.add("Average Value");
 
         for (int i = 0; i < headers.size(); i++) {
             ColumnConstraints cc = new ColumnConstraints();
@@ -243,9 +246,7 @@ public class RetrievalResultsController {
                 propertiesGrid.add(makeCell(p.temperature != null ? p.temperature : "—", isAlt), col++, row);
             if (columnStates.getOrDefault("Direction",     true))
                 propertiesGrid.add(makeCell(p.direction, isAlt), col++, row);
-            if (columnStates.getOrDefault("Average Value", true))
-                propertiesGrid.add(makeCell(
-                        formatDouble(p.average()) + " " + (p.unit != null ? p.unit : ""), isAlt), col++, row);
+
 
             if (columnStates.getOrDefault("Values", true)) {
                 for (int i = 0; i < maxValues; i++) {
@@ -255,6 +256,10 @@ public class RetrievalResultsController {
                     propertiesGrid.add(makeCell(val, isAlt), col++, row);
                 }
             }
+
+            if (columnStates.getOrDefault("Average Value", true))
+                propertiesGrid.add(makeCell(
+                        formatDouble(p.average()) + " " + (p.unit != null ? p.unit : ""), isAlt), col++, row);
 
             row++;
         }

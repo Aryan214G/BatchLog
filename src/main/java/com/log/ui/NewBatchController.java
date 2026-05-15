@@ -1,5 +1,6 @@
 package com.log.ui;
 
+import com.log.core.AppState;
 import com.log.core.BasePropertiesState;
 import com.log.dao.ProductDAO;
 import com.log.database.DBUtil;
@@ -8,7 +9,9 @@ import com.log.model.BatchTest;
 import com.log.model.Product;
 import com.log.service.BatchService;
 import com.log.service.BatchTestService;
+import com.log.service.ProductService;
 import com.log.service.ProjectService;
+import com.log.ui.util.AlertUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -27,55 +30,82 @@ public class NewBatchController {
     @FXML private TextField fileName;
 
     private final BasePropertiesState bpropState = BasePropertiesState.getInstance();
-    private ProjectService projectService = new ProjectService();
-    private ProductDAO productDAO = new ProductDAO();
-    private BatchService batchService = new BatchService();
-    private BatchTestService batchTestService = new BatchTestService();
-
-    private Connection conn;
-    {
-        try {
-            conn = DBUtil.getConnection();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    private final AppState appState = AppState.getInstance();
+    private final ProductDAO productDAO = new ProductDAO();
+    private final ProductService productService = new ProductService();
+    private final BatchService batchService = new BatchService();
+    private final BatchTestService batchTestService = new BatchTestService();
 
     @FXML
     private void handleNext() {
         if (!validateInputs()) {
-            System.out.println("Validation failed");
+            AlertUtil.showWarning("Please fill in all required fields.");
             return;
         }
 
+        // Store form values in state
         bpropState.setProductName(productField.getText().trim());
-        bpropState.setBatchNo(batchNo.getText());
+        bpropState.setBatchNo(batchNo.getText().trim());
         bpropState.setTestDate(testDate.getValue());
-        bpropState.setPlaceOfTesting(placeOfTesting.getText());
-        bpropState.setFileName(fileName.getText());
+        bpropState.setPlaceOfTesting(placeOfTesting.getText().trim());
+        bpropState.setFileName(fileName.getText().trim());
 
-        handleCreateBatch();
-        loadCategoriesPage();
-    }
+        Connection conn = null;
 
-    private void handleCreateBatch() {
-        String batchID  = bpropState.getBatchNo();
-        String testDate = bpropState.getTestDate().toString();
-        String testSite = bpropState.getPlaceOfTesting();
+        try {
+            conn = DBUtil.getConnection();
+            conn.setAutoCommit(false);
 
-        int productCode = productDAO.getProductCode(conn, new Product(
-                bpropState.getProductID(),
-                bpropState.getProductName(),
-                bpropState.getProjectId()
-        ));
+            // 1. Create product if it doesn't exist
+            productService.createProduct(
+                    conn,
+                    bpropState.getProductName(),  // productId
+                    bpropState.getProductName()   // productName
+            );
 
-        Batch batch = new Batch(batchID, productCode);
-        batchService.createBatch(conn, batch);
-        batchTestService.createBatchTest(conn, new BatchTest(
-                bpropState.getBatchCode(),
-                testDate,
-                testSite
-        ));
+            // 2. Create batch using the product code stored by createProduct
+            int productCode = bpropState.getProductCode();
+            batchService.createBatch(conn, new Batch(
+                    bpropState.getBatchNo(),
+                    productCode
+            ));
+
+            // 3. Create batch test using the batch code stored by createBatch
+            batchTestService.createBatchTest(conn, new BatchTest(
+                    bpropState.getBatchCode(),
+                    bpropState.getTestDate().toString(),
+                    bpropState.getPlaceOfTesting()
+            ));
+
+            conn.commit();
+
+            System.out.println("Batch created — code: " + bpropState.getBatchCode()
+                    + " | testId: " + bpropState.getTestId());
+
+            appState.setProjectCreated(true);
+            loadCategoriesPage();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (Exception rollbackEx) {
+                    rollbackEx.printStackTrace();
+                }
+            }
+            AlertUtil.showError("Failed to create batch. Please try again.");
+
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
     }
 
     private boolean validateInputs() {
@@ -83,6 +113,7 @@ public class NewBatchController {
         if (batchNo.getText().isEmpty()) return false;
         if (placeOfTesting.getText().isEmpty()) return false;
         if (fileName.getText().isEmpty()) return false;
+        if (testDate.getValue() == null) return false;
         return true;
     }
 

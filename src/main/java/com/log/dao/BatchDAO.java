@@ -27,21 +27,13 @@ public class BatchDAO {
     }
 
     public int insertBatchByID(Connection conn, Batch batch) {
-
         String sql = "INSERT INTO Batch (Batch_ID, Product_CODE) VALUES (?, ?)";
-
-        try (PreparedStatement stmt = conn.prepareStatement(
-                sql, Statement.RETURN_GENERATED_KEYS)) {
-
+        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, batch.getBatchId());
             stmt.setInt(2, batch.getProductCode());
-
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
-            if(rs.next()){
-                return rs.getInt(1);
-            }
-
+            if (rs.next()) return rs.getInt(1);
         } catch (SQLException e) {
             e.printStackTrace();
         }

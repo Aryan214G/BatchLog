@@ -146,4 +146,27 @@ public class ProductDAO {
         return -1;
 
     }
+
+    public Product getProductByName(Connection conn, String productName) {
+        String sql = "SELECT * FROM Product WHERE Product_name = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, productName);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return new Product(
+                        rs.getInt("Product_code"),
+                        rs.getString("Product_ID"),
+                        rs.getString("Product_name"),
+                        rs.getInt("Project_ID")
+                );
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }
