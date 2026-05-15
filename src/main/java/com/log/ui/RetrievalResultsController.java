@@ -131,20 +131,22 @@ public class RetrievalResultsController {
 
     private List<PropertyRow> fetchProperties(Connection conn, int batchCode) throws SQLException {
         String propSql = """
-            SELECT
-                p.Property_ID,
-                p.Property_name,
-                c.Category_name,
-                t.Temp_VAL || ' ' || t.Temp_UNIT AS temperature,
-                d.Dir_VAL,
-                u.Unit
-            FROM Property p
-            LEFT JOIN Category    c  ON p.Category_ID = c.Category_ID
-            LEFT JOIN Temperature t  ON p.Temp_ID     = t.Temp_ID
-            LEFT JOIN Direction   d  ON p.Dir_ID      = d.Dir_ID
-            LEFT JOIN Units       u  ON p.Unit_ID     = u.Unit_ID
-            WHERE p.Batch_CODE = ?
-        """;
+        SELECT
+            p.Property_ID,
+            p.Property_name,
+            c.Category_name,
+            t.Temp_VAL || ' ' || u2.Unit AS temperature,
+            d.Dir_VAL,
+            u.Unit
+        FROM Property p
+        LEFT JOIN Category    c   ON p.Category_ID  = c.Category_ID
+        LEFT JOIN Temperature t   ON p.Temp_ID      = t.Temp_ID
+        LEFT JOIN Units       u2  ON t.Temp_Unit_ID = u2.Unit_ID
+        LEFT JOIN Direction   d   ON p.Dir_ID       = d.Dir_ID
+        LEFT JOIN Units       u   ON p.Unit_ID      = u.Unit_ID
+        JOIN Batch_Test       bt  ON p.Test_ID      = bt.Test_ID
+        WHERE bt.Batch_CODE = ?
+    """;
 
         List<PropertyRow> rows = new ArrayList<>();
 
