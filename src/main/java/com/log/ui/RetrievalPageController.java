@@ -2,18 +2,26 @@ package com.log.ui;
 
 import com.log.database.DBUtil;
 import com.log.model.BatchTest;
+import com.log.model.Property;
+import com.log.service.PropertyService;
 import com.log.ui.util.SearchUtil;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+
 
 public class RetrievalPageController {
 
@@ -44,6 +52,8 @@ public class RetrievalPageController {
 
     @FXML
     private VBox resultsContainer;
+
+    private PropertyService propertyService = new PropertyService();
 
     public void populateResults(List<BatchTest> results) {
 
@@ -82,12 +92,39 @@ public class RetrievalPageController {
                 " | Site: " + batch.getTestSite();
     }
 
-    private void handleBatchClick(BatchTest batch) {
-        System.out.println("Clicked batch: " + batch.getBatchCode());
+//    private void handleBatchClick(BatchTest batch) {
+//
+//
+//        try {
+//            List<Property> properties =
+//                    propertyService.getPropertiesByBatch(batch.getBatchCode());
+//
+//            // next step → display these
+//            System.out.println(properties);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
-        // Later:
-        // load properties for this batch
-        // navigate to detail page
+
+    private void handleBatchClick(BatchTest batch) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/log/ui/views/RetrievalResults.fxml")
+            );
+            Parent root = loader.load();
+
+            RetrievalResultsController controller = loader.getController();
+            controller.loadBatch(batch);  // hand over the clicked batch
+
+            Stage stage = (Stage) resultsContainer.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -118,6 +155,7 @@ public class RetrievalPageController {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
         SearchUtil searchUtil = new SearchUtil();
         List<BatchTest> results = null;
         try {
@@ -132,7 +170,6 @@ public class RetrievalPageController {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
         populateResults(results);
     }
 }

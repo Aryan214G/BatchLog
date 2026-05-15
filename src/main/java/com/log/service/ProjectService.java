@@ -49,4 +49,7 @@ public class ProjectService {
         projectDAO.deleteProject(projectId);
     }
 
+
+    public void editProject(int projectId,String updatedName){ projectDAO.updateProjectName(projectId,updatedName);}
+
 }

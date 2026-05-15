@@ -26,6 +26,9 @@
             <Label text="Batch No." />
             <TextField fx:id="batchNo" alignment="CENTER" maxWidth="700.0" />
 
+            <Label text="Product Name" />
+            <TextField fx:id="productField" alignment="CENTER" maxWidth="700" />
+
             <Label text="Test Date" />
             <DatePicker fx:id="testDate" maxWidth="250.0" />
 

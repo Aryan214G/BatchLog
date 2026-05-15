@@ -3,6 +3,7 @@ package com.log.service;
 import com.log.dao.DefaultPropertiesDAO;
 import com.log.dao.PropertyDAO;
 import com.log.dao.PropertyValuesDAO;
+import com.log.database.DBUtil;
 import com.log.model.Property;
 import com.log.model.PropertyValue;
 import com.log.model.PropertyView;

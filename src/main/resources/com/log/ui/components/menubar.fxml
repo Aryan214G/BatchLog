@@ -8,6 +8,7 @@
   <menus>
     <Menu mnemonicParsing="false" text="File">
       <items>
+        <MenuItem fx:id="homePageBtn" mnemonicParsing="false" onAction="#openHomePage" text="Home" />
             <MenuItem fx:id="newProjectBtn" mnemonicParsing="false" onAction="#loadBasePropertiesView" text="New project" />
             <MenuItem mnemonicParsing="false" text="Open folder" />
           <MenuItem fx:id="newBatchBtn" mnemonicParsing="false" onAction="#loadNewBatchView" text="New Batch" />
