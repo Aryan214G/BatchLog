@@ -25,10 +25,9 @@ public class PropertyService {
         this.propertyValuesDAO = new PropertyValuesDAO();
     }
 
-    // TODO: uncoment after enabling the method in the DAO class
-    public List<Property> getPropertiesByBatch(int batchCode) throws SQLException {
-        Connection conn = DBUtil.getConnection();
-        return propertyDAO.getPropertiesByBatch(conn,batchCode);
+
+    public List<Property> getPropertiesByTest(int testId) throws SQLException {
+        return propertyDAO.getPropertiesByTest(testId);
     }
 
     public ObservableList<PropertyView> getPropertiesByCategory(String categoryName){
@@ -75,7 +74,7 @@ public class PropertyService {
         propertyDAO.updateProperty(conn, property);
     }
 
-    public List<PropertyValue> getValuesByProperty(Connection conn, Property property){
-        return propertyValuesDAO.getValuesByProperty(conn, property.getPropertyID());
+    public List<PropertyValue> getValuesByProperty(Connection conn, int propertyID){
+        return propertyValuesDAO.getValuesByProperty(conn, propertyID);
     }
 }

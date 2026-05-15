@@ -5,6 +5,9 @@ public class PropertyValue {
     private double propertyVAL;
     private int propertyID;
 
+    public PropertyValue() {
+    }
+
     public PropertyValue(int propertyValID, double propertyVAL, int propertyID) {
         this.propertyValID = propertyValID;
         this.propertyVAL = propertyVAL;

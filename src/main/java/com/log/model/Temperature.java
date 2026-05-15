@@ -3,18 +3,29 @@ package com.log.model;
 public class Temperature {
 
     private Integer tempId;
-    private int tempVal;
-    private String tempUnit;
+    private double tempVal;
+    private int tempUnitID;
+    private String tempUnitVal;
 
-    public Temperature(int tempId, int tempVal, String tempUnit) {
-        this.tempId = tempId;
-        this.tempVal = tempVal;
-        this.tempUnit = tempUnit;
+    public Temperature() {
     }
 
-    public Temperature(int tempVal, String tempUnit) {
+    public Temperature(Integer tempId, double tempVal, int tempUnitID, String tempUnitVal) {
+        this.tempId = tempId;
         this.tempVal = tempVal;
-        this.tempUnit = tempUnit;
+        this.tempUnitID = tempUnitID;
+        this.tempUnitVal = tempUnitVal;
+    }
+
+    public Temperature(double tempVal, int tempUnitID, String tempUnitVal) {
+        this.tempVal = tempVal;
+        this.tempUnitID = tempUnitID;
+        this.tempUnitVal = tempUnitVal;
+    }
+
+    public Temperature(double tempVal, String tempUnitVal) {
+        this.tempVal = tempVal;
+        this.tempUnitVal = tempUnitVal;
     }
 
     public Integer getTempId() {
@@ -25,20 +36,27 @@ public class Temperature {
         this.tempId = tempId;
     }
 
-    public int getTempVal() {
+    public double getTempVal() {
         return tempVal;
     }
 
-    public void setTempVal(int tempVal) {
+    public void setTempVal(double tempVal) {
         this.tempVal = tempVal;
     }
 
-    public String getTempUnit() {
-        return tempUnit;
+    public int getTempUnitID() {
+        return tempUnitID;
     }
 
-    public void setTempUnit(String tempUnit) {
-        this.tempUnit = tempUnit;
+    public void setTempUnitID(int tempUnitID) {
+        this.tempUnitID = tempUnitID;
     }
 
+    public String getTempUnitVal() {
+        return tempUnitVal;
+    }
+
+    public void setTempUnitVal(String tempUnitVal) {
+        this.tempUnitVal = tempUnitVal;
+    }
 }

@@ -1,44 +1,79 @@
 package com.log.model;
 
+import java.util.List;
+
 public class Property {
-private int propertyID;
-private String propertyName;
-private int categoryID;
-private int tempID;
-private int dirID;
-private int unitID;
-private int batchCode;
+
+    // =========================
+    // Core Property Fields
+    // =========================
+
+    private int propertyID;
+    private String propertyName;
+
+    private int testID;
+
+    // =========================
+    // Related Objects
+    // =========================
+
+    private Unit unit;
+    private Category category;
+    private Temperature temperature;
+    private Direction direction;
+
+    // =========================
+    // Property Values
+    // =========================
+
+    private List<PropertyValue> propertyValues;
+
+    // =========================
+    // Constructors
+    // =========================
 
     public Property() {
-    }
+    this.category = new Category();
+    this.temperature = new Temperature();
+    this.direction = new Direction();
+    this.unit = new Unit();
+}
 
-    public Property(int propertyID, String propertyName, int categoryID, int tempID, int dirID, int unitID, int batchCode) {
+    public Property(int propertyID,
+                    String propertyName,
+                    Unit unit,
+                    int testID,
+                    Category category,
+                    Temperature temperature,
+                    Direction direction) {
+
         this.propertyID = propertyID;
         this.propertyName = propertyName;
-        this.categoryID = categoryID;
-        this.tempID = tempID;
-        this.dirID = dirID;
-        this.unitID = unitID;
-        this.batchCode = batchCode;
+        this.unit = unit;
+        this.testID = testID;
+        this.category = category;
+        this.temperature = temperature;
+        this.direction = direction;
     }
 
-    public Property(String propertyName, int categoryID, int tempID, int dirID, int unitID, int batchCode) {
+    public Property(String propertyName,
+                    Unit unit,
+                    int testID,
+                    Category category,
+                    Temperature temperature,
+                    Direction direction) {
+
         this.propertyName = propertyName;
-        this.categoryID = categoryID;
-        this.tempID = tempID;
-        this.dirID = dirID;
-        this.unitID = unitID;
-        this.batchCode = batchCode;
+        this.unit = unit;
+        this.testID = testID;
+        this.category = category;
+        this.temperature = temperature;
+        this.direction = direction;
     }
 
-
-    public String getPropertyName() {
-        return propertyName;
-    }
-
-    public void setPropertyName(String propertyName) {
-        this.propertyName = propertyName;
-    }
+    // =========================
+    // Getters and Setters
+    // =========================
 
     public int getPropertyID() {
         return propertyID;
@@ -48,57 +83,59 @@ private int batchCode;
         this.propertyID = propertyID;
     }
 
-    public int getCategoryID() {
-        return categoryID;
+    public String getPropertyName() {
+        return propertyName;
     }
 
-    public void setCategoryID(int categoryID) {
-        this.categoryID = categoryID;
+    public void setPropertyName(String propertyName) {
+        this.propertyName = propertyName;
     }
 
-    public int getTempID() {
-        return tempID;
+    public int getTestID() {
+        return testID;
     }
 
-    public void setTempID(int tempID) {
-        this.tempID = tempID;
+    public void setTestID(int testID) {
+        this.testID = testID;
     }
 
-    public int getDirID() {
-        return dirID;
+    public Unit getUnit() {
+        return unit;
     }
 
-    public void setDirID(int dirID) {
-        this.dirID = dirID;
+    public void setUnit(Unit unit) {
+        this.unit = unit;
     }
 
-    public int getUnitID() {
-        return unitID;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setUnitID(int unitID) {
-        this.unitID = unitID;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
-    public int getBatchCode() {
-        return batchCode;
+    public Temperature getTemperature() {
+        return temperature;
     }
 
-    public void setBatchCode(int batchCode) {
-        this.batchCode = batchCode;
+    public void setTemperature(Temperature temperature) {
+        this.temperature = temperature;
     }
 
-    @Override
-    public String toString() {
-        return "Property{" +
-                "id=" + propertyID +
-                ", name='" + propertyName + '\'' +
-                ", categoryID=" + categoryID +
-                ", tempID=" + tempID +
-                ", dirID=" + dirID +
-                ", unitID=" + unitID +
-                ", batchCode=" + batchCode +
-                '}';
+    public Direction getDirection() {
+        return direction;
     }
 
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+
+    public List<PropertyValue> getPropertyValues() {
+        return propertyValues;
+    }
+
+    public void setPropertyValues(List<PropertyValue> propertyValues) {
+        this.propertyValues = propertyValues;
+    }
 }

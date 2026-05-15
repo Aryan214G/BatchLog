@@ -1,6 +1,7 @@
 package com.log.ui;
 
 import com.log.core.AppState;
+import com.log.core.BasePropertiesState;
 import com.log.core.DefaultMapState;
 import com.log.core.SelectedState;
 import com.log.database.DBUtil;
@@ -23,6 +24,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +40,7 @@ public class CategoriesPageController {
 
     AppState instance = AppState.getInstance();
     SelectedState selectedState = SelectedState.getInstance();
+    BasePropertiesState basePropertiesState = BasePropertiesState.getInstance();
     private DefaultPropertyService defaultPropertyService = new DefaultPropertyService();
     private Map<Integer, Map<String, DefaultProperty>> defaultPropertiesMap;
     @FXML
@@ -66,7 +70,7 @@ public class CategoriesPageController {
     private InfoBarController infoBarController;
 
     private List<InputRow> inputRows = new ArrayList<>();
-
+    List<Property> propertiesList;
     @FXML
     private Button printButton;
 
@@ -80,6 +84,7 @@ public class CategoriesPageController {
     private DirectionService directionService = new DirectionService();
     private CategoryService categoryService = new CategoryService();
     private UnitsService unitsService = new UnitsService();
+    private BatchService batchService = new BatchService();
     private PropertySubmissionService propertySubmissionService = new PropertySubmissionService(
             temperatureService,
             directionService,
@@ -90,14 +95,21 @@ public class CategoriesPageController {
     // ======================= END OF VARIABLES DECLARATION ==============================
 
     @FXML
-    public void initialize() throws IOException {
+    public void initialize() throws IOException, SQLException {
 
+        //disable UI components when project is not created
             isSubmitButtonVisible(false);
         if(!instance.isProjectCreated()) {
             categoriesListView.setDisable(true);
             propertiesListView.setDisable(true);
         }
-        loadCategoriesFromDB();
+        else {
+            loadCategoriesFromDB();
+            loadPropertiesFromDB();
+        }
+
+
+
         CategorySelectionListener();
         PropertySelectionListener();
         defaultPropertiesMap = defaultPropertyService.getDefaultsGrouped();
@@ -113,6 +125,49 @@ public class CategoriesPageController {
 
         editMenu = new ContextMenu(addItem, deleteItem);
     }
+
+    // Method used to restore values from the exisiting data (if any) of currently selected batch/record, and load them into the ui.
+    private void loadPropertiesFromDB() throws SQLException {
+        int testId = basePropertiesState.getTestId();
+        propertiesList = propertyService.getPropertiesByTest(testId);
+
+        //=========== iterate through propertiesViews and store in statemanager ================
+        inputRows.clear();
+        for(Property property : propertiesList){
+
+            // ============== Populate input rows =================
+            try (Connection conn = DBUtil.getConnection()) {
+                populateInputRowsHelper(property, conn);
+            }
+            catch (SQLException e){
+                throw new RuntimeException(e);
+            }
+
+
+            //================= save state ==================
+            stateManager.saveState(
+                    property.getPropertyName(),
+                    new ArrayList<>(inputRows),
+                    property.getTemperature(),
+                    property.getDirection(),
+                    property.getUnit()
+            );
+        }
+    }
+
+    public void populateInputRowsHelper(Property property, Connection conn){
+
+        int propertyID = property.getPropertyID();
+        List<PropertyValue> propertyValues  = propertyService.getValuesByProperty(conn, propertyID);
+
+        for(PropertyValue value : propertyValues){
+            InputRow inputRow = new InputRow();
+            inputRow.setPropertyValue(value);
+
+            inputRows.add(inputRow);
+        }
+    }
+
 
     private void isSubmitButtonVisible(boolean value){
         submitButton.setVisible(value);
@@ -214,7 +269,11 @@ public class CategoriesPageController {
 
     ObservableList<PropertyView> properties;
     private void HandleCategoryChange(String newCategory){
-        saveCurrentPropertyValues(selectedState.getSelectedProperty());
+        if (selectedState.getSelectedProperty() != null)
+        {
+            saveCurrentPropertyValues(selectedState.getSelectedProperty());
+        }
+
         clearUIComponents();
 
         properties = instance.getCategoriesMap().get(newCategory);
@@ -251,7 +310,7 @@ public class CategoriesPageController {
                 .addListener((obs, oldProperty, newProperty) -> {
 
                     if (newProperty != null)
-                    {https://www.reddit.com/r/PSP/comments/1skxu67/nonlaminated_ips_viewing_angles/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+                    {
                         HandlePropertyChange(newProperty,oldProperty);
                     }
                 });
@@ -259,7 +318,8 @@ public class CategoriesPageController {
 
 
     private void HandlePropertyChange(PropertyView newProperty,PropertyView oldProperty){
-        saveCurrentPropertyValues(oldProperty);
+        if(oldProperty != null) { saveCurrentPropertyValues(oldProperty); }
+
         clearUIComponents();
         inputRows.clear();
         isSubmitButtonVisible(true);
@@ -296,8 +356,8 @@ public class CategoriesPageController {
     }
 
 
-    //TODO: check if editing the values of previous fields update the inputRows
-    private void addInputRow(int rowCount, String property, DefaultProperty dp) throws IOException {
+
+    private void addInputRow(int rowCount, String property, DefaultProperty dp, InputRow inputRow) throws IOException {
 
         TextField field = new TextField();
 
@@ -312,6 +372,7 @@ public class CategoriesPageController {
         UnitsDropdownController controller = loader.getController();
         controller.setUnits(property);
         if (dp != null && rowCount == 0) {
+            //TODO: replace DB call. Use data available in Property object instead.
             String unitName = unitsService.getUnitNameById(dp.getUnitId());
             controller.setSelectedUnit(unitName);
         }
@@ -322,7 +383,9 @@ public class CategoriesPageController {
             entriesGrid.add(units, 1, rowCount);
         }
 
-        inputRows.add(new InputRow(field, controller));
+        inputRow.setField(field);
+        inputRow.setUnitController(controller);
+        inputRows.add(inputRow);
 
         // ENTER adds new row dynamically
         field.setOnKeyPressed(event -> {
@@ -331,7 +394,7 @@ public class CategoriesPageController {
                     && inputRows.get(inputRows.size() - 1).getField() == field) {
 
                 try {
-                    addInputRow(rowCount+1, property, dp);
+                    addInputRow(rowCount+1, property, dp, new InputRow());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -400,29 +463,117 @@ public class CategoriesPageController {
 
     private void saveCurrentPropertyValues(PropertyView property) {
 
-        if (property == null || temperatureField == null) {
-            return;
-        }
+    if (property == null || temperatureField == null) {
+        return;
+    }
 
-        List<Reading> readings = new ArrayList<>();
+    // ================= SAVE PROPERTY VALUES =================
+    // Read values from all dynamic input rows and store them
+    // inside their corresponding PropertyValue objects.
+    for (InputRow row : inputRows) {
 
-        for (InputRow row : inputRows) {
+        String valueText = row.getField().getText();
 
-            String text = row.getField().getText();
-
-            if (text == null || text.isBlank()) {
-                continue;
-            }
+        // Ignore empty rows while navigating between properties/categories.
+        if (valueText != null && !valueText.isBlank()) {
 
             try {
-                double propertyVal = Double.parseDouble(text.trim());
-                row.setPropertyValue(new PropertyValue(propertyVal, -1));
+
+                double propertyVal = Double.parseDouble(valueText.trim());
+
+                // Update the in-memory PropertyValue object.
+                row.getPropertyValue().setPropertyVAL(propertyVal);
 
             } catch (NumberFormatException e) {
-                AlertUtil.showError("Invalid number: " + text);
+
+                AlertUtil.showError("Invalid property value: " + valueText);
             }
         }
     }
+
+    // ================= SAVE TEMPERATURE =================
+    double tempVal = 0;
+
+    String text = temperatureField.getText();
+
+    // Temperature validation
+    if (text != null && !text.isBlank()) {
+
+        try {
+
+            tempVal = Double.parseDouble(text.trim());
+
+        } catch (NumberFormatException e) {
+
+            AlertUtil.showError("Please enter a valid temperature.");
+        }
+    }
+
+    int tempUnitID;
+    String tempUnitVal;
+
+    try (Connection conn = DBUtil.getConnection()) {
+
+        tempUnitVal = tempUnitController.getComboBox().getValue();
+
+        // During navigation, unit selection may still be incomplete.
+        // Avoid crashing state saving in that case.
+        if (tempUnitVal == null || tempUnitVal.isBlank()) {
+
+            tempUnitID = -1;
+            tempUnitVal = "";
+
+        } else {
+
+            // Fetch corresponding Unit object from DB.
+            Unit unit = unitsService.getUnit(conn, tempUnitVal);
+
+            if (unit != null) {
+
+                tempUnitID = unit.getUnitId();
+
+            } else {
+
+                // Unit name not found in DB.
+                tempUnitID = -1;
+            }
+        }
+
+    } catch (SQLException e) {
+
+        throw new RuntimeException(e);
+    }
+
+    // ================= SAVE PROPERTY UNIT =================
+    // Only the first row contains the unit dropdown because
+    // all rows of a property share the same unit.
+    String unitValue = "";
+
+    if (!inputRows.isEmpty()
+            && inputRows.get(0).getUnitController() != null
+            && inputRows.get(0).getUnitController().getComboBox() != null) {
+
+        unitValue = inputRows.get(0)
+                .getUnitController()
+                .getComboBox()
+                .getValue();
+    }
+
+    Unit unit = new Unit();
+    unit.setUnit(unitValue);
+
+    // ================= SAVE PROPERTY STATE =================
+
+    stateManager.saveState(
+            property.getPropertyName(),
+
+            new ArrayList<>(inputRows),
+
+            new Temperature(tempVal, tempUnitID, tempUnitVal),
+            new Direction(directionController.getSelectedDirection()),
+            unit
+    );
+}
 
 
 
@@ -437,7 +588,7 @@ public class CategoriesPageController {
         if (state == null) {
 
             for (int i = 0; i < defaultRows; i++) {
-                addInputRow(i, property, dp);
+                addInputRow(i, property, dp, new InputRow());
             }
 
             return;
@@ -447,19 +598,31 @@ public class CategoriesPageController {
         String temp = String.valueOf(state.getTemperature().getTempVal());
 
         temperatureField.setText(temp);
-        tempUnitController.setSelectedUnit(state.getTemperature().getTempUnit());
+        tempUnitController.setSelectedUnit(state.getTemperature().getTempUnitVal());
         directionController.setSelectedDirection(state.getDirection().getDirVal());
 
         // ================= RESTORE ROWS =================
-        for (int i = 0; i < state.getReadings().size(); i++) {
+        for (int i = 0; i < defaultRows; i++) {
 
-            addInputRow(i, property, dp);
+            InputRow inputRow;
 
-            inputRows.get(i).getField()
-                    .setText(state.getReadings().get(i).getValue());
+            if (i < state.getInputRows().size()) {
+                inputRow = state.getInputRows().get(i);
+            } else {
+                inputRow = new InputRow();
+            }
+            addInputRow(i, property, dp, inputRow);
 
-            inputRows.get(i).getUnitController()
-                    .setSelectedUnit(state.getReadings().get(i).getUnit());
+            PropertyValue pv = inputRow.getPropertyValue();
+
+            String inputValue = (pv != null)
+                    ? String.valueOf(pv.getPropertyVAL())
+                    : "";
+            inputRow.getField().setText(inputValue);
+
+            String unit = state.getUnit().getUnit();
+
+            inputRow.getUnitController().setSelectedUnit(unit);
         }
     }
 

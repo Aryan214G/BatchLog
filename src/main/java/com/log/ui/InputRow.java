@@ -2,6 +2,7 @@ package com.log.ui;
 
 import com.log.model.PropertyState;
 import com.log.model.PropertyValue;
+import com.log.model.Unit;
 import javafx.scene.control.TextField;
 
 public class InputRow {
@@ -10,9 +11,14 @@ public class InputRow {
     private UnitsDropdownController unitController;
     private PropertyValue propertyValue;
 
+    public InputRow() {
+        this.propertyValue = new PropertyValue();
+    }
+
     public InputRow(TextField field, UnitsDropdownController unitController) {
         this.field = field;
         this.unitController = unitController;
+        this.propertyValue = new PropertyValue();
     }
 
     public TextField getField() {
@@ -30,4 +36,13 @@ public class InputRow {
     public void setPropertyValue(PropertyValue propertyValue) {
         this.propertyValue = propertyValue;
     }
+
+    public void setField(TextField field) {
+        this.field = field;
+    }
+
+    public void setUnitController(UnitsDropdownController unitController) {
+        this.unitController = unitController;
+    }
+
 }
