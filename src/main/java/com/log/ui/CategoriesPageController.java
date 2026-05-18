@@ -607,6 +607,7 @@ public class CategoriesPageController {
         );
         Parent tempUnitNode = unitLoader.load();
         tempUnitController = unitLoader.getController();
+        tempUnitController.setTemperatureUnits();
 
         FXMLLoader directionLoader = new FXMLLoader(
                 getClass().getResource("/com/log/ui/components/directionDropdown.fxml")

@@ -3,6 +3,7 @@ package com.log.ui;
 import com.log.database.DBUtil;
 import com.log.service.DefaultPropertyService;
 import com.log.service.PropertyUnitsService;
+import com.log.service.TemperatureUnitService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -17,10 +18,9 @@ public class UnitsDropdownController {
 
     private PropertyUnitsService propertyUnitsService = new PropertyUnitsService();
     private DefaultPropertyService defaultPropertyService = new DefaultPropertyService();
-
+    private TemperatureUnitService temperatureUnitService = new TemperatureUnitService();
     @FXML
     private ComboBox<String> unitsCombo;
-
 
     public void setUnits(String property) {
 
@@ -33,6 +33,22 @@ public class UnitsDropdownController {
         unitsCombo.setItems(
                 FXCollections.observableArrayList(units)
         );
+
+        } catch (SQLException e) {
+
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void setTemperatureUnits() {
+
+        try (Connection conn = DBUtil.getConnection()) {
+
+            List<String> units = temperatureUnitService.getAllTemperatureUnits(conn);
+
+            unitsCombo.setItems(
+                    FXCollections.observableArrayList(units)
+            );
 
         } catch (SQLException e) {
 

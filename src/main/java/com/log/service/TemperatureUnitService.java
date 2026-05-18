@@ -4,6 +4,7 @@ import com.log.dao.TemperatureUnitDAO;
 import com.log.model.Unit;
 
 import java.sql.Connection;
+import java.util.List;
 
 public class TemperatureUnitService {
 
@@ -44,5 +45,10 @@ public class TemperatureUnitService {
     ) {
 
         return dao.getTemperatureUnit(conn, tempUnit);
+    }
+
+    public List<String> getAllTemperatureUnits(Connection conn) {
+
+        return dao.getAllTemperatureUnits(conn);
     }
 }

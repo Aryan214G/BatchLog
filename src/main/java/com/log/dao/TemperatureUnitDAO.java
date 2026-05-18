@@ -3,8 +3,11 @@ package com.log.dao;
 import com.log.model.Unit;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TemperatureUnitDAO {
+
 
     // =========================================
     // Insert Temperature Unit
@@ -43,6 +46,7 @@ public class TemperatureUnitDAO {
 
         return -1;
     }
+
 
     // =========================================
     // Get by ID
@@ -131,4 +135,30 @@ public class TemperatureUnitDAO {
 
         return null;
     }
+
+        public List<String> getAllTemperatureUnits(Connection conn) {
+
+        List<String> units = new ArrayList<>();
+
+        String sql = """
+                SELECT Temp_Unit
+                FROM Temperature_Units
+                """;
+
+        try (PreparedStatement stmt =
+                     conn.prepareStatement(sql)) {
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                units.add(rs.getString("Temp_Unit"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return units;
+    }
+
 }
