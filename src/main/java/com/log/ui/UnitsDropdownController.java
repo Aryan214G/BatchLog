@@ -22,51 +22,6 @@ public class UnitsDropdownController {
     private ComboBox<String> unitsCombo;
 
     private HashMap<String, ObservableList<String>> unitsMap = new HashMap<>();
-    @FXML
-    public void initialize() {
-
-        unitsCombo.setItems(FXCollections.observableArrayList(
-
-                // Length
-                "mm", "cm", "m", "µm",
-
-                // Mass
-                "kg", "g",
-
-                // Force
-                "N", "kN",
-
-                // Density
-                "g/cc", "kg/m³",
-
-                // Mechanical
-                "MPa", "GPa", "kg/cm²", "N/mm²",
-
-                // Temperature
-                "°C", "K",
-
-                // Time
-                "s", "min",
-
-                // Percentage / Dimensionless
-                "%", "µ",
-
-                // Specific Heat
-                "cal/g°C", "J/g·K", "J/kg·K", "kJ/kg·K",
-
-                // Thermal Diffusivity
-                "mm²/s", "cm²/s",
-
-                // Thermal Conductivity
-                "W/m·K", "W/mm·K",
-
-                // Coefficient of Thermal Expansion
-                "10⁻⁶/°C", "µm/m·°C",
-
-                // Wear Rate
-                "µm/F/S", "g/m", "g/F/S"
-        ));
-    }
 
     public void setUnits(String property) {
 
