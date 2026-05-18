@@ -88,6 +88,7 @@ public class CategoriesPageController {
     private CategoryService categoryService = new CategoryService();
     private UnitsService unitsService = new UnitsService();
     private BatchService batchService = new BatchService();
+    private TemperatureUnitService temperatureUnitService = new TemperatureUnitService();
     private PropertySubmissionService propertySubmissionService = new PropertySubmissionService(
             temperatureService,
             directionService,
@@ -707,7 +708,7 @@ public class CategoriesPageController {
         } else {
 
             // Fetch corresponding Unit object from DB.
-            Unit unit = unitsService.getUnit(conn, tempUnitVal);
+            Unit unit = temperatureUnitService.getTemperatureUnit(conn, tempUnitVal);
 
             if (unit != null) {
 
