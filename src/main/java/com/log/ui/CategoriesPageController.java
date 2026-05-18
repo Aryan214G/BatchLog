@@ -36,6 +36,9 @@ public class CategoriesPageController {
     @FXML
     private Button editButton;
 
+    @FXML
+    private SearchBarController searchBarController;
+
     private ContextMenu editMenu;
 
     AppState instance = AppState.getInstance();
@@ -106,6 +109,7 @@ public class CategoriesPageController {
         else {
             loadCategoriesFromDB();
             loadPropertiesFromDB();
+            setupSearchBar();
         }
 
 
@@ -125,7 +129,115 @@ public class CategoriesPageController {
 
         editMenu = new ContextMenu(addItem, deleteItem);
     }
+    private void setupSearchBar() {
 
+        TextField searchField =
+                searchBarController.getSearchField();
+
+        ContextMenu suggestionsPopup =
+                new ContextMenu();
+
+        // ================= AUTOCOMPLETE =================
+        searchField.textProperty().addListener(
+                (obs, oldVal, newVal) -> {
+
+                    if (newVal == null || newVal.isBlank()) {
+
+                        suggestionsPopup.hide();
+                        return;
+                    }
+
+                    String searchText =
+                            newVal.trim().toLowerCase();
+
+                    List<MenuItem> suggestions =
+                            new ArrayList<>();
+
+                    // ===== CATEGORY SUGGESTIONS =====
+                    for (String category : categories) {
+
+                        if (category.toLowerCase()
+                                .contains(searchText)) {
+
+                            MenuItem item =
+                                    new MenuItem(category);
+
+                            item.setOnAction(e -> {
+
+                                searchField.setText(category);
+
+                                suggestionsPopup.hide();
+
+                                performSearch(category);
+                            });
+
+                            suggestions.add(item);
+                        }
+                    }
+
+                    // ===== PROPERTY SUGGESTIONS =====
+                    for (String category : categoriesMap.keySet()) {
+
+                        ObservableList<PropertyView> properties =
+                                categoriesMap.get(category);
+
+                        for (PropertyView property : properties) {
+
+                            String propertyName =
+                                    property.getPropertyName();
+
+                            if (propertyName.toLowerCase()
+                                    .contains(searchText)) {
+
+                                MenuItem item =
+                                        new MenuItem(propertyName);
+
+                                item.setOnAction(e -> {
+
+                                    searchField.setText(propertyName);
+
+                                    suggestionsPopup.hide();
+
+                                    performSearch(propertyName);
+                                });
+
+                                suggestions.add(item);
+                            }
+                        }
+                    }
+
+                    suggestionsPopup.getItems().clear();
+                    suggestionsPopup.getItems().addAll(suggestions);
+
+                    if (!suggestions.isEmpty()) {
+
+                        if (!suggestionsPopup.isShowing()) {
+
+                            suggestionsPopup.show(
+                                    searchField,
+                                    Side.BOTTOM,
+                                    0,
+                                    0
+                            );
+                        }
+
+                    } else {
+
+                        suggestionsPopup.hide();
+                    }
+                });
+
+        // ================= ENTER SEARCH =================
+        searchField.setOnKeyPressed(event -> {
+
+            if (event.getCode() == KeyCode.ENTER) {
+
+                performSearch(searchField.getText());
+
+                suggestionsPopup.hide();
+            }
+        });
+    }
     // Method used to restore values from the exisiting data (if any) of currently selected batch/record, and load them into the ui.
     private void loadPropertiesFromDB() throws SQLException {
         int testId = basePropertiesState.getTestId();
@@ -154,6 +266,74 @@ public class CategoriesPageController {
             );
         }
     }
+
+    private void performSearch(String searchText) {
+
+        searchText = searchText.trim().toLowerCase();
+
+        boolean found = false;
+
+        // ===== SEARCH CATEGORY =====
+        for (String category : categories) {
+
+            if (category.toLowerCase().equals(searchText)) {
+
+                categoriesListView.getSelectionModel()
+                        .select(category);
+
+                categoriesListView.scrollTo(category);
+
+                found = true;
+                break;
+            }
+        }
+
+        // ===== SEARCH PROPERTY =====
+        if (!found) {
+
+            for (String category : categoriesMap.keySet()) {
+
+                ObservableList<PropertyView> properties =
+                        categoriesMap.get(category);
+
+                for (PropertyView property : properties) {
+
+                    if (property.getPropertyName()
+                            .toLowerCase()
+                            .equals(searchText)) {
+
+                        categoriesListView
+                                .getSelectionModel()
+                                .select(category);
+
+                        HandleCategoryChange(category);
+
+                        propertiesListView
+                                .getSelectionModel()
+                                .select(property);
+
+                        propertiesListView
+                                .scrollTo(property);
+
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (found) break;
+            }
+        }
+
+        if (!found) {
+
+            AlertUtil.showError(
+                    "No category or property found for: "
+                            + searchText
+            );
+        }
+    }
+
+
 
     public void populateInputRowsHelper(Property property, Connection conn){
 
