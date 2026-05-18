@@ -21,7 +21,6 @@ public class UnitsDropdownController {
     @FXML
     private ComboBox<String> unitsCombo;
 
-    private HashMap<String, ObservableList<String>> unitsMap = new HashMap<>();
 
     public void setUnits(String property) {
 
