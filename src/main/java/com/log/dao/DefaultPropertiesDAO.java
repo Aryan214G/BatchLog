@@ -83,4 +83,28 @@ public class DefaultPropertiesDAO {
 
         return list;
     }
+
+    public int getPropertyId(Connection conn, String propertyName)
+    {
+        String query = """
+                SELECT Def_PropID
+                FROM Default_Properties
+                WHERE Def_PropName = ?""";
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+
+        stmt.setString(1, propertyName);
+
+        ResultSet rs = stmt.executeQuery();
+
+        if (rs.next()) {
+            return rs.getInt("Def_PropID");
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return -1; // not found
+    }
 }
