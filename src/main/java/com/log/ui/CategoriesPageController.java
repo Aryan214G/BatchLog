@@ -648,8 +648,14 @@ public class CategoriesPageController {
         return;
     }
 
+        PropertyState propertyState = null;
+        if (stateManager.getState(
+                property.getPropertyName()) != null
+        ) {
+            propertyState = stateManager.getState(property.getPropertyName());
+        }
 
-    // ================= SAVE PROPERTY VALUES =================
+        // ================= SAVE PROPERTY VALUES =================
     // Read values from all dynamic input rows and store them
     // inside their corresponding PropertyValue objects.
     for (InputRow row : inputRows) {
@@ -726,11 +732,18 @@ public class CategoriesPageController {
         throw new RuntimeException(e);
     }
 
+    // storing temperature id
+
         Integer existingTempId = null;
 
-    Temperature temperature = stateManager.getState(property.getPropertyName()).getTemperature();
-        if (temperature.getTempId() != null) {
-            existingTempId = temperature.getTempId();
+        if (propertyState != null && propertyState.getTemperature() != null) {
+
+            Temperature temperature = propertyState.getTemperature();
+
+            if (temperature.getTempId() != null) {
+
+                existingTempId = temperature.getTempId();
+            }
         }
 
         // ================= SAVE PROPERTY UNIT =================
