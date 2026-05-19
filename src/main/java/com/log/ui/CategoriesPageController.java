@@ -2,7 +2,6 @@ package com.log.ui;
 
 import com.log.core.AppState;
 import com.log.core.BasePropertiesState;
-import com.log.core.DefaultMapState;
 import com.log.core.SelectedState;
 import com.log.database.DBUtil;
 import com.log.model.*;
@@ -18,10 +17,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.geometry.Side;
-import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -50,12 +46,12 @@ public class CategoriesPageController {
     private ListView<String> categoriesListView;
 
     @FXML
-    private ListView<PropertyView> propertiesListView;
+    private ListView<DefaultProperty> propertiesListView;
 
     @FXML
     private Label propertiesLabel;
 
-    private HashMap<String, ObservableList<PropertyView>> categoriesMap = instance.getCategoriesMap();
+    private HashMap<String, ObservableList<DefaultProperty>> categoriesMap = instance.getCategoriesMap();
     private ObservableList<String> categories = instance.getCategories();
 
 
@@ -109,7 +105,7 @@ public class CategoriesPageController {
         }
         else {
             loadCategoriesFromDB();
-            loadPropertiesFromDB();
+            loadPropertyDataFromDB();
             setupSearchBar();
         }
 
@@ -179,10 +175,10 @@ public class CategoriesPageController {
                     // ===== PROPERTY SUGGESTIONS =====
                     for (String category : categoriesMap.keySet()) {
 
-                        ObservableList<PropertyView> properties =
+                        ObservableList<DefaultProperty> properties =
                                 categoriesMap.get(category);
 
-                        for (PropertyView property : properties) {
+                        for (DefaultProperty property : properties) {
 
                             String propertyName =
                                     property.getPropertyName();
@@ -239,12 +235,15 @@ public class CategoriesPageController {
             }
         });
     }
-    // Method used to restore values from the exisiting data (if any) of currently selected batch/record, and load them into the ui.
-    private void loadPropertiesFromDB() throws SQLException {
+
+    /* Method used to restore values from the exisiting data (if any) of currently selected batch/record,
+     and load them into the ui.
+     */
+    private void loadPropertyDataFromDB() throws SQLException {
         int testId = basePropertiesState.getTestId();
         propertiesList = propertyService.getPropertiesByTest(testId);
 
-        //=========== iterate through propertiesViews and store in statemanager ================
+        //=========== iterate through properties and store in statemanager ================
         inputRows.clear();
         for(Property property : propertiesList){
 
@@ -294,10 +293,10 @@ public class CategoriesPageController {
 
             for (String category : categoriesMap.keySet()) {
 
-                ObservableList<PropertyView> properties =
+                ObservableList<DefaultProperty> properties =
                         categoriesMap.get(category);
 
-                for (PropertyView property : properties) {
+                for (DefaultProperty property : properties) {
 
                     if (property.getPropertyName()
                             .toLowerCase()
@@ -448,7 +447,7 @@ public class CategoriesPageController {
                 });
     }
 
-    ObservableList<PropertyView> properties;
+    ObservableList<DefaultProperty> properties;
     private void HandleCategoryChange(String newCategory){
         if (selectedState.getSelectedProperty() != null)
         {
@@ -498,7 +497,7 @@ public class CategoriesPageController {
     }
 
 
-    private void HandlePropertyChange(PropertyView newProperty,PropertyView oldProperty){
+    private void HandlePropertyChange(DefaultProperty newProperty, DefaultProperty oldProperty){
         if(oldProperty != null) { saveCurrentPropertyValues(oldProperty); }
 
         clearUIComponents();
@@ -643,13 +642,20 @@ public class CategoriesPageController {
 
     private final PropertyStateManager stateManager = new PropertyStateManager();
 
-    private void saveCurrentPropertyValues(PropertyView property) {
+    private void saveCurrentPropertyValues(DefaultProperty property) {
 
     if (property == null || temperatureField == null) {
         return;
     }
 
-    // ================= SAVE PROPERTY VALUES =================
+        PropertyState propertyState = null;
+        if (stateManager.getState(
+                property.getPropertyName()) != null
+        ) {
+            propertyState = stateManager.getState(property.getPropertyName());
+        }
+
+        // ================= SAVE PROPERTY VALUES =================
     // Read values from all dynamic input rows and store them
     // inside their corresponding PropertyValue objects.
     for (InputRow row : inputRows) {
@@ -726,7 +732,21 @@ public class CategoriesPageController {
         throw new RuntimeException(e);
     }
 
-    // ================= SAVE PROPERTY UNIT =================
+    // storing temperature id
+
+        Integer existingTempId = null;
+
+        if (propertyState != null && propertyState.getTemperature() != null) {
+
+            Temperature temperature = propertyState.getTemperature();
+
+            if (temperature.getTempId() != null) {
+
+                existingTempId = temperature.getTempId();
+            }
+        }
+
+        // ================= SAVE PROPERTY UNIT =================
     // Only the first row contains the unit dropdown because
     // all rows of a property share the same unit.
     String unitValue = "";
@@ -751,7 +771,8 @@ public class CategoriesPageController {
 
             new ArrayList<>(inputRows),
 
-            new Temperature(tempVal, tempUnitID, tempUnitVal),
+
+            new Temperature(existingTempId, tempVal, tempUnitID, tempUnitVal),
             new Direction(directionController.getSelectedDirection()),
             unit
     );
@@ -888,7 +909,7 @@ public class CategoriesPageController {
     }
 
     public void handleEntrySubmit(ActionEvent actionEvent) {
-        PropertyView selectedProperty = selectedState.getSelectedProperty();
+        DefaultProperty selectedProperty = selectedState.getSelectedProperty();
         saveCurrentPropertyValues(selectedProperty);
 
         PropertyState propertyState =

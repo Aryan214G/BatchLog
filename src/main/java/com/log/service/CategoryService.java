@@ -3,6 +3,8 @@ package com.log.service;
 import com.log.core.AppState;
 import com.log.dao.CategoryDAO;
 import com.log.model.Category;
+import com.log.model.DefaultProperty;
+import com.log.model.Property;
 import com.log.model.PropertyView;
 import javafx.collections.ObservableList;
 
@@ -48,7 +50,7 @@ import java.util.List;
 
                 state.getCategories().add(c.getCategoryName());
 
-                ObservableList<PropertyView> properties = propertyService.getPropertiesByCategory(c.getCategoryName());
+                ObservableList<DefaultProperty> properties = propertyService.getPropertiesByCategory(c.getCategoryName());
 
                 if (!state.getCategoriesMap().containsKey(c.getCategoryName())) {
                     state.getCategoriesMap().put(

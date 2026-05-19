@@ -4,6 +4,7 @@ import com.log.dao.DefaultPropertiesDAO;
 import com.log.dao.PropertyDAO;
 import com.log.dao.PropertyValuesDAO;
 import com.log.database.DBUtil;
+import com.log.model.DefaultProperty;
 import com.log.model.Property;
 import com.log.model.PropertyValue;
 import com.log.model.PropertyView;
@@ -30,7 +31,7 @@ public class PropertyService {
         return propertyDAO.getPropertiesByTest(testId);
     }
 
-    public ObservableList<PropertyView> getPropertiesByCategory(String categoryName){
+    public ObservableList<DefaultProperty> getPropertiesByCategory(String categoryName){
         return defaultPropertiesDAO.getDefaultProperties(categoryName);
     }
 

@@ -39,6 +39,11 @@ public class Property {
     this.unit = new Unit();
 }
 
+    @Override
+    public String toString() {
+        return propertyName;
+    }
+
     public Property(int propertyID,
                     String propertyName,
                     Unit unit,
