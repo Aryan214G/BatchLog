@@ -2,7 +2,6 @@ package com.log.ui;
 
 import com.log.core.AppState;
 import com.log.core.BasePropertiesState;
-import com.log.core.DefaultMapState;
 import com.log.core.SelectedState;
 import com.log.database.DBUtil;
 import com.log.model.*;
@@ -18,10 +17,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.geometry.Side;
-import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -109,7 +105,7 @@ public class CategoriesPageController {
         }
         else {
             loadCategoriesFromDB();
-            loadPropertiesFromDB();
+            loadPropertyDataFromDB();
             setupSearchBar();
         }
 
@@ -239,12 +235,15 @@ public class CategoriesPageController {
             }
         });
     }
-    // Method used to restore values from the exisiting data (if any) of currently selected batch/record, and load them into the ui.
-    private void loadPropertiesFromDB() throws SQLException {
+
+    /* Method used to restore values from the exisiting data (if any) of currently selected batch/record,
+     and load them into the ui.
+     */
+    private void loadPropertyDataFromDB() throws SQLException {
         int testId = basePropertiesState.getTestId();
         propertiesList = propertyService.getPropertiesByTest(testId);
 
-        //=========== iterate through propertiesViews and store in statemanager ================
+        //=========== iterate through properties and store in statemanager ================
         inputRows.clear();
         for(Property property : propertiesList){
 
@@ -751,6 +750,7 @@ public class CategoriesPageController {
 
             new ArrayList<>(inputRows),
 
+            //TODO: store temp id
             new Temperature(tempVal, tempUnitID, tempUnitVal),
             new Direction(directionController.getSelectedDirection()),
             unit
