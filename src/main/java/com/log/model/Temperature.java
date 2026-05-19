@@ -6,6 +6,7 @@ public class Temperature {
     private double tempVal;
     private int tempUnitID;
     private String tempUnitVal;
+    private int tempUnitId;
 
     public Temperature() {
     }
@@ -58,5 +59,13 @@ public class Temperature {
 
     public void setTempUnitVal(String tempUnitVal) {
         this.tempUnitVal = tempUnitVal;
+    }
+
+    public int getTempUnitId() {
+        return tempUnitId;
+    }
+
+    public void setTempUnitId(int tempUnitId) {
+        this.tempUnitId = tempUnitId;
     }
 }
