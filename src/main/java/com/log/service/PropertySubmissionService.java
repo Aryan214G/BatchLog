@@ -71,8 +71,12 @@ public class PropertySubmissionService {
 
     private void handleTemperature(Connection conn, Temperature temp) {
         if (temp.getTempId() == null) {
+
            this.tempId = temperatureService.createTemperature(conn, temp);
+
         } else {
+
+            this.tempId = temp.getTempId();
             temperatureService.updateTemperature(conn, temp);
         }
     }
