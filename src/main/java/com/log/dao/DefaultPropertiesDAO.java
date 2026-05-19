@@ -2,6 +2,7 @@ package com.log.dao;
 
 import com.log.database.DBUtil;
 import com.log.model.DefaultProperty;
+import com.log.model.Property;
 import com.log.model.PropertyView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,10 +14,10 @@ import java.util.List;
 
 public class DefaultPropertiesDAO {
 
-    public ObservableList<PropertyView> getDefaultProperties(String categoryName){
+    public ObservableList<DefaultProperty> getDefaultProperties(String categoryName){
 
 
-        ObservableList<PropertyView> properties = FXCollections.observableArrayList();
+        ObservableList<DefaultProperty> properties = FXCollections.observableArrayList();
 
         String sql = """
                     SELECT
@@ -48,7 +49,9 @@ public class DefaultPropertiesDAO {
                     String propName = rs.getString("Def_PropName");
                     String catName = rs.getString("Category_name");
                     int rows = rs.getInt("rows");
-                    properties.add(new PropertyView(id, propName, catName, rows));
+
+
+                    properties.add(new DefaultProperty(id, propName, catName, rows));
                 }
             }
         } catch (SQLException e) {

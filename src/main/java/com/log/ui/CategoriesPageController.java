@@ -46,12 +46,12 @@ public class CategoriesPageController {
     private ListView<String> categoriesListView;
 
     @FXML
-    private ListView<PropertyView> propertiesListView;
+    private ListView<DefaultProperty> propertiesListView;
 
     @FXML
     private Label propertiesLabel;
 
-    private HashMap<String, ObservableList<PropertyView>> categoriesMap = instance.getCategoriesMap();
+    private HashMap<String, ObservableList<DefaultProperty>> categoriesMap = instance.getCategoriesMap();
     private ObservableList<String> categories = instance.getCategories();
 
 
@@ -175,10 +175,10 @@ public class CategoriesPageController {
                     // ===== PROPERTY SUGGESTIONS =====
                     for (String category : categoriesMap.keySet()) {
 
-                        ObservableList<PropertyView> properties =
+                        ObservableList<DefaultProperty> properties =
                                 categoriesMap.get(category);
 
-                        for (PropertyView property : properties) {
+                        for (DefaultProperty property : properties) {
 
                             String propertyName =
                                     property.getPropertyName();
@@ -293,10 +293,10 @@ public class CategoriesPageController {
 
             for (String category : categoriesMap.keySet()) {
 
-                ObservableList<PropertyView> properties =
+                ObservableList<DefaultProperty> properties =
                         categoriesMap.get(category);
 
-                for (PropertyView property : properties) {
+                for (DefaultProperty property : properties) {
 
                     if (property.getPropertyName()
                             .toLowerCase()
@@ -447,7 +447,7 @@ public class CategoriesPageController {
                 });
     }
 
-    ObservableList<PropertyView> properties;
+    ObservableList<DefaultProperty> properties;
     private void HandleCategoryChange(String newCategory){
         if (selectedState.getSelectedProperty() != null)
         {
@@ -497,7 +497,7 @@ public class CategoriesPageController {
     }
 
 
-    private void HandlePropertyChange(PropertyView newProperty,PropertyView oldProperty){
+    private void HandlePropertyChange(DefaultProperty newProperty, DefaultProperty oldProperty){
         if(oldProperty != null) { saveCurrentPropertyValues(oldProperty); }
 
         clearUIComponents();
@@ -642,11 +642,12 @@ public class CategoriesPageController {
 
     private final PropertyStateManager stateManager = new PropertyStateManager();
 
-    private void saveCurrentPropertyValues(PropertyView property) {
+    private void saveCurrentPropertyValues(DefaultProperty property) {
 
     if (property == null || temperatureField == null) {
         return;
     }
+
 
     // ================= SAVE PROPERTY VALUES =================
     // Read values from all dynamic input rows and store them
@@ -725,7 +726,14 @@ public class CategoriesPageController {
         throw new RuntimeException(e);
     }
 
-    // ================= SAVE PROPERTY UNIT =================
+        Integer existingTempId = null;
+
+    Temperature temperature = stateManager.getState(property.getPropertyName()).getTemperature();
+        if (temperature.getTempId() != null) {
+            existingTempId = temperature.getTempId();
+        }
+
+        // ================= SAVE PROPERTY UNIT =================
     // Only the first row contains the unit dropdown because
     // all rows of a property share the same unit.
     String unitValue = "";
@@ -750,8 +758,8 @@ public class CategoriesPageController {
 
             new ArrayList<>(inputRows),
 
-            //TODO: store temp id
-            new Temperature(tempVal, tempUnitID, tempUnitVal),
+
+            new Temperature(existingTempId, tempVal, tempUnitID, tempUnitVal),
             new Direction(directionController.getSelectedDirection()),
             unit
     );
@@ -888,7 +896,7 @@ public class CategoriesPageController {
     }
 
     public void handleEntrySubmit(ActionEvent actionEvent) {
-        PropertyView selectedProperty = selectedState.getSelectedProperty();
+        DefaultProperty selectedProperty = selectedState.getSelectedProperty();
         saveCurrentPropertyValues(selectedProperty);
 
         PropertyState propertyState =
