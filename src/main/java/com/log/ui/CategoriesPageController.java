@@ -244,8 +244,10 @@ public class CategoriesPageController {
         propertiesList = propertyService.getPropertiesByTest(testId);
 
         //=========== iterate through properties and store in statemanager ================
-        inputRows.clear();
+
         for(Property property : propertiesList){
+
+            inputRows.clear();
 
             // ============== Populate input rows =================
             try (Connection conn = DBUtil.getConnection()) {
