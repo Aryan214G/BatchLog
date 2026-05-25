@@ -73,6 +73,7 @@ public class PropertySubmissionService {
         if (temp.getTempId() == null) {
 
            this.tempId = temperatureService.createTemperature(conn, temp);
+           temp.setTempId(tempId);
 
         } else {
 
