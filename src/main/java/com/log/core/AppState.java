@@ -1,5 +1,7 @@
 package com.log.core;
 
+import com.log.model.DefaultProperty;
+import com.log.model.Property;
 import com.log.model.PropertyView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,7 +17,7 @@ public class AppState {
 
     AppState(){};
 
-    private HashMap<String, ObservableList<PropertyView>> categoriesMap = new HashMap<>();
+    private HashMap<String, ObservableList<DefaultProperty>> categoriesMap = new HashMap<>();
 
 
     //TODO: change the list to not be hardcoded
@@ -26,11 +28,11 @@ public class AppState {
         return instance;
     }
 
-    public HashMap<String, ObservableList<PropertyView>> getCategoriesMap() {
+    public HashMap<String, ObservableList<DefaultProperty>> getCategoriesMap() {
         return categoriesMap;
     }
 
-    public void setCategoriesMap(HashMap<String, ObservableList<PropertyView>> categoriesMap) {
+    public void setCategoriesMap(HashMap<String, ObservableList<DefaultProperty>> categoriesMap) {
         this.categoriesMap = categoriesMap;
     }
 

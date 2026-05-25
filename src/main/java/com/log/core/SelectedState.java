@@ -1,5 +1,7 @@
 package com.log.core;
 
+import com.log.model.DefaultProperty;
+import com.log.model.Property;
 import com.log.model.PropertyView;
 
 public class SelectedState {
@@ -12,7 +14,7 @@ public class SelectedState {
 
     private String selectedCategory;
     private int selectedCategoryId;
-    private PropertyView selectedProperty;
+    private DefaultProperty selectedProperty;
 
     public String getSelectedCategory() { return selectedCategory; }
     public void setSelectedCategory(String selectedCategory) { this.selectedCategory = selectedCategory; }
@@ -20,6 +22,6 @@ public class SelectedState {
     public int getSelectedCategoryId() { return selectedCategoryId; }
     public void setSelectedCategoryId(int selectedCategoryId) { this.selectedCategoryId = selectedCategoryId; }
 
-    public PropertyView getSelectedProperty() { return selectedProperty; }
-    public void setSelectedProperty(PropertyView selectedProperty) { this.selectedProperty = selectedProperty; }
+    public DefaultProperty getSelectedProperty() { return selectedProperty; }
+    public void setSelectedProperty(DefaultProperty selectedProperty) { this.selectedProperty = selectedProperty; }
 }

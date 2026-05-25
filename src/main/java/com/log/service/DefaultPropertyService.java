@@ -33,5 +33,8 @@ public class DefaultPropertyService {
         return result;
     }
 
+    public int getPropertyId(Connection conn, String propertyName){
+        return DPdao.getPropertyId(conn, propertyName);
+    }
 
 }

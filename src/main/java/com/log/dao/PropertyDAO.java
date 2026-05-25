@@ -53,7 +53,7 @@ public class  PropertyDAO {
             p.Temp_ID,
             t.Temp_VAL,
             t.Temp_Unit_ID,
-            tu.Unit AS Temp_Unit,
+            tu.Temp_Unit AS Temp_Unit,
 
             p.Dir_ID,
             d.Dir_VAL,
@@ -77,8 +77,8 @@ public class  PropertyDAO {
         JOIN Temperature t
             ON p.Temp_ID = t.Temp_ID
 
-        JOIN Units tu
-            ON t.Temp_Unit_ID = tu.Unit_ID
+        JOIN Temperature_Units tu
+            ON t.Temp_Unit_ID = tu.Temp_Unit_ID
 
         WHERE p.Test_ID = ?
         """;
@@ -103,6 +103,7 @@ public class  PropertyDAO {
             property.getTemperature().setTempId(rs.getInt("Temp_ID"));
             property.getTemperature().setTempVal(rs.getDouble("Temp_VAL"));
             property.getTemperature().setTempUnitVal(rs.getString("Temp_Unit"));
+            property.getTemperature().setTempUnitId(rs.getInt("Temp_Unit_ID"));
 
             property.getDirection().setDirId(rs.getInt("Dir_ID"));
             property.getDirection().setDirVal(rs.getString("Dir_VAL"));

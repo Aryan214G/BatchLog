@@ -2,6 +2,7 @@ package com.log.dao;
 
 import com.log.database.DBUtil;
 import com.log.model.DefaultProperty;
+import com.log.model.Property;
 import com.log.model.PropertyView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,10 +14,10 @@ import java.util.List;
 
 public class DefaultPropertiesDAO {
 
-    public ObservableList<PropertyView> getDefaultProperties(String categoryName){
+    public ObservableList<DefaultProperty> getDefaultProperties(String categoryName){
 
 
-        ObservableList<PropertyView> properties = FXCollections.observableArrayList();
+        ObservableList<DefaultProperty> properties = FXCollections.observableArrayList();
 
         String sql = """
                     SELECT
@@ -48,7 +49,9 @@ public class DefaultPropertiesDAO {
                     String propName = rs.getString("Def_PropName");
                     String catName = rs.getString("Category_name");
                     int rows = rs.getInt("rows");
-                    properties.add(new PropertyView(id, propName, catName, rows));
+
+
+                    properties.add(new DefaultProperty(id, propName, catName, rows));
                 }
             }
         } catch (SQLException e) {
@@ -82,5 +85,29 @@ public class DefaultPropertiesDAO {
         }
 
         return list;
+    }
+
+    public int getPropertyId(Connection conn, String propertyName)
+    {
+        String query = """
+                SELECT Def_PropID
+                FROM Default_Properties
+                WHERE Def_PropName = ?""";
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+
+        stmt.setString(1, propertyName);
+
+        ResultSet rs = stmt.executeQuery();
+
+        if (rs.next()) {
+            return rs.getInt("Def_PropID");
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return -1; // not found
     }
 }

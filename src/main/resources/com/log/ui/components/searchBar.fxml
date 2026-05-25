@@ -5,10 +5,12 @@
 
 <HBox xmlns="http://javafx.com/javafx/25"
       xmlns:fx="http://javafx.com/fxml/1"
-      spacing="5">
+      spacing="5"
+      fx:controller="com.log.ui.SearchBarController">
 
     <TextField fx:id="searchField"
                promptText="Search..."
                prefHeight="35"
                HBox.hgrow="ALWAYS"/>
+
 </HBox>
