@@ -25,7 +25,7 @@
             <HBox alignment="CENTER_LEFT" spacing="12">
                 <Button onAction="#handleBack" styleClass="back-btn" text="← Back" />
                 <Button onAction="#handleFilter" styleClass="primary-btn" text="⚙ Filter" />
-            <Button fx:id="editBtn" mnemonicParsing="false" text="Edit" />
+            <Button fx:id="editBtn" mnemonicParsing="false" onAction="#handleEdit" text="Edit" />
             </HBox>
             <Label fx:id="batchTitleLabel" styleClass="batch-title" />
             <!--
