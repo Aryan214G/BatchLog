@@ -20,6 +20,11 @@ public class MenubarController {
         String path = "/com/log/ui/views/BaseProperties.fxml";
         loadScene(event, path);
     }
+    @FXML
+    private void loadNewBatchView(ActionEvent event) throws IOException {
+        String path = "/com/log/ui/views/NewBatch.fxml";
+        loadScene(event, path);
+    }
     private void loadScene(ActionEvent event, String path) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
         Parent root = loader.load();
@@ -80,5 +85,37 @@ public class MenubarController {
         popupStage.initOwner(owner);
 
         popupStage.showAndWait();
+    }
+
+    @FXML
+    private void openRetrievalPage(ActionEvent event) throws IOException {
+
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/com/log/ui/views/RetrievalPage.fxml")
+        );
+
+        Parent root = loader.load();
+
+        Scene scene = new Scene(root);
+
+        Stage stage = (Stage) menuBar.getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    @FXML
+    private void openHomePage(ActionEvent event) throws IOException {
+
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/com/log/ui/views/HomePage.fxml")
+        );
+
+        Parent root = loader.load();
+
+        Scene scene = new Scene(root);
+
+        Stage stage = (Stage) menuBar.getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
     }
 }

@@ -1,0 +1,155 @@
+package com.log.service;
+
+import com.log.core.BasePropertiesState;
+import com.log.database.DBUtil;
+import com.log.model.*;
+import com.log.ui.InputRow;
+import javafx.scene.control.Alert;
+
+import java.sql.Connection;
+import java.util.List;
+
+public class PropertySubmissionService {
+
+    private TemperatureService temperatureService;
+    private DirectionService directionService;
+    private CategoryService categoryService;
+    private UnitsService unitsService;
+    private PropertyService propertyService;
+    private BasePropertiesState bsinstance = BasePropertiesState.getInstance();
+
+    private int tempId;
+    private int directionId;
+    public PropertySubmissionService(TemperatureService temperatureService,
+                                     DirectionService directionService,
+                                     CategoryService categoryService,
+                                     UnitsService unitsService,
+                                     PropertyService propertyService) {
+        this.temperatureService = temperatureService;
+        this.directionService = directionService;
+        this.categoryService = categoryService;
+        this.unitsService = unitsService;
+        this.propertyService = propertyService;
+    }
+
+    public void submit(PropertyState propertyState, String propertyName, String selectedCategory) {
+        Connection conn = null;
+
+        try {
+            conn = DBUtil.getConnection();
+            conn.setAutoCommit(false);
+
+            handleTemperature(conn, propertyState.getTemperature());
+            handleDirection(conn, propertyState.getDirection());
+            handleProperty(conn, propertyState.getInputRows(), propertyName, selectedCategory);
+
+            conn.commit();
+            showAlert("Success", "Submission completed successfully!");
+        }  catch (Exception e) {
+            showAlert("Submit not successful",e.toString());
+
+            e.printStackTrace();
+
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (Exception rollbackEx) {
+                    rollbackEx.printStackTrace();
+                }
+            }
+
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void handleTemperature(Connection conn, Temperature temp) {
+        if (temp.getTempId() == null) {
+
+           this.tempId = temperatureService.createTemperature(conn, temp);
+           temp.setTempId(tempId);
+
+        } else {
+
+            this.tempId = temp.getTempId();
+            temperatureService.updateTemperature(conn, temp);
+        }
+    }
+
+    private void handleDirection(Connection conn, Direction dir) {
+        if (dir.getDirId() == null) {
+            this.directionId = directionService.getDirectionByName(conn, dir.getDirVal()).getDirId();
+        }
+    }
+
+    private void handleProperty(Connection conn, List<InputRow> inputRows, String propertyName, String selectedCategory){
+        //TODO: might need to replace this unecessary db call
+        Category category =
+        categoryService.getCategory(conn, selectedCategory);
+
+        Unit unit =
+                unitsService.getUnit(
+                        conn,
+                        inputRows.get(0)
+                                .getUnitController()
+                                .getComboBox()
+                                .getValue()
+                );
+
+        Temperature temperature = new Temperature();
+        temperature.setTempId(tempId);
+
+        Direction direction = new Direction();
+        direction.setDirId(directionId);
+
+        Property property = new Property(
+                propertyName,
+                unit,
+                bsinstance.getTestId(),
+                category,
+                temperature,
+                direction
+        );
+
+        int propertyID = propertyService.getPropertyId(conn, property);
+
+        if(propertyID != -1){
+            property.setPropertyID(propertyID);
+            propertyService.updateProperty(conn, property);
+        }
+        else{
+            propertyID = propertyService.insertProperty(conn, property);
+        }
+
+        for (InputRow row : inputRows){
+
+            PropertyValue pv = row.getPropertyValue();
+
+            pv.setPropertyID(propertyID);
+
+            if (pv.getPropertyValID() != 0 && pv.getPropertyValID() != -1) {
+
+                System.out.println("Updating property value");
+                propertyService.updatePropertyValue(conn, row);
+
+            } else {
+                System.out.println("Inserting property value");
+                propertyService.insertPropertyValue(conn, row);
+            }
+        }
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+}

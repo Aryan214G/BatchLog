@@ -1,11 +1,14 @@
 package com.log.ui;
 
 import com.log.core.AppState;
-import com.log.model.PropertyState;
-import com.log.model.Reading;
-import com.log.service.StatisticsService;
-import javafx.collections.FXCollections;
+import com.log.core.BasePropertiesState;
+import com.log.core.SelectedState;
+import com.log.database.DBUtil;
+import com.log.model.*;
+import com.log.service.*;
+import com.log.ui.util.AlertUtil;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,12 +17,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.geometry.Side;
-import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,21 +32,29 @@ public class CategoriesPageController {
     @FXML
     private Button editButton;
 
+    @FXML
+    private SearchBarController searchBarController;
+
     private ContextMenu editMenu;
 
     AppState instance = AppState.getInstance();
-
+    SelectedState selectedState = SelectedState.getInstance();
+    BasePropertiesState basePropertiesState = BasePropertiesState.getInstance();
+    private DefaultPropertyService defaultPropertyService = new DefaultPropertyService();
+    private Map<Integer, Map<String, DefaultProperty>> defaultPropertiesMap;
     @FXML
     private ListView<String> categoriesListView;
 
     @FXML
-    private ListView<String> propertiesListView;
+    private ListView<DefaultProperty> propertiesListView;
 
     @FXML
     private Label propertiesLabel;
 
-    private HashMap<String, ObservableList<String>> categoriesMap = instance.getCategoriesMap();
+    private HashMap<String, ObservableList<DefaultProperty>> categoriesMap = instance.getCategoriesMap();
     private ObservableList<String> categories = instance.getCategories();
+
+
 
     @FXML
     private GridPane entriesGrid;
@@ -53,13 +63,13 @@ public class CategoriesPageController {
     private HBox headerBox;
 
     @FXML
+    private Button submitButton;
+
+    @FXML
     private InfoBarController infoBarController;
 
     private List<InputRow> inputRows = new ArrayList<>();
-
-    private HashMap<String, Integer> defaultRowsMap = instance.getDefaultRowsMap();
-
-    private HashMap<String, String> defaultUnits = instance.getDefaultUnitsMap();
+    List<Property> propertiesList;
     @FXML
     private Button printButton;
 
@@ -67,84 +77,344 @@ public class CategoriesPageController {
     private UnitsDropdownController tempUnitController;
     private DirectionDropdownController directionController;
 
+    // === import services ===//
+    private PropertyService propertyService = new PropertyService();
+    private TemperatureService temperatureService = new TemperatureService();
+    private DirectionService directionService = new DirectionService();
+    private CategoryService categoryService = new CategoryService();
+    private UnitsService unitsService = new UnitsService();
+    private BatchService batchService = new BatchService();
+    private TemperatureUnitService temperatureUnitService = new TemperatureUnitService();
+    private PropertySubmissionService propertySubmissionService = new PropertySubmissionService(
+            temperatureService,
+            directionService,
+            categoryService,
+            unitsService,
+            propertyService
+            );
     // ======================= END OF VARIABLES DECLARATION ==============================
 
     @FXML
-    public void initialize() throws IOException {
+    public void initialize() throws IOException, SQLException {
 
+        //disable UI components when project is not created
+            isSubmitButtonVisible(false);
         if(!instance.isProjectCreated()) {
             categoriesListView.setDisable(true);
             propertiesListView.setDisable(true);
         }
-
-
-        if (categoriesMap.isEmpty()) {
-            loadTempData();
+        else {
+            loadCategoriesFromDB();
+            loadPropertyDataFromDB();
+            setupSearchBar();
         }
 
-        if(defaultRowsMap.isEmpty()) {
-            loadDefaultRowsTempData();
-        }
 
-        categoriesListView.setItems(categories);
-        loadProperties();
+
+        CategorySelectionListener();
+        PropertySelectionListener();
+        defaultPropertiesMap = defaultPropertyService.getDefaultsGrouped();
 
 
         // EDIT MENU SETUP
         MenuItem addItem = new MenuItem("Add Category");
         MenuItem deleteItem = new MenuItem("Delete Selected Category");
 
-        addItem.setOnAction(e -> openAddCategoryPopup());
+        //TODO: un-comment later
+//        addItem.setOnAction(e -> openAddCategoryPopup());
         deleteItem.setOnAction(e -> handleDeleteCategory());
 
         editMenu = new ContextMenu(addItem, deleteItem);
     }
+    private void setupSearchBar() {
+
+        TextField searchField =
+                searchBarController.getSearchField();
+
+        ContextMenu suggestionsPopup =
+                new ContextMenu();
+
+        // ================= AUTOCOMPLETE =================
+        searchField.textProperty().addListener(
+                (obs, oldVal, newVal) -> {
+
+                    if (newVal == null || newVal.isBlank()) {
+
+                        suggestionsPopup.hide();
+                        return;
+                    }
+
+                    String searchText =
+                            newVal.trim().toLowerCase();
+
+                    List<MenuItem> suggestions =
+                            new ArrayList<>();
+
+                    // ===== CATEGORY SUGGESTIONS =====
+                    for (String category : categories) {
+
+                        if (category.toLowerCase()
+                                .contains(searchText)) {
+
+                            MenuItem item =
+                                    new MenuItem(category);
+
+                            item.setOnAction(e -> {
+
+                                searchField.setText(category);
+
+                                suggestionsPopup.hide();
+
+                                performSearch(category);
+                            });
+
+                            suggestions.add(item);
+                        }
+                    }
+
+                    // ===== PROPERTY SUGGESTIONS =====
+                    for (String category : categoriesMap.keySet()) {
+
+                        ObservableList<DefaultProperty> properties =
+                                categoriesMap.get(category);
+
+                        for (DefaultProperty property : properties) {
+
+                            String propertyName =
+                                    property.getPropertyName();
+
+                            if (propertyName.toLowerCase()
+                                    .contains(searchText)) {
+
+                                MenuItem item =
+                                        new MenuItem(propertyName);
+
+                                item.setOnAction(e -> {
+
+                                    searchField.setText(propertyName);
+
+                                    suggestionsPopup.hide();
+
+                                    performSearch(propertyName);
+                                });
+
+                                suggestions.add(item);
+                            }
+                        }
+                    }
+
+                    suggestionsPopup.getItems().clear();
+                    suggestionsPopup.getItems().addAll(suggestions);
+
+                    if (!suggestions.isEmpty()) {
+
+                        if (!suggestionsPopup.isShowing()) {
+
+                            suggestionsPopup.show(
+                                    searchField,
+                                    Side.BOTTOM,
+                                    0,
+                                    0
+                            );
+                        }
+
+                    } else {
+
+                        suggestionsPopup.hide();
+                    }
+                });
+
+        // ================= ENTER SEARCH =================
+        searchField.setOnKeyPressed(event -> {
+
+            if (event.getCode() == KeyCode.ENTER) {
+
+                performSearch(searchField.getText());
+
+                suggestionsPopup.hide();
+            }
+        });
+    }
+
+    /* Method used to restore values from the exisiting data (if any) of currently selected batch/record,
+     and load them into the ui.
+     */
+    private void loadPropertyDataFromDB() throws SQLException {
+        int testId = basePropertiesState.getTestId();
+        propertiesList = propertyService.getPropertiesByTest(testId);
+
+        //=========== iterate through properties and store in statemanager ================
+
+        for(Property property : propertiesList){
+
+            inputRows.clear();
+
+            // ============== Populate input rows =================
+            try (Connection conn = DBUtil.getConnection()) {
+                populateInputRowsHelper(property, conn);
+            }
+            catch (SQLException e){
+                throw new RuntimeException(e);
+            }
+
+
+            //================= save state ==================
+            stateManager.saveState(
+                    property.getPropertyName(),
+                    new ArrayList<>(inputRows),
+                    property.getTemperature(),
+                    property.getDirection(),
+                    property.getUnit()
+            );
+        }
+    }
+
+    private void performSearch(String searchText) {
+
+        searchText = searchText.trim().toLowerCase();
+
+        boolean found = false;
+
+        // ===== SEARCH CATEGORY =====
+        for (String category : categories) {
+
+            if (category.toLowerCase().equals(searchText)) {
+
+                categoriesListView.getSelectionModel()
+                        .select(category);
+
+                categoriesListView.scrollTo(category);
+
+                found = true;
+                break;
+            }
+        }
+
+        // ===== SEARCH PROPERTY =====
+        if (!found) {
+
+            for (String category : categoriesMap.keySet()) {
+
+                ObservableList<DefaultProperty> properties =
+                        categoriesMap.get(category);
+
+                for (DefaultProperty property : properties) {
+
+                    if (property.getPropertyName()
+                            .toLowerCase()
+                            .equals(searchText)) {
+
+                        categoriesListView
+                                .getSelectionModel()
+                                .select(category);
+
+                        HandleCategoryChange(category);
+
+                        propertiesListView
+                                .getSelectionModel()
+                                .select(property);
+
+                        propertiesListView
+                                .scrollTo(property);
+
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (found) break;
+            }
+        }
+
+        if (!found) {
+
+            AlertUtil.showError(
+                    "No category or property found for: "
+                            + searchText
+            );
+        }
+    }
+
+
+
+    public void populateInputRowsHelper(Property property, Connection conn){
+
+        int propertyID = property.getPropertyID();
+        List<PropertyValue> propertyValues  = propertyService.getValuesByProperty(conn, propertyID);
+
+        for(PropertyValue value : propertyValues){
+            InputRow inputRow = new InputRow();
+            inputRow.setPropertyValue(value);
+
+            inputRows.add(inputRow);
+        }
+    }
+
+
+    private void isSubmitButtonVisible(boolean value){
+        submitButton.setVisible(value);
+        submitButton.setManaged(value);
+    }
 
     @FXML
     private void handleEditClick() {
+        if(instance.isProjectCreated())
+        {
         editMenu.show(editButton, Side.BOTTOM, 0, 0);
+        }
+        else if(!instance.isProjectCreated())
+        {
+            AlertUtil.showError("Please create a project before editing categories.");
+        }
+
     }
 
     // ======================= CATEGORY POPUP ==============================
 
-    private void openAddCategoryPopup() {
-
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/log/ui/views/AddCategoriesPopup.fxml")
-            );
-
-            Parent root = loader.load();
-
-            Stage stage = new Stage();
-            stage.setTitle("Add Category");
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
-
-            AddCategoriesPopupController controller = loader.getController();
-            String newCategory = controller.getEnteredCategory();
-            ObservableList<String> newAttributes = controller.getAttributesList();
-            HashMap<String,Integer> attrEntriesMap = controller.getEntriesMap();
-            if (newCategory != null && !newCategory.isBlank()) {
-
-                if (!categories.contains(newCategory)) {
-                    categories.add(newCategory);
-                    categoriesMap.put(newCategory, newAttributes);
-                }
-                for (Map.Entry<String, Integer> entry : attrEntriesMap.entrySet()) {
-
-                    String key = entry.getKey();
-                    Integer value = entry.getValue();
-
-                    defaultRowsMap.put(key,value);
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    //TODO: resolve error and un comment
+//    private void openAddCategoryPopup() {
+//
+//        try {
+//            FXMLLoader loader = new FXMLLoader(
+//                    getClass().getResource("/com/log/ui/views/AddCategoriesPopup.fxml")
+//            );
+//
+//            Parent root = loader.load();
+//
+//            Stage stage = new Stage();
+//            stage.setTitle("Add Category");
+//            stage.setScene(new Scene(root));
+//            stage.initModality(Modality.APPLICATION_MODAL);
+//            stage.showAndWait();
+//
+//            AddCategoriesPopupController controller = loader.getController();
+//
+//            String newCategory = controller.getEnteredCategory();
+//            ObservableList<PropertyView> newProperties = controller.getPropertiesList();
+//            HashMap<String,Integer> attrEntriesMap = controller.getEntriesMap();
+//            if (newCategory != null && !newCategory.isBlank()) {
+//
+//                if (!categories.contains(newCategory)) {
+//
+//                    categoryService.createCategory(newCategory);   // INSERT INTO DB
+//
+//                    loadCategoriesFromDB(); // refresh state
+//
+//                    categoriesMap.put(newCategory, newProperties);
+//                }
+//                for (Map.Entry<String, Integer> entry : attrEntriesMap.entrySet()) {
+//
+//                    String key = entry.getKey();
+//                    Integer value = entry.getValue();
+//
+//                    defaultRowsMap.put(key,value);
+//                }
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private void handleDeleteCategory() {
 
@@ -153,129 +423,112 @@ public class CategoriesPageController {
 
         if (selectedCategory == null) return;
 
-        categories.remove(selectedCategory);
-        categoriesMap.remove(selectedCategory);
+        List<Category> dbCategories = categoryService.getAllCategories();
+
+        for (Category c : dbCategories) {
+
+            if (c.getCategoryName().equals(selectedCategory)) {
+
+                categoryService.deleteCategory(c.getCategoryId());
+                break;
+            }
+        }
+
+        loadCategoriesFromDB();
     }
 
-    //=============== temporary data ===================
-    private void loadTempData() {
-        categoriesMap.put("Physical",
-                FXCollections.observableArrayList(
-                        "Density",
-                        "Open porosity"
-        ));
+    private void CategorySelectionListener() {
 
-        categoriesMap.put("Mechanical",
-                FXCollections.observableArrayList(
-                        "Tensile Strength",
-                        "Tensile Modulus",
-                        "Compressive Strength",
-                        "Compressive Modulus",
-                        "Flexural Strength",
-                        "Flexural Modulus"
-                ));
-
-        categoriesMap.put("Thermal",
-                FXCollections.observableArrayList(
-                        "Specific Heat",
-                        "Thermal Diffusivity",
-                        "Thermal conductivity",
-                        "Mass Loss(%)",
-                        "Coefficient of thermal expansion"
-                ));
-
-        categoriesMap.put("Tribological",
-                FXCollections.observableArrayList(
-                        "Coefficient of friction",
-                        "Wear Rate"
-                ));
-
-        categoriesMap.put("Microstructure",
-                FXCollections.observableArrayList(
-                        "ASTM grain size no.",
-                        "Grain size"
-                ));
-
-        instance.setCategoriesMap(categoriesMap);
-    }
-
-    private void loadDefaultRowsTempData() {
-
-        // Physical
-        defaultRowsMap.put("Density", 6);
-        defaultRowsMap.put("Open porosity", 3);
-
-        // Mechanical
-        defaultRowsMap.put("Tensile Strength", 6);
-        defaultRowsMap.put("Tensile Modulus", 6);
-        defaultRowsMap.put("Compressive Strength", 6);
-        defaultRowsMap.put("Compressive Modulus", 6);
-        defaultRowsMap.put("Flexural Strength", 6);
-        defaultRowsMap.put("Flexural Modulus", 6);
-
-        // Thermal
-        defaultRowsMap.put("Specific Heat", 3);
-        defaultRowsMap.put("Thermal Diffusivity", 3);
-        defaultRowsMap.put("Thermal conductivity", 3);
-        defaultRowsMap.put("Mass Loss(%)", 5);
-        defaultRowsMap.put("Coefficient of thermal expansion", 3);
-
-        // Tribological
-        defaultRowsMap.put("Coefficient of friction", 5);
-        defaultRowsMap.put("Wear Rate", 5);
-
-        // Microstructure
-        defaultRowsMap.put("ASTM grain size no.", 3);
-        defaultRowsMap.put("Grain size", 3);
-
-        instance.setDefaultRowsMap(defaultRowsMap);
-    }
-
-
-    //TODO: loadProperties is doing multiple tasks. Either change the name of the method or divide the responsibilities
-    private void loadProperties() {
         categoriesListView.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((observable, oldCategory, newCategory) -> {
                     if(newCategory != null)
                     {
-                        saveCurrentPropertyValues(instance.getSelectedProperty());
-
-                        clearUIComponents();
-                        propertiesListView.setItems(categoriesMap.get(newCategory));
-                        propertiesLabel.setText(newCategory);
-                        instance.setSelectedCategory(newCategory);
-
-                        updateInfoBar();
-
+                        HandleCategoryChange(newCategory);
                     }
                 });
+    }
+
+    ObservableList<DefaultProperty> properties;
+    private void HandleCategoryChange(String newCategory){
+        if (selectedState.getSelectedProperty() != null)
+        {
+            saveCurrentPropertyValues(selectedState.getSelectedProperty());
+        }
+
+        clearUIComponents();
+
+        properties = instance.getCategoriesMap().get(newCategory);
+
+        System.out.println("Properties loaded size: " + properties.size());
+        System.out.println("Category: " + newCategory);
+        System.out.println("Properties loaded: " + properties);
+
+        propertiesListView.setItems(properties);
+        propertiesLabel.setText(newCategory);
+        selectedState.setSelectedCategory(newCategory);
+
+        try {
+            Category categoryObj = categoryService.getCategory(
+                    DBUtil.getConnection(),
+                    newCategory
+            );
+
+            if (categoryObj != null) {
+                selectedState.setSelectedCategoryId(categoryObj.getCategoryId());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        updateInfoBar();
+
+    }
+    private void PropertySelectionListener() {
+
         propertiesListView.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, oldProperty, newProperty) -> {
 
-                    if (newProperty != null) {
-
-                        saveCurrentPropertyValues(oldProperty);
-                        clearUIComponents();
-                        inputRows.clear();
-
-                        instance.setSelectedProperty(newProperty);
-
-                        int defaultRows = instance.getDefaultRowsMap().get(newProperty);
-
-                        try {
-                            loadMetrics();
-                            addHeaderControls();
-                            loadPropertyFields(defaultRows, newProperty);
-                            updateMetrics();   // force refresh after load
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-
-                        updateInfoBar();
+                    if (newProperty != null)
+                    {
+                        HandlePropertyChange(newProperty,oldProperty);
                     }
                 });
+    }
+
+
+    private void HandlePropertyChange(DefaultProperty newProperty, DefaultProperty oldProperty){
+        if(oldProperty != null) { saveCurrentPropertyValues(oldProperty); }
+
+        clearUIComponents();
+        inputRows.clear();
+        isSubmitButtonVisible(true);
+
+        selectedState.setSelectedProperty(newProperty);
+
+        int categoryId = selectedState.getSelectedCategoryId();
+        String propertyName = newProperty.getPropertyName();
+
+        DefaultProperty dp = null;
+
+        if (defaultPropertiesMap.containsKey(categoryId)) {
+            dp = defaultPropertiesMap.get(categoryId).get(propertyName);
+        }
+
+        int defaultRows = (dp != null) ? dp.getRows() : 1;
+        try {
+            loadMetrics();
+            addHeaderControls();
+            loadPropertyFields(defaultRows, newProperty.getPropertyName(), dp);
+            updateMetrics();   // force refresh after load
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+        updateInfoBar();
     }
 
     private void updateInfoBar() {
@@ -285,11 +538,13 @@ public class CategoriesPageController {
     }
 
 
-    //TODO: check if editing the values of previous fields update the inputRows
-    private void addInputRow(int rowCount, String property) throws IOException {
+
+    private void addInputRow(int rowCount, String property, DefaultProperty dp, InputRow inputRow) throws IOException {
 
         TextField field = new TextField();
+
         field.getStyleClass().add("input-field");
+
 
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/com/log/ui/components/unitsDropdown.fxml")
@@ -298,6 +553,11 @@ public class CategoriesPageController {
         Parent units = loader.load();
         UnitsDropdownController controller = loader.getController();
         controller.setUnits(property);
+        if (dp != null && rowCount == 0) {
+            //TODO: replace DB call. Use data available in Property object instead.
+            String unitName = unitsService.getUnitNameById(dp.getUnitId());
+            controller.setSelectedUnit(unitName);
+        }
 
         entriesGrid.add(field, 0, rowCount);
         if(rowCount < 1)
@@ -305,7 +565,9 @@ public class CategoriesPageController {
             entriesGrid.add(units, 1, rowCount);
         }
 
-        inputRows.add(new InputRow(field, controller));
+        inputRow.setField(field);
+        inputRow.setUnitController(controller);
+        inputRows.add(inputRow);
 
         // ENTER adds new row dynamically
         field.setOnKeyPressed(event -> {
@@ -314,7 +576,7 @@ public class CategoriesPageController {
                     && inputRows.get(inputRows.size() - 1).getField() == field) {
 
                 try {
-                    addInputRow(rowCount+1, property);
+                    addInputRow(rowCount+1, property, dp, new InputRow());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -347,6 +609,7 @@ public class CategoriesPageController {
         );
         Parent tempUnitNode = unitLoader.load();
         tempUnitController = unitLoader.getController();
+        tempUnitController.setTemperatureUnits();
 
         FXMLLoader directionLoader = new FXMLLoader(
                 getClass().getResource("/com/log/ui/components/directionDropdown.fxml")
@@ -361,14 +624,6 @@ public class CategoriesPageController {
         );
     }
 
-    private void showAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Warning!");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
     @FXML
     private void PrintButtonHandler() {
 
@@ -379,7 +634,7 @@ public class CategoriesPageController {
                     );
 
             if (!hasText) {
-                showAlert("Please enter at least one value before printing.");
+                AlertUtil.showWarning("Please enter at least one value before printing.");
                 return;
             }
 
@@ -387,57 +642,192 @@ public class CategoriesPageController {
         }
 
 
-    private Map<String, PropertyState> propertyStates = new HashMap<>();
-    private void saveCurrentPropertyValues(String property) {
+    private final PropertyStateManager stateManager = new PropertyStateManager();
 
-        if (property == null) return;
+    private void saveCurrentPropertyValues(DefaultProperty property) {
 
-        PropertyState state = new PropertyState();
-
-        for (InputRow row : inputRows) {
-
-            String value = row.getField().getText();
-            String unit = row.getUnitController()
-                    .getComboBox()
-                    .getValue();
-
-            state.getReadings().add(new Reading(value, unit));
-        }
-
-        state.setTemperature(temperatureField.getText());
-        state.setTemperatureUnit(tempUnitController.getComboBox().getValue());
-        state.setDirection(directionController.getSelectedDirection());
-
-        propertyStates.put(property, state);
+    if (property == null || temperatureField == null) {
+        return;
     }
 
-    private void loadPropertyFields(int defaultRows, String property) throws IOException {
+        PropertyState propertyState = null;
+        if (stateManager.getState(
+                property.getPropertyName()) != null
+        ) {
+            propertyState = stateManager.getState(property.getPropertyName());
+        }
+
+        // ================= SAVE PROPERTY VALUES =================
+    // Read values from all dynamic input rows and store them
+    // inside their corresponding PropertyValue objects.
+    for (InputRow row : inputRows) {
+
+        String valueText = row.getField().getText();
+
+        // Ignore empty rows while navigating between properties/categories.
+        if (valueText != null && !valueText.isBlank()) {
+
+            try {
+
+                double propertyVal = Double.parseDouble(valueText.trim());
+
+                // Update the in-memory PropertyValue object.
+                row.getPropertyValue().setPropertyVAL(propertyVal);
+
+            } catch (NumberFormatException e) {
+
+                AlertUtil.showError("Invalid property value: " + valueText);
+            }
+        }
+    }
+
+    // ================= SAVE TEMPERATURE =================
+    double tempVal = 0;
+
+    String text = temperatureField.getText();
+
+    // Temperature validation
+    if (text != null && !text.isBlank()) {
+
+        try {
+
+            tempVal = Double.parseDouble(text.trim());
+
+        } catch (NumberFormatException e) {
+
+            AlertUtil.showError("Please enter a valid temperature.");
+        }
+    }
+
+    int tempUnitID;
+    String tempUnitVal;
+
+    try (Connection conn = DBUtil.getConnection()) {
+
+        tempUnitVal = tempUnitController.getComboBox().getValue();
+
+        // During navigation, unit selection may still be incomplete.
+        // Avoid crashing state saving in that case.
+        if (tempUnitVal == null || tempUnitVal.isBlank()) {
+
+            tempUnitID = -1;
+            tempUnitVal = "";
+
+        } else {
+
+            // Fetch corresponding Unit object from DB.
+            Unit unit = temperatureUnitService.getTemperatureUnit(conn, tempUnitVal);
+
+            if (unit != null) {
+
+                tempUnitID = unit.getUnitId();
+
+            } else {
+
+                // Unit name not found in DB.
+                tempUnitID = -1;
+            }
+        }
+
+    } catch (SQLException e) {
+
+        throw new RuntimeException(e);
+    }
+
+    // storing temperature id
+
+        Integer existingTempId = null;
+
+        if (propertyState != null && propertyState.getTemperature() != null) {
+
+            Temperature temperature = propertyState.getTemperature();
+
+            if (temperature.getTempId() != null) {
+
+                existingTempId = temperature.getTempId();
+            }
+        }
+
+        // ================= SAVE PROPERTY UNIT =================
+    // Only the first row contains the unit dropdown because
+    // all rows of a property share the same unit.
+    String unitValue = "";
+
+    if (!inputRows.isEmpty()
+            && inputRows.get(0).getUnitController() != null
+            && inputRows.get(0).getUnitController().getComboBox() != null) {
+
+        unitValue = inputRows.get(0)
+                .getUnitController()
+                .getComboBox()
+                .getValue();
+    }
+
+    Unit unit = new Unit();
+    unit.setUnit(unitValue);
+
+    // ================= SAVE PROPERTY STATE =================
+
+    stateManager.saveState(
+            property.getPropertyName(),
+
+            new ArrayList<>(inputRows),
+
+
+            new Temperature(existingTempId, tempVal, tempUnitID, tempUnitVal),
+            new Direction(directionController.getSelectedDirection()),
+            unit
+    );
+}
+
+
+
+    private void loadPropertyFields(int defaultRows, String property, DefaultProperty dp) throws IOException {
 
         inputRows.clear();
         entriesGrid.getChildren().clear();
 
-        PropertyState state = propertyStates.get(property);
+        PropertyState state = stateManager.getState(property);
 
+        // ================= NO SAVED STATE =================
         if (state == null) {
+
             for (int i = 0; i < defaultRows; i++) {
-                addInputRow(i, property);
+                addInputRow(i, property, dp, new InputRow());
             }
+
             return;
         }
 
-        temperatureField.setText(state.getTemperature());
-        tempUnitController.setSelectedUnit(state.getTemperatureUnit());
-        directionController.setSelectedDirection(state.getDirection());
+        // ================= RESTORE HEADER =================
+        String temp = String.valueOf(state.getTemperature().getTempVal());
 
-        for (int i = 0; i < state.getReadings().size(); i++) {
+        temperatureField.setText(temp);
+        tempUnitController.setSelectedUnit(state.getTemperature().getTempUnitVal());
+        directionController.setSelectedDirection(state.getDirection().getDirVal());
 
-            addInputRow(i, property);
+        // ================= RESTORE ROWS =================
+        for (int i = 0; i < defaultRows; i++) {
 
-            inputRows.get(i).getField()
-                    .setText(state.getReadings().get(i).getValue());
+            InputRow inputRow;
 
-            inputRows.get(i).getUnitController()
-                    .setSelectedUnit(state.getReadings().get(i).getUnit());
+            if (i < state.getInputRows().size()) {
+                inputRow = state.getInputRows().get(i);
+            } else {
+                inputRow = new InputRow();
+            }
+            addInputRow(i, property, dp, inputRow);
+
+            PropertyValue pv = inputRow.getPropertyValue();
+
+            String inputValue = (pv != null)
+                    ? String.valueOf(pv.getPropertyVAL())
+                    : "";
+            inputRow.getField().setText(inputValue);
+
+            String unit = state.getUnit().getUnit();
+
+            inputRow.getUnitController().setSelectedUnit(unit);
         }
     }
 
@@ -448,6 +838,7 @@ public class CategoriesPageController {
     private MetricsController metricsController;
 
     private Parent metrics;
+
     private void loadMetrics() throws IOException {
 
         if (metrics != null) return;
@@ -484,12 +875,19 @@ public class CategoriesPageController {
     private void clearUIComponents(){
         headerBox.getChildren().clear();
         entriesGrid.getChildren().clear();
+        isSubmitButtonVisible(false);
 
         if (metrics != null) {
             entriesPanel.getChildren().remove(metrics);
             metrics = null;
             metricsController = null;
         }
+    }
+
+    private void loadCategoriesFromDB() {
+        categoryService.refreshCategoriesState();
+        categoriesMap = instance.getCategoriesMap();
+        categoriesListView.setItems(instance.getCategories());
     }
 
     private List<Double> getCurrentPropertyValues() {
@@ -511,4 +909,19 @@ public class CategoriesPageController {
 
         return values;
     }
+
+    public void handleEntrySubmit(ActionEvent actionEvent) {
+        DefaultProperty selectedProperty = selectedState.getSelectedProperty();
+        saveCurrentPropertyValues(selectedProperty);
+
+        PropertyState propertyState =
+                stateManager.getState(selectedProperty.getPropertyName());
+
+        propertySubmissionService.submit(
+                propertyState,
+                selectedProperty.getPropertyName(),
+                selectedState.getSelectedCategory()
+        );
+    }
+
 }

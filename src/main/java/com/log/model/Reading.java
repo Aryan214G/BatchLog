@@ -2,6 +2,8 @@ package com.log.model;
 
 public class Reading {
 
+    //TODO: Might need to convert value datatype to double after finishing this task
+    // in frontend section in reminders: "Only take double values in fields and set alerts"
     private String value;
     private String unit;
 

@@ -1,5 +1,7 @@
 package com.log.main;
 
+import com.log.database.DBUtil;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;

@@ -1,6 +1,7 @@
 package com.log.ui;
 
 import com.log.core.AppState;
+import com.log.model.PropertyView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -35,19 +36,19 @@ public class AddCategoriesPopupController {
         return enteredCategory;
     }
 
-    private ObservableList<String> attributesList = FXCollections.observableArrayList();
+    private ObservableList<PropertyView> propertiesList = FXCollections.observableArrayList();
 
-    public ObservableList<String> getAttributesList() {
-        return attributesList;
+    public ObservableList<PropertyView> getPropertiesList() {
+        return propertiesList;
     }
 
     private HashMap<String,Integer> entriesMap = new HashMap<>();
 
     public HashMap<String,Integer> getEntriesMap(){return entriesMap;}
 
-    // ===== NEW ATTRIBUTE BUTTON =====
+    // ===== NEW PROPERTY BUTTON =====
     @FXML
-    private void handleNewAttribute() {
+    private void handleNewProperty() {
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/log/ui/views/PropertiesPopup.fxml")
@@ -56,17 +57,18 @@ public class AddCategoriesPopupController {
             Parent root = loader.load();
 
             Stage stage = new Stage();
-            stage.setTitle("Add Attribute");
+            stage.setTitle("Add Property");
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
 
             AddPropertiesPopupController controller = loader.getController();
-            String attributeName = controller.getPropertyName();
-            int entries = (controller.getAttributeEntries()).intValue();
-            entriesMap.put(attributeName,entries);
-            if (attributeName != null && !attributeName.isBlank()) {
-                addAttributeCard(attributeName);
+            String propertyName = controller.getPropertyName();
+            int entries = (controller.getPropertyEntries()).intValue();
+            entriesMap.put(propertyName,entries);
+            if (propertyName != null && !propertyName.isBlank()) {
+                //TODO: un-comment later
+//                addAttributeCard(propertyName);
             }
 
         } catch (Exception e) {
@@ -100,54 +102,55 @@ public class AddCategoriesPopupController {
     }
 
     // ===== ATTRIBUTE CARD CREATION =====
-    private void addAttributeCard(String attributeName) {
-
-        HBox card = new HBox();
-        card.setAlignment(Pos.CENTER_LEFT);
-        card.setSpacing(10);
-        card.getStyleClass().add("attributes-card");
-
-        Label label = new Label(attributeName);
-        HBox.setHgrow(label, javafx.scene.layout.Priority.ALWAYS);
-
-        Button editBtn = new Button("✎");
-        editBtn.getStyleClass().add("icon-btn");
-
-        Button deleteBtn = new Button("⌫");
-        deleteBtn.getStyleClass().add("icon-btn");
-
-        // ===== EDIT ACTION =====
-        editBtn.setOnAction(e -> {
-
-            TextInputDialog dialog = new TextInputDialog(label.getText());
-            dialog.setTitle("Edit Attribute");
-            dialog.setHeaderText("Edit Attribute Name");
-
-            Optional<String> result = dialog.showAndWait();
-
-            result.ifPresent(newName -> {
-                if (!newName.trim().isEmpty()) {
-                    label.setText(newName.trim());
-                }
-            });
-        });
-
-        // ===== DELETE ACTION =====
-        deleteBtn.setOnAction(e -> {
-            attributesContainer.getChildren().remove(card);
-            attributesList.remove(label.getText());
-        });
-
-
-        card.getChildren().addAll(label, editBtn, deleteBtn);
-
-        attributesList.add(attributeName);
-
-        attributesContainer.getChildren().add(
-                attributesContainer.getChildren().size() - 1,
-                card
-        );
-    }
+    //TODO: un-comment later
+//    private void addAttributeCard(String attributeName) {
+//
+//        HBox card = new HBox();
+//        card.setAlignment(Pos.CENTER_LEFT);
+//        card.setSpacing(10);
+//        card.getStyleClass().add("attributes-card");
+//
+//        Label label = new Label(attributeName);
+//        HBox.setHgrow(label, javafx.scene.layout.Priority.ALWAYS);
+//
+//        Button editBtn = new Button("✎");
+//        editBtn.getStyleClass().add("icon-btn");
+//
+//        Button deleteBtn = new Button("⌫");
+//        deleteBtn.getStyleClass().add("icon-btn");
+//
+//        // ===== EDIT ACTION =====
+//        editBtn.setOnAction(e -> {
+//
+//            TextInputDialog dialog = new TextInputDialog(label.getText());
+//            dialog.setTitle("Edit Attribute");
+//            dialog.setHeaderText("Edit Attribute Name");
+//
+//            Optional<String> result = dialog.showAndWait();
+//
+//            result.ifPresent(newName -> {
+//                if (!newName.trim().isEmpty()) {
+//                    label.setText(newName.trim());
+//                }
+//            });
+//        });
+//
+//        // ===== DELETE ACTION =====
+//        deleteBtn.setOnAction(e -> {
+//            attributesContainer.getChildren().remove(card);
+//            propertiesList.remove(label.getText());
+//        });
+//
+//
+//        card.getChildren().addAll(label, editBtn, deleteBtn);
+//
+//        propertiesList.add(attributeName);
+//
+//        attributesContainer.getChildren().add(
+//                attributesContainer.getChildren().size() - 1,
+//                card
+//        );
+//    }
 
     // ===== ALERT UTILITY =====
     private void showAlert(String title, String message) {

@@ -37,13 +37,4 @@ build/
 .DS_Store
 
 # Database files
-*.db
-*.sqlite
-*.sqlite3
-*.h2.db
-*.mv.db
-*.hsql.db
-*.derby
-*.db-journal
-*.db-wal
-*.db-shm
+

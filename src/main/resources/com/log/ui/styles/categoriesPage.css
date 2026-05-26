@@ -140,6 +140,13 @@
 -fx-max-width: Infinity;
 }
 
+.submit-button {
+-fx-background-color: #000000;
+-fx-text-fill: #ffffff;
+-fx-padding: 10 16;
+-fx-background-radius: 8;
+}
+
 .sidebar-panel-btn {
 -fx-background-color: transparent;
 -fx-max-width: Infinity;

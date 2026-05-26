@@ -81,6 +81,7 @@
                                     </columnConstraints>
 
                                 </GridPane>
+                                <Button fx:id="submitButton" alignment="CENTER" contentDisplay="CENTER" onAction="#handleEntrySubmit" styleClass="submit-button" text="Submit" />
 
                             </VBox>
                         </content>
@@ -101,7 +102,8 @@
 
                 <Label alignment="CENTER" maxWidth="Infinity" styleClass="sidebar-title" text="Categories" />
 
-                <fx:include source="../components/searchBar.fxml" />
+                <fx:include fx:id="searchBar"
+                            source="../components/searchBar.fxml" />
 
                 <ListView fx:id="categoriesListView" styleClass="buttons-list" VBox.vgrow="ALWAYS" />
 
