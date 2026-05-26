@@ -6,15 +6,10 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.CheckBox?>
-<BorderPane prefHeight="800" prefWidth="1200"
-            xmlns="http://javafx.com/javafx/25"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.log.ui.RetrievalResultsController"
-            stylesheets="@../styles/RetrievalResultsPage.css">
+<BorderPane prefHeight="800" prefWidth="1200" stylesheets="@../styles/RetrievalResultsPage.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.RetrievalResultsController">
 
     <top>
         <fx:include source="../components/menubar.fxml" />
@@ -23,15 +18,16 @@
     <center>
         <VBox spacing="16" styleClass="results-content">
             <padding>
-                <Insets top="24" left="24" right="24" bottom="24"/>
+                <Insets bottom="24" left="24" right="24" top="24" />
             </padding>
 
             <!-- Back + Title -->
-            <HBox spacing="12" alignment="CENTER_LEFT">
-                <Button text="← Back"    onAction="#handleBack"   styleClass="back-btn"/>
-                <Button text="⚙ Filter"  onAction="#handleFilter" styleClass="primary-btn"/>
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <Button onAction="#handleBack" styleClass="back-btn" text="← Back" />
+                <Button onAction="#handleFilter" styleClass="primary-btn" text="⚙ Filter" />
+            <Button fx:id="editBtn" mnemonicParsing="false" onAction="#handleEdit" text="Edit" />
             </HBox>
-            <Label fx:id="batchTitleLabel" styleClass="batch-title"/>
+            <Label fx:id="batchTitleLabel" styleClass="batch-title" />
             <!--
             <HBox spacing="12" alignment="CENTER_LEFT">
                 <CheckBox fx:id="showProperty" text="Property" selected="true"/>
@@ -44,11 +40,11 @@
             -->
 
             <!-- Table -->
-            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="table-scroll">
+            <ScrollPane fitToWidth="true" styleClass="table-scroll" VBox.vgrow="ALWAYS">
                 <content>
                     <GridPane fx:id="propertiesGrid" styleClass="property-table">
                         <padding>
-                            <Insets top="0" left="0" right="0" bottom="0"/>
+                            <Insets bottom="0" left="0" right="0" top="0" />
                         </padding>
                     </GridPane>
                 </content>

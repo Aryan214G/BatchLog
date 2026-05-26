@@ -1,5 +1,7 @@
 package com.log.ui;
 
+import com.log.core.AppState;
+import com.log.core.BasePropertiesState;
 import com.log.database.DBUtil;
 import com.log.model.BatchTest;
 import javafx.fxml.FXML;
@@ -46,6 +48,11 @@ public class RetrievalResultsController {
         this.backDestination = path;
     }
 
+    private BasePropertiesState basePropertiesState = BasePropertiesState.getInstance();
+
+    private AppState appState = AppState.getInstance();
+
+    private int testId;
     // ── Row model ─────────────────────────────────────────────────────────────
 
     private static class PropertyRow {
@@ -87,6 +94,8 @@ public class RetrievalResultsController {
                 propertyStates.put(r.name, true);
             }
 
+            appState.setProjectCreated(true);
+
             populateGrid(cachedRows);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -127,26 +136,64 @@ public class RetrievalResultsController {
         }
     }
 
+     // ── Edit button ─────────────────────────────────────────────────────────
+
+    @FXML
+    private void handleEdit() {
+
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/log/ui/views/CategoriesPage.fxml")
+            );
+            Parent root = loader.load();
+            Stage stage = (Stage) propertiesGrid.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     // ── DB queries ────────────────────────────────────────────────────────────
 
+    // TODO: Redundant DAO method. Consider using getPropertiesByTest method in service class
     private List<PropertyRow> fetchProperties(Connection conn, int batchCode) throws SQLException {
         String propSql = """
-        SELECT
-            p.Property_ID,
-            p.Property_name,
-            c.Category_name,
-            t.Temp_VAL || ' ' || u2.Unit AS temperature,
-            d.Dir_VAL,
-            u.Unit
-        FROM Property p
-        LEFT JOIN Category    c   ON p.Category_ID  = c.Category_ID
-        LEFT JOIN Temperature t   ON p.Temp_ID      = t.Temp_ID
-        LEFT JOIN Units       u2  ON t.Temp_Unit_ID = u2.Unit_ID
-        LEFT JOIN Direction   d   ON p.Dir_ID       = d.Dir_ID
-        LEFT JOIN Units       u   ON p.Unit_ID      = u.Unit_ID
-        JOIN Batch_Test       bt  ON p.Test_ID      = bt.Test_ID
-        WHERE bt.Batch_CODE = ?
-    """;
+    SELECT
+        p.Property_ID,
+        p.Property_name,
+        p.Test_ID,
+
+        c.Category_name,
+
+        t.Temp_VAL || ' ' || tu.Temp_Unit AS temperature,
+
+        d.Dir_VAL,
+
+        u.Unit
+
+    FROM Property p
+
+    LEFT JOIN Category c
+        ON p.Category_ID = c.Category_ID
+
+    LEFT JOIN Temperature t
+        ON p.Temp_ID = t.Temp_ID
+
+    LEFT JOIN Temperature_Units tu
+        ON t.Temp_Unit_ID = tu.Temp_Unit_ID
+
+    LEFT JOIN Direction d
+        ON p.Dir_ID = d.Dir_ID
+
+    LEFT JOIN Units u
+        ON p.Unit_ID = u.Unit_ID
+
+    JOIN Batch_Test bt
+        ON p.Test_ID = bt.Test_ID
+
+    WHERE bt.Batch_CODE = ?
+""";
 
         List<PropertyRow> rows = new ArrayList<>();
 
@@ -155,6 +202,10 @@ public class RetrievalResultsController {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
+
+                testId = rs.getInt("Test_ID");
+                basePropertiesState.setTestId(testId);
+
                 PropertyRow row = new PropertyRow(
                         rs.getString("Property_name"),
                         rs.getString("Category_name"),
