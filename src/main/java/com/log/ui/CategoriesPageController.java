@@ -644,10 +644,10 @@ public class CategoriesPageController {
 
     private final PropertyStateManager stateManager = new PropertyStateManager();
 
-    private void saveCurrentPropertyValues(DefaultProperty property) {
+    private boolean saveCurrentPropertyValues(DefaultProperty property) {
 
     if (property == null || temperatureField == null) {
-        return;
+        return false;
     }
 
         PropertyState propertyState = null;
@@ -677,6 +677,7 @@ public class CategoriesPageController {
             } catch (NumberFormatException e) {
 
                 AlertUtil.showError("Invalid property value: " + valueText);
+                return false;
             }
         }
     }
@@ -696,6 +697,7 @@ public class CategoriesPageController {
         } catch (NumberFormatException e) {
 
             AlertUtil.showError("Please enter a valid temperature.");
+            return false;
         }
     }
 
@@ -778,6 +780,8 @@ public class CategoriesPageController {
             new Direction(directionController.getSelectedDirection()),
             unit
     );
+
+    return true;
 }
 
 
@@ -912,7 +916,9 @@ public class CategoriesPageController {
 
     public void handleEntrySubmit(ActionEvent actionEvent) {
         DefaultProperty selectedProperty = selectedState.getSelectedProperty();
-        saveCurrentPropertyValues(selectedProperty);
+        if(!saveCurrentPropertyValues(selectedProperty)){
+            return;
+        }
 
         PropertyState propertyState =
                 stateManager.getState(selectedProperty.getPropertyName());
