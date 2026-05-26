@@ -65,7 +65,7 @@ public class DefaultPropertiesDAO {
 
         List<DefaultProperty> list = new ArrayList<>();
 
-        String query = "SELECT Def_PropName, Unit_ID, Category_ID, Rows FROM Default_Properties";
+        String query = "SELECT Def_PropName, Unit_ID, Category_ID, Rows FROM Default_Properties ";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(query);
