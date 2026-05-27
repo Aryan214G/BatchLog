@@ -16,6 +16,7 @@ public class DefaultPropertyService {
     private DefaultPropertiesDAO DPdao=new DefaultPropertiesDAO();
     private CategoryService categoryService = new CategoryService();
 
+
     public Map<Integer, Map<String, DefaultProperty>> getDefaultsGrouped() {
 
         List<DefaultProperty> list = DPdao.fetchFromDB();
@@ -31,6 +32,26 @@ public class DefaultPropertyService {
                     .put(dp.getPropertyName(), dp);
         }
         return result;
+    }
+
+    public List<DefaultProperty> getDefaults() {
+        return DPdao.fetchFromDB();
+    }
+
+    public void updateDefaultProperty(
+            int unitId,
+            int rows,
+            String defPropName
+    ) {
+        DefaultProperty property = new DefaultProperty();
+
+        property.setUnitId(unitId);
+
+        property.setRows(rows);
+
+        property.setPropertyName(defPropName);
+
+        DPdao.updateDefaultProperty(property);
     }
 
     public int getPropertyId(Connection conn, String propertyName){

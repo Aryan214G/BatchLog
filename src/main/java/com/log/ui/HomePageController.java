@@ -28,7 +28,7 @@ public class HomePageController implements Initializable {
 
     @FXML private GridPane projectsGrid;
 
-    @FXML private Button newBatchEntryBtn;
+
     @FXML private Button retrievalPageBtn;
     @FXML private Button settingsPageBtn;
     @FXML private Button helpPageBtn;
@@ -41,11 +41,10 @@ public class HomePageController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         loadRecentProjects();
 
-        newBatchEntryBtn.setOnAction(e -> navigateTo("/com/log/ui/views/BaseProperties.fxml"));
         retrievalPageBtn.setOnAction(e -> navigateTo("/com/log/ui/views/RetrievalPage.fxml"));
         settingsPageBtn.setOnAction(e -> openSettingsPopup());
         helpPageBtn.setOnAction(e -> handleHelp());
-        newProjectBtn.setOnAction(e -> openNewProjectPopup());
+        newProjectBtn.setOnAction(e -> handleNewProject());
     }
 
     // ── Navigation ────────────────────────────────────────────────────────────
@@ -80,25 +79,17 @@ public class HomePageController implements Initializable {
         }
     }
 
-    private void openNewProjectPopup() {
+    private void handleNewProject() {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/log/ui/views/NewProjectPopup.fxml")
-            );
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/log/ui/views/BaseProperties.fxml"));
             Parent root = loader.load();
-
-            NewProjectPopupController controller = loader.getController();
-            controller.setOnProjectSaved(this::refreshProjects);
-
-            Stage popupStage = new Stage();
-            popupStage.setTitle("New Project");
-            popupStage.setScene(new Scene(root));
-            popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-            popupStage.initOwner(projectsGrid.getScene().getWindow());
-            popupStage.showAndWait();
+            Stage stage = (Stage) projectsGrid.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     private void handleHelp() {

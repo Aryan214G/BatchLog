@@ -65,7 +65,18 @@ public class DefaultPropertiesDAO {
 
         List<DefaultProperty> list = new ArrayList<>();
 
-        String query = "SELECT Def_PropName, Unit_ID, Category_ID, Rows FROM Default_Properties ";
+        String query = """
+    SELECT
+        Default_Properties.Def_PropName,
+        Default_Properties.Unit_ID,
+        Units.Unit,
+        Default_Properties.Rows
+
+    FROM Default_Properties
+
+    JOIN Units
+        ON Default_Properties.Unit_ID = Units.Unit_ID
+""";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(query);
@@ -75,7 +86,7 @@ public class DefaultPropertiesDAO {
                 list.add(new DefaultProperty(
                         rs.getString("Def_PropName"),
                         rs.getInt("Unit_ID"),
-                        rs.getInt("Category_ID"),
+                        rs.getString("Unit"),
                         rs.getInt("Rows")
                 ));
             }
@@ -109,5 +120,58 @@ public class DefaultPropertiesDAO {
     }
 
     return -1; // not found
+    }
+
+    public void updateDefaultProperty(DefaultProperty property) {
+
+        String query = """
+            UPDATE Default_Properties
+            SET
+                Unit_ID = ?,
+                Rows = ?
+            WHERE Def_PropName = ?
+            """;
+
+        try (
+                Connection conn = DBUtil.getConnection();
+
+                PreparedStatement stmt =
+                        conn.prepareStatement(query)
+        ) {
+
+            stmt.setInt(
+                    1,
+                    property.getUnitId()
+            );
+
+            stmt.setInt(
+                    2,
+                    property.getRows()
+            );
+
+            stmt.setString(
+                    3,
+                    property.getPropertyName()
+            );
+
+            int affectedRows = stmt.executeUpdate();
+
+            if (affectedRows > 0) {
+
+                System.out.println(
+                        "Default property updated successfully."
+                );
+
+            } else {
+
+                System.out.println(
+                        "No property found to update."
+                );
+            }
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+        }
     }
 }
