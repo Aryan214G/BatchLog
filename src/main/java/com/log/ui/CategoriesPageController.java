@@ -686,7 +686,7 @@ public class CategoriesPageController {
     }
 
     // ================= SAVE TEMPERATURE =================
-    double tempVal = 0;
+    Double tempVal = null;
 
     String text = temperatureField.getText();
 
@@ -807,7 +807,15 @@ public class CategoriesPageController {
         }
 
         // ================= RESTORE HEADER =================
-        String temp = String.valueOf(state.getTemperature().getTempVal());
+        String temp = "";
+
+        if (state.getTemperature() != null
+                && state.getTemperature().getTempVal() != null) {
+
+            temp = String.valueOf(
+                    state.getTemperature().getTempVal()
+            );
+        }
 
         temperatureField.setText(temp);
         tempUnitController.setSelectedUnit(state.getTemperature().getTempUnitVal());
