@@ -16,6 +16,8 @@ public class PropertySubmissionService {
     private CategoryService categoryService;
     private UnitsService unitsService;
     private PropertyService propertyService;
+    private PropertyValuesService propertyValuesService;
+
     private BasePropertiesState bsinstance = BasePropertiesState.getInstance();
 
     private int tempId;
@@ -136,11 +138,11 @@ public class PropertySubmissionService {
             if (pv.getPropertyValID() != 0 && pv.getPropertyValID() != -1) {
 
                 System.out.println("Updating property value");
-                propertyService.updatePropertyValue(conn, row);
+                propertyValuesService.updatePropertyValue(conn, row);
 
             } else {
                 System.out.println("Inserting property value");
-                propertyService.insertPropertyValue(conn, row);
+                propertyValuesService.insertPropertyValue(conn, row);
             }
         }
     }
