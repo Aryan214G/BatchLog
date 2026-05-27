@@ -130,20 +130,88 @@ public class PropertySubmissionService {
             propertyID = propertyService.insertProperty(conn, property);
         }
 
-        for (InputRow row : inputRows){
+        for (InputRow row : inputRows) {
 
             PropertyValue pv = row.getPropertyValue();
 
             pv.setPropertyID(propertyID);
 
-            if (pv.getPropertyValID() != 0 && pv.getPropertyValID() != -1) {
+            String valueText = row.getField().getText();
 
-                System.out.println("Updating property value");
-                propertyValuesService.updatePropertyValue(conn, row);
+            // =====================================
+            // EMPTY FIELD → DELETE EXISTING VALUE
+            // =====================================
 
-            } else {
-                System.out.println("Inserting property value");
-                propertyValuesService.insertPropertyValue(conn, row);
+            if (valueText == null || valueText.isBlank()) {
+
+                if (pv.getPropertyValID() != 0
+                        && pv.getPropertyValID() != -1) {
+
+                    System.out.println(
+                            "Deleting property value"
+                    );
+
+                    propertyValuesService.deletePropertyValue(
+                            conn,
+                            pv.getPropertyValID()
+                    );
+                }
+
+                continue;
+            }
+
+            // =====================================
+            // VALID NON-EMPTY VALUE
+            // =====================================
+
+            try {
+
+                double value =
+                        Double.parseDouble(valueText.trim());
+
+                pv.setPropertyVAL(value);
+
+            } catch (NumberFormatException e) {
+
+                System.out.println(
+                        "Invalid property value: "
+                                + valueText
+                );
+
+                continue;
+            }
+
+            // =====================================
+            // UPDATE
+            // =====================================
+
+            if (pv.getPropertyValID() != 0
+                    && pv.getPropertyValID() != -1) {
+
+                System.out.println(
+                        "Updating property value"
+                );
+
+                propertyValuesService.updatePropertyValue(
+                        conn,
+                        row
+                );
+            }
+
+            // =====================================
+            // INSERT
+            // =====================================
+
+            else {
+
+                System.out.println(
+                        "Inserting property value"
+                );
+
+                propertyValuesService.insertPropertyValue(
+                        conn,
+                        row
+                );
             }
         }
     }
