@@ -85,13 +85,17 @@ public class CategoriesPageController {
     private UnitsService unitsService = new UnitsService();
     private BatchService batchService = new BatchService();
     private TemperatureUnitService temperatureUnitService = new TemperatureUnitService();
+    private PropertyValuesService propertyValuesService = new PropertyValuesService();
     private PropertySubmissionService propertySubmissionService = new PropertySubmissionService(
             temperatureService,
             directionService,
             categoryService,
             unitsService,
-            propertyService
+            propertyService,
+            propertyValuesService
             );
+
+
     // ======================= END OF VARIABLES DECLARATION ==============================
 
     @FXML
@@ -340,7 +344,7 @@ public class CategoriesPageController {
     public void populateInputRowsHelper(Property property, Connection conn){
 
         int propertyID = property.getPropertyID();
-        List<PropertyValue> propertyValues  = propertyService.getValuesByProperty(conn, propertyID);
+        List<PropertyValue> propertyValues  = propertyValuesService.getValuesByProperty(conn, propertyID);
 
         for(PropertyValue value : propertyValues){
             InputRow inputRow = new InputRow();

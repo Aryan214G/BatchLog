@@ -26,12 +26,13 @@ public class PropertySubmissionService {
                                      DirectionService directionService,
                                      CategoryService categoryService,
                                      UnitsService unitsService,
-                                     PropertyService propertyService) {
+                                     PropertyService propertyService, PropertyValuesService propertyValuesService) {
         this.temperatureService = temperatureService;
         this.directionService = directionService;
         this.categoryService = categoryService;
         this.unitsService = unitsService;
         this.propertyService = propertyService;
+        this.propertyValuesService = propertyValuesService;
     }
 
     public void submit(PropertyState propertyState, String propertyName, String selectedCategory) {
