@@ -680,6 +680,9 @@ public class CategoriesPageController {
                 return false;
             }
         }
+        else {
+            row.getPropertyValue().setPropertyVAL(null);
+        }
     }
 
     // ================= SAVE TEMPERATURE =================
@@ -824,9 +827,12 @@ public class CategoriesPageController {
 
             PropertyValue pv = inputRow.getPropertyValue();
 
-            String inputValue = (pv != null)
-                    ? String.valueOf(pv.getPropertyVAL())
-                    : "";
+            String inputValue = "";
+
+            if (pv != null && pv.getPropertyVAL() != null) {
+                inputValue = String.valueOf(pv.getPropertyVAL());
+            }
+
             inputRow.getField().setText(inputValue);
 
             String unit = state.getUnit().getUnit();
