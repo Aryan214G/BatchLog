@@ -3,8 +3,10 @@ package com.log.service;
 import com.log.core.BasePropertiesState;
 import com.log.dao.BatchDAO;
 import com.log.model.Batch;
+import com.log.model.BatchRow;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 public class BatchService {
@@ -52,6 +54,12 @@ public class BatchService {
 
         batchDAO.deleteBatch(batchCode);
     }
+
+    public List<BatchRow> getBatchesInProject(Connection conn, String projectName) throws SQLException {
+
+        return batchDAO.getBatchesInProject(conn, projectName);
+    }
+
 
     public int getBatchCode(Connection conn, Batch batch)
     {

@@ -2,7 +2,10 @@ package com.log.ui;
 
 import com.log.core.BasePropertiesState;
 import com.log.database.DBUtil;
+import com.log.model.BatchRow;
 import com.log.model.BatchTest;
+import com.log.service.BatchService;
+import com.log.service.ProjectExportService;
 import com.log.service.ProjectService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,26 +30,15 @@ public class ProjectPageController {
 
     @FXML private Label projectTitleLabel;
     @FXML private GridPane batchesGrid;
+    @FXML private Button exportButton;
 
     private String currentProjectName;
     private final BasePropertiesState bpropState = BasePropertiesState.getInstance();
     private final ProjectService projectService = new ProjectService();
+    private ProjectExportService projectExportService = new ProjectExportService();
+    private BatchService batchService = new BatchService();
 
-    // ── Row model ─────────────────────────────────────────────────────────────
 
-    private static class BatchRow {
-        int batchCode;
-        String batchId, productName, testDate, testSite;
-
-        BatchRow(int batchCode, String batchId, String productName,
-                 String testDate, String testSite) {
-            this.batchCode   = batchCode;
-            this.batchId     = batchId;
-            this.productName = productName;
-            this.testDate    = testDate;
-            this.testSite    = testSite;
-        }
-    }
 
     // ── Entry point ───────────────────────────────────────────────────────────
 
@@ -69,6 +61,7 @@ public class ProjectPageController {
 
     // ── DB query ──────────────────────────────────────────────────────────────
 
+    // TODO: This method was moved to BatchDAO. Remove this from this class.
     private List<BatchRow> fetchBatches(Connection conn, String projectName) throws SQLException {
         String sql = """
             SELECT
@@ -127,10 +120,10 @@ public class ProjectPageController {
         for (BatchRow b : rows) {
             boolean isAlt = (row % 2 == 0);
 
-            Label batchIdCell  = makeCell(b.batchId,     isAlt);
-            Label productCell  = makeCell(b.productName, isAlt);
-            Label testDateCell = makeCell(b.testDate,    isAlt);
-            Label testSiteCell = makeCell(b.testSite,    isAlt);
+            Label batchIdCell  = makeCell(b.getBatchId(),     isAlt);
+            Label productCell  = makeCell(b.getProductName(), isAlt);
+            Label testDateCell = makeCell(b.getTestDate(),    isAlt);
+            Label testSiteCell = makeCell(b.getTestSite(),    isAlt);
 
             for (Label cell : List.of(batchIdCell, productCell, testDateCell, testSiteCell)) {
                 cell.getStyleClass().add("clickable-row");
@@ -160,7 +153,7 @@ public class ProjectPageController {
             );
             Parent root = loader.load();
 
-            BatchTest batch = new BatchTest(b.batchCode, b.testDate, b.testSite);
+            BatchTest batch = new BatchTest(b.getBatchCode(), b.getTestDate(), b.getTestSite());
 
             RetrievalResultsController controller = loader.getController();
             controller.loadBatch(batch);
@@ -233,5 +226,19 @@ public class ProjectPageController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private void handleExport() throws SQLException {
+
+        Stage stage = (Stage) exportButton
+                .getScene()
+                .getWindow();
+
+        List<BatchRow> batches = batchService.getBatchesInProject(
+                DBUtil.getConnection(), currentProjectName
+        );
+
+        projectExportService.export(stage, batches);
+
     }
 }
