@@ -40,4 +40,9 @@ public class PropertyValuesService {
         return propertyValuesDAO.getValuesByProperty(conn, propertyID);
     }
 
+    public void deletePropertyValue(Connection conn, int propertyValId){
+
+        propertyValuesDAO.deletePropertyValue(conn, propertyValId);
+    }
+
 }
