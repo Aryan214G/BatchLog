@@ -228,6 +228,7 @@ public class ProjectPageController {
         }
     }
 
+    @FXML
     private void handleExport() throws SQLException {
 
         Stage stage = (Stage) exportButton
@@ -238,7 +239,7 @@ public class ProjectPageController {
                 DBUtil.getConnection(), currentProjectName
         );
 
-        projectExportService.export(stage, batches);
+        projectExportService.export(stage, batches, currentProjectName);
 
     }
 }

@@ -1,6 +1,6 @@
 package com.log.service;
 
-import com.log.model.Batch;
+import com.log.dao.BatchDAO;
 import com.log.model.BatchRow;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -12,9 +12,14 @@ public class ProjectExportService {
 
     private Stage stage;
 
-    public void export(Stage stage, List<BatchRow> batches) {
+    private String currentProjectName;
+
+
+
+    public void export(Stage stage, List<BatchRow> batches, String currentProjectName) {
 
         this.stage = stage;
+        this.currentProjectName = currentProjectName;
 
         createDirectories(batches);
     }
@@ -38,39 +43,38 @@ public class ProjectExportService {
 
          // ========= Create project directory ===========
 
-        File projectDir = null;
-        createProjectDir(selectedDirectory, projectDir);
+        File projectDir = createProjectDir(selectedDirectory);
 
         // ========= Create batch directory ===========
 
-        File batchDir = null;
-
-        createBatchDir(projectDir, batchDir, batches);
+        createBatchDir(projectDir, batches);
 
     }
 
-    private void createProjectDir(File selectedDirectory, File projectDir) {
+    private File createProjectDir(File selectedDirectory) {
 
-        String projectName = "Project_1";
 
-        projectDir = new File(
+
+        File projectDir = new File(
                 selectedDirectory,
-                projectName
+                currentProjectName
         );
 
         if (!projectDir.exists()) {
             projectDir.mkdirs();
         }
+
+        return projectDir;
     }
 
-    private void createBatchDir(File projectDir, File batchDir, List<BatchRow> batches){
+    private void createBatchDir(File projectDir, List<BatchRow> batches){
 
         for (BatchRow batch : batches) {
 
-             batchDir =
+             File batchDir =
                     new File(
                             projectDir,
-                            "Batch_" + batch.getBatchCode()
+                            "Batch_" + batch.getBatchId()
                     );
 
             if (!batchDir.exists()) {

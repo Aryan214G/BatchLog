@@ -25,7 +25,7 @@
             <HBox alignment="CENTER_LEFT" spacing="12">
                 <Button onAction="#handleBack" styleClass="back-btn" text="← Back" />
                 <Button onAction="#handleNewBatch" styleClass="primary-btn" text="+ New Batch" />
-            <Button fx:id="exportButton" mnemonicParsing="false" text="Export" />
+            <Button fx:id="exportButton" mnemonicParsing="false" onAction="#handleExport" text="Export" />
             </HBox>
 
             <Label fx:id="projectTitleLabel" styleClass="batch-title" />
