@@ -28,7 +28,7 @@ public class HomePageController implements Initializable {
 
     @FXML private GridPane projectsGrid;
 
-    @FXML private Button newBatchEntryBtn;
+
     @FXML private Button retrievalPageBtn;
     @FXML private Button settingsPageBtn;
     @FXML private Button helpPageBtn;
@@ -41,7 +41,6 @@ public class HomePageController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         loadRecentProjects();
 
-        newBatchEntryBtn.setOnAction(e -> navigateTo("/com/log/ui/views/BaseProperties.fxml"));
         retrievalPageBtn.setOnAction(e -> navigateTo("/com/log/ui/views/RetrievalPage.fxml"));
         settingsPageBtn.setOnAction(e -> openSettingsPopup());
         helpPageBtn.setOnAction(e -> handleHelp());
