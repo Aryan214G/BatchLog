@@ -716,7 +716,7 @@ public class CategoriesPageController {
         if (tempUnitVal == null || tempUnitVal.isBlank()) {
 
             tempUnitID = -1;
-            tempUnitVal = "";
+            tempUnitVal = null;
 
         } else {
 
