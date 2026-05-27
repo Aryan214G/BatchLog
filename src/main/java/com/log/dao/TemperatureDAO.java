@@ -62,7 +62,7 @@ public class TemperatureDAO {
 
             if (rs.next()) {
                 tempId = rs.getInt("Temp_ID");
-                int tempVal = rs.getInt("Temp_VAL");
+                Double tempVal = (Double) rs.getDouble("Temp_VAL");
 
                 int tempUnitId = rs.getInt("Temp_Unit_ID");
                 String tempUnitVal = rs.getString("Temp_Unit");

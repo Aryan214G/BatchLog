@@ -680,10 +680,13 @@ public class CategoriesPageController {
                 return false;
             }
         }
+        else {
+            row.getPropertyValue().setPropertyVAL(null);
+        }
     }
 
     // ================= SAVE TEMPERATURE =================
-    double tempVal = 0;
+    Double tempVal = null;
 
     String text = temperatureField.getText();
 
@@ -713,7 +716,7 @@ public class CategoriesPageController {
         if (tempUnitVal == null || tempUnitVal.isBlank()) {
 
             tempUnitID = -1;
-            tempUnitVal = "";
+            tempUnitVal = null;
 
         } else {
 
@@ -804,7 +807,15 @@ public class CategoriesPageController {
         }
 
         // ================= RESTORE HEADER =================
-        String temp = String.valueOf(state.getTemperature().getTempVal());
+        String temp = "";
+
+        if (state.getTemperature() != null
+                && state.getTemperature().getTempVal() != null) {
+
+            temp = String.valueOf(
+                    state.getTemperature().getTempVal()
+            );
+        }
 
         temperatureField.setText(temp);
         tempUnitController.setSelectedUnit(state.getTemperature().getTempUnitVal());
@@ -824,9 +835,12 @@ public class CategoriesPageController {
 
             PropertyValue pv = inputRow.getPropertyValue();
 
-            String inputValue = (pv != null)
-                    ? String.valueOf(pv.getPropertyVAL())
-                    : "";
+            String inputValue = "";
+
+            if (pv != null && pv.getPropertyVAL() != null) {
+                inputValue = String.valueOf(pv.getPropertyVAL());
+            }
+
             inputRow.getField().setText(inputValue);
 
             String unit = state.getUnit().getUnit();
