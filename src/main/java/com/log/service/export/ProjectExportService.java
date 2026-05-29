@@ -1,6 +1,5 @@
-package com.log.service;
+package com.log.service.export;
 
-import com.log.dao.BatchDAO;
 import com.log.model.BatchRow;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;

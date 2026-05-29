@@ -5,7 +5,7 @@ import com.log.database.DBUtil;
 import com.log.model.BatchRow;
 import com.log.model.BatchTest;
 import com.log.service.BatchService;
-import com.log.service.ProjectExportService;
+import com.log.service.export.ProjectExportService;
 import com.log.service.ProjectService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -61,7 +61,7 @@ public class ProjectPageController {
 
     // ── DB query ──────────────────────────────────────────────────────────────
 
-    // TODO: This method was moved to BatchDAO. Remove this from this class.
+    // TODO: This method was moved to BatchDAO names "getBatchesInProject". Remove this from this class.
     private List<BatchRow> fetchBatches(Connection conn, String projectName) throws SQLException {
         String sql = """
             SELECT
