@@ -1,5 +1,6 @@
 package com.log.ui;
 
+import com.log.dao.PropertyDAO;
 import com.log.database.DBUtil;
 import com.log.model.BatchTest;
 import javafx.fxml.FXML;
@@ -14,8 +15,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -24,14 +23,15 @@ public class BatchComparisonController {
     @FXML private GridPane comparisonGrid;
     @FXML private Label titleLabel;
 
-    // batchCode → propertyName → average value
     private Map<Integer, Map<String, Double>> data = new LinkedHashMap<>();
-
-    // All unique property names across all batches
     private List<String> allProperties = new ArrayList<>();
-
-    // BatchTest list for display
     private List<BatchTest> batches;
+    private PropertyDAO propertyDAO = new PropertyDAO();
+
+    // ── Filter state ──────────────────────────────────────────────────────────
+    // Column = each batch row, Property = each property column
+    private Map<String, Boolean> batchStates   = new LinkedHashMap<>();
+    private Map<String, Boolean> propertyStates = new LinkedHashMap<>();
 
     public void loadComparison(List<BatchTest> batches) {
         this.batches = batches;
@@ -39,8 +39,55 @@ public class BatchComparisonController {
 
         try (Connection conn = DBUtil.getConnection()) {
             fetchData(conn);
+
+            // Default all batches and properties visible
+            batchStates.clear();
+            for (BatchTest b : batches) {
+                batchStates.put("Batch " + b.getBatchCode(), true);
+            }
+
+            propertyStates.clear();
+            for (String p : allProperties) {
+                propertyStates.put(p, true);
+            }
+
             populateGrid();
         } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ── Filter button ─────────────────────────────────────────────────────────
+
+    @FXML
+    private void handleFilter() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/log/ui/views/FilterPopup.fxml")
+            );
+            Parent root = loader.load();
+
+            FilterPopupController controller = loader.getController();
+            // Batches act as "columns" in the filter popup
+            controller.setColumnStates(batchStates);
+            controller.setPropertyStates(propertyStates);
+            controller.loadCheckboxes();
+            controller.setOnApply(result -> {
+                batchStates.clear();
+                batchStates.putAll(result.columnStates);
+                propertyStates.clear();
+                propertyStates.putAll(result.propertyStates);
+                populateGrid();
+            });
+
+            Stage popupStage = new Stage();
+            popupStage.setTitle("Filter");
+            popupStage.setScene(new Scene(root));
+            popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            popupStage.initOwner(comparisonGrid.getScene().getWindow());
+            popupStage.showAndWait();
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -51,32 +98,9 @@ public class BatchComparisonController {
         Set<String> propertySet = new LinkedHashSet<>();
 
         for (BatchTest batch : batches) {
-            Map<String, Double> propertyAverages = new LinkedHashMap<>();
-
-            String sql = """
-                SELECT
-                    p.Property_name,
-                    AVG(pv.Prop_VAL) AS avg_val
-                FROM Property p
-                JOIN Property_Values pv ON pv.Property_ID = p.Property_ID
-                JOIN Batch_Test bt      ON p.Test_ID      = bt.Test_ID
-                WHERE bt.Batch_CODE = ?
-                GROUP BY p.Property_name
-            """;
-
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setInt(1, batch.getBatchCode());
-                ResultSet rs = stmt.executeQuery();
-
-                while (rs.next()) {
-                    String name = rs.getString("Property_name");
-                    double avg  = rs.getDouble("avg_val");
-                    propertyAverages.put(name, avg);
-                    propertySet.add(name);
-                }
-            }
-
-            data.put(batch.getBatchCode(), propertyAverages);
+            Map<String, Double> averages = propertyDAO.getPropertyAveragesByBatch(conn, batch.getBatchCode());
+            data.put(batch.getBatchCode(), averages);
+            propertySet.addAll(averages.keySet());
         }
 
         allProperties = new ArrayList<>(propertySet);
@@ -88,8 +112,23 @@ public class BatchComparisonController {
         comparisonGrid.getChildren().clear();
         comparisonGrid.getColumnConstraints().clear();
 
-        // Columns: Batch/Component ID + one per property
-        int totalCols = 1 + allProperties.size();
+        // Filter visible properties and batches
+        List<String> visibleProperties = allProperties.stream()
+                .filter(p -> propertyStates.getOrDefault(p, true))
+                .toList();
+
+        List<BatchTest> visibleBatches = batches.stream()
+                .filter(b -> batchStates.getOrDefault("Batch " + b.getBatchCode(), true))
+                .toList();
+
+        if (visibleBatches.isEmpty() || visibleProperties.isEmpty()) {
+            Label empty = new Label("No data to display.");
+            empty.getStyleClass().add("empty-label");
+            comparisonGrid.add(empty, 0, 0);
+            return;
+        }
+
+        int totalCols = 1 + visibleProperties.size();
 
         for (int i = 0; i < totalCols; i++) {
             ColumnConstraints cc = new ColumnConstraints();
@@ -99,24 +138,22 @@ public class BatchComparisonController {
             comparisonGrid.getColumnConstraints().add(cc);
         }
 
-        // Header row — first cell is "Batch/Component ID", rest are property names
+        // Header row — "Batch / Component ID" + property names
         comparisonGrid.add(makeHeader("Batch / Component ID"), 0, 0);
-        for (int i = 0; i < allProperties.size(); i++) {
-            comparisonGrid.add(makeHeader(allProperties.get(i)), i + 1, 0);
+        for (int i = 0; i < visibleProperties.size(); i++) {
+            comparisonGrid.add(makeHeader(visibleProperties.get(i)), i + 1, 0);
         }
 
-        // Data rows — one per batch
+        // Data rows — one per visible batch
         int row = 1;
-        for (BatchTest batch : batches) {
+        for (BatchTest batch : visibleBatches) {
             boolean isAlt = (row % 2 == 0);
             Map<String, Double> props = data.getOrDefault(batch.getBatchCode(), Collections.emptyMap());
 
-            // First cell — batch identifier
             comparisonGrid.add(makeCell("Batch " + batch.getBatchCode(), isAlt), 0, row);
 
-            // Property cells — average value or "—" if not present
-            for (int i = 0; i < allProperties.size(); i++) {
-                String propName = allProperties.get(i);
+            for (int i = 0; i < visibleProperties.size(); i++) {
+                String propName = visibleProperties.get(i);
                 String val = props.containsKey(propName)
                         ? formatDouble(props.get(propName))
                         : "—";

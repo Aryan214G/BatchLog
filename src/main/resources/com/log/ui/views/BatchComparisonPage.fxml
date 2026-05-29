@@ -26,7 +26,8 @@
             </padding>
 
             <HBox spacing="12" alignment="CENTER_LEFT">
-                <Button text="← Back" onAction="#handleBack" styleClass="back-btn"/>
+                <Button text="← Back"    onAction="#handleBack"   styleClass="back-btn"/>
+                <Button text="⚙ Filter"  onAction="#handleFilter" styleClass="primary-btn"/>
                 <Label fx:id="titleLabel" styleClass="batch-title"/>
             </HBox>
 
