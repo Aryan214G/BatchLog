@@ -48,7 +48,9 @@
                                style="-fx-font-size: 16px;
                                       -fx-font-weight: bold;" />
 
-                        <fx:include source="/com/log/ui/components/dropDown.fxml"  fx:id="propertyComboBox" />
+                        <ComboBox fx:id="propertyComboBox"
+                                  prefWidth="180"
+                                  promptText="Select"/>
 
                     </children>
 
@@ -64,7 +66,9 @@
                                style="-fx-font-size: 16px;
                                       -fx-font-weight: bold;" />
 
-                        <fx:include source="/com/log/ui/components/dropDown.fxml"  fx:id="unitComboBox" />
+                        <ComboBox fx:id="unitComboBox"
+                                  prefWidth="180"
+                                  promptText="Select"/>
 
                     </children>
 

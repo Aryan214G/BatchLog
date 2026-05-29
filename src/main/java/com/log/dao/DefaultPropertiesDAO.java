@@ -66,16 +66,18 @@ public class DefaultPropertiesDAO {
         List<DefaultProperty> list = new ArrayList<>();
 
         String query = """
-    SELECT
-        Default_Properties.Def_PropName,
-        Default_Properties.Unit_ID,
-        Units.Unit,
-        Default_Properties.Rows
+SELECT
+    Default_Properties.Def_PropID,
+    Default_Properties.Def_PropName,
+    Default_Properties.Unit_ID,
+    Units.Unit,
+    Default_Properties.Rows,
+    Default_Properties.Category_ID
 
-    FROM Default_Properties
+FROM Default_Properties
 
-    JOIN Units
-        ON Default_Properties.Unit_ID = Units.Unit_ID
+JOIN Units
+    ON Default_Properties.Unit_ID = Units.Unit_ID
 """;
 
         try (Connection conn = DBUtil.getConnection();
@@ -83,12 +85,22 @@ public class DefaultPropertiesDAO {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                list.add(new DefaultProperty(
+                DefaultProperty dp = new DefaultProperty(
                         rs.getString("Def_PropName"),
                         rs.getInt("Unit_ID"),
                         rs.getString("Unit"),
                         rs.getInt("Rows")
-                ));
+                );
+
+                dp.setPropertyId(
+                        rs.getInt("Def_PropID")
+                );
+
+                dp.setCategoryId(
+                        rs.getInt("Category_ID")
+                );
+
+                list.add(dp);
             }
 
         } catch (Exception e) {
@@ -129,7 +141,7 @@ public class DefaultPropertiesDAO {
             SET
                 Unit_ID = ?,
                 Rows = ?
-            WHERE Def_PropName = ?
+            WHERE Def_PropID = ?
             """;
 
         try (
@@ -149,9 +161,9 @@ public class DefaultPropertiesDAO {
                     property.getRows()
             );
 
-            stmt.setString(
+            stmt.setInt(
                     3,
-                    property.getPropertyName()
+                    property.getPropertyId()
             );
 
             int affectedRows = stmt.executeUpdate();

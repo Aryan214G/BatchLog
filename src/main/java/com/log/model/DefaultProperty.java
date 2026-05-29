@@ -58,7 +58,9 @@ public class DefaultProperty {
         return propertyId;
     }
 
-    public void setPropertyId(int propertyId) {}
+    public void setPropertyId(int propertyId) {
+        this.propertyId = propertyId;
+    }
 
     public String getPropertyName() {
         return propertyName;
@@ -72,7 +74,9 @@ public class DefaultProperty {
         return categoryName;
     }
 
-    public void setCategoryName(String categoryName) {}
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
 
     public int getUnitId() {
         return unitId;
@@ -86,13 +90,17 @@ public class DefaultProperty {
         return categoryId;
     }
 
-    public void setCategoryId(int categoryId) {}
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
 
     public int getRows() {
         return rows;
     }
 
-    public void setRows(int rows) {}
+    public void setRows(int rows) {
+        this.rows = rows;
+    }
 
     public String getUnit() {
         return unit;

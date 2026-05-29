@@ -77,4 +77,27 @@ public class UnitsService {
 
         unitsDAO.deleteUnit(unitId);
     }
+
+    public int getUnitIdByName(String unitName) {
+
+        try (Connection conn = DBUtil.getConnection()) {
+
+            Unit unit =
+                    unitsDAO.getUnitByName(
+                            conn,
+                            unitName
+                    );
+
+            if (unit != null) {
+
+                return unit.getUnitId();
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        return -1;
+    }
 }

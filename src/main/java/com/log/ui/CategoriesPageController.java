@@ -41,7 +41,6 @@ public class CategoriesPageController {
     SelectedState selectedState = SelectedState.getInstance();
     BasePropertiesState basePropertiesState = BasePropertiesState.getInstance();
     private DefaultPropertyService defaultPropertyService = new DefaultPropertyService();
-    private Map<Integer, Map<String, DefaultProperty>> defaultPropertiesMap;
     @FXML
     private ListView<String> categoriesListView;
 
@@ -73,6 +72,7 @@ public class CategoriesPageController {
     @FXML
     private Button printButton;
 
+    private Map<Integer, Map<String, DefaultProperty>> defaultPropertiesMap;
     private TextField temperatureField;
     private UnitsDropdownController tempUnitController;
     private DirectionDropdownController directionController;
@@ -97,6 +97,7 @@ public class CategoriesPageController {
     @FXML
     public void initialize() throws IOException, SQLException {
 
+
         //disable UI components when project is not created
             isSubmitButtonVisible(false);
         if(!instance.isProjectCreated()) {
@@ -113,8 +114,8 @@ public class CategoriesPageController {
 
         CategorySelectionListener();
         PropertySelectionListener();
-        defaultPropertiesMap = defaultPropertyService.getDefaultsGrouped();
 
+        refreshcatmap();
 
         // EDIT MENU SETUP
         MenuItem addItem = new MenuItem("Add Category");
@@ -511,10 +512,36 @@ public class CategoriesPageController {
         int categoryId = selectedState.getSelectedCategoryId();
         String propertyName = newProperty.getPropertyName();
 
+        Map<Integer, Map<String, DefaultProperty>> defaultPropertiesMap =
+                AppState.getInstance()
+                        .getDefaultPropertiesMap();
         DefaultProperty dp = null;
 
         if (defaultPropertiesMap.containsKey(categoryId)) {
             dp = defaultPropertiesMap.get(categoryId).get(propertyName);
+        }
+
+        System.out.println("=================================");
+        System.out.println("Property: " + propertyName);
+
+        if (dp != null) {
+
+            System.out.println(
+                    "Default rows from DB: "
+                            + dp.getRows()
+            );
+
+            System.out.println(
+                    "Default unit id from DB: "
+                            + dp.getUnitId()
+            );
+
+            System.out.println(
+                    "Default unit from DB: "
+                            + unitsService.getUnitNameById(
+                            dp.getUnitId()
+                    )
+            );
         }
 
         int defaultRows = (dp != null) ? dp.getRows() : 1;
@@ -554,8 +581,17 @@ public class CategoriesPageController {
         UnitsDropdownController controller = loader.getController();
         controller.setUnits(property);
         if (dp != null && rowCount == 0) {
-            //TODO: replace DB call. Use data available in Property object instead.
-            String unitName = unitsService.getUnitNameById(dp.getUnitId());
+
+            String unitName =
+                    unitsService.getUnitNameById(
+                            dp.getUnitId()
+                    );
+
+            System.out.println(
+                    "Setting default unit from DB = "
+                            + unitName
+            );
+
             controller.setSelectedUnit(unitName);
         }
 
@@ -792,6 +828,10 @@ public class CategoriesPageController {
         entriesGrid.getChildren().clear();
 
         PropertyState state = stateManager.getState(property);
+        System.out.println(
+                "State exists = "
+                        + (state != null)
+        );
 
         // ================= NO SAVED STATE =================
         if (state == null) {
@@ -829,9 +869,16 @@ public class CategoriesPageController {
                     : "";
             inputRow.getField().setText(inputValue);
 
-            String unit = state.getUnit().getUnit();
+            String unit =
+                    state.getUnit().getUnit();
 
-            inputRow.getUnitController().setSelectedUnit(unit);
+            System.out.println(
+                    "Unit from PropertyState = "
+                            + unit
+            );
+
+            inputRow.getUnitController()
+                    .setSelectedUnit(unit);
         }
     }
 
@@ -928,6 +975,10 @@ public class CategoriesPageController {
                 selectedProperty.getPropertyName(),
                 selectedState.getSelectedCategory()
         );
+    }
+
+    public void refreshcatmap(){
+        defaultPropertiesMap = defaultPropertyService.getDefaultsGrouped() ;
     }
 
 }
