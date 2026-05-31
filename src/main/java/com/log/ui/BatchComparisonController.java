@@ -128,7 +128,8 @@ public class BatchComparisonController {
             return;
         }
 
-        int totalCols = 1 + visibleProperties.size();
+        // Columns: "Property" + one per batch
+        int totalCols = 1 + visibleBatches.size();
 
         for (int i = 0; i < totalCols; i++) {
             ColumnConstraints cc = new ColumnConstraints();
@@ -138,22 +139,25 @@ public class BatchComparisonController {
             comparisonGrid.getColumnConstraints().add(cc);
         }
 
-        // Header row — "Batch / Component ID" + property names
-        comparisonGrid.add(makeHeader("Batch / Component ID"), 0, 0);
-        for (int i = 0; i < visibleProperties.size(); i++) {
-            comparisonGrid.add(makeHeader(visibleProperties.get(i)), i + 1, 0);
+        // Header row — "Property" + batch identifiers
+        comparisonGrid.add(makeHeader("Property"), 0, 0);
+        for (int i = 0; i < visibleBatches.size(); i++) {
+            comparisonGrid.add(makeHeader("Batch " + visibleBatches.get(i).getBatchCode()), i + 1, 0);
         }
 
-        // Data rows — one per visible batch
+        // Data rows — one per property
         int row = 1;
-        for (BatchTest batch : visibleBatches) {
+        for (String propName : visibleProperties) {
             boolean isAlt = (row % 2 == 0);
-            Map<String, Double> props = data.getOrDefault(batch.getBatchCode(), Collections.emptyMap());
 
-            comparisonGrid.add(makeCell("Batch " + batch.getBatchCode(), isAlt), 0, row);
+            // First cell — property name
+            comparisonGrid.add(makeCell(propName, isAlt), 0, row);
 
-            for (int i = 0; i < visibleProperties.size(); i++) {
-                String propName = visibleProperties.get(i);
+            // Batch cells — average value for this property in each batch
+            for (int i = 0; i < visibleBatches.size(); i++) {
+                Map<String, Double> props = data.getOrDefault(
+                        visibleBatches.get(i).getBatchCode(), Collections.emptyMap()
+                );
                 String val = props.containsKey(propName)
                         ? formatDouble(props.get(propName))
                         : "—";
