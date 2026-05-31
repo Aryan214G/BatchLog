@@ -61,7 +61,7 @@ public class ProjectPageController {
 
     // ── DB query ──────────────────────────────────────────────────────────────
 
-    // TODO: This method was moved to BatchDAO. Remove this from this class.
+    // TODO: This method was moved to BatchDAO names "getBatchesInProject". Remove this from this class.
     private List<BatchRow> fetchBatches(Connection conn, String projectName) throws SQLException {
         String sql = """
             SELECT
