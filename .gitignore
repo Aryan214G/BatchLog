@@ -38,3 +38,4 @@ build/
 
 # Database files
 
+/database/BatchLog_test.db-journal
