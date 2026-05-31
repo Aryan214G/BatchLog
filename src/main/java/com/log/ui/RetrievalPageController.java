@@ -98,9 +98,7 @@ public class RetrievalPageController {
     }
 
     private String formatBatchText(BatchTest batch) {
-        return "Batch: " + batch.getBatchCode() +
-                " | Date: " + batch.getTestDate() +
-                " | Site: " + batch.getTestSite();
+        return "Batch: " + batch.getBatchCode();
     }
 
     private void handleBatchClick(BatchTest batch) {
