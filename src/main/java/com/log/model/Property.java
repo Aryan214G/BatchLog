@@ -13,6 +13,8 @@ public class Property {
 
     private int testID;
 
+    private String testMethod;
+
     // =========================
     // Related Objects
     // =========================
@@ -142,5 +144,13 @@ public class Property {
 
     public void setPropertyValues(List<PropertyValue> propertyValues) {
         this.propertyValues = propertyValues;
+    }
+
+    public String getTestMethod() {
+        return testMethod;
+    }
+
+    public void setTestMethod(String testMethod) {
+        this.testMethod = testMethod;
     }
 }

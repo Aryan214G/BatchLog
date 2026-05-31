@@ -13,6 +13,7 @@ public class PropertyStateManager {
 
     public void saveState(
             String property,
+            String testMethod,
             List<InputRow> inputRows,
             Temperature temperature,
             Direction direction,
@@ -25,6 +26,7 @@ public class PropertyStateManager {
         state.setDirection(direction);
         state.setInputRows(inputRows);
         state.setUnit(unit);
+        state.setTestMethod(testMethod);
         propertyStates.put(property, state);
     }
 

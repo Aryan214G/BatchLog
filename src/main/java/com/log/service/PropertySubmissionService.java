@@ -44,7 +44,7 @@ public class PropertySubmissionService {
 
             handleTemperature(conn, propertyState.getTemperature());
             handleDirection(conn, propertyState.getDirection());
-            handleProperty(conn, propertyState.getInputRows(), propertyName, selectedCategory);
+            handleProperty(conn, propertyState.getInputRows(), propertyName, selectedCategory, propertyState.getTestMethod());
 
             conn.commit();
             showAlert("Success", "Submission completed successfully!");
@@ -91,7 +91,7 @@ public class PropertySubmissionService {
         }
     }
 
-    private void handleProperty(Connection conn, List<InputRow> inputRows, String propertyName, String selectedCategory){
+    private void handleProperty(Connection conn, List<InputRow> inputRows, String propertyName, String selectedCategory, String testMethod){
         //TODO: might need to replace this unecessary db call
         Category category =
         categoryService.getCategory(conn, selectedCategory);
@@ -119,6 +119,8 @@ public class PropertySubmissionService {
                 temperature,
                 direction
         );
+
+        property.setTestMethod(testMethod);
 
         int propertyID = propertyService.getPropertyId(conn, property);
 

@@ -12,6 +12,7 @@ public class PropertyState {
     private Temperature temperature;
     private Direction direction;
     private Unit unit;
+    private String testMethod;
 
     public PropertyState() {
     }
@@ -60,5 +61,13 @@ public class PropertyState {
 
     public void setUnit(Unit unit) {
         this.unit = unit;
+    }
+
+    public String getTestMethod() {
+        return testMethod;
+    }
+
+    public void setTestMethod(String testMethod) {
+        this.testMethod = testMethod;
     }
 }

@@ -14,9 +14,18 @@ public class  PropertyDAO {
     public int insertProperty(Connection conn, Property property) {
         String sql = """
                 INSERT INTO Property
-                (Property_name, Category_ID, Temp_ID, Dir_ID, Unit_ID, Test_ID)
-                VALUES (?, ?, ?, ?, ?, ?)
+                (Property_name, Category_ID, Temp_ID, Dir_ID, Unit_ID, Test_ID, test_method)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
                 """;
+
+        System.out.println("=== INSERT PROPERTY ===");
+System.out.println("Property Name = " + property.getPropertyName());
+System.out.println("Category ID   = " + property.getCategory().getCategoryId());
+System.out.println("Temp ID       = " + property.getTemperature().getTempId());
+System.out.println("Dir ID        = " + property.getDirection().getDirId());
+System.out.println("Unit ID       = " + property.getUnit().getUnitId());
+System.out.println("Test ID       = " + property.getTestID());
+System.out.println("Test Method   = " + property.getTestMethod());
 
         try(PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -26,6 +35,7 @@ public class  PropertyDAO {
             statement.setInt(4, property.getDirection().getDirId());
             statement.setInt(5, property.getUnit().getUnitId());
             statement.setInt(6, property.getTestID());
+            statement.setString(7, property.getTestMethod());
 
             statement.executeUpdate();
             ResultSet rs = statement.getGeneratedKeys();
@@ -44,10 +54,12 @@ public class  PropertyDAO {
 
     List<Property> properties = new ArrayList<>();
 
+    //TODO: add test_method retrieval
     String sql = """
         SELECT
             p.Property_ID,
             p.Property_name,
+            p.test_method,
 
             p.Category_ID,
             c.Category_name,
@@ -115,6 +127,8 @@ public class  PropertyDAO {
 
             property.setTestID(rs.getInt("Test_ID"));
 
+            property.setTestMethod(rs.getString("test_method"));
+
             properties.add(property);
         }
 
@@ -137,7 +151,8 @@ public class  PropertyDAO {
                 Temp_ID = ?, 
                 Dir_ID = ?, 
                 Unit_ID = ?, 
-                Test_ID = ?
+                Test_ID = ?,
+                test_method = ?
             WHERE Property_ID = ?
             """;
 
@@ -149,7 +164,8 @@ public class  PropertyDAO {
             stmt.setInt(4, property.getDirection().getDirId());
             stmt.setInt(5, property.getUnit().getUnitId());
             stmt.setInt(6, property.getTestID());
-            stmt.setInt(7, property.getPropertyID());
+            stmt.setString(7, property.getTestMethod());
+            stmt.setInt(8, property.getPropertyID());
 
             int rowsAffected = stmt.executeUpdate();
 

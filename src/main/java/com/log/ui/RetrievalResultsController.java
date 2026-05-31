@@ -4,6 +4,7 @@ import com.log.core.AppState;
 import com.log.core.BasePropertiesState;
 import com.log.database.DBUtil;
 import com.log.model.BatchTest;
+import com.log.model.PropertyRow;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -55,26 +56,7 @@ public class RetrievalResultsController {
     private int testId;
     // ── Row model ─────────────────────────────────────────────────────────────
 
-    private static class PropertyRow {
-        String name, category, temperature, direction, unit;
-        List<Double> values = new ArrayList<>();
 
-        PropertyRow(String name, String category, String temperature,
-                    String direction, String unit) {
-            this.name        = name;
-            this.category    = category;
-            this.temperature = temperature;
-            this.direction   = direction;
-            this.unit        = unit;
-        }
-
-        double average() {
-            return values.stream()
-                    .mapToDouble(Double::doubleValue)
-                    .average()
-                    .orElse(0);
-        }
-    }
 
     // ── Entry point ───────────────────────────────────────────────────────────
 
@@ -89,7 +71,7 @@ public class RetrievalResultsController {
             // Build property filter state — all visible by default
             propertyStates.clear();
             for (PropertyRow r : cachedRows) {
-                propertyStates.put(r.name, true);
+                propertyStates.put(r.getName(), true);
             }
 
             appState.setProjectCreated(true);
@@ -211,7 +193,7 @@ public class RetrievalResultsController {
                         rs.getString("Dir_VAL"),
                         rs.getString("Unit")
                 );
-                row.values = fetchValues(conn, rs.getInt("Property_ID"));
+                row.setValues(fetchValues(conn, rs.getInt("Property_ID")));
                 rows.add(row);
             }
         }
@@ -242,7 +224,7 @@ public class RetrievalResultsController {
 
         // Filter rows by property visibility
         List<PropertyRow> visibleRows = rows.stream()
-                .filter(r -> propertyStates.getOrDefault(r.name, true))
+                .filter(r -> propertyStates.getOrDefault(r.getName(), true))
                 .toList();
 
         if (visibleRows.isEmpty()) {
@@ -260,7 +242,7 @@ public class RetrievalResultsController {
         if (columnStates.getOrDefault("Direction",     true)) headers.add("Direction");
 
 
-        int maxValues = visibleRows.stream().mapToInt(r -> r.values.size()).max().orElse(0);
+        int maxValues = visibleRows.stream().mapToInt(r -> r.getValues().size()).max().orElse(0);
         if (columnStates.getOrDefault("Values", true)) {
             for (int i = 0; i < maxValues; i++) {
                 headers.add("Value " + (i + 1));
@@ -288,19 +270,19 @@ public class RetrievalResultsController {
             int col = 0;
 
             if (columnStates.getOrDefault("Property",      true))
-                propertiesGrid.add(makeCell(p.name, isAlt), col++, row);
+                propertiesGrid.add(makeCell(p.getName(), isAlt), col++, row);
             if (columnStates.getOrDefault("Category",      true))
-                propertiesGrid.add(makeCell(p.category, isAlt), col++, row);
+                propertiesGrid.add(makeCell(p.getCategory(), isAlt), col++, row);
             if (columnStates.getOrDefault("Temperature",   true))
-                propertiesGrid.add(makeCell(p.temperature != null ? p.temperature : "—", isAlt), col++, row);
+                propertiesGrid.add(makeCell(p.getTemperature() != null ? p.getTemperature() : "—", isAlt), col++, row);
             if (columnStates.getOrDefault("Direction",     true))
-                propertiesGrid.add(makeCell(p.direction, isAlt), col++, row);
+                propertiesGrid.add(makeCell(p.getDirection(), isAlt), col++, row);
 
 
             if (columnStates.getOrDefault("Values", true)) {
                 for (int i = 0; i < maxValues; i++) {
-                    String val = i < p.values.size()
-                            ? formatDouble(p.values.get(i)) + " " + (p.unit != null ? p.unit : "")
+                    String val = i < p.getValues().size()
+                            ? formatDouble(p.getValues().get(i)) + " " + (p.getUnit() != null ? p.getUnit() : "")
                             : "";
                     propertiesGrid.add(makeCell(val, isAlt), col++, row);
                 }
@@ -308,7 +290,7 @@ public class RetrievalResultsController {
 
             if (columnStates.getOrDefault("Average Value", true))
                 propertiesGrid.add(makeCell(
-                        formatDouble(p.average()) + " " + (p.unit != null ? p.unit : ""), isAlt), col++, row);
+                        formatDouble(p.getAverage()) + " " + (p.getUnit() != null ? p.getUnit() : ""), isAlt), col++, row);
 
             row++;
         }
