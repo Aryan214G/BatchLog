@@ -80,9 +80,7 @@ public class RetrievalResultsController {
 
     public void loadBatch(BatchTest batch) {
         batchTitleLabel.setText(
-                "Batch: " + batch.getBatchCode() +
-                        " | Date: " + batch.getTestDate() +
-                        " | Site: " + batch.getTestSite()
+                "Batch: " + batch.getBatchCode()
         );
 
         try (Connection conn = DBUtil.getConnection()) {
