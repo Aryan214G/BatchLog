@@ -5,7 +5,9 @@ import com.log.model.Property;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class  PropertyDAO {
 
@@ -193,5 +195,34 @@ public class  PropertyDAO {
         }
 
         return -1; // not found
+    }
+
+    public Map<String, Double> getPropertyAveragesByBatch(Connection conn, int batchCode) throws SQLException {
+        Map<String, Double> propertyAverages = new LinkedHashMap<>();
+
+        String sql = """
+        SELECT
+            p.Property_name,
+            AVG(pv.Prop_VAL) AS avg_val
+        FROM Property p
+        JOIN Property_Values pv ON pv.Property_ID = p.Property_ID
+        JOIN Batch_Test bt      ON p.Test_ID      = bt.Test_ID
+        WHERE bt.Batch_CODE = ?
+        GROUP BY p.Property_name
+    """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, batchCode);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                propertyAverages.put(
+                        rs.getString("Property_name"),
+                        rs.getDouble("avg_val")
+                );
+            }
+        }
+
+        return propertyAverages;
     }
 }
