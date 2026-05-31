@@ -63,6 +63,10 @@ public class CategoriesPageController {
     private HBox headerBox;
 
     @FXML
+    private VBox testDetailsBox;
+
+
+    @FXML
     private Button submitButton;
 
     @FXML
@@ -74,6 +78,7 @@ public class CategoriesPageController {
     private Button printButton;
 
     private TextField temperatureField;
+    private TextField testMethodField;
     private UnitsDropdownController tempUnitController;
     private DirectionDropdownController directionController;
 
@@ -524,6 +529,7 @@ public class CategoriesPageController {
         int defaultRows = (dp != null) ? dp.getRows() : 1;
         try {
             loadMetrics();
+            populatetestDetailsBox();
             addHeaderControls();
             loadPropertyFields(defaultRows, newProperty.getPropertyName(), dp);
             updateMetrics();   // force refresh after load
@@ -533,6 +539,20 @@ public class CategoriesPageController {
             throw new RuntimeException(e);
         }
         updateInfoBar();
+    }
+
+    private void populatetestDetailsBox() {
+
+        testDetailsBox.getChildren().clear();
+
+        testMethodField = new TextField();
+        testMethodField.setPromptText("Test method/Standard");
+        testMethodField.getStyleClass().add("input-field");
+
+        testDetailsBox.getChildren().addAll(
+        testMethodField
+        );
+
     }
 
     private void updateInfoBar() {
@@ -604,6 +624,8 @@ public class CategoriesPageController {
 
         headerBox.getChildren().clear();
 
+
+
         temperatureField = new TextField();
         temperatureField.setPromptText("Temperature");
         temperatureField.getStyleClass().add("input-field");
@@ -620,6 +642,8 @@ public class CategoriesPageController {
         );
         Parent directionNode = directionLoader.load();
         directionController = directionLoader.getController();
+
+
 
         headerBox.getChildren().addAll(
                 temperatureField,
@@ -895,6 +919,8 @@ public class CategoriesPageController {
     }
 
     private void clearUIComponents(){
+
+        testDetailsBox.getChildren().clear();
         headerBox.getChildren().clear();
         entriesGrid.getChildren().clear();
         isSubmitButtonVisible(false);
