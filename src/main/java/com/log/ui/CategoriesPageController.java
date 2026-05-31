@@ -85,17 +85,26 @@ public class CategoriesPageController {
     private UnitsService unitsService = new UnitsService();
     private BatchService batchService = new BatchService();
     private TemperatureUnitService temperatureUnitService = new TemperatureUnitService();
+    private PropertyValuesService propertyValuesService = new PropertyValuesService();
     private PropertySubmissionService propertySubmissionService = new PropertySubmissionService(
             temperatureService,
             directionService,
             categoryService,
             unitsService,
-            propertyService
+            propertyService,
+            propertyValuesService
             );
+
+
     // ======================= END OF VARIABLES DECLARATION ==============================
 
     @FXML
     public void initialize() throws IOException, SQLException {
+        System.out.println("===== CategoriesPage Initialize =====");
+        System.out.println(
+                "Test ID in state = "
+                        + basePropertiesState.getTestId()
+        );
 
 
         //disable UI components when project is not created
@@ -341,7 +350,7 @@ public class CategoriesPageController {
     public void populateInputRowsHelper(Property property, Connection conn){
 
         int propertyID = property.getPropertyID();
-        List<PropertyValue> propertyValues  = propertyService.getValuesByProperty(conn, propertyID);
+        List<PropertyValue> propertyValues  = propertyValuesService.getValuesByProperty(conn, propertyID);
 
         for(PropertyValue value : propertyValues){
             InputRow inputRow = new InputRow();
@@ -716,10 +725,13 @@ public class CategoriesPageController {
                 return false;
             }
         }
+        else {
+            row.getPropertyValue().setPropertyVAL(null);
+        }
     }
 
     // ================= SAVE TEMPERATURE =================
-    double tempVal = 0;
+    Double tempVal = null;
 
     String text = temperatureField.getText();
 
@@ -749,7 +761,7 @@ public class CategoriesPageController {
         if (tempUnitVal == null || tempUnitVal.isBlank()) {
 
             tempUnitID = -1;
-            tempUnitVal = "";
+            tempUnitVal = null;
 
         } else {
 
@@ -844,7 +856,15 @@ public class CategoriesPageController {
         }
 
         // ================= RESTORE HEADER =================
-        String temp = String.valueOf(state.getTemperature().getTempVal());
+        String temp = "";
+
+        if (state.getTemperature() != null
+                && state.getTemperature().getTempVal() != null) {
+
+            temp = String.valueOf(
+                    state.getTemperature().getTempVal()
+            );
+        }
 
         temperatureField.setText(temp);
         tempUnitController.setSelectedUnit(state.getTemperature().getTempUnitVal());
@@ -864,9 +884,12 @@ public class CategoriesPageController {
 
             PropertyValue pv = inputRow.getPropertyValue();
 
-            String inputValue = (pv != null)
-                    ? String.valueOf(pv.getPropertyVAL())
-                    : "";
+            String inputValue = "";
+
+            if (pv != null && pv.getPropertyVAL() != null) {
+                inputValue = String.valueOf(pv.getPropertyVAL());
+            }
+
             inputRow.getField().setText(inputValue);
 
             String unit =
