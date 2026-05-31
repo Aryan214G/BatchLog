@@ -271,7 +271,7 @@ public class CategoriesPageController {
             //================= save state ==================
             stateManager.saveState(
                     property.getPropertyName(),
-                    null, //TODO: change later
+                    property.getTestMethod(),
                     new ArrayList<>(inputRows),
                     property.getTemperature(),
                     property.getDirection(),
