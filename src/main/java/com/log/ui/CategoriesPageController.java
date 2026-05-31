@@ -7,6 +7,7 @@ import com.log.database.DBUtil;
 import com.log.model.*;
 import com.log.service.*;
 import com.log.ui.util.AlertUtil;
+import com.log.ui.util.StringUtils;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -270,6 +271,7 @@ public class CategoriesPageController {
             //================= save state ==================
             stateManager.saveState(
                     property.getPropertyName(),
+                    null, //TODO: change later
                     new ArrayList<>(inputRows),
                     property.getTemperature(),
                     property.getDirection(),
@@ -799,13 +801,16 @@ public class CategoriesPageController {
     Unit unit = new Unit();
     unit.setUnit(unitValue);
 
+    //StringUtils is a user defined class present in utility package
+    String testMethod = StringUtils.nullIfBlank(testMethodField.getText());
+
     // ================= SAVE PROPERTY STATE =================
 
     stateManager.saveState(
             property.getPropertyName(),
+            testMethod,
 
             new ArrayList<>(inputRows),
-
 
             new Temperature(existingTempId, tempVal, tempUnitID, tempUnitVal),
             new Direction(directionController.getSelectedDirection()),
@@ -833,6 +838,11 @@ public class CategoriesPageController {
 
             return;
         }
+
+        //================== RESTORE TESTDETAIS =============
+
+        if (state.getTestMethod() != null) { testMethodField.setText(state.getTestMethod()); }
+
 
         // ================= RESTORE HEADER =================
         String temp = "";
