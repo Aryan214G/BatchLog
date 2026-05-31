@@ -59,6 +59,7 @@ System.out.println("Test Method   = " + property.getTestMethod());
         SELECT
             p.Property_ID,
             p.Property_name,
+            p.test_method,
 
             p.Category_ID,
             c.Category_name,
@@ -125,6 +126,8 @@ System.out.println("Test Method   = " + property.getTestMethod());
             property.getUnit().setUnit(rs.getString("Property_Unit"));
 
             property.setTestID(rs.getInt("Test_ID"));
+
+            property.setTestMethod(rs.getString("test_method"));
 
             properties.add(property);
         }
