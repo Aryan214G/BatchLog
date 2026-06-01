@@ -193,13 +193,40 @@ public class PdfReportService {
 
             y -= 30;
 
-            writeText(content, reportData.getPropertyName().toUpperCase(), 250, y);
+            String propertyName = reportData.getPropertyName().toUpperCase();
+            String unit = reportData.getUnit();
 
+            writeBoldText(content, propertyName  + " (" + unit + ")", 250, y);
+
+            y -= 60;
+
+            //table constrains
+
+            float tableX = LEFT_MARGIN + 150;
+            float tableY = y;
+            float rowHeight = 25;
+
+            float col1 = 100;
+            float col2 = 100;
+
+            drawCell(content, tableX, tableY, col1, rowHeight);
+            drawCell(content, tableX + col1, tableY, col2, rowHeight);
+
+            drawCellTextBold(content, "Specimen No.", tableX, tableY, col1, rowHeight);
+            drawCellTextBold(content, "Test value", tableX + col2, tableY, col2, rowHeight);
+
+            int sNo = 1;
             for(Double value : reportData.getValues())
             {
-                y-= 20;
+                y-= 25;
 
-                writeText(content, value.toString(), 50, y);
+                drawCell(content, tableX, y, col1, rowHeight);
+                drawCell(content, tableX + col1, y, col2, rowHeight);
+
+                drawCellText(content, "Specimen " + String.valueOf(sNo), tableX, y, col1, rowHeight);
+                drawCellText(content, value.toString(), tableX + col1, y, col2, rowHeight);
+
+                sNo++;
             }
 
             y -= 30;
@@ -210,7 +237,7 @@ public class PdfReportService {
 
             y -= 30;
 
-            writeText(content, "STATISTICS", 250, y);
+            writeBoldText(content, "STATISTICS", 250, y);
 
             y-= 20;
 
@@ -282,4 +309,40 @@ public class PdfReportService {
     content.lineTo(endX, endY);
     content.stroke();
 }
+
+    // ======================== TABLES ====================================
+
+    private void drawCell(PDPageContentStream content, float x, float y, float width, float height) throws IOException {
+
+        content.addRect(x, y, width, height);
+        content.stroke();
+    }
+
+    private void drawCellText(PDPageContentStream content, String text, float x, float y, float cellWidth, float cellHeight) throws IOException {
+
+    PDFont font = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
+    float fontSize = 12;
+
+    float textWidth = font.getStringWidth(text) / 1000 * fontSize;
+
+    float textX = x + (cellWidth - textWidth) / 2;
+    float textY = y + (cellHeight - fontSize) / 2 + 4;
+
+    writeText(content, text, textX, textY);
+}
+
+private void drawCellTextBold(PDPageContentStream content, String text, float x, float y, float cellWidth, float cellHeight) throws IOException {
+
+    PDFont font = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
+    float fontSize = 12;
+
+    float textWidth = font.getStringWidth(text) / 1000 * fontSize;
+
+    float textX = x + (cellWidth - textWidth) / 2;
+    float textY = y + (cellHeight - fontSize) / 2 + 4;
+
+    writeBoldText(content, text, textX, textY);
+}
+
+
 }
