@@ -35,6 +35,11 @@ public class PdfReportService {
                 property.getTestMethod(),
                 batchTest.getTestDate(),
                 batchTest.getTestSite(),
+                property.getDirection().getDirVal(),
+                property.getTemperature().getTempVal(),
+                property.getTemperature().getTempUnitVal(),
+                null,
+
 
 
 
