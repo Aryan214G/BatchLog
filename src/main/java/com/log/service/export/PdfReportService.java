@@ -154,7 +154,7 @@ public class PdfReportService {
             float titleWidth = font.getStringWidth(title) / 1000 * fontSize;
             float titleX = (page.getMediaBox().getWidth() - titleWidth) / 2;
 
-            writeText(content, title, titleX, y);
+            writeBoldText(content, title, titleX, y);
 
             // ________________________________________________________________________________
 
@@ -247,6 +247,20 @@ public class PdfReportService {
 
         content.beginText();
         content.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 12);
+        content.newLineAtOffset(x, y);
+        content.showText(text);
+        content.endText();
+    }
+
+    private void writeBoldText(
+        PDPageContentStream content,
+        String text,
+        float x,
+        float y)
+        throws IOException {
+
+        content.beginText();
+        content.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 12);
         content.newLineAtOffset(x, y);
         content.showText(text);
         content.endText();
