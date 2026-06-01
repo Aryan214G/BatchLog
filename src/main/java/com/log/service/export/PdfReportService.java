@@ -142,15 +142,21 @@ public class PdfReportService {
             float y = 700;
             content.newLineAtOffset(50, y);
 
-            float y = 700;
-
             writeText(content, "TEST REPORT", 250, y);
+
+            // ________________________________________________________________________________
 
             y -= 40;
 
             writeText(content, "Report No: " + reportData.getTestReportNo(), 50, y);
 
             y -= 20;
+
+            writeText(content, "Date: " + reportData.getDate(), 50, y);
+
+            // ________________________________________________________________________________
+
+            y -= 40;
 
             writeText(content, "Batch ID: " + reportData.getBatchId(), 50, y);
 
@@ -162,6 +168,31 @@ public class PdfReportService {
 
             writeText(content, "Test Date: " + reportData.getTestDate(), 50, y);
 
+            // ________________________________________________________________________________
+
+            y -= 40;
+
+            writeText(content, "Property: " + reportData.getPropertyName(), 50, y);
+
+            y-= 20;
+
+            writeText(content, "Test Method: " + reportData.getTestMethod(), 50, y);
+
+            y-= 20;
+
+            writeText(content, "Temperature: " + reportData.getTemperature() + " " + reportData.getTemperatureUnit() , 50, y);
+
+            y-= 20;
+
+            writeText(content, "Direction: " + reportData.getDirection(), 50, y);
+
+            y -= 30;
+
+            drawLine(content, 50, y, 550, y);
+
+            y -= 30;
+
+
             content.endText();
         }
 
@@ -170,14 +201,6 @@ public class PdfReportService {
 
     return file;
 }
-
-    private void writeLine(
-            PDPageContentStream content,
-            String text) throws IOException {
-
-        content.showText(text);
-        content.newLineAtOffset(0, -20);
-    }
 
     private void writeText(
         PDPageContentStream content,
@@ -191,4 +214,11 @@ public class PdfReportService {
         content.showText(text);
         content.endText();
     }
+
+    private void drawLine(PDPageContentStream content, float startX, float startY, float endX, float endY) throws IOException {
+
+    content.moveTo(startX, startY);
+    content.lineTo(endX, endY);
+    content.stroke();
+}
 }
