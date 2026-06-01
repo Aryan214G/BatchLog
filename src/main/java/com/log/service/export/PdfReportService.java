@@ -139,26 +139,28 @@ public class PdfReportService {
                     12
             );
 
-            content.newLineAtOffset(50, 700);
+            float y = 700;
+            content.newLineAtOffset(50, y);
 
-            content.showText(
-                    "Property: "
-                            + reportData.getPropertyName()
-            );
+            float y = 700;
 
-            content.newLineAtOffset(0, -20);
+            writeText(content, "TEST REPORT", 250, y);
 
-            content.showText(
-                    "Batch ID: "
-                            + reportData.getBatchId()
-            );
+            y -= 40;
 
-            content.newLineAtOffset(0, -20);
+            writeText(content, "Report No: " + reportData.getTestReportNo(), 50, y);
 
-            content.showText(
-                    "Average: "
-                            + reportData.getAverage()
-            );
+            y -= 20;
+
+            writeText(content, "Batch ID: " + reportData.getBatchId(), 50, y);
+
+            y -= 20;
+
+            writeText(content, "Test Site: " + reportData.getTestSite(), 50, y);
+
+            y -= 20;
+
+            writeText(content, "Test Date: " + reportData.getTestDate(), 50, y);
 
             content.endText();
         }
@@ -168,4 +170,25 @@ public class PdfReportService {
 
     return file;
 }
+
+    private void writeLine(
+            PDPageContentStream content,
+            String text) throws IOException {
+
+        content.showText(text);
+        content.newLineAtOffset(0, -20);
+    }
+
+    private void writeText(
+        PDPageContentStream content,
+        String text,
+        float x,
+        float y)
+        throws IOException {
+
+        content.beginText();
+        content.newLineAtOffset(x, y);
+        content.showText(text);
+        content.endText();
+    }
 }
