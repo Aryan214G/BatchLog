@@ -202,7 +202,7 @@ public class PdfReportService {
 
             y -= 30;
 
-            writeText(content, "VALUES", 250, y);
+            writeText(content, reportData.getPropertyName().toUpperCase(), 250, y);
 
             for(Double value : reportData.getValues())
             {
@@ -235,7 +235,9 @@ public class PdfReportService {
 
             y-= 20;
 
-            writeText(content, "Standard deviation: " + reportData.getStandardDeviation(), 50, y);
+            String standardDeviation = String.format("%.1f", reportData.getStandardDeviation());
+
+            writeText(content, "Standard deviation: " + standardDeviation, 50, y);
 
         }
 
