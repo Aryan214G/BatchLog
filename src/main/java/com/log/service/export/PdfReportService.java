@@ -11,6 +11,7 @@ import com.log.util.DialogUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 
@@ -132,20 +133,38 @@ public class PdfReportService {
         try (PDPageContentStream content =
                      new PDPageContentStream(document, page)) {
 
+            // CONSTANTS
+
+            float pageWidth = page.getMediaBox().getWidth();
+
+            float LEFT_MARGIN = pageWidth * 0.08f;
+            float RIGHT_MARGIN = pageWidth * 0.92f;
+
+            float RIGHT_COLUMN_X = pageWidth - 200;
 
             float y = 700;
+            // ________________________________________________________________________________
 
-            writeText(content, "TEST REPORT", 250, y);
+
+            String title = "TEST REPORT - " + reportData.getPropertyName().toUpperCase();
+
+            PDFont font = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
+            float fontSize = 12;
+
+            float titleWidth = font.getStringWidth(title) / 1000 * fontSize;
+            float titleX = (page.getMediaBox().getWidth() - titleWidth) / 2;
+
+            writeText(content, title, titleX, y);
 
             // ________________________________________________________________________________
 
             y -= 40;
 
-            writeText(content, "Report No: " + reportData.getTestReportNo(), 50, y);
+            float RIGHT_EDGE = 550;
 
-            y -= 20;
+            writeText(content, "Report Number: " + reportData.getTestReportNo(), 50, y);
 
-            writeText(content, "Date: " + reportData.getDate(), 50, y);
+            writeRightAlignedText(content, "Date: " + reportData.getDate(), RIGHT_EDGE, y);
 
             // ________________________________________________________________________________
 
@@ -165,15 +184,11 @@ public class PdfReportService {
 
             y -= 40;
 
-            writeText(content, "Property: " + reportData.getPropertyName(), 50, y);
-
-            y-= 20;
-
             writeText(content, "Test Method: " + reportData.getTestMethod(), 50, y);
 
             y-= 20;
 
-            writeText(content, "Temperature: " + reportData.getTemperature() + " " + reportData.getTemperatureUnit() , 50, y);
+            writeText(content, "Test temperature: " + reportData.getTemperature() + " " + reportData.getTemperatureUnit() , 50, y);
 
             y-= 20;
 
@@ -181,7 +196,7 @@ public class PdfReportService {
 
             y -= 30;
 
-            drawLine(content, 50, y, 550, y);
+            drawLine(content, LEFT_MARGIN, y, RIGHT_MARGIN, y);
 
             // ________________________________________________________________________________
 
@@ -198,7 +213,7 @@ public class PdfReportService {
 
             y -= 30;
 
-            drawLine(content, 50, y, 550, y);
+            drawLine(content, LEFT_MARGIN, y, RIGHT_MARGIN, y);
 
             // ________________________________________________________________________________
 
@@ -242,6 +257,16 @@ public class PdfReportService {
         content.newLineAtOffset(x, y);
         content.showText(text);
         content.endText();
+    }
+
+    private void writeRightAlignedText(PDPageContentStream content, String text, float rightX, float y) throws IOException {
+
+        PDFont font = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
+        float fontSize = 12;
+
+        float textWidth = font.getStringWidth(text) / 1000 * fontSize;
+
+        writeText(content, text, rightX - textWidth, y);
     }
 
     private void drawLine(PDPageContentStream content, float startX, float startY, float endX, float endY) throws IOException {
