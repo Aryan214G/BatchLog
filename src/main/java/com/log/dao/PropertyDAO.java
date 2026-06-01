@@ -54,7 +54,6 @@ System.out.println("Test Method   = " + property.getTestMethod());
 
     List<Property> properties = new ArrayList<>();
 
-    //TODO: add test_method retrieval
     String sql = """
         SELECT
             p.Property_ID,
@@ -241,4 +240,89 @@ System.out.println("Test Method   = " + property.getTestMethod());
 
         return propertyAverages;
     }
+
+    public Property getPropertyById(Connection conn, int propertyId){
+
+        String sql = """
+                SELECT
+            p.Property_name,
+            p.test_method,
+
+            p.Category_ID,
+            c.Category_name,
+
+            p.Temp_ID,
+            t.Temp_VAL,
+            t.Temp_Unit_ID,
+            tu.Temp_Unit AS Temp_Unit,
+
+            p.Dir_ID,
+            d.Dir_VAL,
+
+            p.Unit_ID,
+            u.Unit AS Property_Unit,
+
+            p.Test_ID
+
+        FROM Property p
+
+        JOIN Category c
+            ON p.Category_ID = c.Category_ID
+
+        JOIN Units u
+            ON p.Unit_ID = u.Unit_ID
+
+        JOIN Direction d
+            ON p.Dir_ID = d.Dir_ID
+
+        JOIN Temperature t
+            ON p.Temp_ID = t.Temp_ID
+
+        JOIN Temperature_Units tu
+            ON t.Temp_Unit_ID = tu.Temp_Unit_ID
+
+        WHERE p.Property_ID = ?""";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, propertyId);
+
+            ResultSet rs = stmt.executeQuery();
+
+            Property property = new Property();
+
+            if (rs.next()) {
+
+            property.setPropertyID(propertyId);
+            property.setPropertyName(rs.getString("Property_name"));
+
+            property.getCategory().setCategoryId(rs.getInt("Category_ID"));
+            property.getCategory().setCategoryName(rs.getString("Category_name"));
+
+            property.getTemperature().setTempId(rs.getInt("Temp_ID"));
+            property.getTemperature().setTempVal(rs.getDouble("Temp_VAL"));
+            property.getTemperature().setTempUnitVal(rs.getString("Temp_Unit"));
+            property.getTemperature().setTempUnitId(rs.getInt("Temp_Unit_ID"));
+
+            property.getDirection().setDirId(rs.getInt("Dir_ID"));
+            property.getDirection().setDirVal(rs.getString("Dir_VAL"));
+
+            property.getUnit().setUnitId(rs.getInt("Unit_ID"));
+            property.getUnit().setUnit(rs.getString("Property_Unit"));
+
+            property.setTestID(rs.getInt("Test_ID"));
+
+            property.setTestMethod(rs.getString("test_method"));
+
+                return property;
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }
+
