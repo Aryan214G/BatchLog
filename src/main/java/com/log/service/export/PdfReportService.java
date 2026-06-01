@@ -1,7 +1,11 @@
 package com.log.service.export;
 
+import com.log.database.DBUtil;
 import com.log.dto.ReportData;
+import com.log.model.Property;
 import com.log.service.PropertyService;
+
+import java.sql.SQLException;
 
 public class PdfReportService {
 
@@ -12,11 +16,11 @@ public class PdfReportService {
     // ======================================================================
 
 
-    public ReportData buildReportData(int propertyId) {
+    public ReportData buildReportData(int propertyId) throws SQLException {
 
         ReportData reportData = new ReportData();
+        Property property = propertyService.getPropertyById(propertyId);
 
-        propertyService.getPropertyB
 
 
         return reportData;
