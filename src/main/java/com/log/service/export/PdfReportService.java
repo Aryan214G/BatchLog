@@ -12,6 +12,7 @@ import com.log.service.StatisticsService;
 import com.log.util.DateUtils;
 import com.log.util.DialogUtils;
 
+import java.io.File;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
@@ -43,8 +44,13 @@ public class PdfReportService {
 
         List<Double> values = getPropertyValueList(property);
 
-        double average = StatisticsService.mean(values);
-        double stdDev = StatisticsService.standardDeviation(values);
+        Double average = null;
+        Double stdDev = null;
+
+        if (!values.isEmpty()) {
+            average = StatisticsService.mean(values);
+            stdDev = StatisticsService.standardDeviation(values);
+        }
 
 
         Optional<String> result = DialogUtils.showTextInputDialog(
@@ -104,5 +110,10 @@ public class PdfReportService {
             .filter(Objects::nonNull)
             .min(Double::compare)
             .orElse(null);
+    }
+
+    public File generatePdf(ReportData reportData) {
+
+
     }
 }
