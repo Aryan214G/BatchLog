@@ -28,8 +28,24 @@ public class ReportData {
     public ReportData() {
 }
 
-
-
+    public ReportData(String propertyName, String batchId, String testMethod, String testDate, String testSite, String direction, Double temperature, String temperatureUnit, String testReportNo, String date, Double min, Double max, Double average, Double standardDeviation, List<Double> values, String unit) {
+        this.propertyName = propertyName;
+        BatchId = batchId;
+        this.testMethod = testMethod;
+        this.testDate = testDate;
+        this.testSite = testSite;
+        this.direction = direction;
+        this.temperature = temperature;
+        this.temperatureUnit = temperatureUnit;
+        this.testReportNo = testReportNo;
+        this.date = date;
+        this.min = min;
+        this.max = max;
+        this.average = average;
+        this.standardDeviation = standardDeviation;
+        this.values = values;
+        this.unit = unit;
+    }
 
     //============= Getters and setters =============================
 

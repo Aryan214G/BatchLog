@@ -43,4 +43,31 @@ public class BatchTestDAO {
 
 
     }
+
+    public String getBatchIdByTestId(Connection conn, int testId) {
+
+    String sql = """
+            SELECT b.Batch_ID
+            FROM Batch_Test bt
+            JOIN Batch b
+                ON bt.Batch_CODE = b.Batch_CODE
+            WHERE bt.Test_ID = ?
+            """;
+
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+        stmt.setInt(1, testId);
+
+        ResultSet rs = stmt.executeQuery();
+
+        if (rs.next()) {
+            return rs.getString("Batch_ID");
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return null;
+}
 }
