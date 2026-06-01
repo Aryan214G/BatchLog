@@ -8,9 +8,11 @@ import com.log.model.PropertyValue;
 import com.log.service.BatchService;
 import com.log.service.BatchTestService;
 import com.log.service.PropertyService;
+import com.log.service.StatisticsService;
 import com.log.util.DateUtils;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Objects;
 
 public class PdfReportService {
@@ -37,6 +39,11 @@ public class PdfReportService {
                 property.getTestID()
         );
 
+        List<Double> values = getPropertyValueList(property);
+
+        double average = StatisticsService.mean(values);
+        double stdDev = StatisticsService.standardDeviation(values);
+
         ReportData reportData = new ReportData(
                 property.getPropertyName(),
                 batchId,
@@ -50,16 +57,24 @@ public class PdfReportService {
                 dateUtils.getCurrentDateFormatted(),
                 findMin(property),
                 findMax(property),
-
-
-
-
+                average,
+                stdDev,
+                values,
+                property.getUnit().getUnit()
         );
 
 
 
         return reportData;
     }
+
+    private List<Double> getPropertyValueList(Property property) {
+    return property.getPropertyValues()
+            .stream()
+            .map(PropertyValue::getPropertyVAL)
+            .filter(Objects::nonNull)
+            .toList();
+}
 
     private Double findMax(Property property){
 
