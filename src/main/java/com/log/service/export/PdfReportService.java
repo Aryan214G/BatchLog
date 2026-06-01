@@ -11,8 +11,14 @@ import com.log.service.PropertyService;
 import com.log.service.StatisticsService;
 import com.log.util.DateUtils;
 import com.log.util.DialogUtils;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
@@ -112,8 +118,52 @@ public class PdfReportService {
             .orElse(null);
     }
 
-//    public File generatePdf(ReportData reportData) {
-//
-//
-//    }
+    public File generatePdf(ReportData reportData) throws IOException {
+
+    File file = new File("report.pdf");
+
+    try (PDDocument document = new PDDocument()) {
+
+        PDPage page = new PDPage();
+        document.addPage(page);
+
+        try (PDPageContentStream content =
+                     new PDPageContentStream(document, page)) {
+
+            content.beginText();
+
+            content.setFont(
+                    new PDType1Font(Standard14Fonts.FontName.HELVETICA),
+                    12
+            );
+
+            content.newLineAtOffset(50, 700);
+
+            content.showText(
+                    "Property: "
+                            + reportData.getPropertyName()
+            );
+
+            content.newLineAtOffset(0, -20);
+
+            content.showText(
+                    "Batch ID: "
+                            + reportData.getBatchId()
+            );
+
+            content.newLineAtOffset(0, -20);
+
+            content.showText(
+                    "Average: "
+                            + reportData.getAverage()
+            );
+
+            content.endText();
+        }
+
+        document.save(file);
+    }
+
+    return file;
+}
 }
