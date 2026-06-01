@@ -10,10 +10,12 @@ import com.log.service.BatchTestService;
 import com.log.service.PropertyService;
 import com.log.service.StatisticsService;
 import com.log.util.DateUtils;
+import com.log.util.DialogUtils;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class PdfReportService {
 
@@ -44,6 +46,14 @@ public class PdfReportService {
         double average = StatisticsService.mean(values);
         double stdDev = StatisticsService.standardDeviation(values);
 
+
+        Optional<String> result = DialogUtils.showTextInputDialog(
+        "Report Number",
+        "Generate Report",
+        "Enter report number:"
+    );
+        String reportNumber = result.orElse(null);
+
         ReportData reportData = new ReportData(
                 property.getPropertyName(),
                 batchId,
@@ -53,7 +63,7 @@ public class PdfReportService {
                 property.getDirection().getDirVal(),
                 property.getTemperature().getTempVal(),
                 property.getTemperature().getTempUnitVal(),
-                null,
+                reportNumber,
                 dateUtils.getCurrentDateFormatted(),
                 findMin(property),
                 findMax(property),
