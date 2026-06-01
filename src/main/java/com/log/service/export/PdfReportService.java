@@ -4,12 +4,14 @@ import com.log.database.DBUtil;
 import com.log.dto.ReportData;
 import com.log.model.BatchTest;
 import com.log.model.Property;
+import com.log.model.PropertyValue;
 import com.log.service.BatchService;
 import com.log.service.BatchTestService;
 import com.log.service.PropertyService;
 import com.log.util.DateUtils;
 
 import java.sql.SQLException;
+import java.util.Objects;
 
 public class PdfReportService {
 
@@ -46,7 +48,8 @@ public class PdfReportService {
                 property.getTemperature().getTempUnitVal(),
                 null,
                 dateUtils.getCurrentDateFormatted(),
-
+                findMin(property),
+                findMax(property),
 
 
 
@@ -56,5 +59,25 @@ public class PdfReportService {
 
 
         return reportData;
+    }
+
+    private Double findMax(Property property){
+
+        return property.getPropertyValues()
+            .stream()
+            .map(PropertyValue::getPropertyVAL)
+            .filter(Objects::nonNull)
+            .max(Double::compare)
+            .orElse(null);
+    }
+
+    private Double findMin(Property property){
+
+        return property.getPropertyValues()
+            .stream()
+            .map(PropertyValue::getPropertyVAL)
+            .filter(Objects::nonNull)
+            .min(Double::compare)
+            .orElse(null);
     }
 }
