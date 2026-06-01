@@ -1,21 +1,16 @@
 package com.log.dto;
 
-import com.log.model.Batch;
-import com.log.model.BatchTest;
-import com.log.model.Property;
-import com.log.model.PropertyRow;
-
 import java.util.List;
 
 public class ReportData {
 
-    private String property;
-    private String BatchID;
+    private String propertyName;
+    private String BatchId;
     private String testMethod;
     private String testDate;
     private String testSite;
     private String direction;
-    private String temperature;
+    private Double temperature;
     private String temperatureUnit;
     private String testReportNo;
     private String date;
@@ -30,26 +25,29 @@ public class ReportData {
 
     // ============== Constructors ==============================
 
+    public ReportData() {
+}
+
 
 
 
     //============= Getters and setters =============================
 
 
-    public String getProperty() {
-        return property;
+    public String getPropertyName() {
+        return propertyName;
     }
 
-    public void setProperty(String property) {
-        this.property = property;
+    public void setPropertyName(String propertyName) {
+        this.propertyName = propertyName;
     }
 
-    public String getBatchID() {
-        return BatchID;
+    public String getBatchId() {
+        return BatchId;
     }
 
-    public void setBatchID(String batchID) {
-        BatchID = batchID;
+    public void setBatchId(String batchId) {
+        BatchId = batchId;
     }
 
     public String getTestMethod() {
@@ -84,11 +82,11 @@ public class ReportData {
         this.direction = direction;
     }
 
-    public String getTemperature() {
+    public Double getTemperature() {
         return temperature;
     }
 
-    public void setTemperature(String temperature) {
+    public void setTemperature(Double temperature) {
         this.temperature = temperature;
     }
 

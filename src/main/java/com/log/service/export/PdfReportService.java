@@ -4,7 +4,7 @@ import com.log.dto.ReportData;
 
 public class PdfReportService {
 
-    public ReportData getReportData(int testId) {
+    public ReportData buildReportData(int testId) {
 
         ReportData reportData = new ReportData();
 
