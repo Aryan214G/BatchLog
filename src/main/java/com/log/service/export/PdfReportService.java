@@ -16,7 +16,7 @@ public class PdfReportService {
 
         ReportData reportData = new ReportData();
 
-        propertyService
+        propertyService.getPropertyB
 
 
         return reportData;
