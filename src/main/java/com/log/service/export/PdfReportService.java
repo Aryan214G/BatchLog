@@ -171,28 +171,19 @@ public class PdfReportService {
             y -= 40;
 
             writeText(content, "Batch ID: " + reportData.getBatchId(), 50, y);
+            writeRightAlignedText(content, "Test Method: " + reportData.getTestMethod(), RIGHT_EDGE, y);
 
             y -= 20;
 
             writeText(content, "Test Site: " + reportData.getTestSite(), 50, y);
+            writeRightAlignedText(content, "Test temperature: " + reportData.getTemperature(), RIGHT_EDGE, y);
 
             y -= 20;
 
             writeText(content, "Test Date: " + reportData.getTestDate(), 50, y);
+            writeRightAlignedText(content, "Direction: " + reportData.getDirection(), RIGHT_EDGE, y);
 
             // ________________________________________________________________________________
-
-            y -= 40;
-
-            writeText(content, "Test Method: " + reportData.getTestMethod(), 50, y);
-
-            y-= 20;
-
-            writeText(content, "Test temperature: " + reportData.getTemperature() + " " + reportData.getTemperatureUnit() , 50, y);
-
-            y-= 20;
-
-            writeText(content, "Direction: " + reportData.getDirection(), 50, y);
 
             y -= 30;
 
