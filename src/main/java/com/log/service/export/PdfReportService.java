@@ -5,10 +5,7 @@ import com.log.dto.ReportData;
 import com.log.model.BatchTest;
 import com.log.model.Property;
 import com.log.model.PropertyValue;
-import com.log.service.BatchService;
-import com.log.service.BatchTestService;
-import com.log.service.PropertyService;
-import com.log.service.StatisticsService;
+import com.log.service.*;
 import com.log.util.DateUtils;
 import com.log.util.DialogUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -30,7 +27,7 @@ public class PdfReportService {
 
     private PropertyService propertyService = new PropertyService();
     private BatchTestService batchTestService = new BatchTestService();
-
+    private PropertyValuesService propertyValuesService = new PropertyValuesService();
 
     // ============== IMPORT UTILITY CLASSES ====================
 
@@ -41,9 +38,14 @@ public class PdfReportService {
     public ReportData buildReportData(int propertyId) throws SQLException {
 
         Property property = propertyService.getPropertyById(propertyId);
+        property.setPropertyValues(
+                propertyValuesService.getValuesByProperty(propertyId)
+        );
+
         String batchId = batchTestService.getBatchIdByTestId(
                 property.getTestID()
         );
+
         BatchTest batchTest = batchTestService.getBatchTestById(
                 property.getTestID()
         );
