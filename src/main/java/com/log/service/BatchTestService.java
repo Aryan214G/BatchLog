@@ -44,5 +44,15 @@ public class BatchTestService {
         }
     }
 
+    public BatchTest getBatchTestById(int testId){
+
+        try(Connection conn = DBUtil.getConnection()) {
+
+            return batchTestDAO.getBatchTestById(conn, testId);
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }
