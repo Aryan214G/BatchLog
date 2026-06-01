@@ -132,15 +132,8 @@ public class PdfReportService {
         try (PDPageContentStream content =
                      new PDPageContentStream(document, page)) {
 
-            content.beginText();
-
-            content.setFont(
-                    new PDType1Font(Standard14Fonts.FontName.HELVETICA),
-                    12
-            );
 
             float y = 700;
-            content.newLineAtOffset(50, y);
 
             writeText(content, "TEST REPORT", 250, y);
 
@@ -190,10 +183,45 @@ public class PdfReportService {
 
             drawLine(content, 50, y, 550, y);
 
+            // ________________________________________________________________________________
+
             y -= 30;
 
+            writeText(content, "VALUES", 250, y);
 
-            content.endText();
+            for(Double value : reportData.getValues())
+            {
+                y-= 20;
+
+                writeText(content, value.toString(), 50, y);
+            }
+
+            y -= 30;
+
+            drawLine(content, 50, y, 550, y);
+
+            // ________________________________________________________________________________
+
+            y -= 30;
+
+            writeText(content, "STATISTICS", 250, y);
+
+            y-= 20;
+
+            writeText(content, "Minimum: " + reportData.getMin(), 50, y);
+
+            y-= 20;
+
+            writeText(content, "Maximum: " + reportData.getMax(), 50, y);
+
+            y-= 20;
+
+            writeText(content, "Average: " + reportData.getAverage(), 50, y);
+
+            y-= 20;
+
+            writeText(content, "Standard deviation: " + reportData.getStandardDeviation(), 50, y);
+
         }
 
         document.save(file);
@@ -210,6 +238,7 @@ public class PdfReportService {
         throws IOException {
 
         content.beginText();
+        content.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 12);
         content.newLineAtOffset(x, y);
         content.showText(text);
         content.endText();
