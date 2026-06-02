@@ -10,11 +10,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.input.MouseButton;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -26,8 +28,7 @@ import java.util.ResourceBundle;
 
 public class HomePageController implements Initializable {
 
-    @FXML private GridPane projectsGrid;
-
+    @FXML private VBox projectsList;  // change from GridPane to VBox in FXML
 
     @FXML private Button retrievalPageBtn;
     @FXML private Button settingsPageBtn;
@@ -53,7 +54,7 @@ public class HomePageController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
-            Stage stage = (Stage) projectsGrid.getScene().getWindow();
+            Stage stage = (Stage) projectsList.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
@@ -72,7 +73,7 @@ public class HomePageController implements Initializable {
             popupStage.setTitle("Settings");
             popupStage.setScene(new Scene(root));
             popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-            popupStage.initOwner(projectsGrid.getScene().getWindow());
+            popupStage.initOwner(projectsList.getScene().getWindow());
             popupStage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
@@ -81,82 +82,91 @@ public class HomePageController implements Initializable {
 
     private void handleNewProject() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/log/ui/views/BaseProperties.fxml"));
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/log/ui/views/BaseProperties.fxml")
+            );
             Parent root = loader.load();
-            Stage stage = (Stage) projectsGrid.getScene().getWindow();
+            Stage stage = (Stage) projectsList.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     private void handleHelp() {
         System.out.println("Help clicked");
     }
 
-    // ── Projects Grid ─────────────────────────────────────────────────────────
+    // ── Projects List ─────────────────────────────────────────────────────────
 
     private void loadRecentProjects() {
+        projectsList.getChildren().clear();
         List<Project> projects = projectService.getAllProjects();
 
-        // Set column constraints once
-        ColumnConstraints cc = new ColumnConstraints();
-        cc.setPercentWidth(50);
-        projectsGrid.getColumnConstraints().addAll(cc, cc);
-
-        int col = 0, row = 0;
-        final int maxCols = 2;
+        if (projects.isEmpty()) {
+            Label empty = new Label("No projects yet. Create one to get started.");
+            empty.getStyleClass().add("empty-label");
+            projectsList.getChildren().add(empty);
+            return;
+        }
 
         for (Project project : projects) {
-            projectsGrid.add(createProjectCard(project.getProjectName()), col, row);
-            if (++col >= maxCols) { col = 0; row++; }
+            projectsList.getChildren().add(createProjectRow(project.getProjectName()));
         }
     }
 
     private void refreshProjects() {
-        projectsGrid.getChildren().clear();
-        projectsGrid.getColumnConstraints().clear();
         loadRecentProjects();
     }
 
-    private HBox createProjectCard(String projectName) {
-        Label icon = new Label();
+    private HBox createProjectRow(String projectName) {
+        // Icon
+        Label icon = new Label("📁");
         icon.getStyleClass().add("card-icon");
 
+        // Name
         Label nameLabel = new Label(projectName);
         nameLabel.getStyleClass().add("card-name");
-        HBox.setHgrow(nameLabel, javafx.scene.layout.Priority.ALWAYS);
+        HBox.setHgrow(nameLabel, Priority.ALWAYS);
 
-        Label shortcut = new Label("⌘C");
-        shortcut.getStyleClass().add("card-shortcut");
+        // Row
+        HBox row = new HBox(12, icon, nameLabel);
+        row.getStyleClass().add("project-card");
+        row.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
-        Button menuBtn = new Button("⋮");
-        menuBtn.getStyleClass().add("card-menu-btn");
-        menuBtn.setOnAction(e -> handleCardMenu(projectName, menuBtn));
+        // Left click — open project
+        row.setOnMouseClicked(e -> {
+            if (e.getButton() == MouseButton.PRIMARY) {
+                handleProjectCardOpen(projectName);
+            }
+        });
 
-        HBox card = new HBox(10, icon, nameLabel, shortcut, menuBtn);
-        card.getStyleClass().add("project-card");
-        card.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        // Right click — context menu
+        ContextMenu contextMenu = buildContextMenu(projectName);
+        row.setOnContextMenuRequested(e ->
+                contextMenu.show(row, e.getScreenX(), e.getScreenY())
+        );
 
-        return card;
+        return row;
     }
 
-    private void handleCardMenu(String projectName, Button anchor) {
-        javafx.scene.control.ContextMenu contextMenu = new javafx.scene.control.ContextMenu();
+    private ContextMenu buildContextMenu(String projectName) {
+        ContextMenu contextMenu = new ContextMenu();
 
-        javafx.scene.control.MenuItem openItem   = new javafx.scene.control.MenuItem("Open");
-        javafx.scene.control.MenuItem renameItem = new javafx.scene.control.MenuItem("Rename");
-        javafx.scene.control.MenuItem deleteItem = new javafx.scene.control.MenuItem("Delete");
+        MenuItem openItem   = new MenuItem("Open");
+        MenuItem renameItem = new MenuItem("Rename");
+        MenuItem deleteItem = new MenuItem("Delete");
 
         openItem.setOnAction(e -> handleProjectCardOpen(projectName));
         renameItem.setOnAction(e -> handleProjectCardEdit(projectName));
         deleteItem.setOnAction(e -> handleProjectCardDelete(projectName));
 
         contextMenu.getItems().addAll(openItem, renameItem, deleteItem);
-        contextMenu.show(anchor, javafx.geometry.Side.BOTTOM, 0, 0);
+        return contextMenu;
     }
+
+    // ── Card actions ──────────────────────────────────────────────────────────
 
     private void handleProjectCardDelete(String projectName) {
         try (Connection connection = DBUtil.getConnection()) {
@@ -182,7 +192,7 @@ public class HomePageController implements Initializable {
             popupStage.setTitle("Edit Project");
             popupStage.setScene(new Scene(root));
             popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-            popupStage.initOwner(projectsGrid.getScene().getWindow());
+            popupStage.initOwner(projectsList.getScene().getWindow());
             popupStage.showAndWait();
 
         } catch (IOException e) {
@@ -191,17 +201,16 @@ public class HomePageController implements Initializable {
     }
 
     private void handleProjectCardOpen(String projectName) {
-        try {
-            // Look up project ID and store in state before navigating
-            try (Connection conn = DBUtil.getConnection()) {
-                int projectId = projectService.getProjectId(conn, projectName);
-                bpropState.setProjectId(projectId);
-                bpropState.setProjectName(projectName);
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return;
-            }
+        try (Connection conn = DBUtil.getConnection()) {
+            int projectId = projectService.getProjectId(conn, projectName);
+            bpropState.setProjectId(projectId);
+            bpropState.setProjectName(projectName);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return;
+        }
 
+        try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/log/ui/views/ProjectPage.fxml")
             );
@@ -210,7 +219,7 @@ public class HomePageController implements Initializable {
             ProjectPageController controller = loader.getController();
             controller.loadProject(projectName);
 
-            Stage stage = (Stage) projectsGrid.getScene().getWindow();
+            Stage stage = (Stage) projectsList.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
 

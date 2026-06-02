@@ -5,67 +5,56 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="800" prefWidth="1200" stylesheets="@../styles/homepage.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.HomePageController">
+<BorderPane prefHeight="800" prefWidth="1200"
+            stylesheets="@../styles/homepage.css"
+            xmlns="http://javafx.com/javafx/26"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.log.ui.HomePageController">
+
     <top>
         <fx:include source="../components/menubar.fxml" />
     </top>
+
     <!-- ================= LEFT SIDEBAR ================= -->
     <left>
         <VBox spacing="15" styleClass="sidebar" BorderPane.alignment="CENTER">
-
             <children>
-
-                <!-- App Title -->
                 <Label styleClass="app-title" text="BatchLog" />
-
-                <!-- Buttons -->
-                <Button fx:id="newProjectBtn" maxWidth="Infinity" styleClass="sidebar-button" text="New Project" />
+                <Button fx:id="newProjectBtn"    maxWidth="Infinity" styleClass="sidebar-button" text="New Project" />
                 <Button fx:id="retrievalPageBtn" maxWidth="Infinity" styleClass="sidebar-button" text="Retrieval Page" />
-                <Button fx:id="settingsPageBtn" maxWidth="Infinity" styleClass="sidebar-button" text="Settings" />
-                <Button fx:id="helpPageBtn" maxWidth="Infinity" styleClass="sidebar-button" text="Help" />
-
+                <Button fx:id="settingsPageBtn"  maxWidth="Infinity" styleClass="sidebar-button" text="Settings" />
+                <Button fx:id="helpPageBtn"      maxWidth="Infinity" styleClass="sidebar-button" text="Help" />
             </children>
-
             <padding>
                 <Insets bottom="20" left="15" right="15" top="20" />
             </padding>
-
         </VBox>
     </left>
 
     <!-- ================= CENTER CONTENT ================= -->
     <center>
         <VBox spacing="20" styleClass="content-area">
-
             <children>
 
-                <!-- Title -->
                 <Label styleClass="section-title" text="Recent Projects" />
 
-                <!-- Scrollable Grid -->
                 <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
-
                     <content>
-                        <GridPane fx:id="projectsGrid" hgap="20" styleClass="projects-grid" vgap="20">
-
+                        <!-- Changed from GridPane to VBox -->
+                        <VBox fx:id="projectsList" spacing="8">
                             <padding>
                                 <Insets bottom="10" left="10" right="10" top="10" />
                             </padding>
-
-                        </GridPane>
+                        </VBox>
                     </content>
-
                 </ScrollPane>
 
             </children>
-
             <padding>
                 <Insets bottom="20" left="20" right="20" top="20" />
             </padding>
-
         </VBox>
     </center>
 

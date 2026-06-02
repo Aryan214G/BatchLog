@@ -6,12 +6,10 @@ import com.log.dao.ProductDAO;
 import com.log.database.DBUtil;
 import com.log.model.Batch;
 import com.log.model.BatchTest;
-import com.log.model.Product;
 import com.log.service.BatchService;
 import com.log.service.BatchTestService;
 import com.log.service.ProductService;
-import com.log.service.ProjectService;
-import com.log.ui.util.AlertUtil;
+import com.log.util.AlertUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,7 +17,6 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 public class NewBatchController {
 

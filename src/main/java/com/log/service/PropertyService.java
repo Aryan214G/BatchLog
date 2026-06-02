@@ -57,5 +57,24 @@ public class PropertyService {
         propertyDAO.updateProperty(conn, property);
     }
 
+    // for transactions
+    public Property getPropertyById(Connection conn, int propertyId) {
+
+        return propertyDAO.getPropertyById(conn, propertyId);
+    }
+
+    public Property getPropertyById(int propertyId) {
+
+        try (Connection conn = DBUtil.getConnection()) {
+
+            return getPropertyById(
+                    conn,
+                    propertyId
+            );
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

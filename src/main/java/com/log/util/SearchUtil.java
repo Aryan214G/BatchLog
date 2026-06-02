@@ -1,4 +1,4 @@
-package com.log.ui.util;
+package com.log.util;
 
 import com.log.model.Batch;
 import com.log.model.BatchTest;

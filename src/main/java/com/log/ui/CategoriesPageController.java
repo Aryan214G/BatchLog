@@ -6,7 +6,8 @@ import com.log.core.SelectedState;
 import com.log.database.DBUtil;
 import com.log.model.*;
 import com.log.service.*;
-import com.log.ui.util.AlertUtil;
+import com.log.util.AlertUtil;
+import com.log.util.StringUtils;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -62,6 +63,10 @@ public class CategoriesPageController {
     private HBox headerBox;
 
     @FXML
+    private VBox testDetailsBox;
+
+
+    @FXML
     private Button submitButton;
 
     @FXML
@@ -74,6 +79,7 @@ public class CategoriesPageController {
 
     private Map<Integer, Map<String, DefaultProperty>> defaultPropertiesMap;
     private TextField temperatureField;
+    private TextField testMethodField;
     private UnitsDropdownController tempUnitController;
     private DirectionDropdownController directionController;
 
@@ -286,6 +292,7 @@ public class CategoriesPageController {
             //================= save state ==================
             stateManager.saveState(
                     property.getPropertyName(),
+                    property.getTestMethod(),
                     new ArrayList<>(inputRows),
                     property.getTemperature(),
                     property.getDirection(),
@@ -571,6 +578,7 @@ public class CategoriesPageController {
         int defaultRows = (dp != null) ? dp.getRows() : 1;
         try {
             loadMetrics();
+            populatetestDetailsBox();
             addHeaderControls();
             loadPropertyFields(defaultRows, newProperty.getPropertyName(), dp);
             updateMetrics();   // force refresh after load
@@ -580,6 +588,20 @@ public class CategoriesPageController {
             throw new RuntimeException(e);
         }
         updateInfoBar();
+    }
+
+    private void populatetestDetailsBox() {
+
+        testDetailsBox.getChildren().clear();
+
+        testMethodField = new TextField();
+        testMethodField.setPromptText("Test method/Standard");
+        testMethodField.getStyleClass().add("input-field");
+
+        testDetailsBox.getChildren().addAll(
+        testMethodField
+        );
+
     }
 
     private void updateInfoBar() {
@@ -660,6 +682,8 @@ public class CategoriesPageController {
 
         headerBox.getChildren().clear();
 
+
+
         temperatureField = new TextField();
         temperatureField.setPromptText("Temperature");
         temperatureField.getStyleClass().add("input-field");
@@ -676,6 +700,8 @@ public class CategoriesPageController {
         );
         Parent directionNode = directionLoader.load();
         directionController = directionLoader.getController();
+
+
 
         headerBox.getChildren().addAll(
                 temperatureField,
@@ -831,13 +857,16 @@ public class CategoriesPageController {
     Unit unit = new Unit();
     unit.setUnit(unitValue);
 
+    //StringUtils is a user defined class present in utility package
+    String testMethod = StringUtils.nullIfBlank(testMethodField.getText());
+
     // ================= SAVE PROPERTY STATE =================
 
     stateManager.saveState(
             property.getPropertyName(),
+            testMethod,
 
             new ArrayList<>(inputRows),
-
 
             new Temperature(existingTempId, tempVal, tempUnitID, tempUnitVal),
             new Direction(directionController.getSelectedDirection()),
@@ -869,6 +898,11 @@ public class CategoriesPageController {
 
             return;
         }
+
+        //================== RESTORE TESTDETAIS =============
+
+        if (state.getTestMethod() != null) { testMethodField.setText(state.getTestMethod()); }
+
 
         // ================= RESTORE HEADER =================
         String temp = "";
@@ -962,6 +996,8 @@ public class CategoriesPageController {
     }
 
     private void clearUIComponents(){
+
+        testDetailsBox.getChildren().clear();
         headerBox.getChildren().clear();
         entriesGrid.getChildren().clear();
         isSubmitButtonVisible(false);

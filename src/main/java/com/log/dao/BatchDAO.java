@@ -2,6 +2,7 @@ package com.log.dao;
 import com.log.database.DBUtil;
 import com.log.model.Batch;
 import com.log.model.BatchRow;
+import com.log.ui.ProjectPageController;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class BatchDAO {
 
             stmt.setInt(1, batch.getBatchCode());
             stmt.setString(2, batch.getBatchId());
-            stmt.setInt(3, batch.getProductCode());
+            stmt.setInt(4, batch.getProductCode());
 
             stmt.executeUpdate();
 
@@ -138,7 +139,8 @@ public class BatchDAO {
                         rs.getString("Batch_ID"),
                         rs.getString("Product_name"),
                         rs.getString("Test_date"),
-                        rs.getString("Test_site")));
+                        rs.getString("Test_site")
+                ));
             }
         }
 

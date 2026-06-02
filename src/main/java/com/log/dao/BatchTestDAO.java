@@ -43,4 +43,65 @@ public class BatchTestDAO {
 
 
     }
+
+    public String getBatchIdByTestId(Connection conn, int testId) {
+
+    String sql = """
+            SELECT b.Batch_ID
+            FROM Batch_Test bt
+            JOIN Batch b
+                ON bt.Batch_CODE = b.Batch_CODE
+            WHERE bt.Test_ID = ?
+            """;
+
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+        stmt.setInt(1, testId);
+
+        ResultSet rs = stmt.executeQuery();
+
+        if (rs.next()) {
+            return rs.getString("Batch_ID");
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return null;
+}
+
+    public BatchTest getBatchTestById(Connection conn, int testId) {
+
+    String sql = """
+            SELECT *
+            FROM Batch_Test
+            WHERE Test_ID = ?
+            """;
+
+    try (PreparedStatement stmt =
+                 conn.prepareStatement(sql)) {
+
+        stmt.setInt(1, testId);
+
+        ResultSet rs = stmt.executeQuery();
+
+        if (rs.next()) {
+
+            BatchTest batchTest = new BatchTest(
+                   rs.getInt("Test_ID"),
+                    rs.getInt("Batch_CODE"),
+                    rs.getString("Test_date"),
+                    rs.getString("Test_site")
+            );
+
+            return batchTest;
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return null;
+}
 }
