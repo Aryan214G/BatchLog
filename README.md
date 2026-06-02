@@ -1,6 +1,6 @@
 # BatchLog
 
-# Screenshots
+# Screenshot
 
 ## Base Properties Page
 ![Base Properties Page](images/BasePropertiesPage.png)
