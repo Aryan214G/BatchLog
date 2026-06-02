@@ -20,11 +20,11 @@ public class PropertyValuesService {
         this.propertyValuesDAO = new PropertyValuesDAO();
     }
 
-    public void insertPropertyValue(Connection conn, InputRow row){
+    public int insertPropertyValue(Connection conn, InputRow row){
 
             PropertyValue propertyValue = row.getPropertyValue();
-            int propertyValId = propertyValuesDAO.insertValue(conn, propertyValue);
-            row.getPropertyValue().setPropertyValID(propertyValId);
+             return propertyValuesDAO.insertValue(conn, propertyValue);
+
     }
 
      public void updatePropertyValue(Connection conn, InputRow row) {

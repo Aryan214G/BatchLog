@@ -1,13 +1,9 @@
 package com.log.service;
 
-import com.log.database.DBUtil;
 import com.log.model.DefaultProperty;
 import com.log.dao.DefaultPropertiesDAO;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,8 +36,8 @@ public class DefaultPropertyService {
     public void updateDefaultProperty(
             int propertyId,
             int unitId,
-            int rows
-    ) {
+            int rows,
+            int hasComponentNumber) {
 
         DefaultProperty property =
                 new DefaultProperty();
@@ -49,6 +45,7 @@ public class DefaultPropertyService {
         property.setPropertyId(propertyId);
         property.setUnitId(unitId);
         property.setRows(rows);
+        property.setHasComponentNumber(hasComponentNumber);
 
         DPdao.updateDefaultProperty(property);
     }

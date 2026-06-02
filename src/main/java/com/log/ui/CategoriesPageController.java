@@ -271,18 +271,15 @@ public class CategoriesPageController {
      and load them into the ui.
      */
     private void loadPropertyDataFromDB() throws SQLException {
-        System.out.println(
-                "loadPropertyDataFromDB testId = "
-                        + basePropertiesState.getTestId()
-        );
+
+        System.out.println("loadPropertyDataFromDB testId = " + basePropertiesState.getTestId());
+
         int testId = basePropertiesState.getTestId();
         propertiesList = propertyService.getPropertiesByTest(testId);
 
         //=========== iterate through properties and store in statemanager ================
 
         for(Property property : propertiesList){
-
-            inputRows.clear();
 
             // ============== Populate input rows =================
             try (Connection conn = DBUtil.getConnection()) {
@@ -294,7 +291,10 @@ public class CategoriesPageController {
 
 
             //================= save state ==================
+
+            //TODO: might consider removing redundant property parameters
             stateManager.saveState(
+                    property,
                     property.getPropertyID(),
                     property.getPropertyName(),
                     property.getTestMethod(),
@@ -625,41 +625,63 @@ public class CategoriesPageController {
 
     private void addInputRow(int rowCount, String property, DefaultProperty dp, InputRow inputRow) throws IOException {
 
+        // ============= INPUT FIELD =================
+
         TextField field = new TextField();
-
         field.getStyleClass().add("input-field");
-
 
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/com/log/ui/components/unitsDropdown.fxml")
         );
 
-        Parent units = loader.load();
-        UnitsDropdownController controller = loader.getController();
-        controller.setUnits(property);
-        if (dp != null && rowCount == 0) {
+        // ============= COMPONENT FIELD =================
 
-            String unitName =
-                    unitsService.getUnitNameById(
-                            dp.getUnitId()
-                    );
+        TextField componentField = null;
 
-            System.out.println(
-                    "Setting default unit from DB = "
-                            + unitName
-            );
+                if (dp.getHasComponentNumber() == 1) {
 
-            controller.setSelectedUnit(unitName);
-        }
+                    componentField = new TextField();
+                    componentField.setPromptText("Component Number");
+                    componentField.getStyleClass().add("input-field");
+                }
 
-        entriesGrid.add(field, 0, rowCount);
-        if(rowCount < 1)
-        {
-            entriesGrid.add(units, 1, rowCount);
+                Parent units = loader.load();
+                UnitsDropdownController controller = loader.getController();
+                controller.setUnits(property);
+
+                if (dp != null && rowCount == 0) {
+
+                    String unitName = unitsService.getUnitNameById(
+                                dp.getUnitId()
+                            );
+
+                    controller.setSelectedUnit(unitName);
+                }
+
+                if (dp.getHasComponentNumber() == 1) {
+
+            entriesGrid.add(componentField, 0, rowCount);
+            entriesGrid.add(field, 1, rowCount);
+
+            if (rowCount < 1) {
+                entriesGrid.add(units, 2, rowCount);
+            }
+
+            inputRow.setComponentNumberField(componentField);
+
+        } else {
+
+            entriesGrid.add(field, 0, rowCount);
+
+            if (rowCount < 1) {
+                entriesGrid.add(units, 1, rowCount);
+            }
         }
 
         inputRow.setField(field);
         inputRow.setUnitController(controller);
+        inputRow.setComponentNumberField(componentField);
+
         inputRows.add(inputRow);
 
         // ENTER adds new row dynamically
@@ -754,10 +776,12 @@ public class CategoriesPageController {
             propertyState = stateManager.getState(property.getPropertyName());
         }
 
+
         // ================= SAVE PROPERTY VALUES =================
     // Read values from all dynamic input rows and store them
     // inside their corresponding PropertyValue objects.
     for (InputRow row : inputRows) {
+
 
         String valueText = row.getField().getText();
 
@@ -780,6 +804,16 @@ public class CategoriesPageController {
         else {
             row.getPropertyValue().setPropertyVAL(null);
         }
+
+        // COMPONENT FIELD
+        if (row.getComponentNumberField() != null) {
+
+            row.getPropertyValue().setComponentNumber(
+                    row.getComponentNumberField().getText()
+            );
+        }
+        else { row.getPropertyValue().setComponentNumber(null); }
+
     }
 
     // ================= SAVE TEMPERATURE =================
@@ -871,9 +905,17 @@ public class CategoriesPageController {
     //StringUtils is a user defined class present in utility package
     String testMethod = StringUtils.nullIfBlank(testMethodField.getText());
 
+    // retrieve existing property object and store it
+    Property existingPropertyObj = null;
+
+        if (propertyState != null) {
+            existingPropertyObj = propertyState.getProperty();
+        }
+
     // ================= SAVE PROPERTY STATE =================
 
     stateManager.saveState(
+            existingPropertyObj,
             property.getPropertyId(),
             property.getPropertyName(),
             testMethod,
@@ -945,6 +987,8 @@ public class CategoriesPageController {
 
             PropertyValue pv = inputRow.getPropertyValue();
 
+            // ========= INPUT FIELD ===========
+
             String inputValue = "";
 
             if (pv != null && pv.getPropertyVAL() != null) {
@@ -953,16 +997,29 @@ public class CategoriesPageController {
 
             inputRow.getField().setText(inputValue);
 
-            String unit =
-                    state.getUnit().getUnit();
+             // ========= COMPONENT FIELD ===========
 
-            System.out.println(
-                    "Unit from PropertyState = "
-                            + unit
-            );
+            String componentNumber = "";
 
-            inputRow.getUnitController()
-                    .setSelectedUnit(unit);
+            if (pv != null && pv.getComponentNumber() != null) {
+                componentNumber = pv.getComponentNumber();
+            }
+
+            if (inputRow.getComponentNumberField() != null
+                    && pv.getComponentNumber() != null) {
+
+                inputRow.getComponentNumberField()
+                        .setText(pv.getComponentNumber());
+            }
+
+            // ________________________________________________________________________________
+
+
+            String unit = state.getUnit().getUnit();
+
+            System.out.println("Unit from PropertyState = " + unit);
+
+            inputRow.getUnitController().setSelectedUnit(unit);
         }
     }
 
@@ -1054,15 +1111,15 @@ public class CategoriesPageController {
             return;
         }
 
-        PropertyState propertyState =
-                stateManager.getState(selectedProperty.getPropertyName());
+        PropertyState propertyState = stateManager.getState(
+                selectedProperty.getPropertyName()
+        );
 
         propertySubmissionService.submit(
                 propertyState,
                 selectedProperty.getPropertyName(),
                 selectedState.getSelectedCategory()
         );
-        loadPropertyDataFromDB();
     }
 
     public void refreshcatmap(){

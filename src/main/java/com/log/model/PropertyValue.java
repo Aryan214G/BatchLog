@@ -4,6 +4,7 @@ public class PropertyValue {
     private int propertyValID;
     private Double propertyVAL;
     private int propertyID;
+    private String componentNumber;
 
     public PropertyValue() {
     }
@@ -41,5 +42,14 @@ public class PropertyValue {
 
     public void setPropertyID(int propertyID) {
         this.propertyID = propertyID;
+    }
+
+
+    public String getComponentNumber() {
+        return componentNumber;
+    }
+
+    public void setComponentNumber(String componentNumber) {
+        this.componentNumber = componentNumber;
     }
 }
