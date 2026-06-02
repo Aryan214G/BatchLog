@@ -11,11 +11,18 @@ public class PropertyValuesDAO {
 
     public int insertValue(Connection conn, PropertyValue propertyValue) {
 
-        String sql = "INSERT into Property_Values (Prop_VAL, Property_ID) VALUES (?,?)";
+        String sql = """
+            INSERT INTO Property_Values
+            (Prop_VAL, Property_ID, Component_Number)
+            VALUES (?, ?, ?)
+            """;
+
 
         try(PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
             stmt.setDouble(1, propertyValue.getPropertyVAL());
             stmt.setInt(2, propertyValue.getPropertyID());
+            stmt.setString(3, propertyValue.getComponentNumber());
+
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
 
@@ -31,13 +38,20 @@ public class PropertyValuesDAO {
 
     public void updatePropertyValue(Connection conn, PropertyValue propertyValue) {
 
-        String sql = "UPDATE Property_Values SET Prop_VAL = ?, Property_ID = ? WHERE Prop_VAL_ID = ?";
+        String sql = """
+            UPDATE Property_Values
+            SET Prop_VAL = ?,
+                Property_ID = ?,
+                Component_Number = ?
+            WHERE Prop_VAL_ID = ?
+            """;
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setDouble(1, propertyValue.getPropertyVAL());
             stmt.setInt(2, propertyValue.getPropertyID());
-            stmt.setInt(3, propertyValue.getPropertyValID());
+            stmt.setString(3, propertyValue.getComponentNumber());
+            stmt.setInt(4, propertyValue.getPropertyValID());
 
             int rowsAffected = stmt.executeUpdate();
 
@@ -82,9 +96,11 @@ public class PropertyValuesDAO {
         List<PropertyValue> list = new ArrayList<>();
 
         String sql = """
-        SELECT Prop_VAL_ID, Prop_VAL
-        FROM Property_Values
-        WHERE Property_ID = ?
+    SELECT Prop_VAL_ID,
+           Prop_VAL,
+           Component_Number
+    FROM Property_Values
+    WHERE Property_ID = ?
     """;
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -94,10 +110,14 @@ public class PropertyValuesDAO {
 
             while (rs.next()) {
                 PropertyValue val = new PropertyValue(
-                        rs.getInt("Prop_VAL_ID"),
-                        rs.getDouble("Prop_VAL"),
-                        propertyId
-                );
+                    rs.getInt("Prop_VAL_ID"),
+                    rs.getDouble("Prop_VAL"),
+                    propertyId
+            );
+
+            val.setComponentNumber(
+                    rs.getString("Component_Number")
+            );
 
                 list.add(val);
             }
