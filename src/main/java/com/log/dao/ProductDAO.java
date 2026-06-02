@@ -21,6 +21,10 @@ public class ProductDAO {
             stmt.setInt(3, product.getProjectId());
 
             stmt.executeUpdate();
+            conn.prepareStatement(
+                    sql,
+                    Statement.RETURN_GENERATED_KEYS
+            );
             ResultSet rs = stmt.getGeneratedKeys();
 
             if(rs.next()){

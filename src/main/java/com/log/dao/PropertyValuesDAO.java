@@ -108,4 +108,32 @@ public class PropertyValuesDAO {
 
         return list;
     }
+
+    public void deletePropertyValue(Connection conn, int propertyValId) {
+
+        String sql = """
+                DELETE FROM Property_Values
+                WHERE Prop_VAL_ID = ?
+                """;
+
+        try (PreparedStatement stmt =
+                     conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, propertyValId);
+
+            int rowsAffected = stmt.executeUpdate();
+
+            System.out.println(
+                    (rowsAffected > 0)
+                            ? "Deleted property value"
+                            : "Property value not found"
+            );
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
+
+

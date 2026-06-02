@@ -5,7 +5,9 @@ import com.log.model.Property;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class  PropertyDAO {
 
@@ -24,6 +26,40 @@ public class  PropertyDAO {
             statement.setInt(4, property.getDirection().getDirId());
             statement.setInt(5, property.getUnit().getUnitId());
             statement.setInt(6, property.getTestID());
+
+
+
+            System.out.println("========== PROPERTY INSERT ==========");
+
+            System.out.println(
+                    "Property = "
+                            + property.getPropertyName()
+            );
+
+            System.out.println(
+                    "Category ID = "
+                            + property.getCategory().getCategoryId()
+            );
+
+            System.out.println(
+                    "Temp ID = "
+                            + property.getTemperature().getTempId()
+            );
+
+            System.out.println(
+                    "Dir ID = "
+                            + property.getDirection().getDirId()
+            );
+
+            System.out.println(
+                    "Unit ID = "
+                            + property.getUnit().getUnitId()
+            );
+
+            System.out.println(
+                    "Test ID = "
+                            + property.getTestID()
+            );
 
             statement.executeUpdate();
             ResultSet rs = statement.getGeneratedKeys();
@@ -103,7 +139,7 @@ public class  PropertyDAO {
             property.getTemperature().setTempId(rs.getInt("Temp_ID"));
             property.getTemperature().setTempVal(rs.getDouble("Temp_VAL"));
             property.getTemperature().setTempUnitVal(rs.getString("Temp_Unit"));
-            property.getTemperature().setTempUnitId(rs.getInt("Temp_Unit_ID"));
+            property.getTemperature().setTempUnitID(rs.getInt("Temp_Unit_ID"));
 
             property.getDirection().setDirId(rs.getInt("Dir_ID"));
             property.getDirection().setDirVal(rs.getString("Dir_VAL"));
@@ -193,5 +229,34 @@ public class  PropertyDAO {
         }
 
         return -1; // not found
+    }
+
+    public Map<String, Double> getPropertyAveragesByBatch(Connection conn, int batchCode) throws SQLException {
+        Map<String, Double> propertyAverages = new LinkedHashMap<>();
+
+        String sql = """
+        SELECT
+            p.Property_name,
+            AVG(pv.Prop_VAL) AS avg_val
+        FROM Property p
+        JOIN Property_Values pv ON pv.Property_ID = p.Property_ID
+        JOIN Batch_Test bt      ON p.Test_ID      = bt.Test_ID
+        WHERE bt.Batch_CODE = ?
+        GROUP BY p.Property_name
+    """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, batchCode);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                propertyAverages.put(
+                        rs.getString("Property_name"),
+                        rs.getDouble("avg_val")
+                );
+            }
+        }
+
+        return propertyAverages;
     }
 }

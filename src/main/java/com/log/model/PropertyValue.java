@@ -2,7 +2,7 @@ package com.log.model;
 
 public class PropertyValue {
     private int propertyValID;
-    private double propertyVAL;
+    private Double propertyVAL;
     private int propertyID;
 
     public PropertyValue() {
@@ -27,11 +27,11 @@ public class PropertyValue {
         this.propertyValID = propertyValID;
     }
 
-    public double getPropertyVAL() {
+    public Double getPropertyVAL() {
         return propertyVAL;
     }
 
-    public void setPropertyVAL(double propertyVAL) {
+    public void setPropertyVAL(Double propertyVAL) {
         this.propertyVAL = propertyVAL;
     }
 

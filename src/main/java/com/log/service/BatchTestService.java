@@ -1,33 +1,115 @@
 package com.log.service;
 
 import com.log.core.BasePropertiesState;
-import com.log.dao.BatchDAO;
 import com.log.dao.BatchTestDAO;
-import com.log.model.Batch;
 import com.log.model.BatchTest;
 
 import java.sql.Connection;
 
 public class BatchTestService {
 
-    private BatchTestDAO batchTestDAO;
-    private BasePropertiesState bpInstance = BasePropertiesState.getInstance();
+    private final BatchTestDAO batchTestDAO;
+    private final BasePropertiesState bpInstance =
+            BasePropertiesState.getInstance();
 
     public BatchTestService() {
         this.batchTestDAO = new BatchTestDAO();
     }
 
-    public void createBatchTest(Connection conn, BatchTest batchTest){
-        int id = getBatchTestId(conn, batchTest);
-        if(id != -1){
-            System.out.println("Batch Test values already exist in DB");
+    public void createBatchTest(
+            Connection conn,
+            BatchTest batchTest
+    ) {
+
+        System.out.println();
+        System.out.println(
+                "======================================"
+        );
+        System.out.println(
+                "CREATE BATCH TEST CALLED"
+        );
+        System.out.println(
+                "Batch Code = "
+                        + batchTest.getBatchCode()
+        );
+        System.out.println(
+                "Test Date = "
+                        + batchTest.getTestDate()
+        );
+        System.out.println(
+                "Test Site = "
+                        + batchTest.getTestSite()
+        );
+
+        int id = getBatchTestId(
+                conn,
+                batchTest
+        );
+
+        System.out.println(
+                "getBatchTestId() returned = "
+                        + id
+        );
+
+        if (id != -1) {
+
+            System.out.println(
+                    "Batch Test already exists."
+            );
+
             bpInstance.setTestId(id);
+
+            System.out.println(
+                    "BasePropertiesState Test ID set to = "
+                            + bpInstance.getTestId()
+            );
+
+            System.out.println(
+                    "======================================"
+            );
+
             return;
         }
-         bpInstance.setTestId(batchTestDAO.insertBatchTest(conn, batchTest));
+
+        int newId =
+                batchTestDAO.insertBatchTest(
+                        conn,
+                        batchTest
+                );
+
+        System.out.println(
+                "insertBatchTest() returned = "
+                        + newId
+        );
+
+        bpInstance.setTestId(newId);
+
+        System.out.println(
+                "BasePropertiesState Test ID set to = "
+                        + bpInstance.getTestId()
+        );
+
+        System.out.println(
+                "======================================"
+        );
     }
 
-    public int getBatchTestId(Connection conn, BatchTest batchTest){
-        return batchTestDAO.getBatchTestId(conn, batchTest);
+    public int getBatchTestId(
+            Connection conn,
+            BatchTest batchTest
+    ) {
+
+        int id =
+                batchTestDAO.getBatchTestId(
+                        conn,
+                        batchTest
+                );
+
+        System.out.println(
+                "BatchTestDAO.getBatchTestId() = "
+                        + id
+        );
+
+        return id;
     }
 }

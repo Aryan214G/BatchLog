@@ -18,12 +18,11 @@ import java.util.List;
 public class PropertyService {
     private final PropertyDAO propertyDAO;
     private final DefaultPropertiesDAO defaultPropertiesDAO;
-    private final PropertyValuesDAO propertyValuesDAO;
+
 
     public PropertyService(){
         this.propertyDAO = new PropertyDAO();
         this.defaultPropertiesDAO = new DefaultPropertiesDAO();
-        this.propertyValuesDAO = new PropertyValuesDAO();
     }
 
 
@@ -50,32 +49,13 @@ public class PropertyService {
 
     }
 
-
     public int getPropertyId(Connection conn, Property property){
         return propertyDAO.getPropertyId(conn, property);
     }
 
-    public void insertPropertyValue(Connection conn, InputRow row){
-
-            PropertyValue propertyValue = row.getPropertyValue();
-            int propertyValId = propertyValuesDAO.insertValue(conn, propertyValue);
-            row.getPropertyValue().setPropertyValID(propertyValId);
-    }
-
-    public void updatePropertyValue(Connection conn, InputRow row) {
-
-        PropertyValue propertyValue = row.getPropertyValue();
-        propertyValuesDAO.updatePropertyValue(conn, propertyValue);
-    }
-
-    public int getPropertyValueId(Connection conn, int propertyID){
-        return propertyValuesDAO.getPropertyValueId(conn, propertyID);
-    }
     public void updateProperty(Connection conn, Property property) {
         propertyDAO.updateProperty(conn, property);
     }
 
-    public List<PropertyValue> getValuesByProperty(Connection conn, int propertyID){
-        return propertyValuesDAO.getValuesByProperty(conn, propertyID);
-    }
+
 }

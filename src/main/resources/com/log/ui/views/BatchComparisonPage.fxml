@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="800" prefWidth="1200"
+            xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.log.ui.BatchComparisonController"
+            stylesheets="@../styles/RetrievalResultsPage.css">
+
+    <top>
+        <fx:include source="../components/menubar.fxml"/>
+    </top>
+
+    <center>
+        <VBox spacing="16">
+            <padding>
+                <Insets top="24" left="24" right="24" bottom="24"/>
+            </padding>
+
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Button text="← Back"    onAction="#handleBack"   styleClass="back-btn"/>
+                <Button text="⚙ Filter"  onAction="#handleFilter" styleClass="primary-btn"/>
+                <Label fx:id="titleLabel" styleClass="batch-title"/>
+            </HBox>
+
+            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="table-scroll">
+                <content>
+                    <GridPane fx:id="comparisonGrid" styleClass="property-table">
+                        <padding>
+                            <Insets top="0" left="0" right="0" bottom="0"/>
+                        </padding>
+                    </GridPane>
+                </content>
+            </ScrollPane>
+
+        </VBox>
+    </center>
+
+</BorderPane>
