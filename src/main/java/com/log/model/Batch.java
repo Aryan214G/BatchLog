@@ -1,5 +1,8 @@
 package com.log.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Batch {
 
     private int batchCode;
@@ -28,6 +31,12 @@ public class Batch {
 
     public void setSop(String sop) {
         this.sop = sop;
+    }
+    // In Batch.java
+    private List<BatchTest> tests = new ArrayList<>();
+
+    public List<BatchTest> getTests() {
+        return tests;
     }
 
 }

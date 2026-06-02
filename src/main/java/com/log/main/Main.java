@@ -34,22 +34,22 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-        try {
-
-
-        PdfReportService pdfReportService = new PdfReportService();
-
-        ReportData reportData =
-                pdfReportService.buildReportData(2); // existing Property_ID
-
-        pdfReportService.generatePdf(reportData);
-
-        System.out.println("PDF generated successfully");
-
-    } catch (Exception e) {
-
-        e.printStackTrace();
-    }
+//        try {
+//
+//
+//        PdfReportService pdfReportService = new PdfReportService();
+//
+//        ReportData reportData =
+//                pdfReportService.buildReportData(2); // existing Property_ID
+//
+//        pdfReportService.generatePdf(reportData);
+//
+//        System.out.println("PDF generated successfully");
+//
+//    } catch (Exception e) {
+//
+//        e.printStackTrace();
+//    }
 
         FXMLLoader loader = new FXMLLoader(getClass()
                 .getResource("/com/log/ui/views/HomePage.fxml")
