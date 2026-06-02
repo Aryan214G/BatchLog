@@ -803,6 +803,16 @@ public class CategoriesPageController {
         else {
             row.getPropertyValue().setPropertyVAL(null);
         }
+
+        // COMPONENT FIELD
+        if (row.getComponentNumberField() != null) {
+
+            row.getPropertyValue().setComponentNumber(
+                    row.getComponentNumberField().getText()
+            );
+        }
+        else { row.getPropertyValue().setComponentNumber(null); }
+
     }
 
     // ================= SAVE TEMPERATURE =================
@@ -976,6 +986,8 @@ public class CategoriesPageController {
 
             PropertyValue pv = inputRow.getPropertyValue();
 
+            // ========= INPUT FIELD ===========
+
             String inputValue = "";
 
             if (pv != null && pv.getPropertyVAL() != null) {
@@ -984,24 +996,29 @@ public class CategoriesPageController {
 
             inputRow.getField().setText(inputValue);
 
+             // ========= COMPONENT FIELD ===========
+
             String componentNumber = "";
 
             if (pv != null && pv.getComponentNumber() != null) {
                 componentNumber = pv.getComponentNumber();
             }
 
-            inputRow.getComponentNumberField().setText(componentNumber);
+            if (inputRow.getComponentNumberField() != null
+                    && pv.getComponentNumber() != null) {
 
-            String unit =
-                    state.getUnit().getUnit();
+                inputRow.getComponentNumberField()
+                        .setText(pv.getComponentNumber());
+            }
 
-            System.out.println(
-                    "Unit from PropertyState = "
-                            + unit
-            );
+            // ________________________________________________________________________________
 
-            inputRow.getUnitController()
-                    .setSelectedUnit(unit);
+
+            String unit = state.getUnit().getUnit();
+
+            System.out.println("Unit from PropertyState = " + unit);
+
+            inputRow.getUnitController().setSelectedUnit(unit);
         }
     }
 
