@@ -145,7 +145,8 @@ JOIN Units
             UPDATE Default_Properties
             SET
                 Unit_ID = ?,
-                Rows = ?
+                Rows = ?,
+                Has_Component_Number = ?
             WHERE Def_PropID = ?
             """;
 
@@ -156,20 +157,11 @@ JOIN Units
                         conn.prepareStatement(query)
         ) {
 
-            stmt.setInt(
-                    1,
-                    property.getUnitId()
-            );
+            stmt.setInt(1, property.getUnitId());
+            stmt.setInt(2, property.getRows());
+            stmt.setInt(3, property.getHasComponentNumber());
+            stmt.setInt(4, property.getPropertyId());
 
-            stmt.setInt(
-                    2,
-                    property.getRows()
-            );
-
-            stmt.setInt(
-                    3,
-                    property.getPropertyId()
-            );
 
             int affectedRows = stmt.executeUpdate();
 
