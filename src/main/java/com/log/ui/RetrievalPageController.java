@@ -1,8 +1,8 @@
 package com.log.ui;
 
 import com.log.database.DBUtil;
+import com.log.model.Batch;
 import com.log.model.BatchTest;
-import com.log.service.PropertyService;
 import com.log.util.AlertUtil;
 import com.log.util.SearchUtil;
 import javafx.animation.TranslateTransition;
@@ -41,9 +41,8 @@ public class RetrievalPageController {
 
     private boolean isOpen = true;
     private List<BatchTest> selectedBatches = new ArrayList<>();
-    private PropertyService propertyService = new PropertyService();
 
-    public void populateResults(List<BatchTest> results) {
+    public void populateResults(List<Batch> results) {
         resultsContainer.getChildren().clear();
         selectedBatches.clear();
 
@@ -54,32 +53,8 @@ public class RetrievalPageController {
             return;
         }
 
-        for (BatchTest batch : results) {
-
-            // Checkbox on the left
-            CheckBox cb = new CheckBox();
-            cb.selectedProperty().addListener((obs, oldVal, selected) -> {
-                if (selected) selectedBatches.add(batch);
-                else selectedBatches.remove(batch);
-            });
-
-            // Original batch button
-            Button btn = new Button(formatBatchText(batch));
-            btn.setMaxWidth(Double.MAX_VALUE);
-            HBox.setHgrow(btn, Priority.ALWAYS);
-            btn.setStyle("""
-                -fx-background-color: #34495e;
-                -fx-text-fill: white;
-                -fx-font-size: 14;
-                -fx-padding: 10;
-            """);
-            btn.setOnAction(e -> handleBatchClick(batch));
-
-            // Wrap checkbox + button in HBox
-            HBox row = new HBox(10, cb, btn);
-            row.setAlignment(Pos.CENTER_LEFT);
-
-            resultsContainer.getChildren().add(row);
+        for (Batch batch : results) {
+            resultsContainer.getChildren().add(createBatchCard(batch));
         }
 
         // Compare button at the bottom
@@ -97,11 +72,38 @@ public class RetrievalPageController {
         resultsContainer.getChildren().add(compareBtn);
     }
 
-    private String formatBatchText(BatchTest batch) {
-        return "Batch: " + batch.getBatchCode();
+    private VBox createBatchCard(Batch batch) {
+        CheckBox cb = new CheckBox();
+
+        Button batchBtn = new Button("Batch: " + batch.getBatchId());
+        batchBtn.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(batchBtn, Priority.ALWAYS);
+        batchBtn.setStyle("""
+        -fx-background-color: #34495e;
+        -fx-text-fill: white;
+        -fx-font-size: 14;
+        -fx-padding: 10;
+        -fx-cursor: hand;
+    """);
+        batchBtn.setOnAction(e -> handleBatchClick(batch));
+
+        // Checkbox adds all tests to selectedBatches for comparison
+        for (BatchTest test : batch.getTests()) {
+            cb.selectedProperty().addListener((obs, oldVal, selected) -> {
+                if (selected) { if (!selectedBatches.contains(test)) selectedBatches.add(test); }
+                else selectedBatches.remove(test);
+            });
+        }
+
+        HBox row = new HBox(10, cb, batchBtn);
+        row.setAlignment(Pos.CENTER_LEFT);
+
+        VBox card = new VBox(row);
+        VBox.setMargin(card, new Insets(0, 0, 8, 0));
+        return card;
     }
 
-    private void handleBatchClick(BatchTest batch) {
+    private void handleBatchClick(Batch batch) {
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/log/ui/views/RetrievalResults.fxml")
@@ -109,7 +111,7 @@ public class RetrievalPageController {
             Parent root = loader.load();
 
             RetrievalResultsController controller = loader.getController();
-            controller.loadBatch(batch);
+            controller.loadBatch(batch);  // pass the whole batch
 
             Stage stage = (Stage) resultsContainer.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -164,17 +166,9 @@ public class RetrievalPageController {
 
     @FXML
     private void handleSearch() {
-        Connection connection = null;
-        try {
-            connection = DBUtil.getConnection();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        SearchUtil searchUtil = new SearchUtil();
-        List<BatchTest> results = null;
-        try {
-            results = searchUtil.searchBatches(
+        try (Connection connection = DBUtil.getConnection()) {
+            SearchUtil searchUtil = new SearchUtil();
+            List<Batch> results = searchUtil.searchBatches(
                     connection,
                     projectField.getText(),
                     productField.getText(),
@@ -182,9 +176,9 @@ public class RetrievalPageController {
                     Dateoftestingfield.getText(),
                     Placeoftestingfield.getText()
             );
+            populateResults(results);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        populateResults(results);
     }
 }
