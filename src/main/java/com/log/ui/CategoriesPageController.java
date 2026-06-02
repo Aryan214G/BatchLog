@@ -4,8 +4,10 @@ import com.log.core.AppState;
 import com.log.core.BasePropertiesState;
 import com.log.core.SelectedState;
 import com.log.database.DBUtil;
+import com.log.dto.ReportData;
 import com.log.model.*;
 import com.log.service.*;
+import com.log.service.export.PdfReportService;
 import com.log.util.AlertUtil;
 import com.log.util.StringUtils;
 import javafx.collections.ObservableList;
@@ -100,6 +102,7 @@ public class CategoriesPageController {
             propertyService,
             propertyValuesService
             );
+    private PdfReportService pdfReportService = new PdfReportService();
 
 
     // ======================= END OF VARIABLES DECLARATION ==============================
@@ -126,6 +129,7 @@ public class CategoriesPageController {
 
         //disable UI components when project is not created
             isSubmitButtonVisible(false);
+            isPrintButtonVisible(false);
         if(!instance.isProjectCreated()) {
             categoriesListView.setDisable(true);
             propertiesListView.setDisable(true);
@@ -291,6 +295,7 @@ public class CategoriesPageController {
 
             //================= save state ==================
             stateManager.saveState(
+                    property.getPropertyID(),
                     property.getPropertyName(),
                     property.getTestMethod(),
                     new ArrayList<>(inputRows),
@@ -385,6 +390,11 @@ public class CategoriesPageController {
 
     private void isSubmitButtonVisible(boolean value){
         submitButton.setVisible(value);
+        submitButton.setManaged(value);
+    }
+
+    private void isPrintButtonVisible(boolean value){
+        printButton.setVisible(value);
         submitButton.setManaged(value);
     }
 
@@ -537,6 +547,7 @@ public class CategoriesPageController {
         clearUIComponents();
         inputRows.clear();
         isSubmitButtonVisible(true);
+        isPrintButtonVisible(true);
 
         selectedState.setSelectedProperty(newProperty);
 
@@ -863,6 +874,7 @@ public class CategoriesPageController {
     // ================= SAVE PROPERTY STATE =================
 
     stateManager.saveState(
+            property.getPropertyId(),
             property.getPropertyName(),
             testMethod,
 
@@ -1001,6 +1013,7 @@ public class CategoriesPageController {
         headerBox.getChildren().clear();
         entriesGrid.getChildren().clear();
         isSubmitButtonVisible(false);
+        isPrintButtonVisible(false);
 
         if (metrics != null) {
             entriesPanel.getChildren().remove(metrics);
@@ -1035,7 +1048,7 @@ public class CategoriesPageController {
         return values;
     }
 
-    public void handleEntrySubmit(ActionEvent actionEvent) {
+    public void handleEntrySubmit(ActionEvent actionEvent) throws SQLException {
         DefaultProperty selectedProperty = selectedState.getSelectedProperty();
         if(!saveCurrentPropertyValues(selectedProperty)){
             return;
@@ -1049,10 +1062,62 @@ public class CategoriesPageController {
                 selectedProperty.getPropertyName(),
                 selectedState.getSelectedCategory()
         );
+        loadPropertyDataFromDB();
     }
 
     public void refreshcatmap(){
         defaultPropertiesMap = defaultPropertyService.getDefaultsGrouped() ;
     }
 
+    @FXML
+    private void handlePrint() {
+
+        DefaultProperty selectedProperty =
+                selectedState.getSelectedProperty();
+
+        if (selectedProperty == null) {
+
+            AlertUtil.showWarning(
+                    "Please select a property first."
+            );
+
+            return;
+        }
+
+        try {
+
+            PropertyState propertyState =
+                    stateManager.getState(
+                            selectedProperty.getPropertyName()
+                    );
+
+            int propertyId =
+                    propertyState.getPropertyId();
+
+            // FX thread — dialog allowed here
+            ReportData report =
+                    pdfReportService
+                            .buildReportData(propertyId);
+
+            Thread t = new Thread(() -> {
+
+                try {
+
+                    pdfReportService
+                            .printPdf(report);
+
+                } catch (Exception e) {
+
+                    e.printStackTrace();
+                }
+            });
+
+            t.setDaemon(true);
+            t.start();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
 }

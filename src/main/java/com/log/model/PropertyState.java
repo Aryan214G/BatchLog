@@ -13,6 +13,7 @@ public class PropertyState {
     private Direction direction;
     private Unit unit;
     private String testMethod;
+    private int propertyId;
 
     public PropertyState() {
     }
@@ -70,4 +71,8 @@ public class PropertyState {
     public void setTestMethod(String testMethod) {
         this.testMethod = testMethod;
     }
+
+    public void setPropertyId(int propertyId){this.propertyId=propertyId;}
+
+    public int getPropertyId(){return this.propertyId;}
 }

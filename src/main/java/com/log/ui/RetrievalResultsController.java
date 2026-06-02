@@ -20,6 +20,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
+import java.awt.print.PrinterException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -478,6 +479,8 @@ public class RetrievalResultsController {
                 throw new RuntimeException(ex);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
+            } catch (PrinterException ex) {
+                throw new RuntimeException(ex);
             }
         });
 
@@ -485,14 +488,20 @@ public class RetrievalResultsController {
     }
 
     private void handleExport(int propertyId)
-            throws SQLException, IOException {
+            throws SQLException, IOException, PrinterException {
 
         ReportData propertyReport =
                 pdfReportService.buildReportData(propertyId);
 
-        pdfReportService.generatePdf(
-                propertyReport,
-                propertiesGrid.getScene().getWindow()
-        );
+        Thread printThread = new Thread(() -> {
+            try {
+                pdfReportService.printPdf(propertyReport);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        printThread.setDaemon(true);
+        printThread.start();
     }
 }

@@ -82,7 +82,28 @@
                                     </columnConstraints>
 
                                 </GridPane>
-                                <Button fx:id="submitButton" alignment="CENTER" contentDisplay="CENTER" onAction="#handleEntrySubmit" styleClass="submit-button" text="Submit" />
+                                <HBox
+                                        alignment="CENTER"
+                                        spacing="12">
+
+                                    <Button
+                                            fx:id="submitButton"
+                                            alignment="CENTER"
+                                            contentDisplay="CENTER"
+                                            onAction="#handleEntrySubmit"
+                                            styleClass="submit-button"
+                                            text="Submit" />
+
+                                    <Button
+                                            fx:id="printButton"
+                                            alignment="CENTER"
+                                            contentDisplay="CENTER"
+                                            onAction="#handlePrint"
+                                            styleClass="submit-button"
+                                            text="Generate Report"
+                                             />
+
+                                </HBox>
 
                             </VBox>
                         </content>
