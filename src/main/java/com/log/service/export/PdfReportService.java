@@ -17,8 +17,11 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
+import org.apache.pdfbox.printing.PDFPageable;
 
 import java.awt.*;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -125,28 +128,28 @@ public class PdfReportService {
             .orElse(null);
     }
 
-    public File generatePdf(ReportData reportData, Window ownerWindow) throws IOException {
+    public void printPdf(ReportData reportData) throws IOException, PrinterException {
 
-        FileChooser chooser = new FileChooser();
-
-        chooser.setTitle("Save PDF Report");
-
-        chooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter(
-                        "PDF Files",
-                        "*.pdf"
-                )
-        );
-
-        chooser.setInitialFileName(
-                reportData.getPropertyName() + "_Report.pdf"
-        );
-
-        File file = chooser.showSaveDialog(ownerWindow);
-
-        if (file == null) {
-            return null; // user pressed cancel
-        }
+//        FileChooser chooser = new FileChooser();
+//
+//        chooser.setTitle("Save PDF Report");
+//
+//        chooser.getExtensionFilters().add(
+//                new FileChooser.ExtensionFilter(
+//                        "PDF Files",
+//                        "*.pdf"
+//                )
+//        );
+//
+//        chooser.setInitialFileName(
+//                reportData.getPropertyName() + "_Report.pdf"
+//        );
+//
+//        File file = chooser.showSaveDialog(ownerWindow);
+//
+//        if (file == null) {
+//            return null; // user pressed cancel
+//        }
 
     try (PDDocument document = new PDDocument()) {
 
@@ -282,10 +285,26 @@ public class PdfReportService {
 
         }
 
-        document.save(file);
+        try {
+            PrinterJob job = PrinterJob.getPrinterJob();
+
+            job.setPageable(
+                    new PDFPageable(document)
+            );
+
+            if (job.printDialog()) {
+                job.print();
+            }
+        } catch (NullPointerException e) {
+            throw new RuntimeException(e);
+        } catch (HeadlessException e) {
+            throw new RuntimeException(e);
+        } catch (PrinterException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    return file;
+
 }
 
     private void writeText(
