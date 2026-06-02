@@ -1080,44 +1080,35 @@ public class CategoriesPageController {
             AlertUtil.showWarning(
                     "Please select a property first."
             );
-
             return;
         }
 
+
         try {
 
-            PropertyState propertyState =
-                    stateManager.getState(
+            PropertyState propertyState = stateManager.getState(
                             selectedProperty.getPropertyName()
                     );
 
-            int propertyId =
-                    propertyState.getPropertyId();
+            int propertyId = propertyState.getPropertyId();
 
             // FX thread — dialog allowed here
-            ReportData report =
-                    pdfReportService
+            ReportData report = pdfReportService
                             .buildReportData(propertyId);
 
             Thread t = new Thread(() -> {
-
                 try {
-
-                    pdfReportService
-                            .printPdf(report);
+                    pdfReportService.printPdf(report);
 
                 } catch (Exception e) {
-
                     e.printStackTrace();
                 }
             });
-
             t.setDaemon(true);
             t.start();
-
         } catch (Exception e) {
-
             e.printStackTrace();
+            AlertUtil.showError("Submit before Printing");
         }
     }
 }
