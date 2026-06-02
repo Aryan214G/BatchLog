@@ -129,6 +129,7 @@ public class CategoriesPageController {
 
         //disable UI components when project is not created
             isSubmitButtonVisible(false);
+            isPrintButtonVisible(false);
         if(!instance.isProjectCreated()) {
             categoriesListView.setDisable(true);
             propertiesListView.setDisable(true);
@@ -392,6 +393,11 @@ public class CategoriesPageController {
         submitButton.setManaged(value);
     }
 
+    private void isPrintButtonVisible(boolean value){
+        printButton.setVisible(value);
+        submitButton.setManaged(value);
+    }
+
     @FXML
     private void handleEditClick() {
         if(instance.isProjectCreated())
@@ -541,6 +547,7 @@ public class CategoriesPageController {
         clearUIComponents();
         inputRows.clear();
         isSubmitButtonVisible(true);
+        isPrintButtonVisible(true);
 
         selectedState.setSelectedProperty(newProperty);
 
@@ -1006,6 +1013,7 @@ public class CategoriesPageController {
         headerBox.getChildren().clear();
         entriesGrid.getChildren().clear();
         isSubmitButtonVisible(false);
+        isPrintButtonVisible(false);
 
         if (metrics != null) {
             entriesPanel.getChildren().remove(metrics);
