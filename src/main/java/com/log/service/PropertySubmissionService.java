@@ -89,6 +89,10 @@ public class PropertySubmissionService {
     private void handleDirection(Connection conn, Direction dir) {
         if (dir.getDirId() == null) {
             this.directionId = directionService.getDirectionByName(conn, dir.getDirVal()).getDirId();
+            dir.setDirId(directionId);
+        }
+        else {
+            this.directionId = dir.getDirId();
         }
     }
 
@@ -113,9 +117,7 @@ public class PropertySubmissionService {
         direction.setDirId(directionId);
 
         System.out.println(
-                "BasePropertiesState Test ID = "
-                        + bsinstance.getTestId()
-        );
+                "BasePropertiesState Test ID = " + bsinstance.getTestId());
 
         Property property = new Property(
                 propertyName,
@@ -155,9 +157,7 @@ public class PropertySubmissionService {
                 if (pv.getPropertyValID() != 0
                         && pv.getPropertyValID() != -1) {
 
-                    System.out.println(
-                            "Deleting property value"
-                    );
+                    System.out.println( "Deleting property value");
 
                     propertyValuesService.deletePropertyValue(
                             conn,
@@ -216,10 +216,12 @@ public class PropertySubmissionService {
                         "Inserting property value"
                 );
 
-                propertyValuesService.insertPropertyValue(
+                int propertyValId = propertyValuesService.insertPropertyValue(
                         conn,
                         row
                 );
+
+                row.getPropertyValue().setPropertyValID(propertyValId);
             }
         }
     }

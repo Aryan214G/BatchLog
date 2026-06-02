@@ -683,6 +683,8 @@ public class CategoriesPageController {
 
         inputRow.setField(field);
         inputRow.setUnitController(controller);
+        inputRow.setComponentNumberField(componentField);
+
         inputRows.add(inputRow);
 
         // ENTER adds new row dynamically
@@ -777,10 +779,20 @@ public class CategoriesPageController {
             propertyState = stateManager.getState(property.getPropertyName());
         }
 
+
+        System.out.println("===== INPUT ROWS =====");
+
+for (InputRow row : inputRows) {
+    System.out.println(
+        "field=" + row.getField()
+        + ", propertyValue=" + row.getPropertyValue()
+    );
+}
         // ================= SAVE PROPERTY VALUES =================
     // Read values from all dynamic input rows and store them
     // inside their corresponding PropertyValue objects.
     for (InputRow row : inputRows) {
+
 
         String valueText = row.getField().getText();
 
