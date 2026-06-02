@@ -28,6 +28,7 @@ public class PropertyStateManager {
         state.setInputRows(inputRows);
         state.setUnit(unit);
         state.setTestMethod(testMethod);
+        state.setPropertyId(propertyId);
         propertyStates.put(property, state);
     }
 
