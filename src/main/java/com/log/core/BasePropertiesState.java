@@ -21,6 +21,7 @@ public class BasePropertiesState {
     private String placeOfTesting;
     private String fileName;
     private int testId;
+    private String sop;
 
     public int getTestId() {
         System.out.println(
@@ -76,5 +77,13 @@ public class BasePropertiesState {
 
     public void setProductCode(int productCode) {
         this.productCode = productCode;
+    }
+
+    public String getSop() {
+        return sop;
+    }
+
+    public void setSop(String sop) {
+        this.sop = sop;
     }
 }

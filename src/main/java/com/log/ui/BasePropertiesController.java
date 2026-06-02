@@ -30,7 +30,7 @@ public class BasePropertiesController {
     @FXML private DatePicker testDate;
     @FXML private TextField placeOfTesting;
     @FXML private TextField fileName;
-
+    @FXML private TextField sop;
     private final AppState appState = AppState.getInstance();
     private final BasePropertiesState bpropState = BasePropertiesState.getInstance();
     private ProjectService projectService = new ProjectService();
@@ -42,7 +42,8 @@ public class BasePropertiesController {
 
     // ===== INITIALIZATION =====
     @FXML
-    public void initialize() {
+    public void initialize()
+    {
         if(debug){
             setDefaultProject();
             System.out.println("Temporary Base Properties Loaded");
@@ -54,6 +55,7 @@ public class BasePropertiesController {
 
         String project = projectName.getText();
         String batch = batchNo.getText();
+        String sopValue = sop.getText().trim();
         String product = productName.getText();
         String component = productID.getText();
         LocalDate date = testDate.getValue();
@@ -61,6 +63,7 @@ public class BasePropertiesController {
         String file = fileName.getText();
         bpropState.setProjectName(projectName.getText());
         bpropState.setBatchNo(batchNo.getText());
+        bpropState.setSop(sopValue.isBlank() ? null : sopValue);
         bpropState.setProductName(productName.getText());
         bpropState.setProductID(productID.getText());
         bpropState.setTestDate(testDate.getValue());

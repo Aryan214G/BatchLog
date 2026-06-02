@@ -29,6 +29,9 @@
             <Label text="Batch ID" />
             <TextField fx:id="batchNo" alignment="CENTER" maxWidth="700.0" />
 
+            <Label text="SOP" />
+            <TextField fx:id="sop"  alignment="CENTER"  maxWidth="700.0" promptText="Optional" />
+
             <Label text="Product Name" />
             <TextField fx:id="productName" alignment="CENTER" maxWidth="700.0" />
 

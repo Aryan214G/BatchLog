@@ -13,14 +13,15 @@ public class BatchDAO {
     public void insertBatchByCODE(Batch batch) {
 
         //TODO: recheck this query. Use WHERE batchCode keyword
-        String sql = "INSERT INTO Batch VALUES (?, ?, ?)";
+        String sql = "INSERT INTO Batch VALUES (?, ?, ?,?)";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, batch.getBatchCode());
             stmt.setString(2, batch.getBatchId());
-            stmt.setInt(4, batch.getProductCode());
+            stmt.setInt(3, batch.getProductCode());
+            stmt.setString(4,batch.getSop());
 
             stmt.executeUpdate();
 
