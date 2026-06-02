@@ -8,6 +8,9 @@ import com.log.model.PropertyValue;
 import com.log.service.*;
 import com.log.util.DateUtils;
 import com.log.util.DialogUtils;
+
+import javafx.stage.FileChooser;
+import javafx.stage.Window;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -15,6 +18,7 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -121,9 +125,28 @@ public class PdfReportService {
             .orElse(null);
     }
 
-    public File generatePdf(ReportData reportData) throws IOException {
+    public File generatePdf(ReportData reportData, Window ownerWindow) throws IOException {
 
-    File file = new File("report.pdf");
+        FileChooser chooser = new FileChooser();
+
+        chooser.setTitle("Save PDF Report");
+
+        chooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter(
+                        "PDF Files",
+                        "*.pdf"
+                )
+        );
+
+        chooser.setInitialFileName(
+                reportData.getPropertyName() + "_Report.pdf"
+        );
+
+        File file = chooser.showSaveDialog(ownerWindow);
+
+        if (file == null) {
+            return null; // user pressed cancel
+        }
 
     try (PDDocument document = new PDDocument()) {
 
