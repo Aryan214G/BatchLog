@@ -82,8 +82,8 @@ public class TemperatureDAO {
         return null;
     }
 
-    //Uncomment if needed
-
+//    Uncomment if needed
+//
 //    public List<Temperature> getAllTemperatures() {
 //
 //        List<Temperature> temperatures = new ArrayList<>();

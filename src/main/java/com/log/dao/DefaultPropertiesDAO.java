@@ -65,19 +65,42 @@ public class DefaultPropertiesDAO {
 
         List<DefaultProperty> list = new ArrayList<>();
 
-        String query = "SELECT Def_PropName, Unit_ID, Category_ID, Rows FROM Default_Properties";
+        String query = """
+SELECT
+    Default_Properties.Def_PropID,
+    Default_Properties.Def_PropName,
+    Default_Properties.Unit_ID,
+    Units.Unit,
+    Default_Properties.Rows,
+    Default_Properties.Category_ID
+
+FROM Default_Properties
+
+JOIN Units
+    ON Default_Properties.Unit_ID = Units.Unit_ID
+""";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(query);
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                list.add(new DefaultProperty(
+                DefaultProperty dp = new DefaultProperty(
                         rs.getString("Def_PropName"),
                         rs.getInt("Unit_ID"),
-                        rs.getInt("Category_ID"),
+                        rs.getString("Unit"),
                         rs.getInt("Rows")
-                ));
+                );
+
+                dp.setPropertyId(
+                        rs.getInt("Def_PropID")
+                );
+
+                dp.setCategoryId(
+                        rs.getInt("Category_ID")
+                );
+
+                list.add(dp);
             }
 
         } catch (Exception e) {
@@ -109,5 +132,58 @@ public class DefaultPropertiesDAO {
     }
 
     return -1; // not found
+    }
+
+    public void updateDefaultProperty(DefaultProperty property) {
+
+        String query = """
+            UPDATE Default_Properties
+            SET
+                Unit_ID = ?,
+                Rows = ?
+            WHERE Def_PropID = ?
+            """;
+
+        try (
+                Connection conn = DBUtil.getConnection();
+
+                PreparedStatement stmt =
+                        conn.prepareStatement(query)
+        ) {
+
+            stmt.setInt(
+                    1,
+                    property.getUnitId()
+            );
+
+            stmt.setInt(
+                    2,
+                    property.getRows()
+            );
+
+            stmt.setInt(
+                    3,
+                    property.getPropertyId()
+            );
+
+            int affectedRows = stmt.executeUpdate();
+
+            if (affectedRows > 0) {
+
+                System.out.println(
+                        "Default property updated successfully."
+                );
+
+            } else {
+
+                System.out.println(
+                        "No property found to update."
+                );
+            }
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+        }
     }
 }

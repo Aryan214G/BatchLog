@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/25"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.log.ui.DirectionSettingsController"
+      spacing="20"
+      alignment="TOP_CENTER">
+
+    <padding>
+        <Insets top="30"
+                right="30"
+                bottom="30"
+                left="30"/>
+    </padding>
+
+    <children>
+
+        <Label text="Direction Settings"
+               style="-fx-font-size: 28px;
+                      -fx-font-weight: bold;"/>
+
+        <ListView fx:id="directionsListView"
+                  prefWidth="350"
+                  prefHeight="250"/>
+
+        <TextField fx:id="directionField"
+                   prefWidth="350"
+                   promptText="Enter New Direction"/>
+
+        <HBox spacing="15"
+              alignment="CENTER">
+
+            <children>
+
+                <Button text="Add Direction"
+                        prefWidth="140"
+                        onAction="#addDirection"/>
+
+                <Button text="Remove Selected"
+                        prefWidth="160"
+                        onAction="#removeDirection"/>
+
+            </children>
+
+        </HBox>
+
+    </children>
+
+</VBox>

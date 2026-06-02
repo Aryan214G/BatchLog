@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/25"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.log.ui.UnitsSettingsController"
+      spacing="20"
+      alignment="TOP_CENTER">
+
+    <padding>
+        <Insets top="30"
+                right="30"
+                bottom="30"
+                left="30"/>
+    </padding>
+
+    <children>
+
+        <!-- Title -->
+
+        <Label text="Property Units Settings"
+               style="-fx-font-size: 28px;
+                      -fx-font-weight: bold;" />
+
+        <!-- Property Selection -->
+
+        <Label text="Property" />
+
+        <ComboBox fx:id="propertyComboBox"
+                  prefWidth="350"
+                  promptText="Select Property" />
+
+        <!-- Current Units -->
+
+        <Label text="Units Assigned To Property" />
+
+        <ListView fx:id="unitsListView"
+                  prefWidth="350"
+                  prefHeight="200" />
+
+        <!-- Existing Units -->
+
+        <Label text="Existing Units" />
+
+        <ComboBox fx:id="availableUnitsComboBox"
+                  prefWidth="350"
+                  promptText="Select Existing Unit" />
+
+        <!-- Custom Unit -->
+
+        <Label text="Or Create New Unit" />
+
+        <TextField fx:id="newUnitField"
+                   prefWidth="350"
+                   promptText="Enter New Unit" />
+
+        <!-- Actions -->
+
+        <HBox spacing="15"
+              alignment="CENTER">
+
+            <children>
+
+                <Button text="Add Unit"
+                        prefWidth="140"
+                        onAction="#addUnit" />
+
+                <Button text="Remove Selected Unit"
+                        prefWidth="180"
+                        onAction="#removeUnit" />
+
+            </children>
+
+        </HBox>
+
+    </children>
+
+</VBox>

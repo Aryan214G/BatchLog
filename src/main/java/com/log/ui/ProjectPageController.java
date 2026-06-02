@@ -89,8 +89,7 @@ public class ProjectPageController {
                         rs.getString("Batch_ID"),
                         rs.getString("Product_name"),
                         rs.getString("Test_date"),
-                        rs.getString("Test_site")
-                ));
+                        rs.getString("Test_site")));
             }
         }
 
