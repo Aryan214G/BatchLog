@@ -6,7 +6,7 @@ import com.log.model.Unit;
 import com.log.service.DefaultPropertyService;
 import com.log.service.PropertyUnitsService;
 import com.log.service.UnitsService;
-import com.log.ui.util.AlertUtil;
+import com.log.util.AlertUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;

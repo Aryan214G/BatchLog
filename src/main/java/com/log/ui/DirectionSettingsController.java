@@ -2,7 +2,7 @@ package com.log.ui;
 
 import com.log.database.DBUtil;
 import com.log.model.Direction;
-import com.log.ui.util.AlertUtil;
+import com.log.util.AlertUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
