@@ -45,7 +45,7 @@ public class PropertySubmissionService {
 
             handleTemperature(conn, propertyState.getTemperature());
             handleDirection(conn, propertyState.getDirection());
-            handleProperty(conn, propertyState.getInputRows(), propertyName, selectedCategory, propertyState.getTestMethod());
+            handleProperty(conn, propertyState, propertyName, selectedCategory, propertyState.getTestMethod());
 
             conn.commit();
             showAlert("Success", "Submission completed successfully!");
@@ -96,7 +96,13 @@ public class PropertySubmissionService {
         }
     }
 
-    private void handleProperty(Connection conn, List<InputRow> inputRows, String propertyName, String selectedCategory, String testMethod){
+    private void handleProperty(
+            Connection conn,
+            PropertyState propertyState,
+            String propertyName,
+            String selectedCategory,
+            String testMethod){
+
         //TODO: might need to replace this unecessary db call
         Category category =
         categoryService.getCategory(conn, selectedCategory);
@@ -104,7 +110,7 @@ public class PropertySubmissionService {
         Unit unit =
                 unitsService.getUnit(
                         conn,
-                        inputRows.get(0)
+                        propertyState.getInputRows().get(0)
                                 .getUnitController()
                                 .getComboBox()
                                 .getValue()
@@ -119,28 +125,44 @@ public class PropertySubmissionService {
         System.out.println(
                 "BasePropertiesState Test ID = " + bsinstance.getTestId());
 
-        Property property = new Property(
-                propertyName,
-                unit,
-                bsinstance.getTestId(),
-                category,
-                temperature,
-                direction
-        );
+        // PROPERTY OBJECT
+
+        Property property = propertyState.getProperty();
+
+        if (property == null) {
+
+            property = new Property(
+                    propertyName,
+                    unit,
+                    bsinstance.getTestId(),
+                    category,
+                    temperature,
+                    direction
+            );
+
+            propertyState.setProperty(property);
+        }
 
         property.setTestMethod(testMethod);
 
-        int propertyID = propertyService.getPropertyId(conn, property);
+        property.setPropertyName(propertyName);
+        property.setUnit(unit);
+        property.setCategory(category);
+        property.setTemperature(temperature);
+        property.setDirection(direction);
+        property.setTestMethod(testMethod);
+        // ________________________________________________________________________________
 
-        if(propertyID != -1){
-            property.setPropertyID(propertyID);
+        int propertyID = property.getPropertyID();
+        if(propertyID > 0){
             propertyService.updateProperty(conn, property);
         }
         else{
             propertyID = propertyService.insertProperty(conn, property);
+            property.setPropertyID(propertyID);
         }
 
-        for (InputRow row : inputRows) {
+        for (InputRow row : propertyState.getInputRows()) {
 
             PropertyValue pv = row.getPropertyValue();
 

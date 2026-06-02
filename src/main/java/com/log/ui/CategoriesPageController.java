@@ -271,18 +271,15 @@ public class CategoriesPageController {
      and load them into the ui.
      */
     private void loadPropertyDataFromDB() throws SQLException {
-        System.out.println(
-                "loadPropertyDataFromDB testId = "
-                        + basePropertiesState.getTestId()
-        );
+
+        System.out.println("loadPropertyDataFromDB testId = " + basePropertiesState.getTestId());
+
         int testId = basePropertiesState.getTestId();
         propertiesList = propertyService.getPropertiesByTest(testId);
 
         //=========== iterate through properties and store in statemanager ================
 
         for(Property property : propertiesList){
-
-            inputRows.clear();
 
             // ============== Populate input rows =================
             try (Connection conn = DBUtil.getConnection()) {
@@ -780,14 +777,6 @@ public class CategoriesPageController {
         }
 
 
-        System.out.println("===== INPUT ROWS =====");
-
-for (InputRow row : inputRows) {
-    System.out.println(
-        "field=" + row.getField()
-        + ", propertyValue=" + row.getPropertyValue()
-    );
-}
         // ================= SAVE PROPERTY VALUES =================
     // Read values from all dynamic input rows and store them
     // inside their corresponding PropertyValue objects.
@@ -1122,15 +1111,15 @@ for (InputRow row : inputRows) {
             return;
         }
 
-        PropertyState propertyState =
-                stateManager.getState(selectedProperty.getPropertyName());
+        PropertyState propertyState = stateManager.getState(
+                selectedProperty.getPropertyName()
+        );
 
         propertySubmissionService.submit(
                 propertyState,
                 selectedProperty.getPropertyName(),
                 selectedState.getSelectedCategory()
         );
-        loadPropertyDataFromDB();
     }
 
     public void refreshcatmap(){
