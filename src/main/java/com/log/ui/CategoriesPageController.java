@@ -4,8 +4,10 @@ import com.log.core.AppState;
 import com.log.core.BasePropertiesState;
 import com.log.core.SelectedState;
 import com.log.database.DBUtil;
+import com.log.dto.ReportData;
 import com.log.model.*;
 import com.log.service.*;
+import com.log.service.export.PdfReportService;
 import com.log.util.AlertUtil;
 import com.log.util.StringUtils;
 import javafx.collections.ObservableList;
@@ -100,6 +102,7 @@ public class CategoriesPageController {
             propertyService,
             propertyValuesService
             );
+    private PdfReportService pdfReportService = new PdfReportService();
 
 
     // ======================= END OF VARIABLES DECLARATION ==============================
@@ -291,6 +294,7 @@ public class CategoriesPageController {
 
             //================= save state ==================
             stateManager.saveState(
+                    property.getPropertyID(),
                     property.getPropertyName(),
                     property.getTestMethod(),
                     new ArrayList<>(inputRows),
@@ -863,6 +867,7 @@ public class CategoriesPageController {
     // ================= SAVE PROPERTY STATE =================
 
     stateManager.saveState(
+            property.getPropertyId(),
             property.getPropertyName(),
             testMethod,
 
@@ -1055,4 +1060,53 @@ public class CategoriesPageController {
         defaultPropertiesMap = defaultPropertyService.getDefaultsGrouped() ;
     }
 
+    @FXML
+    private void handlePrint() {
+
+        DefaultProperty selectedProperty =
+                propertiesListView
+                        .getSelectionModel()
+                        .getSelectedItem();
+
+        if (selectedProperty == null) {
+
+            AlertUtil.showWarning(
+                    "Please select a property first."
+            );
+
+            return;
+        }
+
+        try {
+
+            int propertyId =
+                    selectedProperty.getPropertyId();
+
+            // FX thread — allowed to show dialogs
+            ReportData report =
+                    pdfReportService
+                            .buildReportData(propertyId);
+
+            // background thread — printing
+            Thread t = new Thread(() -> {
+
+                try {
+
+                    pdfReportService
+                            .printPdf(report);
+
+                } catch (Exception e) {
+
+                    e.printStackTrace();
+                }
+            });
+
+            t.setDaemon(true);
+            t.start();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
 }

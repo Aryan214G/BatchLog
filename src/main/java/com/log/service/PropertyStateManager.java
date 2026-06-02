@@ -12,6 +12,7 @@ public class PropertyStateManager {
     private final Map<String, PropertyState> propertyStates = new HashMap<>();
 
     public void saveState(
+            int propertyId,
             String property,
             String testMethod,
             List<InputRow> inputRows,
