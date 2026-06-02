@@ -66,4 +66,24 @@ public class DirectionService {
         directionDAO.deleteDirection(dirId);
     }
 
+    public boolean directionExists(
+            Connection conn,
+            String direction
+    ) {
+
+        return directionDAO.directionExists(
+                conn,
+                direction
+        );
+    }
+    public void deleteDirection(
+            Connection conn,
+            String direction
+    ) {
+
+        directionDAO.deleteDirection(
+                conn,
+                direction
+        );
+    }
 }

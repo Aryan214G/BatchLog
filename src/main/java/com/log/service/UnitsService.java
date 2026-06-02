@@ -77,4 +77,51 @@ public class UnitsService {
 
         unitsDAO.deleteUnit(unitId);
     }
+
+    public int getUnitIdByName(String unitName) {
+
+        try (Connection conn = DBUtil.getConnection()) {
+
+            Unit unit =
+                    unitsDAO.getUnitByName(
+                            conn,
+                            unitName
+                    );
+
+            if (unit != null) {
+
+                return unit.getUnitId();
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        return -1;
+    }
+    public boolean unitExists(
+            Connection conn,
+            String unitName
+    ) {
+
+        return unitsDAO.unitExists(
+                conn,
+                unitName
+        );
+    }
+
+    public int insertUnit(
+            Connection conn,
+            String unitName
+    ) {
+
+        Unit unit = new Unit();
+        unit.setUnit(unitName);
+
+        return unitsDAO.insertUnit(
+                conn,
+                unit
+        );
+    }
 }

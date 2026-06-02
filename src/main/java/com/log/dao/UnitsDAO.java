@@ -155,4 +155,64 @@ public class UnitsDAO {
             e.printStackTrace();
         }
     }
+
+    public boolean unitExists(
+            Connection conn,
+            String unitName
+    ) {
+
+        String sql =
+                "SELECT 1 FROM Units WHERE Unit = ?";
+
+        try (PreparedStatement stmt =
+                     conn.prepareStatement(sql)) {
+
+            stmt.setString(1, unitName);
+
+            ResultSet rs = stmt.executeQuery();
+
+            return rs.next();
+
+        } catch (SQLException e) {
+
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int insertUnit(
+            Connection conn,
+            Unit unit
+    ) {
+
+        String sql =
+                "INSERT INTO Units(Unit) VALUES(?)";
+
+        try (PreparedStatement stmt =
+                     conn.prepareStatement(
+                             sql,
+                             Statement.RETURN_GENERATED_KEYS
+                     )) {
+
+            stmt.setString(
+                    1,
+                    unit.getUnit()
+            );
+
+            stmt.executeUpdate();
+
+            ResultSet rs =
+                    stmt.getGeneratedKeys();
+
+            if (rs.next()) {
+
+                return rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+
+            throw new RuntimeException(e);
+        }
+
+        return -1;
+    }
 }

@@ -11,6 +11,7 @@ import java.util.List;
 
 public class PropertySubmissionService {
 
+
     private TemperatureService temperatureService;
     private DirectionService directionService;
     private CategoryService categoryService;
@@ -110,6 +111,11 @@ public class PropertySubmissionService {
 
         Direction direction = new Direction();
         direction.setDirId(directionId);
+
+        System.out.println(
+                "BasePropertiesState Test ID = "
+                        + bsinstance.getTestId()
+        );
 
         Property property = new Property(
                 propertyName,
