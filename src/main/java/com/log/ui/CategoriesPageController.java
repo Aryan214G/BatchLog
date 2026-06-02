@@ -1040,7 +1040,7 @@ public class CategoriesPageController {
         return values;
     }
 
-    public void handleEntrySubmit(ActionEvent actionEvent) {
+    public void handleEntrySubmit(ActionEvent actionEvent) throws SQLException {
         DefaultProperty selectedProperty = selectedState.getSelectedProperty();
         if(!saveCurrentPropertyValues(selectedProperty)){
             return;
@@ -1054,6 +1054,7 @@ public class CategoriesPageController {
                 selectedProperty.getPropertyName(),
                 selectedState.getSelectedCategory()
         );
+        loadPropertyDataFromDB();
     }
 
     public void refreshcatmap(){
@@ -1064,9 +1065,7 @@ public class CategoriesPageController {
     private void handlePrint() {
 
         DefaultProperty selectedProperty =
-                propertiesListView
-                        .getSelectionModel()
-                        .getSelectedItem();
+                selectedState.getSelectedProperty();
 
         if (selectedProperty == null) {
 
@@ -1079,15 +1078,19 @@ public class CategoriesPageController {
 
         try {
 
-            int propertyId =
-                    selectedProperty.getPropertyId();
+            PropertyState propertyState =
+                    stateManager.getState(
+                            selectedProperty.getPropertyName()
+                    );
 
-            // FX thread — allowed to show dialogs
+            int propertyId =
+                    propertyState.getPropertyId();
+
+            // FX thread — dialog allowed here
             ReportData report =
                     pdfReportService
                             .buildReportData(propertyId);
 
-            // background thread — printing
             Thread t = new Thread(() -> {
 
                 try {
