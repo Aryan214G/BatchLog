@@ -628,37 +628,57 @@ public class CategoriesPageController {
 
     private void addInputRow(int rowCount, String property, DefaultProperty dp, InputRow inputRow) throws IOException {
 
+        // ============= INPUT FIELD =================
+
         TextField field = new TextField();
-
         field.getStyleClass().add("input-field");
-
 
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/com/log/ui/components/unitsDropdown.fxml")
         );
 
-        Parent units = loader.load();
-        UnitsDropdownController controller = loader.getController();
-        controller.setUnits(property);
-        if (dp != null && rowCount == 0) {
+        // ============= COMPONENT FIELD =================
 
-            String unitName =
-                    unitsService.getUnitNameById(
-                            dp.getUnitId()
-                    );
+        TextField componentField = null;
 
-            System.out.println(
-                    "Setting default unit from DB = "
-                            + unitName
-            );
+                if (dp.getHasComponentNumber() == 1) {
 
-            controller.setSelectedUnit(unitName);
-        }
+                    componentField = new TextField();
+                    componentField.setPromptText("Component Number");
+                    componentField.getStyleClass().add("input-field");
+                }
 
-        entriesGrid.add(field, 0, rowCount);
-        if(rowCount < 1)
-        {
-            entriesGrid.add(units, 1, rowCount);
+                Parent units = loader.load();
+                UnitsDropdownController controller = loader.getController();
+                controller.setUnits(property);
+
+                if (dp != null && rowCount == 0) {
+
+                    String unitName = unitsService.getUnitNameById(
+                                dp.getUnitId()
+                            );
+
+                    controller.setSelectedUnit(unitName);
+                }
+
+                if (dp.getHasComponentNumber() == 1) {
+
+            entriesGrid.add(componentField, 0, rowCount);
+            entriesGrid.add(field, 1, rowCount);
+
+            if (rowCount < 1) {
+                entriesGrid.add(units, 2, rowCount);
+            }
+
+            inputRow.setComponentNumberField(componentField);
+
+        } else {
+
+            entriesGrid.add(field, 0, rowCount);
+
+            if (rowCount < 1) {
+                entriesGrid.add(units, 1, rowCount);
+            }
         }
 
         inputRow.setField(field);
@@ -963,6 +983,14 @@ public class CategoriesPageController {
             }
 
             inputRow.getField().setText(inputValue);
+
+            String componentNumber = "";
+
+            if (pv != null && pv.getComponentNumber() != null) {
+                componentNumber = pv.getComponentNumber();
+            }
+
+            inputRow.getComponentNumberField().setText(componentNumber);
 
             String unit =
                     state.getUnit().getUnit();
