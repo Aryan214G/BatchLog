@@ -8,6 +8,7 @@ import com.log.service.PropertyUnitsService;
 import com.log.service.UnitsService;
 import com.log.util.AlertUtil;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import com.log.ui.CategoriesPageController;
@@ -25,6 +26,9 @@ public class DefaultsSettingsController {
 
     @FXML
     private TextField fields;
+
+    @FXML
+    private CheckBox componentNumberCheckBox;
 
     private final DefaultPropertyService defaultPropertyService =
             new DefaultPropertyService();
@@ -54,6 +58,10 @@ public class DefaultsSettingsController {
 
                 // Load corresponding units
                 loadUnitsForProperty(selected);
+
+                componentNumberCheckBox.setSelected(
+                        selected.getHasComponentNumber() == 1
+                );
             }
         });
     }
@@ -185,12 +193,20 @@ public class DefaultsSettingsController {
             selected.setUnit(selectedUnit);
             selected.setUnitId(unitId);
 
+            int hasComponentNumber =
+                    componentNumberCheckBox.isSelected() ? 1 : 0;
+
+            selected.setHasComponentNumber(
+                    hasComponentNumber
+            );
+
             // Update DB
 
             defaultPropertyService.updateDefaultProperty(
                     selected.getPropertyId(),
                     unitId,
-                    rows
+                    rows,
+                    hasComponentNumber
             );
 
             // Refresh state
