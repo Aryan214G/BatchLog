@@ -16,6 +16,9 @@ public class DefaultProperty {
 
     private int rows;
 
+    private int hasComponentNumber;
+
+
     // =========================================
     // Constructors
     // =========================================
@@ -108,5 +111,13 @@ public class DefaultProperty {
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+    public int getHasComponentNumber() {
+        return hasComponentNumber;
+    }
+
+    public void setHasComponentNumber(int hasComponentNumber) {
+        this.hasComponentNumber = hasComponentNumber;
     }
 }
