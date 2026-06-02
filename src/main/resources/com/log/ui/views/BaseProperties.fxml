@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.BasePropertiesController">
+<BorderPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.BasePropertiesController">
 
     <!-- ===== TOP MENU ===== -->
     <top>
@@ -32,7 +32,7 @@
             <Label text="Product Name" />
             <TextField fx:id="productName" alignment="CENTER" maxWidth="700.0" />
 
-            <Label text="Product ID" />
+            <Label text="Component ID" />
             <TextField fx:id="productID" alignment="CENTER" maxWidth="700.0" />
 
             <Label text="Test Date" />
