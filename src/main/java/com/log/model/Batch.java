@@ -1,5 +1,8 @@
 package com.log.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Batch {
 
     private int batchCode;
@@ -21,5 +24,11 @@ public class Batch {
     public int getBatchCode() { return batchCode; }
     public String getBatchId() { return batchId; }
     public int getProductCode() { return productCode; }
+    // In Batch.java
+    private List<BatchTest> tests = new ArrayList<>();
+
+    public List<BatchTest> getTests() {
+        return tests;
+    }
 
 }

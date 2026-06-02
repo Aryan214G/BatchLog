@@ -3,6 +3,7 @@ package com.log.ui;
 import com.log.core.AppState;
 import com.log.core.BasePropertiesState;
 import com.log.database.DBUtil;
+import com.log.model.Batch;
 import com.log.model.BatchTest;
 import com.log.model.PropertyRow;
 import javafx.fxml.FXML;
@@ -59,7 +60,74 @@ public class RetrievalResultsController {
 
 
     // ── Entry point ───────────────────────────────────────────────────────────
+    // Add this import
 
+
+    // Add this overload alongside the existing loadBatch(BatchTest)
+    public void loadBatch(Batch batch) {
+        batchTitleLabel.setText("Batch: " + batch.getBatchId());
+
+        try (Connection conn = DBUtil.getConnection()) {
+            cachedRows = fetchPropertiesForBatch(conn, batch.getBatchCode());
+
+            propertyStates.clear();
+            for (PropertyRow r : cachedRows) {
+                propertyStates.put(r.getName(), true);
+            }
+
+            appState.setProjectCreated(true);
+            populateGrid(cachedRows);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // New query — fetches properties across ALL tests in the batch
+    private List<PropertyRow> fetchPropertiesForBatch(Connection conn, int batchCode) throws SQLException {
+        String propSql = """
+        SELECT
+            p.Property_ID,
+            p.Property_name,
+            p.Test_ID,
+            c.Category_name,
+            t.Temp_VAL || ' ' || tu.Temp_Unit AS temperature,
+            d.Dir_VAL,
+            u.Unit
+        FROM Property p
+        LEFT JOIN Category c         ON p.Category_ID    = c.Category_ID
+        LEFT JOIN Temperature t      ON p.Temp_ID        = t.Temp_ID
+        LEFT JOIN Temperature_Units tu ON t.Temp_Unit_ID = tu.Temp_Unit_ID
+        LEFT JOIN Direction d        ON p.Dir_ID         = d.Dir_ID
+        LEFT JOIN Units u            ON p.Unit_ID        = u.Unit_ID
+        JOIN Batch_Test bt           ON p.Test_ID        = bt.Test_ID
+        WHERE bt.Batch_CODE = ?
+        ORDER BY p.Test_ID, p.Property_name
+    """;
+
+        List<PropertyRow> rows = new ArrayList<>();
+
+        try (PreparedStatement stmt = conn.prepareStatement(propSql)) {
+            stmt.setInt(1, batchCode);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int testId = rs.getInt("Test_ID");
+                basePropertiesState.setTestId(testId);
+
+                PropertyRow row = new PropertyRow(
+                        rs.getString("Property_name"),
+                        rs.getString("Category_name"),
+                        rs.getString("temperature"),
+                        rs.getString("Dir_VAL"),
+                        rs.getString("Unit")
+                );
+                row.setValues(fetchValues(conn, rs.getInt("Property_ID")));
+                rows.add(row);
+            }
+        }
+
+        return rows;
+    }
     public void loadBatch(BatchTest batch) {
         batchTitleLabel.setText(
                 "Batch: " + batch.getBatchCode()
