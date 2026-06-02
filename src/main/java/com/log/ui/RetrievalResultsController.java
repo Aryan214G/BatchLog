@@ -3,14 +3,18 @@ package com.log.ui;
 import com.log.core.AppState;
 import com.log.core.BasePropertiesState;
 import com.log.database.DBUtil;
+import com.log.dto.ReportData;
 import com.log.model.Batch;
 import com.log.model.BatchTest;
 import com.log.model.PropertyRow;
+import com.log.service.export.PdfReportService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -55,6 +59,8 @@ public class RetrievalResultsController {
     private AppState appState = AppState.getInstance();
 
     private int testId;
+
+    private PdfReportService pdfReportService = new PdfReportService();
     // ── Row model ─────────────────────────────────────────────────────────────
 
 
@@ -335,33 +341,78 @@ public class RetrievalResultsController {
         }
 
         // Data rows
+        // Data rows
         int row = 1;
+
         for (PropertyRow p : visibleRows) {
+
             boolean isAlt = (row % 2 == 0);
             int col = 0;
 
-            if (columnStates.getOrDefault("Property",      true))
-                propertiesGrid.add(makeCell(p.getName(), isAlt), col++, row);
-            if (columnStates.getOrDefault("Category",      true))
-                propertiesGrid.add(makeCell(p.getCategory(), isAlt), col++, row);
-            if (columnStates.getOrDefault("Temperature",   true))
-                propertiesGrid.add(makeCell(p.getTemperature() != null ? p.getTemperature() : "—", isAlt), col++, row);
-            if (columnStates.getOrDefault("Direction",     true))
-                propertiesGrid.add(makeCell(p.getDirection(), isAlt), col++, row);
+            ContextMenu rowMenu = createRowContextMenu(p);
 
+            if (columnStates.getOrDefault("Property", true))
+                propertiesGrid.add(
+                        makeCell(p.getName(), isAlt, rowMenu),
+                        col++, row
+                );
+
+            if (columnStates.getOrDefault("Category", true))
+                propertiesGrid.add(
+                        makeCell(p.getCategory(), isAlt, rowMenu),
+                        col++, row
+                );
+
+            if (columnStates.getOrDefault("Temperature", true))
+                propertiesGrid.add(
+                        makeCell(
+                                p.getTemperature() != null
+                                        ? p.getTemperature()
+                                        : "—",
+                                isAlt,
+                                rowMenu
+                        ),
+                        col++, row
+                );
+
+            if (columnStates.getOrDefault("Direction", true))
+                propertiesGrid.add(
+                        makeCell(
+                                p.getDirection(),
+                                isAlt,
+                                rowMenu
+                        ),
+                        col++, row
+                );
 
             if (columnStates.getOrDefault("Values", true)) {
+
                 for (int i = 0; i < maxValues; i++) {
+
                     String val = i < p.getValues().size()
-                            ? formatDouble(p.getValues().get(i)) + " " + (p.getUnit() != null ? p.getUnit() : "")
+                            ? formatDouble(p.getValues().get(i))
+                            + " "
+                            + (p.getUnit() != null ? p.getUnit() : "")
                             : "";
-                    propertiesGrid.add(makeCell(val, isAlt), col++, row);
+
+                    propertiesGrid.add(
+                            makeCell(val, isAlt, rowMenu),
+                            col++, row
+                    );
                 }
             }
 
             if (columnStates.getOrDefault("Average Value", true))
-                propertiesGrid.add(makeCell(
-                        formatDouble(p.getAverage()) + " " + (p.getUnit() != null ? p.getUnit() : ""), isAlt), col++, row);
+                propertiesGrid.add(
+                        makeCell(
+                                formatDouble(p.getAverage())
+                                        + " "
+                                        + (p.getUnit() != null ? p.getUnit() : ""),
+                                isAlt,
+                                rowMenu
+                        ),
+                        col++, row
+                );
 
             row++;
         }
@@ -384,12 +435,20 @@ public class RetrievalResultsController {
         return label;
     }
 
-    private Label makeCell(String text, boolean isAlt) {
+    private Label makeCell(String text, boolean isAlt, ContextMenu menu) {
+
         Label label = new Label(text != null ? text : "—");
+
         label.getStyleClass().add("grid-cell");
-        if (isAlt) label.getStyleClass().add("grid-cell-alt");
+
+        if (isAlt)
+            label.getStyleClass().add("grid-cell-alt");
+
         label.setMaxWidth(Double.MAX_VALUE);
         label.setWrapText(true);
+
+        label.setContextMenu(menu);
+
         return label;
     }
 
@@ -406,5 +465,34 @@ public class RetrievalResultsController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private ContextMenu createRowContextMenu(PropertyRow property) {
+
+        MenuItem exportItem = new MenuItem("Export Property");
+        exportItem.setOnAction(e -> {
+            System.out.println("Export: " + property.getName());
+            try {
+                handleExport(property.getPropertyId());
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        return new ContextMenu(exportItem);
+    }
+
+    private void handleExport(int propertyId)
+            throws SQLException, IOException {
+
+        ReportData propertyReport =
+                pdfReportService.buildReportData(propertyId);
+
+        pdfReportService.generatePdf(
+                propertyReport,
+                propertiesGrid.getScene().getWindow()
+        );
     }
 }
