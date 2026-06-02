@@ -484,8 +484,15 @@ public class RetrievalResultsController {
         return new ContextMenu(exportItem);
     }
 
-    private void handleExport(int propertyId) throws SQLException, IOException {
-        ReportData propertyReport = pdfReportService.buildReportData(propertyId);
-        System.out.println(pdfReportService.generatePdf(propertyReport));
+    private void handleExport(int propertyId)
+            throws SQLException, IOException {
+
+        ReportData propertyReport =
+                pdfReportService.buildReportData(propertyId);
+
+        pdfReportService.generatePdf(
+                propertyReport,
+                propertiesGrid.getScene().getWindow()
+        );
     }
 }
