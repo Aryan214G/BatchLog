@@ -30,11 +30,13 @@ public class DefaultProperty {
     public DefaultProperty(String propertyName,
                            int unitId,
                            String unit,
-                           int rows) {
+                           int rows,
+                           int hasComponentNumber) {
         this.propertyName= propertyName;
         this.unitId =  unitId;
         this.unit= unit;
         this.rows = rows;
+        this.hasComponentNumber = hasComponentNumber;
     }
 
     public DefaultProperty(int propertyId,

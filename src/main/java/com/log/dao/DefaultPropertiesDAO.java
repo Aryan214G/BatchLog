@@ -24,7 +24,8 @@ public class DefaultPropertiesDAO {
                         p.Def_PropID,
                         p.Def_PropName,
                         c.Category_name,
-                        p.rows
+                        p.rows,
+                        p.Has_Component_Number
                     FROM Default_Properties p
                     JOIN Category c ON p.Category_ID = c.Category_ID
                     WHERE c.Category_name = ?
@@ -50,8 +51,10 @@ public class DefaultPropertiesDAO {
                     String catName = rs.getString("Category_name");
                     int rows = rs.getInt("rows");
 
+                    DefaultProperty defaultProperty = new DefaultProperty(id, propName, catName, rows);
+                    defaultProperty.setHasComponentNumber(rs.getInt("Has_Component_Number"));
 
-                    properties.add(new DefaultProperty(id, propName, catName, rows));
+                    properties.add(defaultProperty);
                 }
             }
         } catch (SQLException e) {
@@ -72,7 +75,8 @@ SELECT
     Default_Properties.Unit_ID,
     Units.Unit,
     Default_Properties.Rows,
-    Default_Properties.Category_ID
+    Default_Properties.Category_ID,
+    Default_Properties.Has_Component_Number
 
 FROM Default_Properties
 
@@ -89,7 +93,8 @@ JOIN Units
                         rs.getString("Def_PropName"),
                         rs.getInt("Unit_ID"),
                         rs.getString("Unit"),
-                        rs.getInt("Rows")
+                        rs.getInt("Rows"),
+                        rs.getInt("Has_Component_Number")
                 );
 
                 dp.setPropertyId(
