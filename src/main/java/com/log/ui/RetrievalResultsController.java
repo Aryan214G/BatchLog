@@ -181,6 +181,7 @@ public class RetrievalResultsController {
             stmt.setInt(1, batchCode);
             ResultSet rs = stmt.executeQuery();
 
+
             while (rs.next()) {
 
                 testId = rs.getInt("Test_ID");
@@ -193,6 +194,8 @@ public class RetrievalResultsController {
                         rs.getString("Dir_VAL"),
                         rs.getString("Unit")
                 );
+
+                row.setPropertyId(rs.getInt("Property_ID"));
                 row.setValues(fetchValues(conn, rs.getInt("Property_ID")));
                 rows.add(row);
             }

@@ -1,4 +1,4 @@
-package com.log.ui.util;
+package com.log.util;
 
 public final class StringUtils {
 

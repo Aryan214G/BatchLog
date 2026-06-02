@@ -1,4 +1,4 @@
-package com.log.ui.util;
+package com.log.util;
 
 import javafx.scene.control.Alert;
 

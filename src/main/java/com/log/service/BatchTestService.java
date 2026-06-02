@@ -3,10 +3,12 @@ package com.log.service;
 import com.log.core.BasePropertiesState;
 import com.log.dao.BatchDAO;
 import com.log.dao.BatchTestDAO;
+import com.log.database.DBUtil;
 import com.log.model.Batch;
 import com.log.model.BatchTest;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public class BatchTestService {
 
@@ -30,4 +32,27 @@ public class BatchTestService {
     public int getBatchTestId(Connection conn, BatchTest batchTest){
         return batchTestDAO.getBatchTestId(conn, batchTest);
     }
+
+    public String getBatchIdByTestId(int testId) {
+
+        try(Connection conn = DBUtil.getConnection())
+        {
+            return batchTestDAO.getBatchIdByTestId(conn, testId);
+        }
+        catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    public BatchTest getBatchTestById(int testId){
+
+        try(Connection conn = DBUtil.getConnection()) {
+
+            return batchTestDAO.getBatchTestById(conn, testId);
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 public class PropertyRow {
 
+    private int propertyId;
     private String name;
     private String category;
     private String temperature;
@@ -29,6 +30,14 @@ public class PropertyRow {
         this.direction = direction;
         this.unit = unit;
         this.values = new ArrayList<>();
+    }
+
+    public int getPropertyId() {
+        return propertyId;
+    }
+
+    public void setPropertyId(int propertyId) {
+        this.propertyId = propertyId;
     }
 
     public String getName() {
