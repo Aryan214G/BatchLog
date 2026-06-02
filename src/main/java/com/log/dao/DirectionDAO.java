@@ -132,4 +132,50 @@ public class DirectionDAO {
             e.printStackTrace();
         }
     }
+
+    public boolean directionExists(
+            Connection conn,
+            String direction
+    ) {
+
+        String sql =
+                "SELECT 1 FROM Direction WHERE Dir_VAL = ?";
+
+        try (PreparedStatement stmt =
+                     conn.prepareStatement(sql)) {
+
+            stmt.setString(1, direction);
+
+            ResultSet rs =
+                    stmt.executeQuery();
+
+            return rs.next();
+
+        } catch (SQLException e) {
+
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void deleteDirection(
+            Connection conn,
+            String direction
+    ) {
+
+        String sql =
+                "DELETE FROM Direction WHERE Dir_VAL = ?";
+
+        try (PreparedStatement stmt =
+                     conn.prepareStatement(sql)) {
+
+            stmt.setString(1, direction);
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+
+            throw new RuntimeException(e);
+        }
+    }
+
 }

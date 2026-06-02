@@ -97,6 +97,17 @@ public class CategoriesPageController {
     @FXML
     public void initialize() throws IOException, SQLException {
 
+        System.out.println("========== INIT ==========");
+        System.out.println(
+                "projectCreated = "
+                        + instance.isProjectCreated()
+        );
+
+        System.out.println(
+                "testId = "
+                        + basePropertiesState.getTestId()
+        );
+
 
         //disable UI components when project is not created
             isSubmitButtonVisible(false);
@@ -241,6 +252,10 @@ public class CategoriesPageController {
      and load them into the ui.
      */
     private void loadPropertyDataFromDB() throws SQLException {
+        System.out.println(
+                "loadPropertyDataFromDB testId = "
+                        + basePropertiesState.getTestId()
+        );
         int testId = basePropertiesState.getTestId();
         propertiesList = propertyService.getPropertiesByTest(testId);
 

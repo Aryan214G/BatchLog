@@ -19,23 +19,45 @@
 
     <children>
 
+        <!-- Title -->
+
         <Label text="Property Units Settings"
                style="-fx-font-size: 28px;
-                      -fx-font-weight: bold;"/>
+                      -fx-font-weight: bold;" />
+
+        <!-- Property Selection -->
+
+        <Label text="Property" />
 
         <ComboBox fx:id="propertyComboBox"
-                  prefWidth="300"
-                  promptText="Select Property"/>
+                  prefWidth="350"
+                  promptText="Select Property" />
 
-        <Label text="Allowed Units"/>
+        <!-- Current Units -->
+
+        <Label text="Units Assigned To Property" />
 
         <ListView fx:id="unitsListView"
-                  prefHeight="250"
-                  prefWidth="300"/>
+                  prefWidth="350"
+                  prefHeight="200" />
+
+        <!-- Existing Units -->
+
+        <Label text="Existing Units" />
 
         <ComboBox fx:id="availableUnitsComboBox"
-                  prefWidth="300"
-                  promptText="Select Unit"/>
+                  prefWidth="350"
+                  promptText="Select Existing Unit" />
+
+        <!-- Custom Unit -->
+
+        <Label text="Or Create New Unit" />
+
+        <TextField fx:id="newUnitField"
+                   prefWidth="350"
+                   promptText="Enter New Unit" />
+
+        <!-- Actions -->
 
         <HBox spacing="15"
               alignment="CENTER">
@@ -43,10 +65,12 @@
             <children>
 
                 <Button text="Add Unit"
-                        onAction="#addUnit"/>
+                        prefWidth="140"
+                        onAction="#addUnit" />
 
                 <Button text="Remove Selected Unit"
-                        onAction="#removeUnit"/>
+                        prefWidth="180"
+                        onAction="#removeUnit" />
 
             </children>
 

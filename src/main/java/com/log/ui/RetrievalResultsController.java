@@ -200,9 +200,9 @@ public class RetrievalResultsController {
         try (PreparedStatement stmt = conn.prepareStatement(propSql)) {
             stmt.setInt(1, batchCode);
             ResultSet rs = stmt.executeQuery();
-
+            System.out.println("Before loop");
             while (rs.next()) {
-
+                System.out.println("Inside loop");
                 testId = rs.getInt("Test_ID");
                 basePropertiesState.setTestId(testId);
 

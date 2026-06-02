@@ -10,6 +10,7 @@ import com.log.ui.util.AlertUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 
 import java.sql.Connection;
 import java.util.List;
@@ -18,10 +19,10 @@ import java.util.List;
 
         @FXML
         private ComboBox<DefaultProperty> propertyComboBox;
-
         @FXML
         private ListView<String> unitsListView;
-
+        @FXML
+        private TextField newUnitField;
         @FXML
         private ComboBox<String> availableUnitsComboBox;
 
@@ -116,26 +117,114 @@ import java.util.List;
                 return;
             }
 
+            String customUnit =
+                    newUnitField.getText().trim();
+
             String unitName =
                     availableUnitsComboBox.getValue();
 
-            if (unitName == null
-                    || unitName.isBlank()) {
+            // BOTH entered
+
+            if (!customUnit.isBlank()
+                    && unitName != null
+                    && !unitName.isBlank()) {
 
                 AlertUtil.showWarning(
-                        "Please select a unit."
+                        "Please either select an existing unit OR enter a custom unit."
                 );
 
                 return;
             }
 
-            int unitId =
-                    unitsService.getUnitIdByName(
-                            unitName
-                    );
+            // NEITHER entered
+
+            if (customUnit.isBlank()
+                    && (unitName == null
+                    || unitName.isBlank())) {
+
+                AlertUtil.showWarning(
+                        "Please select a unit or enter a custom unit."
+                );
+
+                return;
+            }
 
             try (Connection conn =
                          DBUtil.getConnection()) {
+
+                // =====================================
+                // CUSTOM UNIT PATH
+                // =====================================
+
+                if (!customUnit.isBlank()) {
+
+                    int unitId;
+
+                    if (unitsService.unitExists(
+                            conn,
+                            customUnit
+                    )) {
+
+                        unitId =
+                                unitsService.getUnitIdByName(
+                                        customUnit
+                                );
+
+                    } else {
+
+                        unitId =
+                                unitsService.insertUnit(
+                                        conn,
+                                        customUnit
+                                );
+                    }
+
+                    if (propertyUnitsService
+                            .unitExistsForProperty(
+                                    conn,
+                                    property.getPropertyId(),
+                                    unitId
+                            )) {
+
+                        AlertUtil.showWarning(
+                                "This unit is already assigned to the selected property."
+                        );
+
+                        return;
+                    }
+
+                    propertyUnitsService
+                            .addUnitToProperty(
+                                    conn,
+                                    property.getPropertyId(),
+                                    unitId
+                            );
+
+                    AlertUtil.showInfo(
+                            "Custom unit added successfully."
+                    );
+
+                    newUnitField.clear();
+
+                    availableUnitsComboBox
+                            .getItems()
+                            .clear();
+
+                    loadAllUnits();
+
+                    loadUnitsForSelectedProperty();
+
+                    return;
+                }
+
+                // =====================================
+                // EXISTING UNIT PATH
+                // =====================================
+
+                int unitId =
+                        unitsService.getUnitIdByName(
+                                unitName
+                        );
 
                 if (propertyUnitsService
                         .unitExistsForProperty(

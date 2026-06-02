@@ -6,6 +6,7 @@ import com.log.service.CategoryService;
 import com.log.service.DefaultPropertyService;
 import com.log.service.PropertyUnitsService;
 import com.log.service.UnitsService;
+import com.log.ui.util.AlertUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -104,7 +105,24 @@ public class DefaultsSettingsController {
         DefaultProperty selected =
                 propertyComboBox.getValue();
 
-        if(selected == null) {
+        if (selected == null) {
+
+            AlertUtil.showWarning(
+                    "Please select a property."
+            );
+
+            return;
+        }
+
+        String rowText =
+                fields.getText().trim();
+
+        if (rowText.isBlank()) {
+
+            AlertUtil.showWarning(
+                    "Please enter the number of rows."
+            );
+
             return;
         }
 
@@ -112,22 +130,20 @@ public class DefaultsSettingsController {
 
         try {
 
-            rows = Integer.parseInt(
-                    fields.getText().trim()
-            );
+            rows = Integer.parseInt(rowText);
 
         } catch (NumberFormatException e) {
 
-            System.out.println(
-                    "Invalid row count."
+            AlertUtil.showWarning(
+                    "Please enter a valid numeric row count."
             );
 
             return;
         }
 
-        if(rows < 1) {
+        if (rows < 1) {
 
-            System.out.println(
+            AlertUtil.showWarning(
                     "Rows must be at least 1."
             );
 
@@ -137,63 +153,81 @@ public class DefaultsSettingsController {
         String selectedUnit =
                 unitComboBox.getValue();
 
-        if(selectedUnit == null
+        if (selectedUnit == null
                 || selectedUnit.isBlank()) {
 
-            System.out.println(
+            AlertUtil.showWarning(
                     "Please select a unit."
             );
 
             return;
         }
 
-        // Convert unit name -> unit id
         int unitId =
                 unitsService.getUnitIdByName(
                         selectedUnit
                 );
 
-        if(unitId == -1) {
+        if (unitId == -1) {
 
-            System.out.println(
+            AlertUtil.showWarning(
                     "Invalid unit selected."
             );
 
             return;
         }
 
-        // Update in-memory object
-        selected.setRows(rows);
-        selected.setUnit(selectedUnit);
-        selected.setUnitId(unitId);
+        try {
 
-        // Update DB
-        defaultPropertyService.updateDefaultProperty(
-                selected.getPropertyId(),
-                unitId,
-                rows
-        );
-        //debugging
-        System.out.println(defaultPropertyService.getDefaults());
-        new CategoryService()
-                .refreshCategoriesState();
+            // Update object
 
+            selected.setRows(rows);
+            selected.setUnit(selectedUnit);
+            selected.setUnitId(unitId);
 
-        propertyComboBox.getItems().clear();
-        loadProperties();
+            // Update DB
 
-        propertyComboBox.setValue(
-                propertyComboBox.getItems()
-                        .stream()
-                        .filter(p -> p.getPropertyId()
-                                == selected.getPropertyId())
-                        .findFirst()
-                        .orElse(null)
-        );
+            defaultPropertyService.updateDefaultProperty(
+                    selected.getPropertyId(),
+                    unitId,
+                    rows
+            );
 
-        System.out.println(
-                "Updated successfully."
-        );
+            // Refresh state
+
+            new CategoryService()
+                    .refreshCategoriesState();
+
+            propertyComboBox.getItems().clear();
+
+            loadProperties();
+
+            propertyComboBox.setValue(
+                    propertyComboBox.getItems()
+                            .stream()
+                            .filter(
+                                    p -> p.getPropertyId()
+                                            == selected.getPropertyId()
+                            )
+                            .findFirst()
+                            .orElse(null)
+            );
+
+            AlertUtil.showInfo(
+                    "Default property updated successfully."
+            );
+
+            new CategoriesPageController()
+                    .refreshcatmap();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            AlertUtil.showError(
+                    "Failed to update default property."
+            );
+        }
 
         new CategoriesPageController().refreshcatmap();
     }

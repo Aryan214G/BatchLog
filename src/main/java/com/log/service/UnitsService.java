@@ -100,4 +100,28 @@ public class UnitsService {
 
         return -1;
     }
+    public boolean unitExists(
+            Connection conn,
+            String unitName
+    ) {
+
+        return unitsDAO.unitExists(
+                conn,
+                unitName
+        );
+    }
+
+    public int insertUnit(
+            Connection conn,
+            String unitName
+    ) {
+
+        Unit unit = new Unit();
+        unit.setUnit(unitName);
+
+        return unitsDAO.insertUnit(
+                conn,
+                unit
+        );
+    }
 }

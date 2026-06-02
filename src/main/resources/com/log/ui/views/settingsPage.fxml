@@ -33,37 +33,32 @@
 
                 <Button fx:id="defaultsBtn"
                         mnemonicParsing="false"
-                        prefHeight="74.0"
+                        prefHeight="50.0"
                         prefWidth="218.0"
                         text="Set defaults"
                         onAction="#showDefaultsPage" />
 
-                <Button fx:id="unitsBtn"
+
+                <Button fx:id="defunitsBtn"
                         mnemonicParsing="false"
-                        prefHeight="79.0"
+                        prefHeight="50.0"
                         prefWidth="218.0"
                         text="Add or remove Units"
                         onAction="#showUnitsPage" />
 
                 <Button fx:id="directionsBtn"
                         mnemonicParsing="false"
-                        prefHeight="74.0"
+                        prefHeight="50.0"
                         prefWidth="218.0"
                         text="Add or remove Directions"
                         onAction="#showDirectionsPage" />
-
-                <Button fx:id="categoriesBtn"
-                        mnemonicParsing="false"
-                        prefHeight="82.0"
-                        prefWidth="218.0"
-                        text="Add or remove Categories"
-                        onAction="#showCategoriesPage" />
 
                 <ListView fx:id="categoriesListView"
                           prefHeight="353.0"
                           prefWidth="218.0"
                           styleClass="buttons-list"
                           VBox.vgrow="ALWAYS" />
+
 
             </children>
         </VBox>

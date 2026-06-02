@@ -23,10 +23,17 @@ public class BasePropertiesState {
     private int testId;
 
     public int getTestId() {
+        System.out.println(
+                "BasePropertiesState.getTestId() = " + testId
+        );
+
         return testId;
     }
 
     public void setTestId(int testId) {
+        System.out.println(
+                "BasePropertiesState.setTestId(" + testId + ")"
+        );
         this.testId = testId;
     }
 
