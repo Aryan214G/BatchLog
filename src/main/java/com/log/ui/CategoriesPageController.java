@@ -294,7 +294,10 @@ public class CategoriesPageController {
 
 
             //================= save state ==================
+
+            //TODO: might consider removing redundant property parameters
             stateManager.saveState(
+                    property,
                     property.getPropertyID(),
                     property.getPropertyName(),
                     property.getTestMethod(),
@@ -871,9 +874,17 @@ public class CategoriesPageController {
     //StringUtils is a user defined class present in utility package
     String testMethod = StringUtils.nullIfBlank(testMethodField.getText());
 
+    // retrieve existing property object and store it
+    Property existingPropertyObj = null;
+
+        if (propertyState != null) {
+            existingPropertyObj = propertyState.getProperty();
+        }
+
     // ================= SAVE PROPERTY STATE =================
 
     stateManager.saveState(
+            existingPropertyObj,
             property.getPropertyId(),
             property.getPropertyName(),
             testMethod,

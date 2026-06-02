@@ -12,24 +12,26 @@ public class PropertyStateManager {
     private final Map<String, PropertyState> propertyStates = new HashMap<>();
 
     public void saveState(
+            Property property,
             int propertyId,
-            String property,
+            String propertyName,
             String testMethod,
             List<InputRow> inputRows,
             Temperature temperature,
             Direction direction,
             Unit unit
     ) {
-        if (property == null) return;
+        if (propertyName == null) return;
 
         PropertyState state = new PropertyState();
+        state.setProperty(property);
         state.setTemperature(temperature);
         state.setDirection(direction);
         state.setInputRows(inputRows);
         state.setUnit(unit);
         state.setTestMethod(testMethod);
         state.setPropertyId(propertyId);
-        propertyStates.put(property, state);
+        propertyStates.put(propertyName, state);
     }
 
     public PropertyState getState(String property) {

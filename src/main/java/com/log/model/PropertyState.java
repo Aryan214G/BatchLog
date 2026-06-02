@@ -7,6 +7,7 @@ import java.util.List;
 
 public class PropertyState {
 
+    private Property property;
     private List<Reading> readings = new ArrayList<>();
     private List<InputRow> inputRows = new ArrayList<>();
     private Temperature temperature;
@@ -75,4 +76,13 @@ public class PropertyState {
     public void setPropertyId(int propertyId){this.propertyId=propertyId;}
 
     public int getPropertyId(){return this.propertyId;}
+
+
+    public Property getProperty() {
+        return property;
+    }
+
+    public void setProperty(Property property) {
+        this.property = property;
+    }
 }
