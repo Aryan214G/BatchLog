@@ -65,4 +65,6 @@ public class BatchService {
     {
         return batchDAO.getBatchCode(conn, batch);
     }
+
+    public String getBatchId(Connection conn, int batchID){return batchDAO.getBatchIdByCode(conn,batchID);}
 }

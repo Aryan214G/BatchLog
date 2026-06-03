@@ -5,6 +5,7 @@ import com.log.database.DBUtil;
 import com.log.model.BatchRow;
 import com.log.model.BatchTest;
 import com.log.service.BatchService;
+import com.log.service.BatchTestService;
 import com.log.service.export.ProjectExportService;
 import com.log.service.ProjectService;
 import javafx.fxml.FXML;
@@ -23,6 +24,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +39,8 @@ public class ProjectPageController {
     private final ProjectService projectService = new ProjectService();
     private ProjectExportService projectExportService = new ProjectExportService();
     private BatchService batchService = new BatchService();
-
+    private BasePropertiesState basePropertiesState = BasePropertiesState.getInstance();
+    private BatchTestService batchTestService = new BatchTestService();
 
 
     // ── Entry point ───────────────────────────────────────────────────────────
@@ -69,7 +72,8 @@ public class ProjectPageController {
                 b.Batch_ID,
                 p.Product_name,
                 bt.Test_date,
-                bt.Test_site
+                bt.Test_site,
+                bt.Test_ID
             FROM Batch b
             JOIN Product   p  ON b.Product_CODE  = p.Product_code
             JOIN Project   pr ON p.Project_ID    = pr.Project_ID
@@ -89,7 +93,8 @@ public class ProjectPageController {
                         rs.getString("Batch_ID"),
                         rs.getString("Product_name"),
                         rs.getString("Test_date"),
-                        rs.getString("Test_site")));
+                        rs.getString("Test_site"),
+                        rs.getInt(("Test_ID"))));
             }
         }
 
@@ -146,13 +151,19 @@ public class ProjectPageController {
     // ── Open batch results ────────────────────────────────────────────────────
 
     private void openBatchResults(BatchRow b) {
+        bpropState.setBatchNo(bpropState.getBatchNo());
+        bpropState.setProductName(b.getProductName());
+        bpropState.setTestDate(LocalDate.parse(b.getTestDate()));
+        bpropState.setPlaceOfTesting((b.getTestSite()));
+        bpropState.setTestId(b.getTestId());
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/log/ui/views/RetrievalResults.fxml")
             );
             Parent root = loader.load();
 
-            BatchTest batch = new BatchTest(b.getBatchCode(), b.getTestDate(), b.getTestSite());
+            BatchTest batch = new BatchTest(b.getTestId(),b.getBatchCode(), b.getTestDate(), b.getTestSite());
+
 
             RetrievalResultsController controller = loader.getController();
             controller.loadBatch(batch);
@@ -164,6 +175,8 @@ public class ProjectPageController {
 
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
