@@ -362,7 +362,7 @@ public class RetrievalResultsController {
 
             if (columnStates.getOrDefault("Property", true))
                 propertiesGrid.add(
-                        makeCell(p.getName(), isAlt, rowMenu),
+                        makeCell(p.getName()+" ("+ (p.getUnit() != null ? p.getUnit()+")" : ""), isAlt, rowMenu),
                         col++, row
                 );
 
@@ -401,7 +401,6 @@ public class RetrievalResultsController {
                     String val = i < p.getValues().size()
                             ? formatDouble(p.getValues().get(i))
                             + " "
-                            + (p.getUnit() != null ? p.getUnit() : "")
                             : "";
 
                     propertiesGrid.add(
