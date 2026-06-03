@@ -100,7 +100,7 @@
                                             contentDisplay="CENTER"
                                             onAction="#handlePrint"
                                             styleClass="submit-button"
-                                            text="Print Report"
+                                            text="Generate Report"
                                              />
 
                                 </HBox>
