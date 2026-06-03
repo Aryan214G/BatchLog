@@ -281,6 +281,8 @@ public class CategoriesPageController {
 
         for(Property property : propertiesList){
 
+            inputRows.clear();
+
             // ============== Populate input rows =================
             try (Connection conn = DBUtil.getConnection()) {
                 populateInputRowsHelper(property, conn);
