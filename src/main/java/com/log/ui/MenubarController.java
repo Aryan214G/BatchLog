@@ -133,6 +133,8 @@ public class MenubarController {
 
             controller.loadExistingProject();
 
+            controller.setEdit(true);
+
             Stage stage =
                     (Stage) menuBar.getScene().getWindow();
 

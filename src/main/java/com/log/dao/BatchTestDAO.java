@@ -104,4 +104,38 @@ public class BatchTestDAO {
 
     return null;
 }
+    public void updateTestDate(Connection conn, int testId, String newTestDate) {
+        String sql = "UPDATE Batch_Test SET Test_date = ? WHERE Test_ID = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, newTestDate);
+            stmt.setInt(2, testId);
+
+            int rowsAffected = stmt.executeUpdate();
+//            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+//        return false;
+    }
+
+
+    public void updateTestSite(Connection conn, int testId, String newTestSite) {
+        String sql = "UPDATE Batch_Test SET Test_site = ? WHERE Test_ID = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, newTestSite);
+            stmt.setInt(2, testId);
+
+            int rowsAffected = stmt.executeUpdate();
+//            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+//        return false;
+    }
 }
