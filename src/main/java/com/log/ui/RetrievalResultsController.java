@@ -414,8 +414,7 @@ public class RetrievalResultsController {
                 propertiesGrid.add(
                         makeCell(
                                 formatDouble(p.getAverage())
-                                        + " "
-                                        + (p.getUnit() != null ? p.getUnit() : ""),
+                                        + " ",
                                 isAlt,
                                 rowMenu
                         ),
