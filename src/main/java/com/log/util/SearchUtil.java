@@ -16,7 +16,8 @@ public class SearchUtil {
                                      String productName,
                                      String batchId,
                                      String testDate,
-                                     String testSite) throws SQLException {
+                                     String testSite,
+                                     String sop) throws SQLException {
 
         StringBuilder sql = new StringBuilder("""
             SELECT
@@ -53,6 +54,10 @@ public class SearchUtil {
         if (testSite != null && !testSite.isBlank()) {
             sql.append(" AND LOWER(bt.Test_Site) LIKE ?");
             params.add("%" + testSite.toLowerCase() + "%");
+        }
+        if (sop != null && !sop.isBlank()) {
+            sql.append(" AND LOWER(b.SOP) LIKE ?");
+            params.add("%" + sop.toLowerCase() + "%");
         }
 
         sql.append(" ORDER BY b.Batch_CODE, bt.Test_ID");
