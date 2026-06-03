@@ -19,6 +19,8 @@ import javafx.scene.control.TextField;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import com.log.service.ProductService;
 import com.log.core.StateManager;
 
@@ -33,6 +35,7 @@ public class BasePropertiesController {
     @FXML private TextField placeOfTesting;
     @FXML private TextField fileName;
     @FXML private TextField sop;
+    private boolean isEdit = false;
     private final AppState appState = AppState.getInstance();
     private final BasePropertiesState bpropState = BasePropertiesState.getInstance();
     private ProjectService projectService = new ProjectService();
@@ -47,16 +50,11 @@ public class BasePropertiesController {
     @FXML
     public void initialize()
     {
-        StateManager.clearAll();
-
-        if(debug){
-            setDefaultProject();
-            System.out.println("Temporary Base Properties Loaded");
-        }
+        loadExistingProject();
     }
     // ===== BUTTON ACTIONS =====
     @FXML
-    private void handleNext() {
+    private void handleNext() throws SQLException {
 
         String project = projectName.getText();
         String batch = batchNo.getText();
@@ -77,6 +75,11 @@ public class BasePropertiesController {
         bpropState.setTestDate(testDate.getValue());
         bpropState.setPlaceOfTesting(placeOfTesting.getText());
         bpropState.setFileName(fileName.getText());
+
+        if(isEdit){
+            handleEditBatch();
+            return;
+        }
 
         //manual transaction handling to prevent DB lock issues
         Connection conn = null;
@@ -223,15 +226,9 @@ public class BasePropertiesController {
         fileName.clear();
         testDate.setValue(null);
     }
-    public void setDefaultProject(){
 
-        projectName.setText("project6april");
-        batchNo.setText("6");
-        productName.setText("Product6");
-        productID.setText("6");
-        testDate.setValue(LocalDate.now());
-        placeOfTesting.setText("Lab 6");
-        fileName.setText("TestFile");
+    public void setEdit(boolean value){
+        isEdit = value;
     }
 
     private void handleCreateProject(Connection conn, String project) throws SQLException {
@@ -243,6 +240,91 @@ public class BasePropertiesController {
         System.out.println("Project created with ID: " + projectId);
     }
 
+    public void loadExistingProject() {
 
+        projectName.setText(
+                bpropState.getProjectName()
+        );
+
+        batchNo.setText(
+                bpropState.getBatchNo()
+        );
+
+        sop.setText(
+                bpropState.getSop()
+        );
+
+        productName.setText(
+                bpropState.getProductName()
+        );
+
+        productID.setText(
+                bpropState.getProductID()
+        );
+
+        testDate.setValue(
+                bpropState.getTestDate()
+        );
+
+        placeOfTesting.setText(
+                bpropState.getPlaceOfTesting()
+        );
+
+        fileName.setText(
+                bpropState.getFileName()
+        );
+        System.out.println("Project Name = " + bpropState.getProjectName());
+        System.out.println("Batch No = " + bpropState.getBatchNo());
+        System.out.println("Product Name = " + bpropState.getProductName());
+        System.out.println("Product ID = " + bpropState.getProductID());
+        System.out.println("Test Date = " + bpropState.getTestDate());
+        System.out.println("Place = " + bpropState.getPlaceOfTesting());
+        System.out.println("File = " + bpropState.getFileName());
+        System.out.println("SOP = " + bpropState.getSop());
+    }
+
+    private void handleEditBatch() throws SQLException {
+        String project = projectName.getText();
+        String batch = batchNo.getText();
+        String sopValue = sop.getText().trim();
+        String product = productName.getText();
+        String component = productID.getText();
+        LocalDate date = testDate.getValue();
+        String place = placeOfTesting.getText();
+        String file = fileName.getText();
+
+
+        Connection connection = DBUtil.getConnection();
+
+        projectService.editProject(projectService.getProjectId(connection, bpropState.getProjectName()),project);
+
+        batchService.updateBatchId(connection, bpropState.getBatchCode(), batch);
+
+        //TODO: update products later
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+        String newDate = date.format(formatter);
+
+        batchTestService.editTestDate(bpropState.getTestId(), newDate);
+
+        //edit place
+        batchTestService.editTestSite(bpropState.getTestId(), place);
+
+
+        //edit file
+
+
+
+        bpropState.setProjectName(projectName.getText());
+        bpropState.setBatchNo(batchNo.getText());
+        bpropState.setSop(sopValue.isBlank() ? null : sopValue);
+        bpropState.setProductName(productName.getText());
+        bpropState.setProductID(productID.getText());
+        bpropState.setTestDate(testDate.getValue());
+        bpropState.setPlaceOfTesting(placeOfTesting.getText());
+        bpropState.setFileName(fileName.getText());
+        loadCategoriesPage();
+    }
 
 }

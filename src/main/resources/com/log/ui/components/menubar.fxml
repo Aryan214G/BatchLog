@@ -20,7 +20,7 @@
     </Menu>
     <Menu mnemonicParsing="false" text="Edit">
       <items>
-        <MenuItem mnemonicParsing="false" text="Delete" />
+        <MenuItem mnemonicParsing="false" text="Project Details" fx:id="editprojbtn" onAction="#openbaseprops" />
       </items>
     </Menu>
     <Menu mnemonicParsing="false" text="Help">
