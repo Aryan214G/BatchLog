@@ -413,8 +413,7 @@ public class RetrievalResultsController {
             if (columnStates.getOrDefault("Average Value", true))
                 propertiesGrid.add(
                         makeCell(
-                                formatDouble(p.getAverage())
-                                        + " ",
+                                formatDouble(p.getAverage()),
                                 isAlt,
                                 rowMenu
                         ),
