@@ -37,6 +37,7 @@ public class ProjectPageController {
     private final ProjectService projectService = new ProjectService();
     private ProjectExportService projectExportService = new ProjectExportService();
     private BatchService batchService = new BatchService();
+    private BasePropertiesState basePropertiesState = BasePropertiesState.getInstance();
 
 
 
@@ -146,6 +147,8 @@ public class ProjectPageController {
     // ── Open batch results ────────────────────────────────────────────────────
 
     private void openBatchResults(BatchRow b) {
+        bpropState.setBatchNo(bpropState.getBatchNo());
+        bpropState.setProductName(b.getProductName());
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/log/ui/views/RetrievalResults.fxml")
@@ -153,6 +156,7 @@ public class ProjectPageController {
             Parent root = loader.load();
 
             BatchTest batch = new BatchTest(b.getBatchCode(), b.getTestDate(), b.getTestSite());
+
 
             RetrievalResultsController controller = loader.getController();
             controller.loadBatch(batch);
@@ -164,6 +168,8 @@ public class ProjectPageController {
 
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 

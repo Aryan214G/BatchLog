@@ -7,6 +7,8 @@ import com.log.dto.ReportData;
 import com.log.model.Batch;
 import com.log.model.BatchTest;
 import com.log.model.PropertyRow;
+import com.log.service.BatchService;
+import com.log.service.BatchTestService;
 import com.log.service.export.PdfReportService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -62,6 +64,9 @@ public class RetrievalResultsController {
     private int testId;
 
     private PdfReportService pdfReportService = new PdfReportService();
+
+    private BatchTestService batchTestService = new BatchTestService();
+    private BatchService batchService = new BatchService();
     // ── Row model ─────────────────────────────────────────────────────────────
 
 
@@ -135,12 +140,15 @@ public class RetrievalResultsController {
 
         return rows;
     }
-    public void loadBatch(BatchTest batch) {
+    public void loadBatch(BatchTest batch) throws SQLException {
+        Connection connection = DBUtil.getConnection();
+        String batchID = batchService.getBatchId(connection,batch.getBatchCode());
         batchTitleLabel.setText(
-                "Batch: " + batch.getBatchCode()
+                "Batch: " + batchID
         );
 
         try (Connection conn = DBUtil.getConnection()) {
+
             cachedRows = fetchProperties(conn, batch.getBatchCode());
 
             // Build property filter state — all visible by default

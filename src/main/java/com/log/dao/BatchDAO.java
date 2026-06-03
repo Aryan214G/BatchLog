@@ -169,4 +169,29 @@ public class BatchDAO {
 
     }
 
+    public String getBatchIdByCode(Connection conn, int batchCode) {
+
+        String sql = """
+            SELECT Batch_ID
+            FROM Batch
+            WHERE Batch_CODE = ?
+            """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, batchCode);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("Batch_ID");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
 }
