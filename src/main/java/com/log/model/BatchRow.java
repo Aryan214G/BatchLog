@@ -7,6 +7,9 @@ public class BatchRow {
         private String productName;
         private String testDate;
         private String testSite;
+        private int testId;
+
+
 
     public BatchRow(int batchCode, String batchId, String productName, String testDate, String testSite) {
         this.batchCode = batchCode;
@@ -14,6 +17,14 @@ public class BatchRow {
         this.productName = productName;
         this.testDate = testDate;
         this.testSite = testSite;
+    }
+    public BatchRow(int batchCode, String batchId, String productName, String testDate, String testSite, int testId) {
+        this.batchCode = batchCode;
+        this.batchId = batchId;
+        this.productName = productName;
+        this.testDate = testDate;
+        this.testSite = testSite;
+        this.testId = testId;
     }
 
     public int getBatchCode() {
@@ -54,5 +65,13 @@ public class BatchRow {
 
     public void setTestSite(String testSite) {
         this.testSite = testSite;
+    }
+
+    public int getTestId() {
+        return testId;
+    }
+
+    public void setTestId(int testId) {
+        this.testId = testId;
     }
 }
