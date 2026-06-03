@@ -10,6 +10,7 @@ import com.log.model.Product;
 import com.log.service.BatchService;
 import com.log.service.BatchTestService;
 import com.log.service.ProjectService;
+import com.log.util.StringUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -65,8 +66,11 @@ public class BasePropertiesController {
         LocalDate date = testDate.getValue();
         String place = placeOfTesting.getText();
         String file = fileName.getText();
+
         bpropState.setProjectName(projectName.getText());
-        bpropState.setBatchNo(batchNo.getText());
+        bpropState.setBatchNo(
+                StringUtils.nullIfBlank(batchNo.getText())
+        );
         bpropState.setSop(sopValue.isBlank() ? null : sopValue);
         bpropState.setProductName(productName.getText());
         bpropState.setProductID(productID.getText());
@@ -121,29 +125,58 @@ public class BasePropertiesController {
     }
 
     private void handleCreateBatch(Connection conn) {
-        String batchID = bpropState.getBatchNo();
-        int projectID = bpropState.getProjectId();
-        String TestDate = bpropState.getTestDate().toString();
-        String TestSite = bpropState.getPlaceOfTesting();
 
-        int productCode = productService.getProductCodeFromDB(conn, new Product(
-                bpropState.getProductID(),
-                bpropState.getProductName(),
-                bpropState.getProjectId()
-        ));
-        batchService.createBatch(conn, new Batch(
-                batchID,
-                productCode
-        ));
+            String batchID = StringUtils.nullIfBlank(bpropState.getBatchNo());
 
-        int batchCODE = bpropState.getBatchCode();
-        batchTestService.createBatchTest(conn, new BatchTest(
-                batchCODE,
-                TestDate,
-                TestSite,
-                productCode
-                ));
-    }
+            String testDate = bpropState.getTestDate().toString();
+            String testSite = bpropState.getPlaceOfTesting();
+
+            int productCode =
+                    productService.getProductCodeFromDB(
+                            conn,
+                            new Product(
+                                    bpropState.getProductID(),
+                                    bpropState.getProductName(),
+                                    bpropState.getProjectId()
+                            )
+                    );
+
+            // ================= PRODUCT ONLY =================
+
+            if (batchID == null) {
+
+                batchTestService.createBatchTest(
+                        conn,
+                        new BatchTest(
+                                null,      // Batch_CODE
+                                testDate,
+                                testSite,
+                                productCode
+                        )
+                );
+
+                return;
+            }
+
+            // ================= BATCH TEST =================
+
+            batchService.createBatch(
+                    conn,
+                    new Batch(batchID, productCode)
+            );
+
+            Integer batchCode = bpropState.getBatchCode();
+
+            batchTestService.createBatchTest(
+                    conn,
+                    new BatchTest(
+                            batchCode,
+                            testDate,
+                            testSite,
+                            productCode
+                    )
+            );
+        }
 
     private void loadCategoriesPage() {
 
@@ -172,9 +205,11 @@ public class BasePropertiesController {
 
     private boolean validateInputs() {
 
-        if (projectName.getText().isEmpty()) return false;
-        if (batchNo.getText().isEmpty()) return false;
-        if (productName.getText().isEmpty()) return false;
+        if (projectName.getText().isBlank()) return false;
+
+        if (productID.getText().isBlank()) return false;
+
+        if (productName.getText().isBlank()) return false;
 
         return true;
     }
