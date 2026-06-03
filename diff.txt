@@ -142,7 +142,7 @@ index 1f587c0..9d4e2d2 100644
 +        String project = null;
 +        String batch = null;
 +        String product = null;
-+        String productId = null;
++        String componentId = null;
 +        LocalDate date = null;
 +        String place = null;
 +        String file = null;
@@ -151,7 +151,7 @@ index 1f587c0..9d4e2d2 100644
 +             project = projectName.getText();
 +             batch = batchNo.getText();
 +             product = productName.getText();
-+             productId = productID.getText();
++             componentId = productID.getText();
 +             date = testDate.getValue();
 +             place = placeOfTesting.getText();
 +             file = fileName.getText();
@@ -169,7 +169,7 @@ index 1f587c0..9d4e2d2 100644
 +            project = bpropState.getProjectName();
 +            batch = bpropState.getBatchNo();
 +            product = bpropState.getProductName();
-+            productId = bpropState.getProductID();
++            componentId = bpropState.getProductID();
 +            date = testDate.getValue();
 +            place = bpropState.getPlaceOfTesting();
 +            file = bpropState.getFileName();
@@ -181,8 +181,8 @@ index 1f587c0..9d4e2d2 100644
  
              handleCreateProject(conn, project);
  
--            String productId = productID.getText();
-             productService.createProduct(conn, productId, product);
+-            String componentId = productID.getText();
+             productService.createProduct(conn, componentId, product);
  
              handleCreateBatch(conn);
 @@ -174,17 +200,17 @@ public class BasePropertiesController {

@@ -8,11 +8,21 @@ import java.sql.*;
 public class BatchTestDAO {
 
     public int insertBatchTest(Connection conn, BatchTest batchTest) {
-        String sql = "INSERT INTO Batch_Test (Batch_CODE, Test_date, Test_site) VALUES (?, ?, ?)";
+
+        String sql = "INSERT INTO Batch_Test (Batch_CODE, Test_date, Test_site, Product_CODE) VALUES (?, ?, ?, ?)";
+
         try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setInt(1, batchTest.getBatchCode());
+
+            //BatchCode
+            if (batchTest.getBatchCode() == null) {
+                stmt.setNull(1, java.sql.Types.INTEGER);
+            } else {
+                stmt.setInt(1, batchTest.getBatchCode());
+            }
+
             stmt.setString(2, batchTest.getTestDate());
             stmt.setString(3, batchTest.getTestSite());
+            stmt.setInt(4, batchTest.getProductCode());
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs.next()) return rs.getInt(1);
@@ -23,24 +33,56 @@ public class BatchTestDAO {
     }
 
     public int getBatchTestId(Connection conn, BatchTest batchTest){
-        String sql = "SELECT Test_ID FROM Batch_Test WHERE Batch_CODE=? AND Test_date=? AND Test_site=?";
+
+        String sql;
+
+        if (batchTest.getBatchCode() == null) {
+
+            sql = """
+                    SELECT Test_ID
+                    FROM Batch_Test
+                    WHERE Product_CODE = ?
+                      AND Batch_CODE IS NULL
+                      AND Test_date = ?
+                      AND Test_site = ?
+                    """;
+
+        } else {
+
+            sql = """
+                    SELECT Test_ID
+                    FROM Batch_Test
+                    WHERE Product_CODE = ?
+                      AND Batch_CODE = ?
+                      AND Test_date = ?
+                      AND Test_site = ?
+                    """;
+        }
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, batchTest.getBatchCode());
-            stmt.setString(2, batchTest.getTestDate());
-            stmt.setString(3, batchTest.getTestSite());
+            stmt.setInt(1, batchTest.getProductCode());
+
+            if (batchTest.getBatchCode() != null) {
+                stmt.setInt(2, batchTest.getBatchCode());
+                stmt.setString(3, batchTest.getTestDate());
+                stmt.setString(4, batchTest.getTestSite());
+            } else {
+                stmt.setString(2, batchTest.getTestDate());
+                stmt.setString(3, batchTest.getTestSite());
+            }
 
             ResultSet rs = stmt.executeQuery();
-            if(rs.next()){
+
+            if (rs.next()) {
                 return rs.getInt("Test_ID");
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return -1;
 
+        return -1;
 
     }
 
@@ -88,12 +130,18 @@ public class BatchTestDAO {
 
         if (rs.next()) {
 
+            //null handling
+            Integer batchCode = (Integer) rs.getObject("Batch_CODE");
+
             BatchTest batchTest = new BatchTest(
                    rs.getInt("Test_ID"),
-                    rs.getInt("Batch_CODE"),
+                    batchCode,
                     rs.getString("Test_date"),
-                    rs.getString("Test_site")
+                    rs.getString("Test_site"),
+                    rs.getInt("Product_CODE")
             );
+
+            batchTest.setProductCode(rs.getInt("Product_CODE"));
 
             return batchTest;
         }
@@ -104,4 +152,38 @@ public class BatchTestDAO {
 
     return null;
 }
+    public void updateTestDate(Connection conn, int testId, String newTestDate) {
+        String sql = "UPDATE Batch_Test SET Test_date = ? WHERE Test_ID = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, newTestDate);
+            stmt.setInt(2, testId);
+
+            int rowsAffected = stmt.executeUpdate();
+//            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+//        return false;
+    }
+
+
+    public void updateTestSite(Connection conn, int testId, String newTestSite) {
+        String sql = "UPDATE Batch_Test SET Test_site = ? WHERE Test_ID = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, newTestSite);
+            stmt.setInt(2, testId);
+
+            int rowsAffected = stmt.executeUpdate();
+//            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+//        return false;
+    }
 }

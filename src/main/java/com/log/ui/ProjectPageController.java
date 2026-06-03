@@ -6,6 +6,7 @@ import com.log.model.BatchRow;
 import com.log.model.BatchTest;
 import com.log.service.BatchService;
 import com.log.service.BatchTestService;
+import com.log.service.ProjectContentService;
 import com.log.service.export.ProjectExportService;
 import com.log.service.ProjectService;
 import javafx.fxml.FXML;
@@ -55,7 +56,8 @@ public class ProjectPageController {
             int projectId = projectService.getProjectId(conn, projectName);
             bpropState.setProjectId(projectId);
 
-            List<BatchRow> batches = fetchBatches(conn, projectName);
+            List<BatchRow> batches = projectContentService.fetchProjectContents(conn, projectName);
+
             populateGrid(batches);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -64,50 +66,14 @@ public class ProjectPageController {
 
     // ── DB query ──────────────────────────────────────────────────────────────
 
-    // TODO: This method was moved to BatchDAO names "getBatchesInProject". Remove this from this class.
-    private List<BatchRow> fetchBatches(Connection conn, String projectName) throws SQLException {
-        String sql = """
-            SELECT
-                b.Batch_CODE,
-                b.Batch_ID,
-                p.Product_name,
-                bt.Test_date,
-                bt.Test_site,
-                bt.Test_ID
-            FROM Batch b
-            JOIN Product   p  ON b.Product_CODE  = p.Product_code
-            JOIN Project   pr ON p.Project_ID    = pr.Project_ID
-            LEFT JOIN Batch_Test bt ON bt.Batch_CODE = b.Batch_CODE
-            WHERE pr.Project_name = ?
-        """;
-
-        List<BatchRow> rows = new ArrayList<>();
-
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, projectName);
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                rows.add(new BatchRow(
-                        rs.getInt("Batch_CODE"),
-                        rs.getString("Batch_ID"),
-                        rs.getString("Product_name"),
-                        rs.getString("Test_date"),
-                        rs.getString("Test_site"),
-                        rs.getInt(("Test_ID"))));
-            }
-        }
-
-        return rows;
-    }
-
+    private final ProjectContentService projectContentService = new ProjectContentService();
     // ── Grid rendering ────────────────────────────────────────────────────────
 
     private void populateGrid(List<BatchRow> rows) {
         batchesGrid.getChildren().clear();
         batchesGrid.getColumnConstraints().clear();
 
-        String[] headers = {"Batch ID", "Product", "Test Date", "Test Site"};
+        String[] headers = {"Batch ID","Component ID", "Product", "Test Date", "Test Site"};
 
         for (int i = 0; i < headers.length; i++) {
             ColumnConstraints cc = new ColumnConstraints();
@@ -125,19 +91,21 @@ public class ProjectPageController {
             boolean isAlt = (row % 2 == 0);
 
             Label batchIdCell  = makeCell(b.getBatchId(),     isAlt);
+            Label componentIdCell = makeCell(b.getComponentId(), isAlt);
             Label productCell  = makeCell(b.getProductName(), isAlt);
             Label testDateCell = makeCell(b.getTestDate(),    isAlt);
             Label testSiteCell = makeCell(b.getTestSite(),    isAlt);
 
-            for (Label cell : List.of(batchIdCell, productCell, testDateCell, testSiteCell)) {
+            for (Label cell : List.of(batchIdCell,componentIdCell, productCell, testDateCell, testSiteCell)) {
                 cell.getStyleClass().add("clickable-row");
                 cell.setOnMouseClicked(e -> openBatchResults(b));
             }
 
             batchesGrid.add(batchIdCell,  0, row);
-            batchesGrid.add(productCell,  1, row);
-            batchesGrid.add(testDateCell, 2, row);
-            batchesGrid.add(testSiteCell, 3, row);
+            batchesGrid.add(componentIdCell, 1,row);
+            batchesGrid.add(productCell,  2, row);
+            batchesGrid.add(testDateCell, 3, row);
+            batchesGrid.add(testSiteCell, 4, row);
             row++;
         }
 
@@ -162,7 +130,13 @@ public class ProjectPageController {
             );
             Parent root = loader.load();
 
-            BatchTest batch = new BatchTest(b.getTestId(),b.getBatchCode(), b.getTestDate(), b.getTestSite());
+            BatchTest batch = new BatchTest(
+                    b.getTestId(),
+                    b.getBatchCode(),
+                    b.getTestDate(),
+                    b.getTestSite(),
+                    b.getProductCode()
+            );
 
             RetrievalResultsController controller = loader.getController();
             controller.loadBatch(batch);
@@ -229,15 +203,15 @@ public class ProjectPageController {
         }
     }
 
-    private void refreshBatches() {
-        batchesGrid.getChildren().clear();
-        try (Connection conn = DBUtil.getConnection()) {
-            List<BatchRow> batches = fetchBatches(conn, currentProjectName);
-            populateGrid(batches);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+//    private void refreshBatches() {
+//        batchesGrid.getChildren().clear();
+//        try (Connection conn = DBUtil.getConnection()) {
+//            List<BatchRow> batches = fetchBatches(conn, currentProjectName);
+//            populateGrid(batches);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     @FXML
     private void handleExport() throws SQLException {
