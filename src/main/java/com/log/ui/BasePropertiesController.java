@@ -140,7 +140,8 @@ public class BasePropertiesController {
         batchTestService.createBatchTest(conn, new BatchTest(
                 batchCODE,
                 TestDate,
-                TestSite
+                TestSite,
+                productCode
                 ));
     }
 
