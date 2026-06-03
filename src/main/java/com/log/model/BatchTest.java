@@ -2,9 +2,10 @@ package com.log.model;
 
 public class BatchTest {
     private int testId;
-    private int batchCode;
+    private Integer batchCode;
     private String testDate;
     private String testSite;
+    private Integer productCode;
 
     public BatchTest(int testId, int batchCode, String testDate, String testSite) {
         this.testId = testId;
@@ -27,11 +28,11 @@ public class BatchTest {
         this.testId = testId;
     }
 
-    public int getBatchCode() {
+    public Integer getBatchCode() {
         return batchCode;
     }
 
-    public void setBatchCode(int batchCode) {
+    public void setBatchCode(Integer batchCode) {
         this.batchCode = batchCode;
     }
 
@@ -51,6 +52,13 @@ public class BatchTest {
         this.testSite = testSite;
     }
 
+    public Integer getProductCode() {
+        return productCode;
+    }
+
+    public void setProductCode(Integer productCode) {
+        this.productCode = productCode;
+    }
 
     @Override
     public String toString() {
