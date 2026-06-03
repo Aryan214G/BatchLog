@@ -3,27 +3,27 @@ package com.log.model;
 public class Temperature {
 
     private Integer tempId;
-    private Double tempVal;
+    private String tempVal;
     private int tempUnitID;
     private String tempUnitVal;
 
     public Temperature() {
     }
 
-    public Temperature(Integer tempId, Double tempVal, int tempUnitID, String tempUnitVal) {
+    public Temperature(Integer tempId, String tempVal, int tempUnitID, String tempUnitVal) {
         this.tempId = tempId;
         this.tempVal = tempVal;
         this.tempUnitID = tempUnitID;
         this.tempUnitVal = tempUnitVal;
     }
 
-    public Temperature(Double tempVal, int tempUnitID, String tempUnitVal) {
+    public Temperature(String tempVal, int tempUnitID, String tempUnitVal) {
         this.tempVal = tempVal;
         this.tempUnitID = tempUnitID;
         this.tempUnitVal = tempUnitVal;
     }
 
-    public Temperature(Double tempVal, String tempUnitVal) {
+    public Temperature(String tempVal, String tempUnitVal) {
         this.tempVal = tempVal;
         this.tempUnitVal = tempUnitVal;
     }
@@ -36,11 +36,11 @@ public class Temperature {
         this.tempId = tempId;
     }
 
-    public Double getTempVal() {
+    public String getTempVal() {
         return tempVal;
     }
 
-    public void setTempVal(Double tempVal) {
+    public void setTempVal(String tempVal) {
         this.tempVal = tempVal;
     }
 

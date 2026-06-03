@@ -819,7 +819,7 @@ public class CategoriesPageController {
     }
 
     // ================= SAVE TEMPERATURE =================
-    Double tempVal = null;
+    String tempVal = null;
 
     String text = temperatureField.getText();
 
@@ -828,7 +828,7 @@ public class CategoriesPageController {
 
         try {
 
-            tempVal = Double.parseDouble(text.trim());
+            tempVal = text.trim();
 
         } catch (NumberFormatException e) {
 

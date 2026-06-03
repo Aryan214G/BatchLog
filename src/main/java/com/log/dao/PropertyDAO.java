@@ -114,7 +114,7 @@ System.out.println("Test Method   = " + property.getTestMethod());
             property.getCategory().setCategoryName(rs.getString("Category_name"));
 
             property.getTemperature().setTempId(rs.getInt("Temp_ID"));
-            property.getTemperature().setTempVal(rs.getDouble("Temp_VAL"));
+            property.getTemperature().setTempVal(rs.getString("Temp_VAL"));
             property.getTemperature().setTempUnitVal(rs.getString("Temp_Unit"));
             property.getTemperature().setTempUnitID(rs.getInt("Temp_Unit_ID"));
 
@@ -300,7 +300,7 @@ System.out.println("Test Method   = " + property.getTestMethod());
             property.getCategory().setCategoryName(rs.getString("Category_name"));
 
             property.getTemperature().setTempId(rs.getInt("Temp_ID"));
-            property.getTemperature().setTempVal(rs.getDouble("Temp_VAL"));
+            property.getTemperature().setTempVal(rs.getString("Temp_VAL"));
             property.getTemperature().setTempUnitVal(rs.getString("Temp_Unit"));
             property.getTemperature().setTempUnitID(rs.getInt("Temp_Unit_ID"));
 

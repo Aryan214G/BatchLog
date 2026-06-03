@@ -22,7 +22,7 @@ public class TemperatureDAO {
 
         try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            stmt.setDouble(1, temperature.getTempVal());
+            stmt.setString(1, temperature.getTempVal());
             stmt.setInt(2, temperature.getTempUnitID());
 
             stmt.executeUpdate();
@@ -62,7 +62,7 @@ public class TemperatureDAO {
 
             if (rs.next()) {
                 tempId = rs.getInt("Temp_ID");
-                Double tempVal = (Double) rs.getDouble("Temp_VAL");
+                String tempVal =  rs.getString("Temp_VAL");
 
                 int tempUnitId = rs.getInt("Temp_Unit_ID");
                 String tempUnitVal = rs.getString("Temp_Unit");
@@ -118,7 +118,7 @@ public class TemperatureDAO {
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setDouble(1, temperature.getTempVal());
+            stmt.setString(1, temperature.getTempVal());
             stmt.setInt(2, temperature.getTempUnitID());
             stmt.setInt(3, temperature.getTempId());
 

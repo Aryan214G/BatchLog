@@ -10,7 +10,7 @@ public class ReportData {
     private String testDate;
     private String testSite;
     private String direction;
-    private Double temperature;
+    private String temperature;
     private String temperatureUnit;
     private String testReportNo;
     private String date;
@@ -28,7 +28,7 @@ public class ReportData {
     public ReportData() {
 }
 
-    public ReportData(String propertyName, String batchId, String testMethod, String testDate, String testSite, String direction, Double temperature, String temperatureUnit, String testReportNo, String date, Double min, Double max, Double average, Double standardDeviation, List<Double> values, String unit) {
+    public ReportData(String propertyName, String batchId, String testMethod, String testDate, String testSite, String direction, String temperature, String temperatureUnit, String testReportNo, String date, Double min, Double max, Double average, Double standardDeviation, List<Double> values, String unit) {
         this.propertyName = propertyName;
         BatchId = batchId;
         this.testMethod = testMethod;
@@ -98,11 +98,11 @@ public class ReportData {
         this.direction = direction;
     }
 
-    public Double getTemperature() {
+    public String getTemperature() {
         return temperature;
     }
 
-    public void setTemperature(Double temperature) {
+    public void setTemperature(String temperature) {
         this.temperature = temperature;
     }
 
