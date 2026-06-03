@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.BasePropertiesController">
+<BorderPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.NewBatchController">
 
     <!-- ===== TOP MENU ===== -->
     <top>
@@ -23,26 +23,20 @@
                 <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
             </padding>
 
-            <Label text="Project Name" />
-            <TextField fx:id="projectName" alignment="CENTER" maxWidth="700.0" />
-
-            <Label text="Batch ID" />
+            <Label text="Batch No." />
             <TextField fx:id="batchNo" alignment="CENTER" maxWidth="700.0" />
 
-            <Label text="SOP" />
-            <TextField fx:id="sop" alignment="CENTER" maxWidth="700.0" promptText="Optional" />
-
             <Label text="Product Name" />
-            <TextField fx:id="productName" alignment="CENTER" maxWidth="700.0" />
-
-            <Label text="Component ID" />
-            <TextField fx:id="productID" alignment="CENTER" maxWidth="700.0" />
+            <TextField fx:id="productField" alignment="CENTER" maxWidth="700" />
 
             <Label text="Test Date" />
             <DatePicker fx:id="testDate" maxWidth="250.0" />
 
             <Label text="Place of Testing" />
             <TextField fx:id="placeOfTesting" alignment="CENTER" maxWidth="700.0" />
+
+            <Label text="File Name" />
+            <TextField fx:id="fileName" alignment="CENTER" maxWidth="700.0" />
 
         </VBox>
     </center>
