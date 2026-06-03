@@ -113,4 +113,34 @@ public class MenubarController {
         stage.setScene(scene);
         stage.show();
     }
+
+    @FXML
+    private void openbaseprops() {
+
+        try {
+
+            FXMLLoader loader =
+                    new FXMLLoader(
+                            getClass().getResource(
+                                    "/com/log/ui/views/BaseProperties.fxml"
+                            )
+                    );
+
+            Parent root = loader.load();
+
+            BasePropertiesController controller =
+                    loader.getController();
+
+            controller.loadExistingProject();
+
+            Stage stage =
+                    (Stage) menuBar.getScene().getWindow();
+
+            stage.getScene().setRoot(root);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
 }

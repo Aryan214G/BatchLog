@@ -151,7 +151,7 @@ public class ProjectPageController {
     // ── Open batch results ────────────────────────────────────────────────────
 
     private void openBatchResults(BatchRow b) {
-        bpropState.setBatchNo(bpropState.getBatchNo());
+        bpropState.setBatchNo(b.getBatchId());
         bpropState.setProductName(b.getProductName());
         bpropState.setTestDate(LocalDate.parse(b.getTestDate()));
         bpropState.setPlaceOfTesting((b.getTestSite()));
@@ -163,7 +163,6 @@ public class ProjectPageController {
             Parent root = loader.load();
 
             BatchTest batch = new BatchTest(b.getTestId(),b.getBatchCode(), b.getTestDate(), b.getTestSite());
-
 
             RetrievalResultsController controller = loader.getController();
             controller.loadBatch(batch);
