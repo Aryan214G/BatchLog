@@ -30,7 +30,7 @@
             <TextField fx:id="batchNo" alignment="CENTER" maxWidth="700.0" />
 
             <Label text="SOP" />
-            <TextField fx:id="sop"  alignment="CENTER"  maxWidth="700.0" promptText="Optional" />
+            <TextField fx:id="sop" alignment="CENTER" maxWidth="700.0" promptText="Optional" />
 
             <Label text="Product Name" />
             <TextField fx:id="productName" alignment="CENTER" maxWidth="700.0" />
@@ -43,9 +43,6 @@
 
             <Label text="Place of Testing" />
             <TextField fx:id="placeOfTesting" alignment="CENTER" maxWidth="700.0" />
-
-            <Label text="File Name" />
-            <TextField fx:id="fileName" alignment="CENTER" maxWidth="700.0" />
 
         </VBox>
     </center>
