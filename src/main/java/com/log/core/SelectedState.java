@@ -24,4 +24,16 @@ public class SelectedState {
 
     public DefaultProperty getSelectedProperty() { return selectedProperty; }
     public void setSelectedProperty(DefaultProperty selectedProperty) { this.selectedProperty = selectedProperty; }
+
+    public void clear() {
+
+        selectedCategory = null;
+
+        selectedCategoryId = 0;
+
+        selectedProperty = null;
+
+        System.out.println("SelectedState cleared");
+    }
+
 }

@@ -32,5 +32,13 @@ public class DefaultMapState {
         this.defaultUnitsMap = defaultUnitsMap;
     }
 
+    public void clear() {
+
+        defaultRowsMap.clear();
+
+        defaultUnitsMap.clear();
+
+        System.out.println("DefaultMapState cleared");
+    }
 
 }

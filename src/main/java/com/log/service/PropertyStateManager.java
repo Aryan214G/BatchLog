@@ -39,4 +39,5 @@ public class PropertyStateManager {
     public void clearState(String property) {
         propertyStates.remove(property);
     }
+
 }
