@@ -40,7 +40,7 @@ public class Test extends Application {
             Connection connection = DBUtil.getConnection();
 
 
-            System.out.println(searchUtil.searchBatches(connection,"","Iphone","","",""));
+            //System.out.println(searchUtil.searchBatches(connection,"","Iphone","","",""));
         }
     }
 
