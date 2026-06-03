@@ -16,13 +16,13 @@ public class AppState {
 
     private static final AppState instance = new AppState();
 
-    AppState(){};
+    AppState() {
+    }
+
+    ;
 
     private HashMap<String, ObservableList<DefaultProperty>> categoriesMap = new HashMap<>();
 
-
-    //TODO: change the list to not be hardcoded
-    //Todo:put this list in controller and read from that
     private ObservableList<String> categories = FXCollections.observableArrayList();
 
     public static AppState getInstance() {
@@ -70,6 +70,16 @@ public class AppState {
         this.projectCreated = projectCreated;
     }
 
+    public void clear() {
+
+        categoriesMap.clear();
+
+        categories.clear();
+
+        defaultPropertiesMap.clear();
+
+        projectCreated = false;
+    }
 
 }
 

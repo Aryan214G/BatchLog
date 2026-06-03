@@ -1,10 +1,12 @@
 package com.log.ui;
 
+import com.log.core.StateManager;
 import com.log.database.DBUtil;
 import com.log.model.Batch;
 import com.log.model.BatchTest;
 import com.log.util.AlertUtil;
 import com.log.util.SearchUtil;
+import com.log.core.StateManager;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -41,6 +43,10 @@ public class RetrievalPageController {
 
     private boolean isOpen = true;
     private List<BatchTest> selectedBatches = new ArrayList<>();
+
+    public void initialize() {
+        StateManager.clearAll();
+    }
 
     public void populateResults(List<Batch> results) {
         resultsContainer.getChildren().clear();

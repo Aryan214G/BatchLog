@@ -19,6 +19,7 @@ import javafx.scene.control.TextField;
 import java.sql.*;
 import java.time.LocalDate;
 import com.log.service.ProductService;
+import com.log.core.StateManager;
 
 public class BasePropertiesController {
 
@@ -40,10 +41,13 @@ public class BasePropertiesController {
     //disable this when you want to ignore debugging operations such as preloading base properties fields.
     private boolean debug = true;
 
+
     // ===== INITIALIZATION =====
     @FXML
     public void initialize()
     {
+        StateManager.clearAll();
+
         if(debug){
             setDefaultProject();
             System.out.println("Temporary Base Properties Loaded");

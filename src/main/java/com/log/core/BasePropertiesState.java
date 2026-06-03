@@ -86,4 +86,27 @@ public class BasePropertiesState {
     public void setSop(String sop) {
         this.sop = sop;
     }
+
+    public void clear() {
+
+        projectId = 0;
+        projectName = null;
+
+        batchNo = null;
+        batchCode = 0;
+
+        productName = null;
+        productID = null;
+        productCode = 0;
+
+        testDate = null;
+        placeOfTesting = null;
+
+        fileName = null;
+        sop = null;
+
+        testId = 0;
+
+        System.out.println("BasePropertiesState cleared");
+    }
 }
