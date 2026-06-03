@@ -2,16 +2,17 @@ package com.log.model;
 
 public class BatchRow {
 
-        private int batchCode;
+        private Integer batchCode;
         private String batchId;
         private String productName;
         private String testDate;
         private String testSite;
         private int testId;
+        private String componentId;
         private Integer productCode;
 
 
-    public BatchRow(int batchCode, String batchId, String productName, String testDate, String testSite, Integer productCode) {
+    public BatchRow(Integer batchCode, String batchId, String productName, String testDate, String testSite, Integer productCode) {
         this.batchCode = batchCode;
         this.batchId = batchId;
         this.productName = productName;
@@ -19,7 +20,7 @@ public class BatchRow {
         this.testSite = testSite;
         this.productCode = productCode;
     }
-    public BatchRow(int batchCode, String batchId, String productName, String testDate, String testSite, int testId, Integer productCode) {
+    public BatchRow(Integer batchCode, String batchId, String productName, String testDate, String testSite, int testId, Integer productCode) {
         this.batchCode = batchCode;
         this.batchId = batchId;
         this.productName = productName;
@@ -29,11 +30,32 @@ public class BatchRow {
         this.productCode = productCode;
     }
 
-    public int getBatchCode() {
+    public BatchRow(Integer batchCode, String batchId, String productName, String testDate, String testSite, Integer productCode, String componentId) {
+        this.batchCode = batchCode;
+        this.batchId = batchId;
+        this.productName = productName;
+        this.testDate = testDate;
+        this.testSite = testSite;
+        this.productCode = productCode;
+        this.componentId = componentId;
+    }
+
+    public BatchRow(Integer batchCode, String batchId, String productName, String testDate, String testSite, int testId, Integer productCode, String componentId) {
+        this.batchCode = batchCode;
+        this.batchId = batchId;
+        this.productName = productName;
+        this.testDate = testDate;
+        this.testSite = testSite;
+        this.testId = testId;
+        this.productCode = productCode;
+        this.componentId = componentId;
+    }
+
+    public Integer getBatchCode() {
         return batchCode;
     }
 
-    public void setBatchCode(int batchCode) {
+    public void setBatchCode(Integer batchCode) {
         this.batchCode = batchCode;
     }
 
@@ -84,4 +106,8 @@ public class BatchRow {
     public void setProductCode(Integer productCode) {
         this.productCode = productCode;
     }
+
+    public String getComponentId(){return this.componentId;}
+
+    public void setComponentId(String Cid){this.componentId = Cid;}
 }

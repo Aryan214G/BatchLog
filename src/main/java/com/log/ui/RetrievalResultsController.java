@@ -142,10 +142,23 @@ public class RetrievalResultsController {
     }
     public void loadBatch(BatchTest batch) throws SQLException {
         Connection connection = DBUtil.getConnection();
-        String batchID = batchService.getBatchId(connection,batch.getBatchCode());
-        batchTitleLabel.setText(
-                "Batch: " + batchID
-        );
+        String batchID =
+                batchTestService.getBatchIdByTestId(
+                        batch.getTestId()
+                );
+
+        if (batchID == null || batchID.isBlank()) {
+
+            batchTitleLabel.setText(
+                    "Product: " + basePropertiesState.getProductName()
+            );
+
+        } else {
+
+            batchTitleLabel.setText(
+                    "Batch: " + batchID
+            );
+        }
 
         try (Connection conn = DBUtil.getConnection()) {
 
