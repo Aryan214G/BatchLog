@@ -7,14 +7,14 @@ public class BatchTest {
     private String testSite;
     private Integer productCode;
 
-    public BatchTest(int testId, int batchCode, String testDate, String testSite) {
+    public BatchTest(int testId, Integer batchCode, String testDate, String testSite) {
         this.testId = testId;
         this.batchCode = batchCode;
         this.testDate = testDate;
         this.testSite = testSite;
     }
 
-    public BatchTest(int batchCode, String testDate, String testSite) {
+    public BatchTest(Integer batchCode, String testDate, String testSite) {
         this.batchCode = batchCode;
         this.testDate = testDate;
         this.testSite = testSite;
