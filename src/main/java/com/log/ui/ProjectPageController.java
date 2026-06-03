@@ -70,6 +70,7 @@ public class ProjectPageController {
             SELECT
                 b.Batch_CODE,
                 b.Batch_ID,
+                b.Product_CODE,
                 p.Product_name,
                 bt.Test_date,
                 bt.Test_site,
@@ -94,7 +95,9 @@ public class ProjectPageController {
                         rs.getString("Product_name"),
                         rs.getString("Test_date"),
                         rs.getString("Test_site"),
-                        rs.getInt(("Test_ID"))));
+                        rs.getInt(("Test_ID")),
+                        rs.getInt("Product_CODE")
+                ));
             }
         }
 
@@ -162,7 +165,13 @@ public class ProjectPageController {
             );
             Parent root = loader.load();
 
-            BatchTest batch = new BatchTest(b.getTestId(),b.getBatchCode(), b.getTestDate(), b.getTestSite());
+            BatchTest batch = new BatchTest(
+                    b.getTestId(),
+                    b.getBatchCode(),
+                    b.getTestDate(),
+                    b.getTestSite(),
+                    b.getProductCode()
+            );
 
 
             RetrievalResultsController controller = loader.getController();

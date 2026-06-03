@@ -118,6 +118,7 @@ public class BatchDAO {
             SELECT
                 b.Batch_CODE,
                 b.Batch_ID,
+                b.Product_CODE,
                 p.Product_name,
                 bt.Test_date,
                 bt.Test_site
@@ -140,7 +141,8 @@ public class BatchDAO {
                         rs.getString("Batch_ID"),
                         rs.getString("Product_name"),
                         rs.getString("Test_date"),
-                        rs.getString("Test_site")
+                        rs.getString("Test_site"),
+                        rs.getInt("Product_CODE")
                 ));
             }
         }

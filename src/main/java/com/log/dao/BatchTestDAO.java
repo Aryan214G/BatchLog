@@ -137,7 +137,8 @@ public class BatchTestDAO {
                    rs.getInt("Test_ID"),
                     batchCode,
                     rs.getString("Test_date"),
-                    rs.getString("Test_site")
+                    rs.getString("Test_site"),
+                    rs.getInt("Product_CODE")
             );
 
             batchTest.setProductCode(rs.getInt("Product_CODE"));
