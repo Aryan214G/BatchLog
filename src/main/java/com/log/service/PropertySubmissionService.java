@@ -104,8 +104,7 @@ public class PropertySubmissionService {
             String testMethod){
 
         //TODO: might need to replace this unecessary db call
-        Category category =
-        categoryService.getCategory(conn, selectedCategory);
+        Category category = categoryService.getCategory(conn, selectedCategory);
 
         Unit unit =
                 unitsService.getUnit(

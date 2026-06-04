@@ -1156,10 +1156,16 @@ public class CategoriesPageController {
                 selectedProperty.getPropertyName(),
                 selectedState.getSelectedCategory()
         );
+
+        if(!instance.isEditMode()){
+            stateManager.clearState(selectedProperty.getPropertyName());
+            HandlePropertyChange(selectedProperty, null);
+
+        }
     }
 
     public void refreshcatmap(){
-        defaultPropertiesMap = defaultPropertyService.getDefaultsGrouped() ;
+        defaultPropertiesMap = defaultPropertyService.getDefaultsGrouped();
     }
 
     @FXML
