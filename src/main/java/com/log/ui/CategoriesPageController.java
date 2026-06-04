@@ -310,7 +310,7 @@ public class CategoriesPageController {
                 }
                 else continue;
             }
-            initializePropertyState(property);
+            return;
         }
     }
 
