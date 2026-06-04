@@ -63,11 +63,11 @@ public class AppState {
     //============ FLAGS =================
     private boolean projectCreated = false;
 
-    // EDIT
+    // EDIT ____________________
     private boolean editMode;
     private Integer editPropertyId;
 
-    //
+    // ____________________
 
     public boolean isProjectCreated() {
         return projectCreated;
