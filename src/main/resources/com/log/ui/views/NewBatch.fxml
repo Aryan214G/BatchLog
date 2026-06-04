@@ -30,7 +30,7 @@
             <TextField fx:id="productField" alignment="CENTER" maxWidth="700" />
 
             <Label text="Component ID" />
-            <TextField fx:id="ComponentIDField" alignment="CENTER" maxWidth="700" />
+            <TextField fx:id="componentIdField" alignment="CENTER" maxWidth="700" />
 
             <Label text="SOP" />
             <TextField fx:id="sopField" alignment="CENTER" maxWidth="700" />
