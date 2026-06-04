@@ -21,6 +21,7 @@ public class AppState {
 
     ;
 
+
     private HashMap<String, ObservableList<DefaultProperty>> categoriesMap = new HashMap<>();
 
     private ObservableList<String> categories = FXCollections.observableArrayList();
@@ -62,12 +63,34 @@ public class AppState {
     //============ FLAGS =================
     private boolean projectCreated = false;
 
+    // EDIT ____________________
+    private boolean editMode;
+    private Integer editPropertyId;
+
+    // ____________________
+
     public boolean isProjectCreated() {
         return projectCreated;
     }
 
     public void setProjectCreated(boolean projectCreated) {
         this.projectCreated = projectCreated;
+    }
+
+    public boolean isEditMode() {
+        return editMode;
+    }
+
+    public void setEditMode(boolean editMode) {
+        this.editMode = editMode;
+    }
+
+    public Integer getEditPropertyId() {
+        return editPropertyId;
+    }
+
+    public void setEditPropertyId(Integer editPropertyId) {
+        this.editPropertyId = editPropertyId;
     }
 
     public void clear() {
