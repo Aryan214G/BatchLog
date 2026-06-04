@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SearchUtil {
-
+    //TODO: add sop to query from batchtest
     public List<Batch> searchBatches(Connection conn,
                                      String projectName,
                                      String productName,
@@ -25,7 +25,8 @@ public class SearchUtil {
                 b.Batch_ID,
                 bt.Test_ID,
                 bt.Test_Date,
-                bt.Test_Site
+                bt.Test_Site,
+                bt.Product_CODE
             FROM Batch b
             JOIN Product pd         ON b.Product_CODE  = pd.Product_code
             JOIN Project pr         ON pd.Project_ID   = pr.Project_ID
@@ -93,6 +94,7 @@ public class SearchUtil {
                         batchCode,
                         rs.getString("Test_Date"),
                         rs.getString("Test_Site"),
+                        rs.getInt("Product_CODE"),
                         rs.getString("SOP")
                 ));
             }

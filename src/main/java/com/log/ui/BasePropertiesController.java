@@ -10,6 +10,7 @@ import com.log.model.Product;
 import com.log.service.BatchService;
 import com.log.service.BatchTestService;
 import com.log.service.ProjectService;
+import com.log.util.StringUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,6 +19,8 @@ import javafx.scene.control.TextField;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import com.log.service.ProductService;
 import com.log.core.StateManager;
 
@@ -30,8 +33,8 @@ public class BasePropertiesController {
     @FXML private TextField productID;
     @FXML private DatePicker testDate;
     @FXML private TextField placeOfTesting;
-    @FXML private TextField fileName;
     @FXML private TextField sop;
+    private boolean isEdit = false;
     private final AppState appState = AppState.getInstance();
     private final BasePropertiesState bpropState = BasePropertiesState.getInstance();
     private ProjectService projectService = new ProjectService();
@@ -50,7 +53,7 @@ public class BasePropertiesController {
     }
     // ===== BUTTON ACTIONS =====
     @FXML
-    private void handleNext() {
+    private void handleNext() throws SQLException {
 
         String project = projectName.getText();
         String batch = batchNo.getText();
@@ -59,15 +62,21 @@ public class BasePropertiesController {
         String component = productID.getText();
         LocalDate date = testDate.getValue();
         String place = placeOfTesting.getText();
-        String file = fileName.getText();
+
+
         bpropState.setProjectName(projectName.getText());
-        bpropState.setBatchNo(batchNo.getText());
+        bpropState.setBatchNo(StringUtils.nullIfBlank(batchNo.getText()));
         bpropState.setSop(sopValue.isBlank() ? null : sopValue);
         bpropState.setProductName(productName.getText());
         bpropState.setProductID(productID.getText());
         bpropState.setTestDate(testDate.getValue());
         bpropState.setPlaceOfTesting(placeOfTesting.getText());
-        bpropState.setFileName(fileName.getText());
+
+
+        if(isEdit){
+            handleEditBatch();
+            return;
+        }
 
         //manual transaction handling to prevent DB lock issues
         Connection conn = null;
@@ -116,30 +125,60 @@ public class BasePropertiesController {
     }
 
     private void handleCreateBatch(Connection conn) {
-        String batchID = bpropState.getBatchNo();
-        int projectID = bpropState.getProjectId();
-        String TestDate = bpropState.getTestDate().toString();
-        String TestSite = bpropState.getPlaceOfTesting();
-        String Sop = bpropState.getSop();
 
-        int productCode = productService.getProductCodeFromDB(conn, new Product(
-                bpropState.getProductID(),
-                bpropState.getProductName(),
-                bpropState.getProjectId()
-        ));
-        batchService.createBatch(conn, new Batch(
-                batchID,
-                productCode
-        ));
+            String batchID = StringUtils.nullIfBlank(bpropState.getBatchNo());
+            String sop=bpropState.getSop();
+            String testDate = bpropState.getTestDate().toString();
+            String testSite = bpropState.getPlaceOfTesting();
 
-        int batchCODE = bpropState.getBatchCode();
-        batchTestService.createBatchTest(conn, new BatchTest(
-                batchCODE,
-                TestDate,
-                TestSite,
-                Sop
-                ));
-    }
+            int productCode =
+                    productService.getProductCodeFromDB(
+                            conn,
+                            new Product(
+                                    bpropState.getProductID(),
+                                    bpropState.getProductName(),
+                                    bpropState.getProjectId()
+                            )
+                    );
+
+            // ================= PRODUCT ONLY =================
+
+            if (batchID == null) {
+
+                batchTestService.createBatchTest(
+                        conn,
+                        new BatchTest(
+                                null,      // Batch_CODE
+                                testDate,
+                                testSite,
+                                productCode,
+                                sop
+                        )
+                );
+
+                return;
+            }
+
+            // ================= BATCH TEST =================
+
+            batchService.createBatch(
+                    conn,
+                    new Batch(batchID, productCode)
+            );
+
+            Integer batchCode = bpropState.getBatchCode();
+
+            batchTestService.createBatchTest(
+                    conn,
+                    new BatchTest(
+                            batchCode,
+                            testDate,
+                            testSite,
+                            productCode,
+                            sop
+                    )
+            );
+        }
 
     private void loadCategoriesPage() {
 
@@ -168,9 +207,11 @@ public class BasePropertiesController {
 
     private boolean validateInputs() {
 
-        if (projectName.getText().isEmpty()) return false;
-        if (batchNo.getText().isEmpty()) return false;
-        if (productName.getText().isEmpty()) return false;
+        if (projectName.getText().isBlank()) return false;
+
+        if (productID.getText().isBlank()) return false;
+
+        if (productName.getText().isBlank()) return false;
 
         return true;
     }
@@ -181,9 +222,12 @@ public class BasePropertiesController {
         productName.clear();
         productID.clear();
         placeOfTesting.clear();
-        fileName.clear();
         testDate.setValue(null);
         sop.setText(null);
+    }
+
+    public void setEdit(boolean value){
+        isEdit = value;
     }
 
     private void handleCreateProject(Connection conn, String project) throws SQLException {
@@ -225,17 +269,57 @@ public class BasePropertiesController {
                 bpropState.getPlaceOfTesting()
         );
 
-        fileName.setText(
-                bpropState.getFileName()
-        );
+
         System.out.println("Project Name = " + bpropState.getProjectName());
         System.out.println("Batch No = " + bpropState.getBatchNo());
         System.out.println("Product Name = " + bpropState.getProductName());
         System.out.println("Product ID = " + bpropState.getProductID());
         System.out.println("Test Date = " + bpropState.getTestDate());
         System.out.println("Place = " + bpropState.getPlaceOfTesting());
-        System.out.println("File = " + bpropState.getFileName());
         System.out.println("SOP = " + bpropState.getSop());
+    }
+
+    private void handleEditBatch() throws SQLException {
+        String project = projectName.getText();
+        String batch = batchNo.getText();
+        String sopValue = sop.getText().trim();
+        String product = productName.getText();
+        String component = productID.getText();
+        LocalDate date = testDate.getValue();
+        String place = placeOfTesting.getText();
+
+
+        Connection connection = DBUtil.getConnection();
+
+        projectService.editProject(projectService.getProjectId(connection, bpropState.getProjectName()),project);
+
+        batchService.updateBatchId(connection, bpropState.getBatchCode(), batch);
+
+        //TODO: update products later
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+        String newDate = date.format(formatter);
+
+        batchTestService.editTestDate(bpropState.getTestId(), newDate);
+
+        //edit place
+        batchTestService.editTestSite(bpropState.getTestId(), place);
+
+
+        //edit file
+
+
+
+        bpropState.setProjectName(projectName.getText());
+        bpropState.setBatchNo(batchNo.getText());
+        bpropState.setSop(sopValue.isBlank() ? null : sopValue);
+        bpropState.setProductName(productName.getText());
+        bpropState.setProductID(productID.getText());
+        bpropState.setTestDate(testDate.getValue());
+        bpropState.setPlaceOfTesting(placeOfTesting.getText());
+
+        loadCategoriesPage();
     }
 
 }

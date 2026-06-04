@@ -92,12 +92,13 @@ public class BatchDAO {
             e.printStackTrace();
         }
     }
-    //TODO: edit query according to sop
+
      public List<BatchRow> getBatchesInProject(Connection conn, String projectName) throws SQLException {
         String sql = """
             SELECT
                 b.Batch_CODE,
                 b.Batch_ID,
+                b.Product_CODE,
                 p.Product_name,
                 bt.Test_date,
                 bt.Test_site,
@@ -122,6 +123,7 @@ public class BatchDAO {
                         rs.getString("Product_name"),
                         rs.getString("Test_date"),
                         rs.getString("Test_site"),
+                        rs.getInt("Product_CODE"),
                         rs.getString("SOP")
                 ));
             }
@@ -174,6 +176,24 @@ public class BatchDAO {
         }
 
         return null;
+    }
+
+
+    public boolean updateBatchId(Connection conn, int batchCode, String newBatchId) {
+        String sql = "UPDATE Batch SET Batch_ID = ? WHERE Batch_CODE = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, newBatchId);
+            stmt.setInt(2, batchCode);
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
 }

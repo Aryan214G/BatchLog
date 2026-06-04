@@ -2,25 +2,26 @@ package com.log.model;
 
 public class BatchTest {
     private int testId;
-    private int batchCode;
+    private Integer batchCode;
     private String testDate;
     private String testSite;
     private String SOP;
+    private Integer productCode;
 
-    public BatchTest(int testId, int batchCode, String testDate, String testSite, String sop)
-    {
+    public BatchTest(int testId, Integer batchCode, String testDate, String testSite, Integer productCode,String SOP) {
         this.testId = testId;
         this.batchCode = batchCode;
         this.testDate = testDate;
         this.testSite = testSite;
-        this.SOP = sop;
+        this.productCode = productCode;
+        this.SOP = SOP;
     }
 
-    public BatchTest(int batchCode, String testDate, String testSite, String SOP)
-    {
+    public BatchTest(Integer batchCode, String testDate, String testSite,Integer productCode,String SOP) {
         this.batchCode = batchCode;
         this.testDate = testDate;
         this.testSite = testSite;
+        this.productCode = productCode;
         this.SOP = SOP;
     }
 
@@ -32,11 +33,11 @@ public class BatchTest {
         this.testId = testId;
     }
 
-    public int getBatchCode() {
+    public Integer getBatchCode() {
         return batchCode;
     }
 
-    public void setBatchCode(int batchCode) {
+    public void setBatchCode(Integer batchCode) {
         this.batchCode = batchCode;
     }
 
@@ -62,6 +63,13 @@ public class BatchTest {
 
     public void setSOP(String SOP) {
         this.SOP = SOP;
+    }
+    public Integer getProductCode() {
+        return productCode;
+    }
+
+    public void setProductCode(Integer productCode) {
+        this.productCode = productCode;
     }
 
     @Override

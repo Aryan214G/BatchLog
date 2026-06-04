@@ -27,7 +27,6 @@ public class NewBatchController {
     @FXML private TextField batchNo;
     @FXML private DatePicker testDate;
     @FXML private TextField placeOfTesting;
-    @FXML private TextField fileName;
     @FXML private TextField SOP;
 
     private final BasePropertiesState bpropState = BasePropertiesState.getInstance();
@@ -38,8 +37,13 @@ public class NewBatchController {
     private final BatchTestService batchTestService = new BatchTestService();
     @FXML
     private void handleNext() {
+
         if (!validateInputs()) {
-            AlertUtil.showWarning("Please fill in all required fields.");
+
+            AlertUtil.showWarning(
+                    "Please fill in all required fields."
+            );
+
             return;
         }
 
@@ -48,7 +52,6 @@ public class NewBatchController {
         bpropState.setBatchNo(batchNo.getText().trim());
         bpropState.setTestDate(testDate.getValue());
         bpropState.setPlaceOfTesting(placeOfTesting.getText().trim());
-        bpropState.setFileName(fileName.getText().trim());
         bpropState.setSop(SOP.getText().trim());
 
         Connection conn = null;
@@ -64,28 +67,61 @@ public class NewBatchController {
                     bpropState.getProductName()   // productName
             );
 
-            // 2. Create batch using the product code stored by createProduct
-            int productCode = bpropState.getProductCode();
-            batchService.createBatch(conn, new Batch(
-                    bpropState.getBatchNo(),
-                    productCode
-            ));
+                int productCode =
+                        bpropState.getProductCode();
 
-            // 3. Create batch test using the batch code stored by createBatch
-            batchTestService.createBatchTest(conn, new BatchTest(
-                    bpropState.getBatchCode(),
-                    bpropState.getTestDate().toString(),
-                    bpropState.getPlaceOfTesting(),
-                    bpropState.getSop()
-            ));
+                // -------------------------------------------------
+                // Optional Batch
+                // -------------------------------------------------
 
-            conn.commit();
+                Integer batchCode = null;
 
-            System.out.println("Batch created — code: " + bpropState.getBatchCode()
-                    + " | testId: " + bpropState.getTestId());
+                if (!batchNo.getText().isBlank()) {
 
-            appState.setProjectCreated(true);
-            loadCategoriesPage();
+                    Batch batch = new Batch(
+                            bpropState.getBatchNo(),
+                            productCode
+                    );
+
+                    batchService.createBatch(
+                            conn,
+                            batch
+                    );
+
+                    batchCode =
+                            bpropState.getBatchCode();
+                }
+
+                // -------------------------------------------------
+                // Batch Test
+                // -------------------------------------------------
+
+                BatchTest batchTest =
+                        new BatchTest(
+                                batchCode,
+                                bpropState.getTestDate().toString(),
+                                bpropState.getPlaceOfTesting(),
+                                productCode,
+                                bpropState.getSop()
+                        );
+
+                batchTestService.createBatchTest(
+                        conn,
+                        batchTest
+                );
+
+                conn.commit();
+
+                System.out.println(
+                        "Created BatchCode = "
+                                + batchCode
+                                + " | TestId = "
+                                + bpropState.getTestId()
+                );
+
+                appState.setProjectCreated(true);
+
+                loadCategoriesPage();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -112,14 +148,13 @@ public class NewBatchController {
 
     private boolean validateInputs() {
         if (productField.getText().isEmpty()) return false;
-        if (batchNo.getText().isEmpty()) return false;
         if (placeOfTesting.getText().isEmpty()) return false;
-        if (fileName.getText().isEmpty()) return false;
         if (testDate.getValue() == null) return false;
         return true;
     }
 
     private void loadCategoriesPage() {
+
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/log/ui/views/CategoriesPage.fxml")

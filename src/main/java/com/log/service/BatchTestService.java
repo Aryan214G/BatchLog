@@ -55,5 +55,24 @@ public class BatchTestService {
         }
     }
 
+    public void editTestDate(int testId, String newDate){
+        try(Connection conn = DBUtil.getConnection()) {
+
+            batchTestDAO.updateTestDate(conn, testId, newDate);
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void editTestSite(int testId, String newSite){
+        try(Connection conn = DBUtil.getConnection()) {
+
+            batchTestDAO.updateTestSite(conn, testId, newSite);
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }
