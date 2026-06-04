@@ -226,7 +226,7 @@ public class RetrievalPageController {
             stage.setScene(new Scene(root));
             stage.show();
 
-        } catch (IOException | SQLException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

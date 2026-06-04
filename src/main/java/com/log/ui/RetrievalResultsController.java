@@ -76,11 +76,12 @@ public class RetrievalResultsController {
 
 
     // Add this overload alongside the existing loadBatch(BatchTest)
-    public void loadBatch(Batch batch) {
-        batchTitleLabel.setText("Batch: " + batch.getBatchId());
+    public void loadBatch(BatchTest batch) {
+        batchTitleLabel.setText("Test ID: " + batch.getTestId());
 
         try (Connection conn = DBUtil.getConnection()) {
-            cachedRows = fetchPropertiesForBatch(conn, batch.getBatchCode());
+            // Use Test_ID directly since product tests have no Batch_CODE
+            cachedRows = fetchPropertiesByTestId(conn, batch.getTestId());
 
             propertyStates.clear();
             for (PropertyRow r : cachedRows) {
@@ -95,7 +96,7 @@ public class RetrievalResultsController {
     }
 
     // New query — fetches properties across ALL tests in the batch
-    private List<PropertyRow> fetchPropertiesForBatch(Connection conn, int batchCode) throws SQLException {
+    private List<PropertyRow> fetchPropertiesByTestId(Connection conn, int testId) throws SQLException {
         String propSql = """
         SELECT
             p.Property_ID,
@@ -106,26 +107,22 @@ public class RetrievalResultsController {
             d.Dir_VAL,
             u.Unit
         FROM Property p
-        LEFT JOIN Category c         ON p.Category_ID    = c.Category_ID
-        LEFT JOIN Temperature t      ON p.Temp_ID        = t.Temp_ID
-        LEFT JOIN Temperature_Units tu ON t.Temp_Unit_ID = tu.Temp_Unit_ID
-        LEFT JOIN Direction d        ON p.Dir_ID         = d.Dir_ID
-        LEFT JOIN Units u            ON p.Unit_ID        = u.Unit_ID
-        JOIN Batch_Test bt           ON p.Test_ID        = bt.Test_ID
-        WHERE bt.Batch_CODE = ?
-        ORDER BY p.Test_ID, p.Property_name
+        LEFT JOIN Category c           ON p.Category_ID    = c.Category_ID
+        LEFT JOIN Temperature t        ON p.Temp_ID        = t.Temp_ID
+        LEFT JOIN Temperature_Units tu ON t.Temp_Unit_ID   = tu.Temp_Unit_ID
+        LEFT JOIN Direction d          ON p.Dir_ID         = d.Dir_ID
+        LEFT JOIN Units u              ON p.Unit_ID        = u.Unit_ID
+        WHERE p.Test_ID = ?
     """;
 
         List<PropertyRow> rows = new ArrayList<>();
 
         try (PreparedStatement stmt = conn.prepareStatement(propSql)) {
-            stmt.setInt(1, batchCode);
+            stmt.setInt(1, testId);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                int testId = rs.getInt("Test_ID");
-                basePropertiesState.setTestId(testId);
-
+                basePropertiesState.setTestId(rs.getInt("Test_ID"));
                 PropertyRow row = new PropertyRow(
                         rs.getString("Property_name"),
                         rs.getString("Category_name"),
@@ -140,38 +137,18 @@ public class RetrievalResultsController {
 
         return rows;
     }
-    public void loadBatch(BatchTest batch) throws SQLException {
-        Connection connection = DBUtil.getConnection();
-        String batchID =
-                batchTestService.getBatchIdByTestId(
-                        batch.getTestId()
-                );
-
-        if (batchID == null || batchID.isBlank()) {
-
-            batchTitleLabel.setText(
-                    "Product: " + basePropertiesState.getProductName()
-            );
-
-        } else {
-
-            batchTitleLabel.setText(
-                    "Batch: " + batchID
-            );
-        }
+    public void loadBatch(Batch batch) {
+        batchTitleLabel.setText("Batch: " + batch.getBatchId());
 
         try (Connection conn = DBUtil.getConnection()) {
+            cachedRows = fetchPropertiesForBatch(conn, batch.getBatchCode());
 
-            cachedRows = fetchProperties(conn, batch.getBatchCode());
-
-            // Build property filter state — all visible by default
             propertyStates.clear();
             for (PropertyRow r : cachedRows) {
                 propertyStates.put(r.getName(), true);
             }
 
             appState.setProjectCreated(true);
-
             populateGrid(cachedRows);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -521,5 +498,52 @@ public class RetrievalResultsController {
 
         printThread.setDaemon(true);
         printThread.start();
+    }
+
+    private List<PropertyRow> fetchPropertiesForBatch(Connection conn, int batchCode) throws SQLException {
+        String propSql = """
+        SELECT
+            p.Property_ID,
+            p.Property_name,
+            p.Test_ID,
+            c.Category_name,
+            t.Temp_VAL || ' ' || tu.Temp_Unit AS temperature,
+            d.Dir_VAL,
+            u.Unit
+        FROM Property p
+        LEFT JOIN Category c           ON p.Category_ID    = c.Category_ID
+        LEFT JOIN Temperature t        ON p.Temp_ID        = t.Temp_ID
+        LEFT JOIN Temperature_Units tu ON t.Temp_Unit_ID   = tu.Temp_Unit_ID
+        LEFT JOIN Direction d          ON p.Dir_ID         = d.Dir_ID
+        LEFT JOIN Units u              ON p.Unit_ID        = u.Unit_ID
+        JOIN Batch_Test bt             ON p.Test_ID        = bt.Test_ID
+        WHERE bt.Batch_CODE = ?
+        ORDER BY p.Test_ID, p.Property_name
+    """;
+
+        List<PropertyRow> rows = new ArrayList<>();
+
+        try (PreparedStatement stmt = conn.prepareStatement(propSql)) {
+            stmt.setInt(1, batchCode);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                testId = rs.getInt("Test_ID");
+                basePropertiesState.setTestId(testId);
+
+                PropertyRow row = new PropertyRow(
+                        rs.getString("Property_name"),
+                        rs.getString("Category_name"),
+                        rs.getString("temperature"),
+                        rs.getString("Dir_VAL"),
+                        rs.getString("Unit")
+                );
+                row.setPropertyId(rs.getInt("Property_ID"));
+                row.setValues(fetchValues(conn, rs.getInt("Property_ID")));
+                rows.add(row);
+            }
+        }
+
+        return rows;
     }
 }
