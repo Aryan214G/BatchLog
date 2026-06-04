@@ -23,7 +23,7 @@ public class NewBatchController {
     @FXML private TextField batchNo;
     @FXML private DatePicker testDate;
     @FXML private TextField placeOfTesting;
-    @FXML private TextField fileName;
+
 
     private final BasePropertiesState bpropState =
             BasePropertiesState.getInstance();
@@ -66,10 +66,6 @@ public class NewBatchController {
 
         bpropState.setPlaceOfTesting(
                 placeOfTesting.getText().trim()
-        );
-
-        bpropState.setFileName(
-                fileName.getText().trim()
         );
 
         try (Connection conn = DBUtil.getConnection()) {
@@ -172,8 +168,6 @@ public class NewBatchController {
         if (placeOfTesting.getText().isBlank())
             return false;
 
-        if (fileName.getText().isBlank())
-            return false;
 
         return testDate.getValue() != null;
     }

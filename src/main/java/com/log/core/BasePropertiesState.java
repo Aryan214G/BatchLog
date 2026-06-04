@@ -19,7 +19,6 @@ public class BasePropertiesState {
     private int productCode;
     private LocalDate testDate;
     private String placeOfTesting;
-    private String fileName;
     private int testId;
     private String sop;
 
@@ -64,9 +63,6 @@ public class BasePropertiesState {
     public String getPlaceOfTesting() { return placeOfTesting; }
     public void setPlaceOfTesting(String placeOfTesting) { this.placeOfTesting = placeOfTesting; }
 
-    public String getFileName() { return fileName; }
-    public void setFileName(String fileName) { this.fileName = fileName; }
-
     public int getProjectId() {return projectId;}
 
     public void setProjectId(int projectId) {this.projectId = projectId;}
@@ -102,7 +98,7 @@ public class BasePropertiesState {
         testDate = null;
         placeOfTesting = null;
 
-        fileName = null;
+
         sop = null;
 
         testId = 0;

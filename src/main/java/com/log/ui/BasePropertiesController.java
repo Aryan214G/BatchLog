@@ -33,7 +33,6 @@ public class BasePropertiesController {
     @FXML private TextField productID;
     @FXML private DatePicker testDate;
     @FXML private TextField placeOfTesting;
-    @FXML private TextField fileName;
     @FXML private TextField sop;
     private boolean isEdit = false;
     private final AppState appState = AppState.getInstance();
@@ -63,7 +62,7 @@ public class BasePropertiesController {
         String component = productID.getText();
         LocalDate date = testDate.getValue();
         String place = placeOfTesting.getText();
-        String file = fileName.getText();
+
 
         bpropState.setProjectName(projectName.getText());
         bpropState.setBatchNo(
@@ -74,7 +73,7 @@ public class BasePropertiesController {
         bpropState.setProductID(productID.getText());
         bpropState.setTestDate(testDate.getValue());
         bpropState.setPlaceOfTesting(placeOfTesting.getText());
-        bpropState.setFileName(fileName.getText());
+
 
         if(isEdit){
             handleEditBatch();
@@ -223,7 +222,6 @@ public class BasePropertiesController {
         productName.clear();
         productID.clear();
         placeOfTesting.clear();
-        fileName.clear();
         testDate.setValue(null);
     }
 
@@ -270,16 +268,13 @@ public class BasePropertiesController {
                 bpropState.getPlaceOfTesting()
         );
 
-        fileName.setText(
-                bpropState.getFileName()
-        );
+
         System.out.println("Project Name = " + bpropState.getProjectName());
         System.out.println("Batch No = " + bpropState.getBatchNo());
         System.out.println("Product Name = " + bpropState.getProductName());
         System.out.println("Product ID = " + bpropState.getProductID());
         System.out.println("Test Date = " + bpropState.getTestDate());
         System.out.println("Place = " + bpropState.getPlaceOfTesting());
-        System.out.println("File = " + bpropState.getFileName());
         System.out.println("SOP = " + bpropState.getSop());
     }
 
@@ -291,7 +286,6 @@ public class BasePropertiesController {
         String component = productID.getText();
         LocalDate date = testDate.getValue();
         String place = placeOfTesting.getText();
-        String file = fileName.getText();
 
 
         Connection connection = DBUtil.getConnection();
@@ -323,7 +317,7 @@ public class BasePropertiesController {
         bpropState.setProductID(productID.getText());
         bpropState.setTestDate(testDate.getValue());
         bpropState.setPlaceOfTesting(placeOfTesting.getText());
-        bpropState.setFileName(fileName.getText());
+
         loadCategoriesPage();
     }
 
