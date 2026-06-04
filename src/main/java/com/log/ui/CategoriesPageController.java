@@ -109,42 +109,43 @@ public class CategoriesPageController {
 
     @FXML
     public void initialize() throws IOException, SQLException {
+
         System.out.println("===== CategoriesPage Initialize =====");
-        System.out.println(
-                "Test ID in state = "
-                        + basePropertiesState.getTestId()
-        );
+        System.out.println("Test ID in state = " + basePropertiesState.getTestId());
 
         System.out.println("========== INIT ==========");
-        System.out.println(
-                "projectCreated = "
-                        + instance.isProjectCreated()
-        );
-
-        System.out.println(
-                "testId = "
-                        + basePropertiesState.getTestId()
-        );
+        System.out.println( "projectCreated = " + instance.isProjectCreated());
+        System.out.println("testId = " + basePropertiesState.getTestId());
 
 
         //disable UI components when project is not created
             isSubmitButtonVisible(false);
             isPrintButtonVisible(false);
+
         if(!instance.isProjectCreated()) {
             categoriesListView.setDisable(true);
             propertiesListView.setDisable(true);
         }
         else {
             loadCategoriesFromDB();
+
             loadPropertyDataFromDB();
             setupSearchBar();
         }
 
-
-
         CategorySelectionListener();
         PropertySelectionListener();
 
+        if (instance.isEditMode())
+        {
+            categoriesListView.getSelectionModel().select(
+                    selectedState.getSelectedCategory()
+            );
+
+            propertiesListView.getSelectionModel().select(
+                    selectedState.getSelectedProperty()
+            );
+        }
         refreshcatmap();
 
         // EDIT MENU SETUP
@@ -281,7 +282,41 @@ public class CategoriesPageController {
 
         for(Property property : propertiesList){
 
-            inputRows.clear();
+            // EDIT
+            if(instance.isEditMode())
+            {
+                if(property.getPropertyID() == instance.getEditPropertyId())
+                {
+                        initializePropertyState(property);
+
+                        // CATEGORY
+                        selectedState.setSelectedCategory(
+                                property.getCategory().getCategoryName()
+                        );
+                        selectedState.setSelectedCategoryId(
+                                property.getCategory().getCategoryId()
+                        );
+
+                        //PROPERTY
+                    DefaultProperty defaultProperty = new DefaultProperty();
+                    defaultProperty.setPropertyId(property.getPropertyID());
+                    defaultProperty.setPropertyName(property.getPropertyName());
+
+                        selectedState.setSelectedProperty(
+                                defaultProperty
+                        );
+
+                        break;
+                }
+                else continue;
+            }
+            initializePropertyState(property);
+        }
+    }
+
+    // helper method for loadPropertyDataFromDB
+    private void initializePropertyState(Property property){
+        inputRows.clear();
 
             // ============== Populate input rows =================
             try (Connection conn = DBUtil.getConnection()) {
@@ -305,7 +340,6 @@ public class CategoriesPageController {
                     property.getDirection(),
                     property.getUnit()
             );
-        }
     }
 
     private void performSearch(String searchText) {
