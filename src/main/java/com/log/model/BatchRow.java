@@ -8,23 +8,26 @@ public class BatchRow {
         private String testDate;
         private String testSite;
         private int testId;
+        private String sop;
 
 
 
-    public BatchRow(int batchCode, String batchId, String productName, String testDate, String testSite) {
+    public BatchRow(int batchCode, String batchId, String productName, String testDate, String testSite, String sop) {
         this.batchCode = batchCode;
         this.batchId = batchId;
         this.productName = productName;
         this.testDate = testDate;
         this.testSite = testSite;
+        this.sop = sop;
     }
-    public BatchRow(int batchCode, String batchId, String productName, String testDate, String testSite, int testId) {
+    public BatchRow(int batchCode, String batchId, String productName, String testDate, String testSite, int testId, String sop) {
         this.batchCode = batchCode;
         this.batchId = batchId;
         this.productName = productName;
         this.testDate = testDate;
         this.testSite = testSite;
         this.testId = testId;
+        this.sop=sop;
     }
 
     public int getBatchCode() {
@@ -73,5 +76,13 @@ public class BatchRow {
 
     public void setTestId(int testId) {
         this.testId = testId;
+    }
+
+    public String getSop() {
+        return sop;
+    }
+
+    public void setSop(String sop) {
+        this.sop = sop;
     }
 }

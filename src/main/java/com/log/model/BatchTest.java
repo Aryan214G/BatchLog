@@ -5,18 +5,23 @@ public class BatchTest {
     private int batchCode;
     private String testDate;
     private String testSite;
+    private String SOP;
 
-    public BatchTest(int testId, int batchCode, String testDate, String testSite) {
+    public BatchTest(int testId, int batchCode, String testDate, String testSite, String sop)
+    {
         this.testId = testId;
         this.batchCode = batchCode;
         this.testDate = testDate;
         this.testSite = testSite;
+        this.SOP = sop;
     }
 
-    public BatchTest(int batchCode, String testDate, String testSite) {
+    public BatchTest(int batchCode, String testDate, String testSite, String SOP)
+    {
         this.batchCode = batchCode;
         this.testDate = testDate;
         this.testSite = testSite;
+        this.SOP = SOP;
     }
 
     public int getTestId() {
@@ -51,6 +56,13 @@ public class BatchTest {
         this.testSite = testSite;
     }
 
+    public String getSOP() {
+        return SOP;
+    }
+
+    public void setSOP(String SOP) {
+        this.SOP = SOP;
+    }
 
     @Override
     public String toString() {

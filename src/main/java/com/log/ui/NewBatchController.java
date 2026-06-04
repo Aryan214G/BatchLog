@@ -28,6 +28,7 @@ public class NewBatchController {
     @FXML private DatePicker testDate;
     @FXML private TextField placeOfTesting;
     @FXML private TextField fileName;
+    @FXML private TextField SOP;
 
     private final BasePropertiesState bpropState = BasePropertiesState.getInstance();
     private final AppState appState = AppState.getInstance();
@@ -48,6 +49,7 @@ public class NewBatchController {
         bpropState.setTestDate(testDate.getValue());
         bpropState.setPlaceOfTesting(placeOfTesting.getText().trim());
         bpropState.setFileName(fileName.getText().trim());
+        bpropState.setSop(SOP.getText().trim());
 
         Connection conn = null;
 
@@ -73,7 +75,8 @@ public class NewBatchController {
             batchTestService.createBatchTest(conn, new BatchTest(
                     bpropState.getBatchCode(),
                     bpropState.getTestDate().toString(),
-                    bpropState.getPlaceOfTesting()
+                    bpropState.getPlaceOfTesting(),
+                    bpropState.getSop()
             ));
 
             conn.commit();

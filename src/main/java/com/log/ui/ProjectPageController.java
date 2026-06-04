@@ -73,7 +73,8 @@ public class ProjectPageController {
                 p.Product_name,
                 bt.Test_date,
                 bt.Test_site,
-                bt.Test_ID
+                bt.Test_ID,
+                bt.SOP
             FROM Batch b
             JOIN Product   p  ON b.Product_CODE  = p.Product_code
             JOIN Project   pr ON p.Project_ID    = pr.Project_ID
@@ -94,7 +95,9 @@ public class ProjectPageController {
                         rs.getString("Product_name"),
                         rs.getString("Test_date"),
                         rs.getString("Test_site"),
-                        rs.getInt(("Test_ID"))));
+                        rs.getInt("Test_ID"),
+                        rs.getString("SOP")
+                ));
             }
         }
 
@@ -156,13 +159,14 @@ public class ProjectPageController {
         bpropState.setTestDate(LocalDate.parse(b.getTestDate()));
         bpropState.setPlaceOfTesting((b.getTestSite()));
         bpropState.setTestId(b.getTestId());
+        bpropState.setSop(b.getSop());
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/log/ui/views/RetrievalResults.fxml")
             );
             Parent root = loader.load();
 
-            BatchTest batch = new BatchTest(b.getTestId(),b.getBatchCode(), b.getTestDate(), b.getTestSite());
+            BatchTest batch = new BatchTest(b.getTestId(),b.getBatchCode(), b.getTestDate(), b.getTestSite(),b.getSop());
 
             RetrievalResultsController controller = loader.getController();
             controller.loadBatch(batch);

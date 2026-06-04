@@ -10,26 +10,6 @@ import java.util.List;
 
 public class BatchDAO {
 
-    public void insertBatchByCODE(Batch batch) {
-
-        //TODO: recheck this query. Use WHERE batchCode keyword
-        String sql = "INSERT INTO Batch VALUES (?, ?, ?,?)";
-
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, batch.getBatchCode());
-            stmt.setString(2, batch.getBatchId());
-            stmt.setInt(3, batch.getProductCode());
-            stmt.setString(4,batch.getSop());
-
-            stmt.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public int insertBatchByID(Connection conn, Batch batch) {
         String sql = "INSERT INTO Batch (Batch_ID, Product_CODE) VALUES (?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -112,7 +92,7 @@ public class BatchDAO {
             e.printStackTrace();
         }
     }
-
+    //TODO: edit query according to sop
      public List<BatchRow> getBatchesInProject(Connection conn, String projectName) throws SQLException {
         String sql = """
             SELECT
@@ -120,7 +100,8 @@ public class BatchDAO {
                 b.Batch_ID,
                 p.Product_name,
                 bt.Test_date,
-                bt.Test_site
+                bt.Test_site,
+                bt.SOP
             FROM Batch b
             JOIN Product   p  ON b.Product_CODE  = p.Product_code
             JOIN Project   pr ON p.Project_ID    = pr.Project_ID
@@ -140,7 +121,8 @@ public class BatchDAO {
                         rs.getString("Batch_ID"),
                         rs.getString("Product_name"),
                         rs.getString("Test_date"),
-                        rs.getString("Test_site")
+                        rs.getString("Test_site"),
+                        rs.getString("SOP")
                 ));
             }
         }

@@ -92,7 +92,8 @@ public class SearchUtil {
                         testId,
                         batchCode,
                         rs.getString("Test_Date"),
-                        rs.getString("Test_Site")
+                        rs.getString("Test_Site"),
+                        rs.getString("SOP")
                 ));
             }
         }

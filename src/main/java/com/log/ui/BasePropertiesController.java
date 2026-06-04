@@ -120,6 +120,7 @@ public class BasePropertiesController {
         int projectID = bpropState.getProjectId();
         String TestDate = bpropState.getTestDate().toString();
         String TestSite = bpropState.getPlaceOfTesting();
+        String Sop = bpropState.getSop();
 
         int productCode = productService.getProductCodeFromDB(conn, new Product(
                 bpropState.getProductID(),
@@ -135,7 +136,8 @@ public class BasePropertiesController {
         batchTestService.createBatchTest(conn, new BatchTest(
                 batchCODE,
                 TestDate,
-                TestSite
+                TestSite,
+                Sop
                 ));
     }
 
@@ -181,6 +183,7 @@ public class BasePropertiesController {
         placeOfTesting.clear();
         fileName.clear();
         testDate.setValue(null);
+        sop.setText(null);
     }
 
     private void handleCreateProject(Connection conn, String project) throws SQLException {
