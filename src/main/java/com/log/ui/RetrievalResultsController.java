@@ -189,93 +189,8 @@ public class RetrievalResultsController {
         }
     }
 
-     // ── Edit button ─────────────────────────────────────────────────────────
-
-    @FXML
-    private void handleEdit() {
-
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/log/ui/views/CategoriesPage.fxml")
-            );
-            Parent root = loader.load();
-            Stage stage = (Stage) propertiesGrid.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // ── DB queries ────────────────────────────────────────────────────────────
-
-    // TODO: Redundant DAO method. Consider using getPropertiesByTest method in service class
-    private List<PropertyRow> fetchProperties(Connection conn, int batchCode) throws SQLException {
-        String propSql = """
-    SELECT
-        p.Property_ID,
-        p.Property_name,
-        p.Test_ID,
-
-        c.Category_name,
-
-        t.Temp_VAL || ' ' || tu.Temp_Unit AS temperature,
-
-        d.Dir_VAL,
-
-        u.Unit
-
-    FROM Property p
-
-    LEFT JOIN Category c
-        ON p.Category_ID = c.Category_ID
-
-    LEFT JOIN Temperature t
-        ON p.Temp_ID = t.Temp_ID
-
-    LEFT JOIN Temperature_Units tu
-        ON t.Temp_Unit_ID = tu.Temp_Unit_ID
-
-    LEFT JOIN Direction d
-        ON p.Dir_ID = d.Dir_ID
-
-    LEFT JOIN Units u
-        ON p.Unit_ID = u.Unit_ID
-
-    JOIN Batch_Test bt
-        ON p.Test_ID = bt.Test_ID
-
-    WHERE bt.Batch_CODE = ?
-""";
-
-        List<PropertyRow> rows = new ArrayList<>();
-
-        try (PreparedStatement stmt = conn.prepareStatement(propSql)) {
-            stmt.setInt(1, batchCode);
-            ResultSet rs = stmt.executeQuery();
 
 
-            while (rs.next()) {
-
-                testId = rs.getInt("Test_ID");
-                basePropertiesState.setTestId(testId);
-
-                PropertyRow row = new PropertyRow(
-                        rs.getString("Property_name"),
-                        rs.getString("Category_name"),
-                        rs.getString("temperature"),
-                        rs.getString("Dir_VAL"),
-                        rs.getString("Unit")
-                );
-
-                row.setPropertyId(rs.getInt("Property_ID"));
-                row.setValues(fetchValues(conn, rs.getInt("Property_ID")));
-                rows.add(row);
-            }
-        }
-
-        return rows;
-    }
 
     private List<Double> fetchValues(Connection conn, int propertyId) throws SQLException {
         String sql = "SELECT Prop_VAL FROM Property_Values WHERE Property_ID = ?";
@@ -351,63 +266,32 @@ public class RetrievalResultsController {
             ContextMenu rowMenu = createRowContextMenu(p);
 
             if (columnStates.getOrDefault("Property", true))
-                propertiesGrid.add(
-                        makeCell(p.getName()+" ("+ (p.getUnit() != null ? p.getUnit()+")" : ""), isAlt, rowMenu),
-                        col++, row
-                );
+                propertiesGrid.add(makeCell(p.getName()+" ("+ (p.getUnit() != null ? p.getUnit()+")" : ""), isAlt, rowMenu),
+                        col++, row);
 
             if (columnStates.getOrDefault("Category", true))
-                propertiesGrid.add(
-                        makeCell(p.getCategory(), isAlt, rowMenu),
-                        col++, row
-                );
+                propertiesGrid.add(makeCell(p.getCategory(), isAlt, rowMenu), col++, row);
 
             if (columnStates.getOrDefault("Temperature", true))
-                propertiesGrid.add(
-                        makeCell(
-                                p.getTemperature() != null
-                                        ? p.getTemperature()
-                                        : "—",
-                                isAlt,
-                                rowMenu
-                        ),
-                        col++, row
-                );
+                propertiesGrid.add(makeCell(p.getTemperature() != null ? p.getTemperature() : "—", isAlt, rowMenu), col++, row);
 
             if (columnStates.getOrDefault("Direction", true))
-                propertiesGrid.add(
-                        makeCell(
-                                p.getDirection(),
-                                isAlt,
-                                rowMenu
-                        ),
-                        col++, row
-                );
+                propertiesGrid.add(makeCell(p.getDirection(), isAlt, rowMenu), col++, row);
 
             if (columnStates.getOrDefault("Values", true)) {
 
                 for (int i = 0; i < maxValues; i++) {
 
-                    String val = i < p.getValues().size()
-                            ? formatDouble(p.getValues().get(i))
-                            + " "
-                            : "";
+                    String val = i < p.getValues().size() ? formatDouble(p.getValues().get(i)) + " " : "";
 
-                    propertiesGrid.add(
-                            makeCell(val, isAlt, rowMenu),
-                            col++, row
+                    propertiesGrid.add(makeCell(val, isAlt, rowMenu), col++, row
                     );
                 }
             }
 
             if (columnStates.getOrDefault("Average Value", true))
                 propertiesGrid.add(
-                        makeCell(
-                                formatDouble(p.getAverage()),
-                                isAlt,
-                                rowMenu
-                        ),
-                        col++, row
+                        makeCell(formatDouble(p.getAverage()), isAlt, rowMenu), col++, row
                 );
 
             row++;
