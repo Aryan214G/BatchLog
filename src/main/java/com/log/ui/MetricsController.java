@@ -17,7 +17,6 @@ public class MetricsController {
 
     public void setMean(double mean) {
         meanLabel.setText(String.format("%.3f", mean));
-        System.out.println("Mean set to: " + mean);
     }
 
     public void setStandardDeviation(double sd) {
