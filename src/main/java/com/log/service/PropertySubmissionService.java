@@ -1,9 +1,11 @@
 package com.log.service;
 
+import com.log.core.AppState;
 import com.log.core.BasePropertiesState;
 import com.log.database.DBUtil;
 import com.log.model.*;
 import com.log.ui.InputRow;
+import com.log.util.AlertUtil;
 import javafx.scene.control.Alert;
 
 import java.sql.Connection;
@@ -19,6 +21,7 @@ public class PropertySubmissionService {
     private PropertyService propertyService;
     private PropertyValuesService propertyValuesService;
 
+    private AppState instance = AppState.getInstance();
     private BasePropertiesState bsinstance = BasePropertiesState.getInstance();
 
     private int tempId;
@@ -48,9 +51,11 @@ public class PropertySubmissionService {
             handleProperty(conn, propertyState, propertyName, selectedCategory, propertyState.getTestMethod());
 
             conn.commit();
-            showAlert("Success", "Submission completed successfully!");
+
+            AlertUtil.showInfo("Submission completed successfully!");
+
         }  catch (Exception e) {
-            showAlert("Submit not successful",e.toString());
+            AlertUtil.showError("Submit not successful");
 
             e.printStackTrace();
 
@@ -139,7 +144,9 @@ public class PropertySubmissionService {
                     direction
             );
 
-            propertyState.setProperty(property);
+            if (instance.isEditMode()) {
+                propertyState.setProperty(property);
+            }
         }
 
         property.setTestMethod(testMethod);
