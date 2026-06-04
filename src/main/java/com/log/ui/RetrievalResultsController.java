@@ -362,8 +362,15 @@ public class RetrievalResultsController {
                 throw new RuntimeException(ex);
             }
         });
+        MenuItem editItem = new MenuItem("Edit Property");
+        editItem.setOnAction(e -> handleEditProperty(property));
 
-        return new ContextMenu(exportItem);
+        return new ContextMenu(exportItem,editItem);
+    }
+
+    private void handleEditProperty(PropertyRow property) {
+        appState.setEditMode(true);
+        appState.setEditPropertyId(property.getPropertyId());
     }
 
     private void handleExport(int propertyId)
