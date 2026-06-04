@@ -9,7 +9,6 @@ import com.log.util.AlertUtil;
 import javafx.scene.control.Alert;
 
 import java.sql.Connection;
-import java.util.List;
 
 public class PropertySubmissionService {
 
@@ -81,7 +80,7 @@ public class PropertySubmissionService {
     private void handleTemperature(Connection conn, Temperature temp) {
         if (temp.getTempId() == null) {
 
-           this.tempId = temperatureService.createTemperature(conn, temp);
+           this.tempId = temperatureService.insertTemperature(conn, temp);
            temp.setTempId(tempId);
 
         } else {
@@ -149,6 +148,21 @@ public class PropertySubmissionService {
             }
         }
 
+        // TEMPORARY LOGGING
+        //TODO: remove this logging later
+        System.out.println(
+                "Property from state = "
+                        + propertyState.getProperty()
+        );
+
+        if (propertyState.getProperty() != null) {
+            System.out.println(
+                    "Property ID = "
+                            + propertyState.getProperty().getPropertyID()
+            );
+        }
+
+
         property.setTestMethod(testMethod);
 
         property.setPropertyName(propertyName);
@@ -160,6 +174,13 @@ public class PropertySubmissionService {
         // ________________________________________________________________________________
 
         int propertyID = property.getPropertyID();
+
+        //TODO: remove this logging
+        System.out.println(
+                "Property ID before save = "
+                        + property.getPropertyID()
+        );
+
         if(propertyID > 0){
             propertyService.updateProperty(conn, property);
         }
