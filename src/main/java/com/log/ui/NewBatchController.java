@@ -27,7 +27,8 @@ public class NewBatchController {
     @FXML private TextField batchNo;
     @FXML private DatePicker testDate;
     @FXML private TextField placeOfTesting;
-    @FXML private TextField SOP;
+    @FXML private TextField componentIdField;
+    @FXML private TextField sopField;  // add this field
 
     private final BasePropertiesState bpropState = BasePropertiesState.getInstance();
     private final AppState appState = AppState.getInstance();
@@ -52,7 +53,8 @@ public class NewBatchController {
         bpropState.setBatchNo(batchNo.getText().trim());
         bpropState.setTestDate(testDate.getValue());
         bpropState.setPlaceOfTesting(placeOfTesting.getText().trim());
-        bpropState.setSop(SOP.getText().trim());
+        bpropState.setSop(sopField.getText().trim());
+        bpropState.setProductID(componentIdField.getText().trim());  // maps to Product_ID
 
         Connection conn = null;
 

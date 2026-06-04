@@ -30,51 +30,57 @@ public class BatchTestDAO {
         return -1;
     }
 
-    public int getBatchTestId(Connection conn, BatchTest batchTest){
+    public int getBatchTestId(Connection conn, BatchTest batchTest) {
 
         String sql;
 
         if (batchTest.getBatchCode() == null) {
-
             sql = """
-                    SELECT Test_ID
-                    FROM Batch_Test
-                    WHERE Product_CODE = ?
-                      AND Batch_CODE IS NULL
-                      AND Test_date = ?
-                      AND Test_site = ?
-                      AND SOP= ?
-                    """;
-
+                SELECT Test_ID
+                FROM Batch_Test
+                WHERE Product_CODE = ?
+                  AND Batch_CODE IS NULL
+                  AND Test_date = ?
+                  AND Test_site = ?
+                  AND SOP = ?
+                """;
         } else {
-
             sql = """
-                    SELECT Test_ID
-                    FROM Batch_Test
-                    WHERE Product_CODE = ?
-                      AND Batch_CODE = ?
-                      AND Test_date = ?
-                      AND Test_site = ?
-                      AND SOP=?
-                    """;
+                SELECT Test_ID
+                FROM Batch_Test
+                WHERE Product_CODE = ?
+                  AND Batch_CODE = ?
+                  AND Test_date = ?
+                  AND Test_site = ?
+                  AND SOP = ?
+                """;
         }
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, batchTest.getProductCode());
-
-            if (batchTest.getBatchCode() != null) {
+            if (batchTest.getBatchCode() == null) {
+                stmt.setInt(1, batchTest.getProductCode());
+                stmt.setString(2, batchTest.getTestDate());
+                stmt.setString(3, batchTest.getTestSite());
+                // SOP is optional — handle null
+                if (batchTest.getSOP() != null && !batchTest.getSOP().isBlank()) {
+                    stmt.setString(4, batchTest.getSOP());
+                } else {
+                    stmt.setNull(4, Types.VARCHAR);
+                }
+            } else {
+                stmt.setInt(1, batchTest.getProductCode());
                 stmt.setInt(2, batchTest.getBatchCode());
                 stmt.setString(3, batchTest.getTestDate());
                 stmt.setString(4, batchTest.getTestSite());
-            } else {
-                stmt.setString(2, batchTest.getTestDate());
-                stmt.setString(3, batchTest.getTestSite());
+                if (batchTest.getSOP() != null && !batchTest.getSOP().isBlank()) {
+                    stmt.setString(5, batchTest.getSOP());
+                } else {
+                    stmt.setNull(5, Types.VARCHAR);
+                }
             }
-            stmt.setString(5,batchTest.getSOP());
 
             ResultSet rs = stmt.executeQuery();
-
             if (rs.next()) {
                 return rs.getInt("Test_ID");
             }
@@ -84,7 +90,6 @@ public class BatchTestDAO {
         }
 
         return -1;
-
     }
 
     public String getBatchIdByTestId(Connection conn, int testId) {

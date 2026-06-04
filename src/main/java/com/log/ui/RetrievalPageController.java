@@ -82,7 +82,17 @@ public class RetrievalPageController {
     private VBox createBatchCard(Batch batch) {
         CheckBox cb = new CheckBox();
 
-        Button batchBtn = new Button("Batch: " + batch.getBatchId());
+        // Show SOP from first test that has one
+        String sopText = batch.getTests().stream()
+                .map(BatchTest::getSOP)
+                .filter(s -> s != null && !s.isBlank())
+                .findFirst()
+                .orElse(null);
+
+        String label = "Batch: " + batch.getBatchId() +
+                (sopText != null ? " | SOP: " + sopText : "");
+
+        Button batchBtn = new Button(label);
         batchBtn.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(batchBtn, Priority.ALWAYS);
         batchBtn.setStyle("""
@@ -94,7 +104,6 @@ public class RetrievalPageController {
     """);
         batchBtn.setOnAction(e -> handleBatchClick(batch));
 
-        // Checkbox adds all tests to selectedBatches for comparison
         for (BatchTest test : batch.getTests()) {
             cb.selectedProperty().addListener((obs, oldVal, selected) -> {
                 if (selected) { if (!selectedBatches.contains(test)) selectedBatches.add(test); }
@@ -171,8 +180,58 @@ public class RetrievalPageController {
         isOpen = !isOpen;
     }
 
+    private VBox createProductTestCard(BatchTest test) {
+        CheckBox cb = new CheckBox();
+        cb.selectedProperty().addListener((obs, oldVal, selected) -> {
+            if (selected) { if (!selectedBatches.contains(test)) selectedBatches.add(test); }
+            else selectedBatches.remove(test);
+        });
+
+        String label = "Test ID: " + test.getTestId() +
+                " | Date: " + (test.getTestDate() != null ? test.getTestDate() : "—") +
+                " | Site: " + (test.getTestSite() != null ? test.getTestSite() : "—") +
+                (test.getSOP() != null && !test.getSOP().isBlank() ? " | SOP: " + test.getSOP() : "");
+
+        Button testBtn = new Button(label);
+        testBtn.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(testBtn, Priority.ALWAYS);
+        testBtn.setStyle("""
+        -fx-background-color: #2c5f4a;
+        -fx-text-fill: white;
+        -fx-font-size: 14;
+        -fx-padding: 10;
+        -fx-cursor: hand;
+    """);
+        testBtn.setOnAction(e -> handleProductTestClick(test));
+
+        HBox row = new HBox(10, cb, testBtn);
+        row.setAlignment(Pos.CENTER_LEFT);
+
+        VBox card = new VBox(row);
+        VBox.setMargin(card, new Insets(0, 0, 8, 0));
+        return card;
+    }
+
+    private void handleProductTestClick(BatchTest test) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/log/ui/views/RetrievalResults.fxml")
+            );
+            Parent root = loader.load();
+
+            RetrievalResultsController controller = loader.getController();
+            controller.loadBatch(test);  // existing loadBatch(BatchTest) handles this
+
+            Stage stage = (Stage) resultsContainer.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     @FXML
-    private void handleSearch() {
+    private void handleSearchBatches() {
         try (Connection connection = DBUtil.getConnection()) {
             SearchUtil searchUtil = new SearchUtil();
             List<Batch> results = searchUtil.searchBatches(
@@ -184,9 +243,78 @@ public class RetrievalPageController {
                     Placeoftestingfield.getText(),
                     SOPfield.getText()
             );
-            populateResults(results);
+            populateBatchResults(results);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @FXML
+    private void handleSearchProducts() {
+        try (Connection connection = DBUtil.getConnection()) {
+            SearchUtil searchUtil = new SearchUtil();
+            List<BatchTest> results = searchUtil.searchProductTests(
+                    connection,
+                    projectField.getText(),
+                    productField.getText(),
+                    Dateoftestingfield.getText(),
+                    Placeoftestingfield.getText(),
+                    SOPfield.getText()
+            );
+            populateProductResults(results);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void populateBatchResults(List<Batch> results) {
+        resultsContainer.getChildren().clear();
+        selectedBatches.clear();
+
+        if (results.isEmpty()) {
+            Label empty = new Label("No batches found");
+            empty.setStyle("-fx-font-size: 16; -fx-text-fill: gray;");
+            resultsContainer.getChildren().add(empty);
+            return;
+        }
+
+        for (Batch batch : results) {
+            resultsContainer.getChildren().add(createBatchCard(batch));
+        }
+
+        addCompareButton();
+    }
+
+    private void populateProductResults(List<BatchTest> results) {
+        resultsContainer.getChildren().clear();
+        selectedBatches.clear();
+
+        if (results.isEmpty()) {
+            Label empty = new Label("No product tests found");
+            empty.setStyle("-fx-font-size: 16; -fx-text-fill: gray;");
+            resultsContainer.getChildren().add(empty);
+            return;
+        }
+
+        for (BatchTest test : results) {
+            resultsContainer.getChildren().add(createProductTestCard(test));
+        }
+
+        addCompareButton();
+    }
+
+    private void addCompareButton() {
+        Button compareBtn = new Button("Compare Selected →");
+        compareBtn.setStyle("""
+        -fx-background-color: #5c3d9e;
+        -fx-text-fill: white;
+        -fx-font-size: 14;
+        -fx-padding: 10 20 10 20;
+        -fx-background-radius: 6;
+        -fx-cursor: hand;
+    """);
+        compareBtn.setOnAction(e -> handleCompare());
+        VBox.setMargin(compareBtn, new Insets(12, 0, 0, 0));
+        resultsContainer.getChildren().add(compareBtn);
     }
 }

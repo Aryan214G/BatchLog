@@ -150,8 +150,6 @@ public class ProjectPageController {
 
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 
