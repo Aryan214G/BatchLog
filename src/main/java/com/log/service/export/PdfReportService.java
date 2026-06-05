@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.log.util.pdf.PdfUtils.*;
+
 public class PdfReportService {
 
     // ============== IMPORT SERVICES ====================
@@ -306,85 +308,5 @@ public class PdfReportService {
 
 
 }
-
-    private void writeText(
-        PDPageContentStream content,
-        String text,
-        float x,
-        float y)
-        throws IOException {
-
-        content.beginText();
-        content.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 12);
-        content.newLineAtOffset(x, y);
-        content.showText(text);
-        content.endText();
-    }
-
-    private void writeBoldText(
-        PDPageContentStream content,
-        String text,
-        float x,
-        float y)
-        throws IOException {
-
-        content.beginText();
-        content.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 12);
-        content.newLineAtOffset(x, y);
-        content.showText(text);
-        content.endText();
-    }
-
-    private void writeRightAlignedText(PDPageContentStream content, String text, float rightX, float y) throws IOException {
-
-        PDFont font = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
-        float fontSize = 12;
-
-        float textWidth = font.getStringWidth(text) / 1000 * fontSize;
-
-        writeText(content, text, rightX - textWidth, y);
-    }
-
-    private void drawLine(PDPageContentStream content, float startX, float startY, float endX, float endY) throws IOException {
-
-    content.moveTo(startX, startY);
-    content.lineTo(endX, endY);
-    content.stroke();
-}
-
-    // ======================== TABLES ====================================
-
-    private void drawCell(PDPageContentStream content, float x, float y, float width, float height) throws IOException {
-
-        content.addRect(x, y, width, height);
-        content.stroke();
-    }
-
-    private void drawCellText(PDPageContentStream content, String text, float x, float y, float cellWidth, float cellHeight) throws IOException {
-
-    PDFont font = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
-    float fontSize = 12;
-
-    float textWidth = font.getStringWidth(text) / 1000 * fontSize;
-
-    float textX = x + (cellWidth - textWidth) / 2;
-    float textY = y + (cellHeight - fontSize) / 2 + 4;
-
-    writeText(content, text, textX, textY);
-}
-
-private void drawCellTextBold(PDPageContentStream content, String text, float x, float y, float cellWidth, float cellHeight) throws IOException {
-
-    PDFont font = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
-    float fontSize = 12;
-
-    float textWidth = font.getStringWidth(text) / 1000 * fontSize;
-
-    float textX = x + (cellWidth - textWidth) / 2;
-    float textY = y + (cellHeight - fontSize) / 2 + 4;
-
-    writeBoldText(content, text, textX, textY);
-}
-
 
 }
