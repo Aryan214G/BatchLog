@@ -9,10 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -23,6 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import com.log.core.StateManager;
@@ -38,6 +36,10 @@ public class HomePageController implements Initializable {
 
     private final BasePropertiesState bpropState = BasePropertiesState.getInstance();
     private final ProjectService projectService = new ProjectService();
+    @FXML
+    private TextField projectSearchField;
+
+    private List<Project> allProjects = new ArrayList<>();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -48,6 +50,10 @@ public class HomePageController implements Initializable {
         settingsPageBtn.setOnAction(e -> openSettingsPopup());
         helpPageBtn.setOnAction(e -> handleHelp());
         newProjectBtn.setOnAction(e -> handleNewProject());
+        projectSearchField.textProperty().addListener(
+                (obs, oldVal, newVal) ->
+                        filterProjects(newVal)
+        );
     }
 
     // ── Navigation ────────────────────────────────────────────────────────────
@@ -103,18 +109,32 @@ public class HomePageController implements Initializable {
     // ── Projects List ─────────────────────────────────────────────────────────
 
     private void loadRecentProjects() {
-        projectsList.getChildren().clear();
-        List<Project> projects = projectService.getAllProjects();
 
-        if (projects.isEmpty()) {
-            Label empty = new Label("No projects yet. Create one to get started.");
+        projectsList.getChildren().clear();
+
+        allProjects = projectService.getAllProjects();
+
+        if (allProjects.isEmpty()) {
+
+            Label empty =
+                    new Label(
+                            "No projects yet. Create one to get started."
+                    );
+
             empty.getStyleClass().add("empty-label");
+
             projectsList.getChildren().add(empty);
+
             return;
         }
 
-        for (Project project : projects) {
-            projectsList.getChildren().add(createProjectRow(project.getProjectName()));
+        for (Project project : allProjects) {
+
+            projectsList.getChildren().add(
+                    createProjectRow(
+                            project.getProjectName()
+                    )
+            );
         }
     }
 
@@ -227,6 +247,27 @@ public class HomePageController implements Initializable {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void filterProjects(String searchText) {
+
+        projectsList.getChildren().clear();
+
+        for (Project project : allProjects) {
+
+            if (searchText == null
+                    || searchText.isBlank()
+                    || project.getProjectName()
+                    .toLowerCase()
+                    .contains(searchText.toLowerCase())) {
+
+                projectsList.getChildren().add(
+                        createProjectRow(
+                                project.getProjectName()
+                        )
+                );
+            }
         }
     }
 }

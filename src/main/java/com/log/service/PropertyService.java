@@ -35,18 +35,7 @@ public class PropertyService {
     }
 
     public int insertProperty(Connection conn, Property property){
-
-        int propertyId = getPropertyId(conn, property);
-
-        if (propertyId != -1) {
-            // already exists
-            System.out.println("Property already exists in DB. Returning id");
-            return propertyId;
-        } else {
-            // insert new
-            return propertyDAO.insertProperty(conn, property);
-        }
-
+        return propertyDAO.insertProperty(conn, property);
     }
 
     public int getPropertyId(Connection conn, Property property){

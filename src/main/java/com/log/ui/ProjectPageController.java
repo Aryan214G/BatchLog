@@ -40,8 +40,7 @@ public class ProjectPageController {
     private final ProjectService projectService = new ProjectService();
     private ProjectExportService projectExportService = new ProjectExportService();
     private BatchService batchService = new BatchService();
-    private BasePropertiesState basePropertiesState = BasePropertiesState.getInstance();
-    private BatchTestService batchTestService = new BatchTestService();
+    //private BatchTestService batchTestService = new BatchTestService();
 
 
     // ── Entry point ───────────────────────────────────────────────────────────
@@ -150,8 +149,6 @@ public class ProjectPageController {
 
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 

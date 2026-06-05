@@ -1,13 +1,14 @@
 package com.log.service;
 
+import com.log.core.AppState;
 import com.log.core.BasePropertiesState;
 import com.log.database.DBUtil;
 import com.log.model.*;
 import com.log.ui.InputRow;
+import com.log.util.AlertUtil;
 import javafx.scene.control.Alert;
 
 import java.sql.Connection;
-import java.util.List;
 
 public class PropertySubmissionService {
 
@@ -19,6 +20,7 @@ public class PropertySubmissionService {
     private PropertyService propertyService;
     private PropertyValuesService propertyValuesService;
 
+    private AppState instance = AppState.getInstance();
     private BasePropertiesState bsinstance = BasePropertiesState.getInstance();
 
     private int tempId;
@@ -48,9 +50,11 @@ public class PropertySubmissionService {
             handleProperty(conn, propertyState, propertyName, selectedCategory, propertyState.getTestMethod());
 
             conn.commit();
-            showAlert("Success", "Submission completed successfully!");
+
+            AlertUtil.showInfo("Submission completed successfully!");
+
         }  catch (Exception e) {
-            showAlert("Submit not successful",e.toString());
+            AlertUtil.showError("Submit not successful");
 
             e.printStackTrace();
 
@@ -76,7 +80,7 @@ public class PropertySubmissionService {
     private void handleTemperature(Connection conn, Temperature temp) {
         if (temp.getTempId() == null) {
 
-           this.tempId = temperatureService.createTemperature(conn, temp);
+           this.tempId = temperatureService.insertTemperature(conn, temp);
            temp.setTempId(tempId);
 
         } else {
@@ -104,8 +108,7 @@ public class PropertySubmissionService {
             String testMethod){
 
         //TODO: might need to replace this unecessary db call
-        Category category =
-        categoryService.getCategory(conn, selectedCategory);
+        Category category = categoryService.getCategory(conn, selectedCategory);
 
         Unit unit =
                 unitsService.getUnit(
@@ -140,8 +143,25 @@ public class PropertySubmissionService {
                     direction
             );
 
-            propertyState.setProperty(property);
+            if (instance.isEditMode()) {
+                propertyState.setProperty(property);
+            }
         }
+
+        // TEMPORARY LOGGING
+        //TODO: remove this logging later
+        System.out.println(
+                "Property from state = "
+                        + propertyState.getProperty()
+        );
+
+        if (propertyState.getProperty() != null) {
+            System.out.println(
+                    "Property ID = "
+                            + propertyState.getProperty().getPropertyID()
+            );
+        }
+
 
         property.setTestMethod(testMethod);
 
@@ -154,6 +174,13 @@ public class PropertySubmissionService {
         // ________________________________________________________________________________
 
         int propertyID = property.getPropertyID();
+
+        //TODO: remove this logging
+        System.out.println(
+                "Property ID before save = "
+                        + property.getPropertyID()
+        );
+
         if(propertyID > 0){
             propertyService.updateProperty(conn, property);
         }

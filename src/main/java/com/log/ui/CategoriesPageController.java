@@ -25,10 +25,7 @@ import javafx.scene.layout.VBox;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CategoriesPageController {
 
@@ -138,6 +135,8 @@ public class CategoriesPageController {
 
         if (instance.isEditMode())
         {
+            System.out.println("Entered edit mode");
+
             categoriesListView.getSelectionModel().select(
                     selectedState.getSelectedCategory()
             );
@@ -145,6 +144,9 @@ public class CategoriesPageController {
             propertiesListView.getSelectionModel().select(
                     selectedState.getSelectedProperty()
             );
+
+            categoriesListView.setDisable(true);
+            propertiesListView.setDisable(true);
         }
         refreshcatmap();
 
@@ -285,7 +287,7 @@ public class CategoriesPageController {
             // EDIT
             if(instance.isEditMode())
             {
-                if(property.getPropertyID() == instance.getEditPropertyId())
+                if(Objects.equals(property.getPropertyID(), instance.getEditPropertyId()))
                 {
                         initializePropertyState(property);
 
@@ -732,22 +734,6 @@ public class CategoriesPageController {
         );
     }
 
-    @FXML
-    private void PrintButtonHandler() {
-
-            boolean hasText = inputRows.stream()
-                    .anyMatch(row ->
-                            row.getField().getText() != null &&
-                                    !row.getField().getText().trim().isEmpty()
-                    );
-
-            if (!hasText) {
-                AlertUtil.showWarning("Please enter at least one value before printing.");
-                return;
-            }
-
-            System.out.println("Printing...");
-        }
 
 
     private final PropertyStateManager stateManager = new PropertyStateManager();
@@ -1109,10 +1095,16 @@ public class CategoriesPageController {
                 selectedProperty.getPropertyName(),
                 selectedState.getSelectedCategory()
         );
+
+        if(!instance.isEditMode()){
+            stateManager.clearState(selectedProperty.getPropertyName());
+            HandlePropertyChange(selectedProperty, null);
+
+        }
     }
 
     public void refreshcatmap(){
-        defaultPropertiesMap = defaultPropertyService.getDefaultsGrouped() ;
+        defaultPropertiesMap = defaultPropertyService.getDefaultsGrouped();
     }
 
     @FXML

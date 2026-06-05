@@ -34,6 +34,8 @@ public class ProjectService {
         return projectDAO.getAllProjects();
     }
 
+    public List<String> getAllProjectNames(Connection connection){ return projectDAO.getAllProjectNames(connection);}
+
     public int getProjectId(Connection conn, String projectName){
         int projectId = projectDAO.getProject(conn, projectName);
         if(projectId == -1){

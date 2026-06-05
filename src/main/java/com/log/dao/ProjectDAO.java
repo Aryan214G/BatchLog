@@ -111,5 +111,29 @@ public class ProjectDAO {
         return false; // indicates failure
     }
 
+    public List<String> getAllProjectNames(Connection conn) {
+
+        List<String> projects = new ArrayList<>();
+        String sql = "SELECT Project_name FROM Project";
+
+        try (
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+
+
+                String name = rs.getString("Project_name");
+
+                projects.add(name);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return projects;
+    }
+
 
 }
