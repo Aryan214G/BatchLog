@@ -31,6 +31,20 @@ public class PropertyRow {
         this.unit = unit;
         this.values = new ArrayList<>();
     }
+    public PropertyRow(int propertyId,
+            String name,
+                       String category,
+                       String temperature,
+                       String direction,
+                       String unit) {
+        this.propertyId= propertyId;
+        this.name = name;
+        this.category = category;
+        this.temperature = temperature;
+        this.direction = direction;
+        this.unit = unit;
+        this.values = new ArrayList<>();
+    }
 
     public int getPropertyId() {
         return propertyId;

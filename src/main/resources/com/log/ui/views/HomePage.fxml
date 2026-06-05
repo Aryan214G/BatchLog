@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.TextField?>
 <BorderPane prefHeight="800" prefWidth="1200"
             stylesheets="@../styles/homepage.css"
             xmlns="http://javafx.com/javafx/26"
@@ -35,27 +36,49 @@
 
     <!-- ================= CENTER CONTENT ================= -->
     <center>
+
         <VBox spacing="20" styleClass="content-area">
+
             <children>
 
-                <Label styleClass="section-title" text="Recent Projects" />
+                <Label styleClass="section-title"
+                       text="Recent Projects" />
 
-                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+                <TextField fx:id="projectSearchField"
+                           promptText="Search projects..." />
+
+                <ScrollPane fitToWidth="true"
+                            VBox.vgrow="ALWAYS">
+
                     <content>
-                        <!-- Changed from GridPane to VBox -->
-                        <VBox fx:id="projectsList" spacing="8">
+
+                        <VBox fx:id="projectsList"
+                              spacing="8">
+
                             <padding>
-                                <Insets bottom="10" left="10" right="10" top="10" />
+                                <Insets bottom="10"
+                                        left="10"
+                                        right="10"
+                                        top="10" />
                             </padding>
+
                         </VBox>
+
                     </content>
+
                 </ScrollPane>
 
             </children>
+
             <padding>
-                <Insets bottom="20" left="20" right="20" top="20" />
+                <Insets bottom="20"
+                        left="20"
+                        right="20"
+                        top="20" />
             </padding>
+
         </VBox>
+
     </center>
 
 </BorderPane>

@@ -124,6 +124,7 @@ public class RetrievalResultsController {
             while (rs.next()) {
                 basePropertiesState.setTestId(rs.getInt("Test_ID"));
                 PropertyRow row = new PropertyRow(
+                        rs.getInt("Property_ID"),
                         rs.getString("Property_name"),
                         rs.getString("Category_name"),
                         rs.getString("temperature"),
@@ -371,6 +372,19 @@ public class RetrievalResultsController {
     private void handleEditProperty(PropertyRow property) {
         appState.setEditMode(true);
         appState.setEditPropertyId(property.getPropertyId());
+        appState.setProjectCreated(true);
+
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/log/ui/views/CategoriesPage.fxml")
+            );
+            Parent root = loader.load();
+            Stage stage = (Stage) propertiesGrid.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void handleExport(int propertyId)
@@ -423,6 +437,7 @@ public class RetrievalResultsController {
                 basePropertiesState.setTestId(testId);
 
                 PropertyRow row = new PropertyRow(
+                        rs.getInt("Property_ID"),
                         rs.getString("Property_name"),
                         rs.getString("Category_name"),
                         rs.getString("temperature"),
@@ -436,5 +451,60 @@ public class RetrievalResultsController {
         }
 
         return rows;
+    }
+
+    @FXML
+    private void handlePrint() {
+        // Filter rows same way as populateGrid
+        List<PropertyRow> visibleRows = cachedRows.stream()
+                .filter(r -> propertyStates.getOrDefault(r.getName(), true))
+                .toList();
+
+        if (visibleRows.isEmpty()) {
+            return;
+        }
+
+        int maxValues = visibleRows.stream()
+                .mapToInt(r -> r.getValues().size())
+                .max()
+                .orElse(0);
+
+        // Build headers respecting column filters
+        List<String> headers = new ArrayList<>();
+        if (columnStates.getOrDefault("Property",      true)) headers.add("Property");
+        if (columnStates.getOrDefault("Category",      true)) headers.add("Category");
+        if (columnStates.getOrDefault("Temperature",   true)) headers.add("Temperature");
+        if (columnStates.getOrDefault("Direction",     true)) headers.add("Direction");
+        if (columnStates.getOrDefault("Values",        true)) {
+            for (int i = 0; i < maxValues; i++) headers.add("Value " + (i + 1));
+        }
+        if (columnStates.getOrDefault("Average Value", true)) headers.add("Average Value");
+
+        // Build rows respecting column filters
+        List<List<String>> tableData = new ArrayList<>();
+        for (PropertyRow p : visibleRows) {
+            List<String> rowData = new ArrayList<>();
+
+            if (columnStates.getOrDefault("Property",      true))
+                rowData.add(p.getName() + (p.getUnit() != null ? " (" + p.getUnit() + ")" : ""));
+            if (columnStates.getOrDefault("Category",      true))
+                rowData.add(p.getCategory() != null ? p.getCategory() : "—");
+            if (columnStates.getOrDefault("Temperature",   true))
+                rowData.add(p.getTemperature() != null ? p.getTemperature() : "—");
+            if (columnStates.getOrDefault("Direction",     true))
+                rowData.add(p.getDirection() != null ? p.getDirection() : "—");
+            if (columnStates.getOrDefault("Values",        true)) {
+                for (int i = 0; i < maxValues; i++) {
+                    rowData.add(i < p.getValues().size() ? formatDouble(p.getValues().get(i)) : "");
+                }
+            }
+            if (columnStates.getOrDefault("Average Value", true))
+                rowData.add(formatDouble(p.getAverage()));
+
+            tableData.add(rowData);
+        }
+
+        System.out.println(headers);
+        System.out.println(tableData);
     }
 }

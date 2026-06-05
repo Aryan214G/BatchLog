@@ -40,8 +40,7 @@ public class ProjectPageController {
     private final ProjectService projectService = new ProjectService();
     private ProjectExportService projectExportService = new ProjectExportService();
     private BatchService batchService = new BatchService();
-    private BasePropertiesState basePropertiesState = BasePropertiesState.getInstance();
-    private BatchTestService batchTestService = new BatchTestService();
+    //private BatchTestService batchTestService = new BatchTestService();
 
 
     // ── Entry point ───────────────────────────────────────────────────────────

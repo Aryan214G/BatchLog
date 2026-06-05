@@ -4,6 +4,7 @@ import com.log.core.StateManager;
 import com.log.database.DBUtil;
 import com.log.model.Batch;
 import com.log.model.BatchTest;
+import com.log.service.ProjectService;
 import com.log.util.AlertUtil;
 import com.log.util.SearchUtil;
 import com.log.core.StateManager;
@@ -12,12 +13,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Side;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -29,6 +28,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+
 
 public class RetrievalPageController {
 
@@ -44,9 +45,73 @@ public class RetrievalPageController {
 
     private boolean isOpen = true;
     private List<BatchTest> selectedBatches = new ArrayList<>();
+    private final ContextMenu projectSuggestions =
+            new ContextMenu();
 
+    private final ProjectService projectService =
+            new ProjectService();
+
+    @FXML
     public void initialize() {
+
         StateManager.clearAll();
+
+        try (Connection conn = DBUtil.getConnection()) {
+
+            List<String> projectNames =
+                    projectService.getAllProjectNames(conn);
+
+            projectField.textProperty().addListener(
+                    (obs, oldValue, newValue) -> {
+                        if (newValue == null ||
+                                newValue.isBlank()) {
+                            projectSuggestions.hide();
+                            return;
+                        }
+
+                        List<String> matches = projectNames.stream().filter(name -> name.toLowerCase().contains(newValue.toLowerCase())).limit(5).toList();
+
+                        if (matches.isEmpty()) {
+                            projectSuggestions.hide();
+                            return;
+                        }
+
+                        projectSuggestions.getItems().clear();
+
+                        for (String match : matches) {
+
+                            MenuItem item =
+                                    new MenuItem(match);
+
+                            item.setOnAction(e -> {
+
+                                projectField.setText(match);
+
+                                projectSuggestions.hide();
+                            });
+
+                            projectSuggestions.getItems().add(item);
+                        }
+
+                        if (!projectSuggestions.isShowing()) {
+
+                            projectSuggestions.show(projectField, Side.BOTTOM, 0, 0);
+                        }
+                    }
+            );
+
+            projectField.focusedProperty().addListener(
+                    (obs, oldVal, focused) -> {
+                        if (!focused) {
+                            projectSuggestions.hide();
+                        }
+                    }
+            );
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+        }
     }
 
     public void populateResults(List<Batch> results) {
@@ -230,8 +295,17 @@ public class RetrievalPageController {
             e.printStackTrace();
         }
     }
+
     @FXML
     private void handleSearchBatches() {
+        if (projectField.getText() == null ||
+                projectField.getText().isBlank()) {
+
+            AlertUtil.showWarning(
+                    "Project Name is required."
+            );
+            return;
+        }
         try (Connection connection = DBUtil.getConnection()) {
             SearchUtil searchUtil = new SearchUtil();
             List<Batch> results = searchUtil.searchBatches(
@@ -251,6 +325,14 @@ public class RetrievalPageController {
 
     @FXML
     private void handleSearchProducts() {
+        if (projectField.getText() == null ||
+                projectField.getText().isBlank()) {
+
+            AlertUtil.showWarning(
+                    "Project Name is required."
+            );
+            return;
+        }
         try (Connection connection = DBUtil.getConnection()) {
             SearchUtil searchUtil = new SearchUtil();
             List<BatchTest> results = searchUtil.searchProductTests(
