@@ -124,6 +124,7 @@ public class RetrievalResultsController {
             while (rs.next()) {
                 basePropertiesState.setTestId(rs.getInt("Test_ID"));
                 PropertyRow row = new PropertyRow(
+                        rs.getInt("Property_ID"),
                         rs.getString("Property_name"),
                         rs.getString("Category_name"),
                         rs.getString("temperature"),
@@ -436,6 +437,7 @@ public class RetrievalResultsController {
                 basePropertiesState.setTestId(testId);
 
                 PropertyRow row = new PropertyRow(
+                        rs.getInt("Property_ID"),
                         rs.getString("Property_name"),
                         rs.getString("Category_name"),
                         rs.getString("temperature"),
