@@ -2,7 +2,6 @@ package com.log.dao;
 import com.log.database.DBUtil;
 import com.log.model.Batch;
 import com.log.model.BatchRow;
-import com.log.ui.ProjectPageController;
 
 import java.sql.*;
 import java.util.ArrayList;

@@ -447,53 +447,6 @@ public class CategoriesPageController {
 
     }
 
-    // ======================= CATEGORY POPUP ==============================
-
-    //TODO: resolve error and un comment
-//    private void openAddCategoryPopup() {
-//
-//        try {
-//            FXMLLoader loader = new FXMLLoader(
-//                    getClass().getResource("/com/log/ui/views/AddCategoriesPopup.fxml")
-//            );
-//
-//            Parent root = loader.load();
-//
-//            Stage stage = new Stage();
-//            stage.setTitle("Add Category");
-//            stage.setScene(new Scene(root));
-//            stage.initModality(Modality.APPLICATION_MODAL);
-//            stage.showAndWait();
-//
-//            AddCategoriesPopupController controller = loader.getController();
-//
-//            String newCategory = controller.getEnteredCategory();
-//            ObservableList<PropertyView> newProperties = controller.getPropertiesList();
-//            HashMap<String,Integer> attrEntriesMap = controller.getEntriesMap();
-//            if (newCategory != null && !newCategory.isBlank()) {
-//
-//                if (!categories.contains(newCategory)) {
-//
-//                    categoryService.createCategory(newCategory);   // INSERT INTO DB
-//
-//                    loadCategoriesFromDB(); // refresh state
-//
-//                    categoriesMap.put(newCategory, newProperties);
-//                }
-//                for (Map.Entry<String, Integer> entry : attrEntriesMap.entrySet()) {
-//
-//                    String key = entry.getKey();
-//                    Integer value = entry.getValue();
-//
-//                    defaultRowsMap.put(key,value);
-//                }
-//            }
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     private void handleDeleteCategory() {
 
         String selectedCategory =

@@ -53,7 +53,14 @@
                         text="Add or remove Directions"
                         onAction="#showDirectionsPage" />
 
-                <ListView fx:id="categoriesListView"
+                <Button fx:id="catbutton"
+                mnemonicParsing="false"
+                prefHeight="50.0"
+                prefWidth="218.0"
+                text="Add or remove Categories"
+                onAction="#showCategoriesPage" />
+
+                <ListView fx:id="SettingsListView"
                           prefHeight="353.0"
                           prefWidth="218.0"
                           styleClass="buttons-list"

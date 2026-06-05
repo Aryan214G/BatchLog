@@ -14,17 +14,17 @@ public class ProductDAO {
 
         String sql = "INSERT INTO Product(Product_ID, Product_name, Project_ID) VALUES (?, ?, ?)";
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt =
+                     conn.prepareStatement(
+                             sql,
+                             Statement.RETURN_GENERATED_KEYS
+                     );){
 
             stmt.setString(1, product.getProductId());
             stmt.setString(2, product.getProductName());
             stmt.setInt(3, product.getProjectId());
 
             stmt.executeUpdate();
-            conn.prepareStatement(
-                    sql,
-                    Statement.RETURN_GENERATED_KEYS
-            );
             ResultSet rs = stmt.getGeneratedKeys();
 
             if(rs.next()){

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/25"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.log.ui.CategorySettingsController"
+      spacing="15"
+      alignment="TOP_CENTER">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Category Settings"/>
+
+    <!-- Category -->
+
+    <Label text="Category Name"/>
+
+    <HBox spacing="10">
+        <TextField fx:id="categoryField"
+                   promptText="Enter category name"
+                   HBox.hgrow="ALWAYS"/>
+
+        <Button text="Add Category"
+                onAction="#handleAddCategory"/>
+    </HBox>
+
+    <ListView fx:id="categoryList"
+              prefHeight="120"/>
+
+    <!-- Property -->
+
+    <Label text="Property Name"/>
+
+    <TextField fx:id="propertyField"
+               promptText="Enter property name"/>
+
+    <Label text="Default Rows"/>
+
+    <TextField fx:id="rowsField"
+               promptText="Enter default rows (e.g. 1)"/>
+
+    <!-- Unit -->
+
+    <Label text="Unit"/>
+
+    <ComboBox fx:id="unitComboBox"
+              promptText="Select existing unit"/>
+
+    <TextField fx:id="customUnitField"
+               promptText="Or enter a new unit"/>
+
+    <Button text="Add Property"
+            onAction="#handleAddProperty"/>
+
+    <ListView fx:id="propertyList"
+              prefHeight="150"/>
+
+</VBox>

@@ -50,7 +50,5 @@ public class SettingsPageController {
     }
 
     @FXML
-    private void showCategoriesPage() {
-        loadPage("CategorySettings.fxml");
-    }
+    private void showCategoriesPage() { loadPage("AddCategorySettings.fxml"); }
 }

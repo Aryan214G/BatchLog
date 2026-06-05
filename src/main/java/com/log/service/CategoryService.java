@@ -25,7 +25,7 @@ public class CategoryService {
         this.categoryDAO = new CategoryDAO();
     }
 
-    public void createCategory(String categoryName) {
+    public void createCategory(Connection conn, String categoryName) {
 
         if (categoryName == null || categoryName.trim().isEmpty()) {
             throw new IllegalArgumentException(
@@ -33,10 +33,18 @@ public class CategoryService {
             );
         }
 
-        Category category =
-                new Category(categoryName.trim());
+        int existingId =
+                categoryDAO.getCategoryIdByName(conn, categoryName.trim());
 
-        categoryDAO.insertCategory(category);
+        if (existingId != -1) {
+            throw new IllegalArgumentException(
+                    "Category already exists"
+            );
+        }
+
+        categoryDAO.insertCategory(
+                new Category(categoryName.trim())
+        );
     }
 
     public List<Category> getAllCategories() {
@@ -84,6 +92,11 @@ public class CategoryService {
                 category
         );
     }
+
+    public int getCategoryId(Connection conn, String categoryName) {
+        return categoryDAO.getCategoryIdByName(conn, categoryName);
+    }
+
 
     public void deleteCategory(int categoryId) {
         categoryDAO.deleteCategory(categoryId);

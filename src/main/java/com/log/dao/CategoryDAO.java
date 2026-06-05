@@ -115,4 +115,24 @@ public class CategoryDAO {
             e.printStackTrace();
         }
     }
+    public int getCategoryIdByName(Connection conn, String categoryName) {
+
+        String sql = "SELECT Category_ID FROM Category WHERE Category_name = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, categoryName);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("Category_ID");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return -1; // not found
+    }
 }
