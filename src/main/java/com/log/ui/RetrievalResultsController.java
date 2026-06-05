@@ -371,6 +371,19 @@ public class RetrievalResultsController {
     private void handleEditProperty(PropertyRow property) {
         appState.setEditMode(true);
         appState.setEditPropertyId(property.getPropertyId());
+        appState.setProjectCreated(true);
+
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/log/ui/views/CategoriesPage.fxml")
+            );
+            Parent root = loader.load();
+            Stage stage = (Stage) propertiesGrid.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void handleExport(int propertyId)

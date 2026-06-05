@@ -779,22 +779,6 @@ public class CategoriesPageController {
         );
     }
 
-    @FXML
-    private void PrintButtonHandler() {
-
-            boolean hasText = inputRows.stream()
-                    .anyMatch(row ->
-                            row.getField().getText() != null &&
-                                    !row.getField().getText().trim().isEmpty()
-                    );
-
-            if (!hasText) {
-                AlertUtil.showWarning("Please enter at least one value before printing.");
-                return;
-            }
-
-            System.out.println("Printing...");
-        }
 
 
     private final PropertyStateManager stateManager = new PropertyStateManager();
