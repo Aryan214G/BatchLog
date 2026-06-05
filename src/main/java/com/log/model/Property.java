@@ -8,7 +8,7 @@ public class Property {
     // Core Property Fields
     // =========================
 
-    private int propertyID;
+    private Integer propertyID;
     private String propertyName;
 
     private int testID;
@@ -82,11 +82,11 @@ public class Property {
     // Getters and Setters
     // =========================
 
-    public int getPropertyID() {
+    public Integer getPropertyID() {
         return propertyID;
     }
 
-    public void setPropertyID(int propertyID) {
+    public void setPropertyID(Integer propertyID) {
         this.propertyID = propertyID;
     }
 
