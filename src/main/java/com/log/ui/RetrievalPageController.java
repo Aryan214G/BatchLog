@@ -230,8 +230,17 @@ public class RetrievalPageController {
             e.printStackTrace();
         }
     }
+
     @FXML
     private void handleSearchBatches() {
+        if (projectField.getText() == null ||
+                projectField.getText().isBlank()) {
+
+            AlertUtil.showWarning(
+                    "Project Name is required."
+            );
+            return;
+        }
         try (Connection connection = DBUtil.getConnection()) {
             SearchUtil searchUtil = new SearchUtil();
             List<Batch> results = searchUtil.searchBatches(
@@ -251,6 +260,14 @@ public class RetrievalPageController {
 
     @FXML
     private void handleSearchProducts() {
+        if (projectField.getText() == null ||
+                projectField.getText().isBlank()) {
+
+            AlertUtil.showWarning(
+                    "Project Name is required."
+            );
+            return;
+        }
         try (Connection connection = DBUtil.getConnection()) {
             SearchUtil searchUtil = new SearchUtil();
             List<BatchTest> results = searchUtil.searchProductTests(
