@@ -1,6 +1,5 @@
 package com.log.service.export;
 
-import com.log.database.DBUtil;
 import com.log.dto.ReportData;
 import com.log.model.BatchTest;
 import com.log.model.Property;
@@ -9,8 +8,6 @@ import com.log.service.*;
 import com.log.util.DateUtils;
 import com.log.util.DialogUtils;
 
-import javafx.stage.FileChooser;
-import javafx.stage.Window;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -22,7 +19,6 @@ import org.apache.pdfbox.printing.PDFPageable;
 import java.awt.*;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -31,7 +27,8 @@ import java.util.Optional;
 
 import static com.log.util.pdf.PdfUtils.*;
 
-public class PdfReportService {
+public class PropertyPdfReportService
+        implements Exporter<ReportData>  {
 
     // ============== IMPORT SERVICES ====================
 
@@ -130,7 +127,8 @@ public class PdfReportService {
             .orElse(null);
     }
 
-    public void printPdf(ReportData reportData) throws IOException, PrinterException {
+    @Override
+    public void export(ReportData reportData) throws IOException, PrinterException {
 
 //        FileChooser chooser = new FileChooser();
 //

@@ -1,7 +1,5 @@
 package com.log.main;
 
-import com.log.dto.ReportData;
-import com.log.service.export.PdfReportService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,11 +8,8 @@ import javafx.stage.Stage;
 import com.log.database.DBUtil;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.logging.Handler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Main extends Application {

@@ -9,7 +9,7 @@ import com.log.model.BatchTest;
 import com.log.model.PropertyRow;
 import com.log.service.BatchService;
 import com.log.service.BatchTestService;
-import com.log.service.export.PdfReportService;
+import com.log.service.export.PropertyPdfReportService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -63,7 +63,7 @@ public class RetrievalResultsController {
 
     private int testId;
 
-    private PdfReportService pdfReportService = new PdfReportService();
+    private PropertyPdfReportService propertyPdfReportService = new PropertyPdfReportService();
 
     private BatchTestService batchTestService = new BatchTestService();
     private BatchService batchService = new BatchService();
@@ -391,11 +391,11 @@ public class RetrievalResultsController {
             throws SQLException, IOException, PrinterException {
 
         ReportData propertyReport =
-                pdfReportService.buildReportData(propertyId);
+                propertyPdfReportService.buildReportData(propertyId);
 
         Thread printThread = new Thread(() -> {
             try {
-                pdfReportService.printPdf(propertyReport);
+                propertyPdfReportService.export(propertyReport);
             } catch (Exception e) {
                 e.printStackTrace();
             }
