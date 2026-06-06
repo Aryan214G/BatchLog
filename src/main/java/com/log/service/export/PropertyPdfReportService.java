@@ -286,14 +286,25 @@ public class PropertyPdfReportService
         }
 
         try {
+            System.out.println("Before getPrinterJob");
+
             PrinterJob job = PrinterJob.getPrinterJob();
 
-            job.setPageable(
-                    new PDFPageable(document)
-            );
+            System.out.println("After getPrinterJob");
 
-            if (job.printDialog()) {
+            job.setPageable(new PDFPageable(document));
+
+            System.out.println("Before dialog");
+
+            boolean accepted = job.printDialog();
+
+            System.out.println("Dialog result = " + accepted);
+
+            if (accepted) {
+                System.out.println("Before print");
+                System.out.println(job.getPrintService());
                 job.print();
+                System.out.println("After print");
             }
         } catch (NullPointerException e) {
             throw new RuntimeException(e);
