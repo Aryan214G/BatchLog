@@ -5,14 +5,14 @@ import com.log.util.DateUtils;
 import com.log.util.DialogUtils;
 import com.log.util.pdf.PdfConstants;
 import com.log.util.pdf.PdfLayoutUtils;
+import com.log.util.pdf.PdfUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 
 import java.util.Optional;
 
-import static com.log.util.pdf.PdfUtils.writeBoldText;
-import static com.log.util.pdf.PdfUtils.writeText;
+import static com.log.util.pdf.PdfUtils.*;
 
 public class RetrievalTablePdfService
         implements Exporter<RetrievalTableReportData> {
@@ -37,15 +37,23 @@ public class RetrievalTablePdfService
             try (PDPageContentStream content =
                          new PDPageContentStream(document, page)) {
 
+                String title = "TEST REPORT";
+
                  // ========= CONSTANTS =============================================
                 float y = PdfConstants.TOP_Y;
                 float leftMargin = PdfLayoutUtils.getLeftMargin(page);
-                float center = PdfLayoutUtils.getPageCenterX(page);
+                float titleX = PdfLayoutUtils.getCenteredTextX(
+                        page,
+                        title,
+                        PdfUtils.BOLD_FONT,
+                        PdfConstants.FONT_SIZE
+                );
                 float rightMargin = PdfLayoutUtils.getRightMargin(page);
 
                  // ==================================================================
 
-                writeBoldText(content, "TEST REPORT", center, y);
+
+                writeBoldText(content, title, titleX, y);
 
                 // ========= TOP SECTION =============================================
 
@@ -54,7 +62,7 @@ public class RetrievalTablePdfService
                 writeText(content, "Report number: " + reportNumber,
                         leftMargin, y);
 
-                writeText(content, "Date: " + DateUtils.getCurrentDateFormatted(),
+                writeRightAlignedText(content, "Date: " + DateUtils.getCurrentDateFormatted(),
                         rightMargin, y);
 
                 y -= PdfConstants.SECTION_SPACING;
