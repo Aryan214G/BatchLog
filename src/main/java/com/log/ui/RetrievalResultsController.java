@@ -528,7 +528,13 @@ public class RetrievalResultsController {
         RetrievalTableReportData data =
         new RetrievalTableReportData(
                 headers,
-                groupedTableData
+                groupedTableData,
+                basePropertiesState.getProjectName(),
+                basePropertiesState.getSop(),
+                basePropertiesState.getProductName(),
+                basePropertiesState.getProductID(),
+                basePropertiesState.getBatchNo(),
+                null //TODO: replace this after adding test schedule everywhere else
         );
 
     rtPdfService.export(data);
