@@ -40,7 +40,7 @@ public class RetrievalTablePdfService
 
                 writeText(
                         content,
-                        "Project No. :",
+                        "Project name: ",
                         leftMargin,
                         y
                 );
