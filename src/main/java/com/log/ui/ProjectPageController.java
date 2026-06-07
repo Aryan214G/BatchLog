@@ -14,7 +14,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -89,24 +91,32 @@ public class ProjectPageController {
         for (BatchRow b : rows) {
             boolean isAlt = (row % 2 == 0);
 
-            Label batchIdCell  = makeCell(b.getBatchId(),     isAlt);
-            Label componentIdCell = makeCell(b.getComponentId(), isAlt);
-            Label productCell  = makeCell(b.getProductName(), isAlt);
-            Label testDateCell = makeCell(b.getTestDate(),    isAlt);
-            Label testSiteCell = makeCell(b.getTestSite(),    isAlt);
-            Label SopSiteCell = makeCell(b.getSop(),isAlt);
+            ContextMenu contextMenu = createRowContextMenu(b);  // add this
 
-            for (Label cell : List.of(batchIdCell,componentIdCell, productCell, testDateCell, testSiteCell)) {
+            Label batchIdCell     = makeCell(b.getBatchId(),     isAlt);
+            Label componentIdCell = makeCell(b.getComponentId(), isAlt);
+            Label productCell     = makeCell(b.getProductName(), isAlt);
+            Label testDateCell    = makeCell(b.getTestDate(),    isAlt);
+            Label testSiteCell    = makeCell(b.getTestSite(),    isAlt);
+            Label sopCell         = makeCell(b.getSop(),         isAlt);
+
+            // Left click opens results, right click shows context menu
+            for (Label cell : List.of(batchIdCell, componentIdCell, productCell, testDateCell, testSiteCell, sopCell)) {
                 cell.getStyleClass().add("clickable-row");
-                cell.setOnMouseClicked(e -> openBatchResults(b));
+                cell.setOnMouseClicked(e -> {
+                    if (e.getButton() == javafx.scene.input.MouseButton.PRIMARY) {
+                        openBatchResults(b);
+                    }
+                });
+                cell.setContextMenu(contextMenu);
             }
 
-            batchesGrid.add(batchIdCell,  0, row);
-            batchesGrid.add(componentIdCell, 1,row);
-            batchesGrid.add(productCell,  2, row);
-            batchesGrid.add(testDateCell, 3, row);
-            batchesGrid.add(testSiteCell, 4, row);
-            batchesGrid.add(SopSiteCell,5,row);
+            batchesGrid.add(batchIdCell,     0, row);
+            batchesGrid.add(componentIdCell, 1, row);
+            batchesGrid.add(productCell,     2, row);
+            batchesGrid.add(testDateCell,    3, row);
+            batchesGrid.add(testSiteCell,    4, row);
+            batchesGrid.add(sopCell,         5, row);
             row++;
         }
 
@@ -228,5 +238,43 @@ public class ProjectPageController {
 
         projectExportService.export(stage, batches, currentProjectName);
 
+    }
+
+
+
+    private ContextMenu createRowContextMenu(BatchRow b) {
+        ContextMenu contextMenu = new ContextMenu();
+
+        MenuItem openResultsItem = new MenuItem("View Results");
+        openResultsItem.setOnAction(e -> openBatchResults(b));
+
+        MenuItem openCategoriesItem = new MenuItem("Edit in Categories");
+        openCategoriesItem.setOnAction(e -> openInCategories(b));
+
+        contextMenu.getItems().addAll(openResultsItem, openCategoriesItem);
+        return contextMenu;
+    }
+
+    private void openInCategories(BatchRow b) {
+        bpropState.setBatchNo(b.getBatchId());
+        bpropState.setProductName(b.getProductName());
+        bpropState.setProductID(b.getComponentId());
+        bpropState.setTestDate(LocalDate.parse(b.getTestDate()));
+        bpropState.setPlaceOfTesting(b.getTestSite());
+        bpropState.setTestId(b.getTestId());
+        bpropState.setSop(b.getSop());
+        bpropState.setBatchCode(b.getBatchCode());
+
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/log/ui/views/CategoriesPage.fxml")
+            );
+            Parent root = loader.load();
+            Stage stage = (Stage) batchesGrid.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
