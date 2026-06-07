@@ -12,6 +12,7 @@ import com.log.service.BatchService;
 import com.log.service.BatchTestService;
 import com.log.service.export.PropertyReportService;
 import com.log.service.export.RetrievalTablePdfService;
+import com.log.util.AlertUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -459,7 +460,6 @@ public class RetrievalResultsController {
     @FXML
     private void handlePrint() throws Exception {
 
-        // Filter rows same way as populateGrid
         List<PropertyRow> visibleRows = cachedRows.stream()
                 .filter(r -> propertyStates.getOrDefault(r.getName(), true))
                 .toList();
@@ -467,6 +467,34 @@ public class RetrievalResultsController {
         if (visibleRows.isEmpty()) {
             return;
         }
+
+        // ── Unit consistency check ────────────────────────────────────────────────
+        Map<String, String> propertyUnits = new LinkedHashMap<>();
+        List<String> inconsistentProperties = new ArrayList<>();
+
+        for (PropertyRow p : visibleRows) {
+            String unit = p.getUnit() != null ? p.getUnit() : "";
+            String existingUnit = propertyUnits.get(p.getName());
+
+            if (existingUnit == null) {
+                propertyUnits.put(p.getName(), unit);
+            } else if (!existingUnit.equals(unit)) {
+                if (!inconsistentProperties.contains(p.getName())) {
+                    inconsistentProperties.add(p.getName());
+                }
+            }
+        }
+
+        if (!inconsistentProperties.isEmpty()) {
+            String propertyList = String.join(", ", inconsistentProperties);
+            AlertUtil.showError(
+                    "Cannot export: the following properties have inconsistent units across entries:\n\n"
+                            + propertyList
+                            + "\n\nPlease ensure all entries for the same property use the same unit."
+            );
+            return;
+        }
+        // ─────────────────────────────────────────────────────────────────────────
 
         int maxValues = visibleRows.stream()
                 .mapToInt(r -> r.getValues().size())
