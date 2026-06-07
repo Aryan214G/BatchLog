@@ -78,19 +78,12 @@ public class RetrievalTablePdfService
 
                 writeText(
                         content,
-                        "SOP: " + data.getSop(),
-                        leftMargin,
-                        y
-                );
-
-                y -= PdfConstants.LINE_SPACING;
-
-                writeText(
-                        content,
                         "Product: " + data.getProduct(),
                         leftMargin,
                         y
                 );
+
+
 
                 y -= PdfConstants.LINE_SPACING;
 
@@ -105,6 +98,15 @@ public class RetrievalTablePdfService
                 writeText(
                         content,
                         "Component ID: "+ data.getComponentId(),
+                        leftMargin,
+                        y
+                );
+
+                y -= PdfConstants.LINE_SPACING;
+
+                writeText(
+                        content,
+                        "SOP: " + data.getSop(),
                         leftMargin,
                         y
                 );
