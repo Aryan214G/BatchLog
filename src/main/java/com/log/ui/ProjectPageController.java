@@ -122,6 +122,7 @@ public class ProjectPageController {
     private void openBatchResults(BatchRow b) {
         bpropState.setBatchNo(b.getBatchId());
         bpropState.setProductName(b.getProductName());
+        bpropState.setProductID(b.getComponentId());
         bpropState.setTestDate(LocalDate.parse(b.getTestDate()));
         bpropState.setPlaceOfTesting((b.getTestSite()));
         bpropState.setTestId(b.getTestId());

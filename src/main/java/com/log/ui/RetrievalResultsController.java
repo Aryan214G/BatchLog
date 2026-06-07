@@ -458,6 +458,7 @@ public class RetrievalResultsController {
 
     @FXML
     private void handlePrint() throws Exception {
+
         // Filter rows same way as populateGrid
         List<PropertyRow> visibleRows = cachedRows.stream()
                 .filter(r -> propertyStates.getOrDefault(r.getName(), true))
@@ -524,7 +525,7 @@ public class RetrievalResultsController {
                     rows.forEach(System.out::println);
                 }
         );
-
+        System.out.println(basePropertiesState.getProductID());
         RetrievalTableReportData data =
         new RetrievalTableReportData(
                 headers,
