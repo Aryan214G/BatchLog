@@ -72,7 +72,7 @@ public class ProjectPageController {
         batchesGrid.getChildren().clear();
         batchesGrid.getColumnConstraints().clear();
 
-        String[] headers = {"Batch ID","Component ID", "Product", "Test Date", "Test Site"};
+        String[] headers = {"Batch ID","Component ID", "Product", "Test Date", "Test Site","SOP"};
 
         for (int i = 0; i < headers.length; i++) {
             ColumnConstraints cc = new ColumnConstraints();
@@ -94,6 +94,7 @@ public class ProjectPageController {
             Label productCell  = makeCell(b.getProductName(), isAlt);
             Label testDateCell = makeCell(b.getTestDate(),    isAlt);
             Label testSiteCell = makeCell(b.getTestSite(),    isAlt);
+            Label SopSiteCell = makeCell(b.getSop(),isAlt);
 
             for (Label cell : List.of(batchIdCell,componentIdCell, productCell, testDateCell, testSiteCell)) {
                 cell.getStyleClass().add("clickable-row");
@@ -105,6 +106,7 @@ public class ProjectPageController {
             batchesGrid.add(productCell,  2, row);
             batchesGrid.add(testDateCell, 3, row);
             batchesGrid.add(testSiteCell, 4, row);
+            batchesGrid.add(SopSiteCell,5,row);
             row++;
         }
 
