@@ -15,6 +15,7 @@ public class InfoBarController {
     @FXML private Button infobar_testSite;
     @FXML private Button infobar_propertyName;
     @FXML private Button infobar_attributeName;
+    @FXML private Button infobar_componentID;
 
     private final AppState state = AppState.getInstance();
     private final BasePropertiesState bpropState = BasePropertiesState.getInstance();
@@ -32,6 +33,8 @@ public class InfoBarController {
 
         infobar_productName.setText(
                 "Product: " + safe(bpropState.getProductName()));
+
+        infobar_componentID.setText("Component: "+safe(bpropState.getProductID()));
 
         infobar_batchNo.setText(
                 "Batch: " + safe(bpropState.getBatchNo()));
