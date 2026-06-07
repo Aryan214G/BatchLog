@@ -6,17 +6,14 @@ import java.time.format.DateTimeFormatter;
 public class DateUtils {
 
 
-    public String getCurrentDateFormatted(){
+     private static final DateTimeFormatter FORMATTER =
+            DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        LocalDate currentDate = LocalDate.now();
+    private DateUtils() {
+    }
 
-        // Define your desired pattern
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-        // Format the current date
-        String formattedDate = currentDate.format(formatter);
-
-        return formattedDate;
+    public static String getCurrentDateFormatted() {
+        return LocalDate.now().format(FORMATTER);
     }
 
 }
