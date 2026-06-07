@@ -127,6 +127,8 @@ public class PropertyPdfReportService
             .orElse(null);
     }
 
+     // ======================================================================
+
     @Override
     public void export(ReportData reportData) throws IOException, PrinterException {
 
@@ -279,35 +281,34 @@ public class PropertyPdfReportService
 
             y-= 20;
 
-            String standardDeviation = String.format("%.1f", reportData.getStandardDeviation());
+            String standardDeviation =
+        reportData.getStandardDeviation() == null
+                ? "-"
+                : String.format(
+                        "%.1f",
+                        reportData.getStandardDeviation()
+                );
 
             writeText(content, "Standard deviation: " + standardDeviation, 50, y);
 
         }
 
         try {
-            System.out.println("Before getPrinterJob");
 
             PrinterJob job = PrinterJob.getPrinterJob();
 
-            System.out.println("After getPrinterJob");
 
             job.setPageable(new PDFPageable(document));
-
-            System.out.println("Before dialog");
 
             boolean accepted = job.printDialog();
 
             System.out.println("Dialog result = " + accepted);
 
             if (accepted) {
-                System.out.println("Before print");
                 System.out.println(job.getPrintService());
                 job.print();
-                System.out.println("After print");
+                System.out.println("Print done");
             }
-        } catch (NullPointerException e) {
-            throw new RuntimeException(e);
         } catch (HeadlessException e) {
             throw new RuntimeException(e);
         } catch (PrinterException e) {
