@@ -4,12 +4,14 @@ import com.log.core.AppState;
 import com.log.core.BasePropertiesState;
 import com.log.database.DBUtil;
 import com.log.dto.ReportData;
+import com.log.dto.RetrievalTableReportData;
 import com.log.model.Batch;
 import com.log.model.BatchTest;
 import com.log.model.PropertyRow;
 import com.log.service.BatchService;
 import com.log.service.BatchTestService;
-import com.log.service.export.PdfReportService;
+import com.log.service.export.PropertyReportService;
+import com.log.service.export.RetrievalTablePdfService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -63,10 +65,11 @@ public class RetrievalResultsController {
 
     private int testId;
 
-    private PdfReportService pdfReportService = new PdfReportService();
+    private PropertyReportService propertyReportService = new PropertyReportService();
 
     private BatchTestService batchTestService = new BatchTestService();
     private BatchService batchService = new BatchService();
+    private RetrievalTablePdfService rtPdfService = new RetrievalTablePdfService();
     // ── Row model ─────────────────────────────────────────────────────────────
 
 
@@ -391,11 +394,11 @@ public class RetrievalResultsController {
             throws SQLException, IOException, PrinterException {
 
         ReportData propertyReport =
-                pdfReportService.buildReportData(propertyId);
+                propertyReportService.buildReportData(propertyId);
 
         Thread printThread = new Thread(() -> {
             try {
-                pdfReportService.printPdf(propertyReport);
+                propertyReportService.export(propertyReport);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -454,7 +457,7 @@ public class RetrievalResultsController {
     }
 
     @FXML
-    private void handlePrint() {
+    private void handlePrint() throws Exception {
         // Filter rows same way as populateGrid
         List<PropertyRow> visibleRows = cachedRows.stream()
                 .filter(r -> propertyStates.getOrDefault(r.getName(), true))
@@ -481,7 +484,8 @@ public class RetrievalResultsController {
         if (columnStates.getOrDefault("Average Value", true)) headers.add("Average Value");
 
         // Build rows respecting column filters
-        List<List<String>> tableData = new ArrayList<>();
+        Map<String, List<List<String>>> groupedTableData = new LinkedHashMap<>();
+
         for (PropertyRow p : visibleRows) {
             List<String> rowData = new ArrayList<>();
 
@@ -501,10 +505,40 @@ public class RetrievalResultsController {
             if (columnStates.getOrDefault("Average Value", true))
                 rowData.add(formatDouble(p.getAverage()));
 
-            tableData.add(rowData);
+            groupedTableData
+                .computeIfAbsent(
+                        p.getCategory(),
+                        k -> new ArrayList<>()
+                )
+                .add(rowData);
         }
 
         System.out.println(headers);
-        System.out.println(tableData);
+        System.out.println(headers);
+
+        groupedTableData.forEach(
+                (category, rows) -> {
+
+                    System.out.println(category);
+
+                    rows.forEach(System.out::println);
+                }
+        );
+
+        RetrievalTableReportData data =
+        new RetrievalTableReportData(
+                headers,
+                groupedTableData,
+                basePropertiesState.getProjectName(),
+                basePropertiesState.getSop(),
+                basePropertiesState.getProductName(),
+                basePropertiesState.getProductID(),
+                basePropertiesState.getBatchNo(),
+                null //TODO: replace this after adding test schedule everywhere else
+        );
+
+    rtPdfService.export(data);
     }
+
+
 }
