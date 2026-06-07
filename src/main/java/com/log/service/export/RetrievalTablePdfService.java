@@ -10,6 +10,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import static com.log.util.pdf.PdfUtils.*;
@@ -50,12 +51,42 @@ public class RetrievalTablePdfService
                 );
                 float rightMargin = PdfLayoutUtils.getRightMargin(page);
 
-                 // ==================================================================
+                 // ========= HEADER SECTION =============================================
+
+                y = drawReportHeader(
+                        page,
+                        content,
+                        data,
+                        reportNumber,
+                        y,
+                        leftMargin,
+                        titleX,
+                        rightMargin,
+                        title
+                );
+
+                // ========= TABLE SECTION =============================================
 
 
-                writeBoldText(content, title, titleX, y);
 
-                // ========= TOP SECTION =============================================
+            }
+            document.save("retrieval-report.pdf");
+        }
+    }
+
+    private float drawReportHeader(
+            PDPage page,
+            PDPageContentStream content,
+            RetrievalTableReportData data,
+            String reportNumber,
+            float y,
+            float leftMargin,
+            float titleX,
+            float rightMargin,
+            String title
+    ) throws IOException {
+
+        writeBoldText(content, title, titleX, y);
 
                 y -= PdfConstants.SECTION_SPACING;
 
@@ -121,8 +152,8 @@ public class RetrievalTablePdfService
                 );
 
                 y -= PdfConstants.SECTION_SPACING;
-            }
-            document.save("retrieval-report.pdf");
+
+                return y;
+
         }
-    }
 }
