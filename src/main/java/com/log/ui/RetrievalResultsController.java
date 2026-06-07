@@ -476,7 +476,6 @@ public class RetrievalResultsController {
         // Build headers respecting column filters
         List<String> headers = new ArrayList<>();
         if (columnStates.getOrDefault("Property",      true)) headers.add("Property");
-        if (columnStates.getOrDefault("Category",      true)) headers.add("Category");
         if (columnStates.getOrDefault("Temperature",   true)) headers.add("Temperature");
         if (columnStates.getOrDefault("Direction",     true)) headers.add("Direction");
         if (columnStates.getOrDefault("Values",        true)) {
@@ -492,8 +491,6 @@ public class RetrievalResultsController {
 
             if (columnStates.getOrDefault("Property",      true))
                 rowData.add(p.getName() + (p.getUnit() != null ? " (" + p.getUnit() + ")" : ""));
-            if (columnStates.getOrDefault("Category",      true))
-                rowData.add(p.getCategory() != null ? p.getCategory() : "—");
             if (columnStates.getOrDefault("Temperature",   true))
                 rowData.add(p.getTemperature() != null ? p.getTemperature() : "—");
             if (columnStates.getOrDefault("Direction",     true))

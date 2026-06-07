@@ -12,9 +12,7 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static com.log.util.pdf.PdfUtils.*;
 
@@ -76,7 +74,51 @@ public class RetrievalTablePdfService
                 float tableY = y;
 
                 float rowHeight = PdfTableConstants.ROW_HEIGHT;
-                float columnWidth = PdfTableConstants.DEFAULT_COLUMN_WIDTH;
+
+                List<String> headers = data.getHeaders();
+
+
+                // ================= COLUMN WIDTHS =================
+
+                Map<String, Float> weights = new HashMap<>();
+
+                weights.put("Property", 3f);
+                weights.put("Category", 2f);
+                weights.put("Temperature", 2f);
+                weights.put("Direction", 2f);
+                weights.put("Average Value", 1.5f);
+                weights.put("Average", 1.5f);
+
+                float availableWidth = rightMargin - leftMargin;
+
+                float totalWeight = 0;
+
+                for (String header : headers) {
+
+                    if (header.startsWith("Value")) {
+                        totalWeight += 1f;
+                    } else {
+                        totalWeight += weights.getOrDefault(header, 1f);
+                    }
+                }
+
+                Map<String, Float> columnWidths = new LinkedHashMap<>();
+
+                for (String header : headers) {
+
+                    float weight;
+
+                    if (header.startsWith("Value")) {
+                        weight = 1f;
+                    } else {
+                        weight = weights.getOrDefault(header, 1f);
+                    }
+
+                    float width =
+                            availableWidth * (weight / totalWeight);
+
+                    columnWidths.put(header, width);
+                }
 
                 for (Map.Entry<String, List<List<String>>> section
         : data.getGroupedRows().entrySet()) {
@@ -85,14 +127,11 @@ public class RetrievalTablePdfService
                 // CATEGORY ROW (merged cell)
                 // =====================================================
 
-                float tableWidth =
-                        data.getHeaders().size() * columnWidth;
-
                 drawCell(
                         content,
                         tableX,
                         tableY,
-                        tableWidth,
+                        availableWidth,
                         rowHeight
                 );
 
@@ -101,25 +140,27 @@ public class RetrievalTablePdfService
                         section.getKey().toUpperCase(),
                         tableX,
                         tableY,
-                        tableWidth,
+                        availableWidth,
                         rowHeight
                 );
 
                 tableY -= rowHeight;
 
                 // =====================================================
-                // COLUMN HEADERS
+                // HEADER ROW
                 // =====================================================
 
                 float currentX = tableX;
 
-                for (String header : data.getHeaders()) {
+                for (String header : headers) {
+
+                    float width = columnWidths.get(header);
 
                     drawCell(
                             content,
                             currentX,
                             tableY,
-                            columnWidth,
+                            width,
                             rowHeight
                     );
 
@@ -128,11 +169,11 @@ public class RetrievalTablePdfService
                             header,
                             currentX,
                             tableY,
-                            columnWidth,
+                            width,
                             rowHeight
                     );
 
-                    currentX += columnWidth;
+                    currentX += width;
                 }
 
                 tableY -= rowHeight;
@@ -145,37 +186,40 @@ public class RetrievalTablePdfService
 
                     currentX = tableX;
 
-                    for (String cell : row) {
+                    for (int i = 0; i < row.size(); i++) {
+
+                        String cellValue = row.get(i);
+
+                        String header = headers.get(i);
+
+                        float width = columnWidths.get(header);
 
                         drawCell(
                                 content,
                                 currentX,
                                 tableY,
-                                columnWidth,
+                                width,
                                 rowHeight
                         );
 
                         drawCellText(
                                 content,
-                                cell,
+                                cellValue,
                                 currentX,
                                 tableY,
-                                columnWidth,
+                                width,
                                 rowHeight
                         );
 
-                        currentX += columnWidth;
+                        currentX += width;
                     }
 
                     tableY -= rowHeight;
                 }
 
-                // =====================================================
-                // SPACE BEFORE NEXT CATEGORY
-                // =====================================================
-
                 tableY -= PdfConstants.SECTION_SPACING;
             }
+
 
             }
             document.save("retrieval-report.pdf");
