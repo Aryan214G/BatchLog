@@ -27,7 +27,7 @@ import java.util.Optional;
 
 import static com.log.util.pdf.PdfUtils.*;
 
-public class PropertyPdfReportService
+public class PropertyReportService
         implements Exporter<ReportData>  {
 
     // ============== IMPORT SERVICES ====================

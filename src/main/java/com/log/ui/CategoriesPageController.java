@@ -7,7 +7,7 @@ import com.log.database.DBUtil;
 import com.log.dto.ReportData;
 import com.log.model.*;
 import com.log.service.*;
-import com.log.service.export.PropertyPdfReportService;
+import com.log.service.export.PropertyReportService;
 import com.log.util.AlertUtil;
 import com.log.util.StringUtils;
 import javafx.collections.ObservableList;
@@ -99,7 +99,7 @@ public class CategoriesPageController {
             propertyService,
             propertyValuesService
             );
-    private PropertyPdfReportService propertyPdfReportService = new PropertyPdfReportService();
+    private PropertyReportService propertyReportService = new PropertyReportService();
 
 
     // ======================= END OF VARIABLES DECLARATION ==============================
@@ -1178,12 +1178,12 @@ public class CategoriesPageController {
             int propertyId = propertyState.getPropertyId();
 
             // FX thread — dialog allowed here
-            ReportData report = propertyPdfReportService
+            ReportData report = propertyReportService
                             .buildReportData(propertyId);
 
             Thread t = new Thread(() -> {
                 try {
-                    propertyPdfReportService.export(report);
+                    propertyReportService.export(report);
 
                 } catch (Exception e) {
                     e.printStackTrace();
