@@ -514,7 +514,16 @@ public class RetrievalResultsController {
         }
 
         System.out.println(headers);
-        System.out.println(groupedTableData);
+        System.out.println(headers);
+
+        groupedTableData.forEach(
+                (category, rows) -> {
+
+                    System.out.println(category);
+
+                    rows.forEach(System.out::println);
+                }
+        );
 
         RetrievalTableReportData data =
         new RetrievalTableReportData(

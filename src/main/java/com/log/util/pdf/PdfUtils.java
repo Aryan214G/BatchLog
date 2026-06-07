@@ -9,6 +9,16 @@ import java.io.IOException;
 
 public class PdfUtils {
 
+    public static final PDFont NORMAL_FONT =
+        new PDType1Font(
+                Standard14Fonts.FontName.HELVETICA
+        );
+
+    public static final PDFont BOLD_FONT =
+            new PDType1Font(
+                    Standard14Fonts.FontName.HELVETICA_BOLD
+            );
+
     public static void writeText(
         PDPageContentStream content,
         String text,
