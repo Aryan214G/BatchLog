@@ -10,7 +10,7 @@ public class PdfConstants {
 
     public static final float FONT_SIZE = 12f;
 
-    public static final float SECTION_SPACING = 30f;
+    public static final float SECTION_SPACING = 40f;
 
     public static final float LINE_SPACING = 20f;
 

@@ -38,7 +38,6 @@ public class PropertyReportService
 
     // ============== IMPORT UTILITY CLASSES ====================
 
-    private DateUtils dateUtils = new DateUtils();
 
     // ======================================================================
 
@@ -85,7 +84,7 @@ public class PropertyReportService
                 property.getTemperature().getTempVal(),
                 property.getTemperature().getTempUnitVal(),
                 reportNumber,
-                dateUtils.getCurrentDateFormatted(),
+                DateUtils.getCurrentDateFormatted(),
                 findMin(property),
                 findMax(property),
                 average,
