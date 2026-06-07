@@ -40,7 +40,7 @@ public class RetrievalTablePdfService
 
                 writeText(
                         content,
-                        "Project name: ",
+                        "Project name: " + data.getProjectName(),
                         leftMargin,
                         y
                 );
@@ -49,7 +49,7 @@ public class RetrievalTablePdfService
 
                 writeText(
                         content,
-                        "SOP :",
+                        "SOP: " + data.getSop(),
                         leftMargin,
                         y
                 );
@@ -58,7 +58,24 @@ public class RetrievalTablePdfService
 
                 writeText(
                         content,
-                        "Product :",
+                        "Product: " + data.getProduct(),
+                        leftMargin,
+                        y
+                );
+
+                y -= PdfConstants.LINE_SPACING;
+
+                if(data.getBatchNo() != null){
+
+                    writeText(content, "Batch No.: " + data.getBatchNo(),
+                            leftMargin,
+                            y);
+
+                    y -= PdfConstants.LINE_SPACING;
+                }
+                writeText(
+                        content,
+                        "Component ID: "+ data.getComponentId(),
                         leftMargin,
                         y
                 );
@@ -67,16 +84,7 @@ public class RetrievalTablePdfService
 
                 writeText(
                         content,
-                        "Component ID / Batch No. :",
-                        leftMargin,
-                        y
-                );
-
-                y -= PdfConstants.LINE_SPACING;
-
-                writeText(
-                        content,
-                        "Test Schedule :",
+                        "Test Schedule: " + data.getTestSchedule(),
                         leftMargin,
                         y
                 );
