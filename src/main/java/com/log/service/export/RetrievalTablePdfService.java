@@ -1,18 +1,38 @@
 package com.log.service.export;
 
 import com.log.dto.RetrievalTableReportData;
+import com.log.util.pdf.PdfConstants;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+
+import static com.log.util.pdf.PdfUtils.writeBoldText;
 
 public class RetrievalTablePdfService
         implements Exporter<RetrievalTableReportData> {
 
     @Override
-    public void export(RetrievalTableReportData data) throws Exception {
+    public void export(RetrievalTableReportData data)
+            throws Exception {
 
+        try (PDDocument document = new PDDocument()) {
 
-        // draw headers
+            PDPage page = new PDPage();
+            document.addPage(page);
 
-        // draw rows
+            try (PDPageContentStream content =
+                         new PDPageContentStream(document, page)) {
 
-        // print pdf
+                float y = PdfConstants.TOP_Y;
+
+                writeBoldText(
+                        content,
+                        "REPORT",
+                        250,
+                        y
+                );
+            }
+            document.save("retrieval-report.pdf");
+        }
     }
 }
