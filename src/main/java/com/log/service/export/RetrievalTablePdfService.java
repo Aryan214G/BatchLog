@@ -5,12 +5,15 @@ import com.log.util.DateUtils;
 import com.log.util.DialogUtils;
 import com.log.util.pdf.PdfConstants;
 import com.log.util.pdf.PdfLayoutUtils;
+import com.log.util.pdf.PdfTableConstants;
 import com.log.util.pdf.PdfUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.log.util.pdf.PdfUtils.*;
@@ -67,7 +70,112 @@ public class RetrievalTablePdfService
 
                 // ========= TABLE SECTION =============================================
 
+                // TABLE CONSTANTS
 
+                float tableX = leftMargin;
+                float tableY = y;
+
+                float rowHeight = PdfTableConstants.ROW_HEIGHT;
+                float columnWidth = PdfTableConstants.DEFAULT_COLUMN_WIDTH;
+
+                for (Map.Entry<String, List<List<String>>> section
+        : data.getGroupedRows().entrySet()) {
+
+                // =====================================================
+                // CATEGORY ROW (merged cell)
+                // =====================================================
+
+                float tableWidth =
+                        data.getHeaders().size() * columnWidth;
+
+                drawCell(
+                        content,
+                        tableX,
+                        tableY,
+                        tableWidth,
+                        rowHeight
+                );
+
+                drawCellTextBold(
+                        content,
+                        section.getKey().toUpperCase(),
+                        tableX,
+                        tableY,
+                        tableWidth,
+                        rowHeight
+                );
+
+                tableY -= rowHeight;
+
+                // =====================================================
+                // COLUMN HEADERS
+                // =====================================================
+
+                float currentX = tableX;
+
+                for (String header : data.getHeaders()) {
+
+                    drawCell(
+                            content,
+                            currentX,
+                            tableY,
+                            columnWidth,
+                            rowHeight
+                    );
+
+                    drawCellTextBold(
+                            content,
+                            header,
+                            currentX,
+                            tableY,
+                            columnWidth,
+                            rowHeight
+                    );
+
+                    currentX += columnWidth;
+                }
+
+                tableY -= rowHeight;
+
+                // =====================================================
+                // DATA ROWS
+                // =====================================================
+
+                for (List<String> row : section.getValue()) {
+
+                    currentX = tableX;
+
+                    for (String cell : row) {
+
+                        drawCell(
+                                content,
+                                currentX,
+                                tableY,
+                                columnWidth,
+                                rowHeight
+                        );
+
+                        drawCellText(
+                                content,
+                                cell,
+                                currentX,
+                                tableY,
+                                columnWidth,
+                                rowHeight
+                        );
+
+                        currentX += columnWidth;
+                    }
+
+                    tableY -= rowHeight;
+                }
+
+                // =====================================================
+                // SPACE BEFORE NEXT CATEGORY
+                // =====================================================
+
+                tableY -= PdfConstants.SECTION_SPACING;
+            }
 
             }
             document.save("retrieval-report.pdf");
