@@ -97,10 +97,40 @@ public class BatchComparisonController {
     private void fetchData(Connection conn) throws SQLException {
         Set<String> propertySet = new LinkedHashSet<>();
 
-        for (BatchTest batch : batches) {
-            Map<String, Double> averages = propertyDAO.getPropertyAveragesByBatch(conn, batch.getBatchCode());
-            data.put(batch.getBatchCode(), averages);
-            propertySet.addAll(averages.keySet());
+        for (BatchTest test : batches) {
+
+            Map<String, Double> averages;
+
+            if (test.getBatchCode() != null) {
+
+                averages =
+                        propertyDAO.getPropertyAveragesByBatch(
+                                conn,
+                                test.getBatchCode()
+                        );
+
+                data.put(
+                        test.getBatchCode(),
+                        averages
+                );
+
+            } else {
+
+                averages =
+                        propertyDAO.getPropertyAveragesByTest(
+                                conn,
+                                test.getTestId()
+                        );
+
+                data.put(
+                        -test.getTestId(),   // unique key
+                        averages
+                );
+            }
+
+            propertySet.addAll(
+                    averages.keySet()
+            );
         }
 
         allProperties = new ArrayList<>(propertySet);
@@ -142,7 +172,12 @@ public class BatchComparisonController {
         // Header row — "Property" + batch identifiers
         comparisonGrid.add(makeHeader("Property"), 0, 0);
         for (int i = 0; i < visibleBatches.size(); i++) {
-            comparisonGrid.add(makeHeader("Batch " + visibleBatches.get(i).getBatchCode()), i + 1, 0);
+            BatchTest test = visibleBatches.get(i);
+            String title;
+            if (test.getBatchCode() != null) {
+                title = "Batch " + test.getBatchCode();
+            } else {title = "Test " + test.getTestId();}
+            comparisonGrid.add(makeHeader(title), i + 1, 0);
         }
 
         // Data rows — one per property
@@ -155,9 +190,18 @@ public class BatchComparisonController {
 
             // Batch cells — average value for this property in each batch
             for (int i = 0; i < visibleBatches.size(); i++) {
-                Map<String, Double> props = data.getOrDefault(
-                        visibleBatches.get(i).getBatchCode(), Collections.emptyMap()
-                );
+                BatchTest test = visibleBatches.get(i);
+
+                Integer key =
+                        (test.getBatchCode() != null)
+                                ? test.getBatchCode()
+                                : -test.getTestId();
+
+                Map<String, Double> props =
+                        data.getOrDefault(
+                                key,
+                                Collections.emptyMap()
+                        );
                 String val = props.containsKey(propName)
                         ? formatDouble(props.get(propName))
                         : "—";

@@ -324,5 +324,43 @@ System.out.println("Test Method   = " + property.getTestMethod());
 
         return null;
     }
+
+    public Map<String, Double> getPropertyAveragesByTest(
+            Connection conn,
+            int testId
+    ) throws SQLException {
+
+        Map<String, Double> propertyAverages =
+                new LinkedHashMap<>();
+
+        String sql = """
+        SELECT
+            p.Property_name,
+            AVG(pv.Prop_VAL) AS avg_val
+        FROM Property p
+        JOIN Property_Values pv
+            ON pv.Property_ID = p.Property_ID
+        WHERE p.Test_ID = ?
+        GROUP BY p.Property_name
+    """;
+
+        try (PreparedStatement stmt =
+                     conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, testId);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+
+                propertyAverages.put(
+                        rs.getString("Property_name"),
+                        rs.getDouble("avg_val")
+                );
+            }
+        }
+
+        return propertyAverages;
+    }
 }
 
