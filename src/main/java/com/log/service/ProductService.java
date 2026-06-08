@@ -6,6 +6,7 @@ import com.log.core.BasePropertiesState;
 
 import java.sql.Connection;
 import java.util.List;
+import java.util.Map;
 
 public class ProductService {
 
@@ -46,4 +47,6 @@ public class ProductService {
     public int getProductCodeFromDB(Connection conn, Product product) {
         return productDAO.getProductCode(conn, product);
     }
+
+
 }
