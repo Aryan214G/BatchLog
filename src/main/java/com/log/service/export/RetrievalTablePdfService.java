@@ -203,7 +203,7 @@ public class RetrievalTablePdfService
         }
 
 
-        private void drawTableSection(
+        private float drawTableSection(
         PDPageContentStream content,
         RetrievalTableReportData data,
         float y,
@@ -437,5 +437,7 @@ public class RetrievalTablePdfService
 
                 tableY -= PdfConstants.SECTION_SPACING;
             }
+
+                return tableY;
         }
 }

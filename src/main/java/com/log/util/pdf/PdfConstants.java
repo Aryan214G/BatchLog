@@ -15,4 +15,6 @@ public class PdfConstants {
     public static final float LINE_SPACING = 20f;
 
     public static final float TABLE_HEADER_SPACING = 60f;
+
+    public static final float BOTTOM_MARGIN = 50f;
 }
