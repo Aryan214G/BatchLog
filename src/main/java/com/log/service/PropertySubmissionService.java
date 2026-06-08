@@ -173,7 +173,7 @@ public class PropertySubmissionService {
         property.setTestMethod(testMethod);
         // ________________________________________________________________________________
 
-        int propertyID = property.getPropertyID();
+        Integer propertyID = property.getPropertyID();
 
         //TODO: remove this logging
         System.out.println(
@@ -181,7 +181,7 @@ public class PropertySubmissionService {
                         + property.getPropertyID()
         );
 
-        if(propertyID > 0){
+        if(propertyID != null && propertyID > 0){
             propertyService.updateProperty(conn, property);
         }
         else{
