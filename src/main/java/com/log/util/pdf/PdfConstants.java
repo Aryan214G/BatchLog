@@ -4,7 +4,7 @@ public class PdfConstants {
 
     private PdfConstants() {}
 
-    public static final float TOP_Y = 700f;
+    public static final float TOP_Y = 750f;
 
     public static final float ROW_HEIGHT = 25f;
 

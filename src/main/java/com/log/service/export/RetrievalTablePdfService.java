@@ -10,9 +10,15 @@ import com.log.util.pdf.PdfUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.printing.PDFPageable;
 
+import java.awt.*;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 import static com.log.util.pdf.PdfUtils.*;
 
@@ -33,7 +39,7 @@ public class RetrievalTablePdfService
 
         try (PDDocument document = new PDDocument()) {
 
-            PDPage page = new PDPage();
+            PDPage page = new PDPage(PDRectangle.A4);
             document.addPage(page);
 
             try (PDPageContentStream content =
@@ -66,6 +72,9 @@ public class RetrievalTablePdfService
                         title
                 );
 
+                drawLine(content, leftMargin, y, rightMargin, y);
+
+                y -= PdfConstants.LINE_SPACING;
                 // ========= TABLE SECTION =============================================
 
                 drawTableSection(
@@ -79,8 +88,36 @@ public class RetrievalTablePdfService
 
             }
             document.save("retrieval-report.pdf");
+
+            printReport(document);
         }
     }
+
+    private void printReport(PDDocument document){
+
+        try {
+
+            PrinterJob job = PrinterJob.getPrinterJob();
+
+
+            job.setPageable(new PDFPageable(document));
+
+            boolean accepted = job.printDialog();
+
+            System.out.println("Dialog result = " + accepted);
+
+            if (accepted) {
+                System.out.println(job.getPrintService());
+                job.print();
+                System.out.println("Print done");
+            }
+        } catch (HeadlessException e) {
+            throw new RuntimeException(e);
+        } catch (PrinterException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     private float drawReportHeader(
             PDPage page,
@@ -175,7 +212,7 @@ public class RetrievalTablePdfService
         ) throws IOException {
 
         float tableX = leftMargin;
-                float tableY = y;
+                float tableY = y - PdfConstants.SECTION_SPACING;
 
                 float rowHeight = PdfTableConstants.ROW_HEIGHT;
 
