@@ -336,7 +336,7 @@ public class RetrievalTablePdfService
                             mergedHeight
                     );
 
-                    drawCellText(
+                    drawWrappedCellText(
                             content,
                             propertyText,
                             propertyX,

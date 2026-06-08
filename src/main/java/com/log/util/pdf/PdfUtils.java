@@ -6,6 +6,8 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PdfUtils {
 
@@ -49,7 +51,7 @@ public class PdfUtils {
 
     public static void writeRightAlignedText(PDPageContentStream content, String text, float rightX, float y) throws IOException {
 
-        PDFont font = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
+        PDFont font = NORMAL_FONT;
         float fontSize = 12;
 
         float textWidth = font.getStringWidth(text) / 1000 * fontSize;
@@ -87,8 +89,8 @@ public class PdfUtils {
 
     public static void drawCellTextBold(PDPageContentStream content, String text, float x, float y, float cellWidth, float cellHeight) throws IOException {
 
-    PDFont font = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
-    float fontSize = 12;
+    PDFont font = BOLD_FONT;
+    float fontSize = PdfConstants.FONT_SIZE;
 
     float textWidth = font.getStringWidth(text) / 1000 * fontSize;
 
@@ -98,4 +100,121 @@ public class PdfUtils {
     writeBoldText(content, text, textX, textY);
 }
 
+    public static List<String> wrapText(
+            String text,
+            PDFont font,
+            float fontSize,
+            float maxWidth
+    ) throws IOException {
+
+        List<String> lines = new ArrayList<>();
+
+        String[] words = text.split("\\s+");
+
+        StringBuilder currentLine = new StringBuilder();
+
+        for (String word : words) {
+
+            String candidate =
+                    currentLine.isEmpty()
+                            ? word
+                            : currentLine + " " + word;
+
+            float width =
+                    font.getStringWidth(candidate)
+                            / 1000f
+                            * fontSize;
+
+            if (width <= maxWidth) {
+
+                currentLine.setLength(0);
+                currentLine.append(candidate);
+
+            } else {
+
+                if (!currentLine.isEmpty()) {
+                    lines.add(currentLine.toString());
+                }
+
+                currentLine.setLength(0);
+                currentLine.append(word);
+            }
+        }
+
+        if (!currentLine.isEmpty()) {
+            lines.add(currentLine.toString());
+        }
+
+        return lines;
+    }
+
+    public static void drawWrappedCellText(
+            PDPageContentStream content,
+            String text,
+            float x,
+            float y,
+            float width,
+            float height
+    ) throws IOException {
+
+        float fontSize = PdfConstants.FONT_SIZE;
+
+        List<String> lines =
+                wrapText(
+                        text,
+                        PdfUtils.NORMAL_FONT,
+                        fontSize,
+                        width - 8
+                );
+
+        while (
+                lines.size() * fontSize > height - 4
+                && fontSize > 6
+        ) {
+
+            fontSize -= 1;
+
+            lines = wrapText(
+                    text,
+                    PdfUtils.NORMAL_FONT,
+                    fontSize,
+                    width - 8
+            );
+        }
+
+        float totalTextHeight =
+                lines.size() * fontSize;
+
+        float startY =
+                y + (height - totalTextHeight) / 2f;
+
+        for (int i = 0; i < lines.size(); i++) {
+
+            String line = lines.get(i);
+
+            float textWidth =
+                    PdfUtils.NORMAL_FONT
+                            .getStringWidth(line)
+                            / 1000f
+                            * fontSize;
+
+            float textX =
+                    x + (width - textWidth) / 2f;
+
+            float textY =
+                    startY + (lines.size() - i - 1) * fontSize;
+
+            content.beginText();
+            content.setFont(
+                    PdfUtils.NORMAL_FONT,
+                    fontSize
+            );
+            content.newLineAtOffset(
+                    textX,
+                    textY
+            );
+            content.showText(line);
+            content.endText();
+        }
+    }
 }
