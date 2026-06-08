@@ -46,7 +46,7 @@
 
     <!-- Unit -->
 
-    <Label text="Unit"/>
+    <Label text="Default Unit"/>
 
     <ComboBox fx:id="unitComboBox"
               promptText="Select existing unit"/>

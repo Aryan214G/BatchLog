@@ -14,6 +14,35 @@ import java.util.List;
 
 public class DefaultPropertiesDAO {
 
+    public boolean propertyExists(
+            Connection conn,
+            String propertyName,
+            int categoryId
+    ) {
+
+        String sql = """
+        SELECT 1
+        FROM Default_Properties
+        WHERE Def_PropName = ?
+        AND Category_ID = ?
+        """;
+
+        try (PreparedStatement stmt =
+                     conn.prepareStatement(sql)) {
+
+            stmt.setString(1, propertyName);
+            stmt.setInt(2, categoryId);
+
+            ResultSet rs = stmt.executeQuery();
+
+            return rs.next();
+
+        } catch (SQLException e) {
+
+            throw new RuntimeException(e);
+        }
+    }
+
     public ObservableList<DefaultProperty> getDefaultProperties(String categoryName){
 
 

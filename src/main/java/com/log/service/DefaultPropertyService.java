@@ -2,14 +2,17 @@ package com.log.service;
 
 import com.log.model.DefaultProperty;
 import com.log.dao.DefaultPropertiesDAO;
+import com.log.service.PropertyUnitsService;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class DefaultPropertyService {
     private DefaultPropertiesDAO DPdao=new DefaultPropertiesDAO();
+    private PropertyUnitsService psu=new PropertyUnitsService();
 
 
     public Map<Integer, Map<String, DefaultProperty>> getDefaultsGrouped() {
@@ -54,7 +57,7 @@ public class DefaultPropertyService {
         return DPdao.getPropertyId(conn, propertyName);
     }
 
-    public void createDefaultProperty(
+    public int createDefaultProperty(
             Connection conn,
             String propertyName,
             int categoryId,
@@ -70,7 +73,78 @@ public class DefaultPropertyService {
         property.setRows(rows);
         property.setHasComponentNumber(0);
 
-        DPdao.insertDefaultProperty(conn, property);
+        return DPdao.insertDefaultProperty(
+                conn,
+                property
+        );
+    }
+
+    public boolean propertyExists(
+            Connection conn,
+            String propertyName,
+            int categoryId
+    ) {
+
+        return DPdao.propertyExists(
+                conn,
+                propertyName,
+                categoryId
+        );
+    }
+
+    public int createPropertyWithDefaultUnit(
+            Connection conn,
+            String propertyName,
+            int categoryId,
+            int unitId,
+            int rows
+    ) {
+
+        try {
+
+            conn.setAutoCommit(false);
+
+            int propertyId =
+                    createDefaultProperty(
+                            conn,
+                            propertyName,
+                            categoryId,
+                            unitId,
+                            rows
+                    );
+            if (propertyId == -1) {
+                throw new RuntimeException(
+                        "Failed to create property"
+                );
+            }
+            psu.addUnitToProperty(
+                    conn,
+                    propertyId,
+                    unitId
+            );
+
+            conn.commit();
+
+            return propertyId;
+
+        } catch (Exception e) {
+
+            try {
+                conn.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+
+            throw new RuntimeException(e);
+
+        } finally {
+
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

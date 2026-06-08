@@ -57,7 +57,7 @@
                 mnemonicParsing="false"
                 prefHeight="50.0"
                 prefWidth="218.0"
-                text="Add or remove Categories"
+                text="Add Categories and Properties"
                 onAction="#showCategoriesPage" />
 
                 <ListView fx:id="SettingsListView"

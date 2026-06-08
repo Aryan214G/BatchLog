@@ -4,15 +4,13 @@ import com.log.database.DBUtil;
 import com.log.model.Category;
 import com.log.model.DefaultProperty;
 import com.log.model.Unit;
-import com.log.service.CategoryService;
-import com.log.service.DefaultPropertyService;
-import com.log.service.PropertyService;
-import com.log.service.UnitsService;
+import com.log.service.*;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import com.log.util.AlertUtil;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -37,11 +35,17 @@ public class CategorySettingsController {
     @FXML
     private ListView<String> propertyList;
 
+    @FXML
+    private TextField rowsField;
+
+
     private final CategoryService categoryService =
             new CategoryService();
 
     private final UnitsService unitService =
             new UnitsService();
+
+    private final AlertUtil alertUtil = new AlertUtil();
 
     private final DefaultPropertyService defaultPropertyService=new DefaultPropertyService();
 
@@ -78,7 +82,7 @@ public class CategorySettingsController {
                 categoryField.getText().trim();
 
         if (categoryName.isBlank()) {
-            System.out.println("Category name cannot be empty");
+            alertUtil.showWarning("Category name cannot be empty");
             return;
         }
 
@@ -91,7 +95,7 @@ public class CategorySettingsController {
                     );
 
             if (existing != null) {
-                System.out.println("Category already exists");
+                alertUtil.showWarning("Category already exists");
                 return;
             }
 
@@ -114,7 +118,7 @@ public class CategorySettingsController {
                 propertyField.getText().trim();
 
         if (propertyName.isBlank()) {
-            System.out.println(
+            alertUtil.showWarning(
                     "Property name cannot be empty"
             );
             return;
@@ -125,9 +129,35 @@ public class CategorySettingsController {
                         .getSelectedItem();
 
         if (selectedCategory == null) {
-            System.out.println(
+            alertUtil.showWarning(
                     "Select a category first"
             );
+            return;
+        }
+
+        int rows;
+
+        try {
+
+            rows = Integer.parseInt(
+                    rowsField.getText().trim()
+            );
+
+            if (rows <= 0) {
+
+                alertUtil.showWarning(
+                        "Rows must be greater than 0"
+                );
+
+                return;
+            }
+
+        } catch (NumberFormatException e) {
+
+            alertUtil.showWarning(
+                    "Enter a valid row count"
+            );
+
             return;
         }
 
@@ -159,7 +189,7 @@ public class CategorySettingsController {
 
                 if (selectedUnit == null) {
 
-                    System.out.println(
+                    alertUtil.showWarning(
                             "Select a unit"
                     );
 
@@ -181,22 +211,33 @@ public class CategorySettingsController {
 
             if (category == null) {
 
-                System.out.println(
+                alertUtil.showWarning(
                         "Category not found"
                 );
 
                 return;
             }
 
-            int rows = 1; // replace with rows field later
+            if (defaultPropertyService.propertyExists(
+                    conn,
+                    propertyName,
+                    category.getCategoryId()
+            )) {
 
-            System.out.println("========== INSERTING PROPERTY ==========");
-            System.out.println("Property Name = " + propertyName);
-            System.out.println("Category ID   = " + category.getCategoryId());
-            System.out.println("Unit ID       = " + unitId);
-            System.out.println("Rows          = " + rows);
+                alertUtil.showWarning(
+                        "Property already exists"
+                );
+
+                return;
+            }
+
+            System.out.println(
+                    "Creating property with rows = "
+                            + rows
+            );
+
             defaultPropertyService
-                    .createDefaultProperty(
+                    .createPropertyWithDefaultUnit(
                             conn,
                             propertyName,
                             category.getCategoryId(),
@@ -208,16 +249,27 @@ public class CategorySettingsController {
                     propertyName +
                             " (" +
                             unitName +
+                            ", Rows=" +
+                            rows +
                             ")"
             );
 
             propertyField.clear();
             customUnitField.clear();
+            rowsField.clear();
             unitComboBox.setValue(null);
+
+            alertUtil.showInfo(
+                    "Property added successfully"
+            );
 
         } catch (Exception e) {
 
             e.printStackTrace();
+
+            alertUtil.showError(
+                    "Failed to add property"
+            );
         }
     }
 }
