@@ -15,7 +15,7 @@ public class UnitsService {
         this.unitsDAO = new UnitsDAO();
     }
 
-    public void createUnit(Unit unit) {
+    public int createUnit(Unit unit) {
 
         if (unit == null) {
             throw new IllegalArgumentException("Unit cannot be null");
@@ -25,7 +25,29 @@ public class UnitsService {
             throw new IllegalArgumentException("Unit name cannot be empty");
         }
 
-        unitsDAO.insertUnit(unit);
+        String unitName = unit.getUnit().trim();
+
+        try (Connection conn = DBUtil.getConnection()) {
+
+            Unit existing =
+                    unitsDAO.getUnitByName(
+                            conn,
+                            unit.getUnit()
+                    );
+
+            if (existing != null) {
+                return existing.getUnitId();
+            }
+
+            return unitsDAO.insertUnit(
+                    conn,
+                    unit
+            );
+
+        } catch (Exception e) {
+
+            throw new RuntimeException(e);
+        }
     }
     public String getUnitNameById(int unitId) {
 
@@ -108,6 +130,27 @@ public class UnitsService {
         return unitsDAO.unitExists(
                 conn,
                 unitName
+        );
+    }
+
+    public int createUnitIfNotExists(
+            Connection conn,
+            String unitName
+    ) {
+
+        Unit existing =
+                unitsDAO.getUnitByName(
+                        conn,
+                        unitName
+                );
+
+        if (existing != null) {
+            return existing.getUnitId();
+        }
+
+        return unitsDAO.insertUnit(
+                conn,
+                new Unit(unitName)
         );
     }
 

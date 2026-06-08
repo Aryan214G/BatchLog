@@ -21,6 +21,10 @@ public class Unit {
         return unit;
     }
 
+    public Unit(String unit) {
+        this.unit = unit;
+    }
+
     public void setUnitId(int unitId) {
         this.unitId = unitId;
     }
@@ -30,8 +34,6 @@ public class Unit {
     }
     @Override
     public String toString() {
-        return "Unit{" +
-                "unit='" + unit + '\'' +
-                '}';
+        return unit;
     }
 }

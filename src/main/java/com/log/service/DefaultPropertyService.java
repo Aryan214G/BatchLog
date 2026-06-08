@@ -54,4 +54,23 @@ public class DefaultPropertyService {
         return DPdao.getPropertyId(conn, propertyName);
     }
 
+    public void createDefaultProperty(
+            Connection conn,
+            String propertyName,
+            int categoryId,
+            int unitId,
+            int rows
+    ) {
+
+        DefaultProperty property = new DefaultProperty();
+
+        property.setPropertyName(propertyName);
+        property.setCategoryId(categoryId);
+        property.setUnitId(unitId);
+        property.setRows(rows);
+        property.setHasComponentNumber(0);
+
+        DPdao.insertDefaultProperty(conn, property);
+    }
+
 }

@@ -40,9 +40,6 @@ public class CategorySettingsController {
     private final CategoryService categoryService =
             new CategoryService();
 
-    private final PropertyService propertyService =
-            new PropertyService();
-
     private final UnitsService unitService =
             new UnitsService();
 
@@ -98,7 +95,7 @@ public class CategorySettingsController {
                 return;
             }
 
-            categoryService.createCategory(categoryName);
+            categoryService.createCategory(conn, categoryName);
 
             categoryList.getItems()
                     .add(categoryName);
@@ -117,31 +114,9 @@ public class CategorySettingsController {
                 propertyField.getText().trim();
 
         if (propertyName.isBlank()) {
-            System.out.println("Property name cannot be empty");
-            return;
-        }
-
-        String unitName;
-
-        if (!customUnitField.getText().trim().isBlank()) {
-
-            unitName =
-                    customUnitField.getText().trim();
-
-            unitService.createUnitIfNotExists(
-                    unitName
+            System.out.println(
+                    "Property name cannot be empty"
             );
-
-            loadUnits();
-
-        } else {
-
-            unitName =
-                    unitComboBox.toString();
-        }
-
-        if (unitName == null || unitName.isBlank()) {
-            System.out.println("Please select or create a unit");
             return;
         }
 
@@ -150,21 +125,99 @@ public class CategorySettingsController {
                         .getSelectedItem();
 
         if (selectedCategory == null) {
-            System.out.println("Select a category first");
+            System.out.println(
+                    "Select a category first"
+            );
             return;
         }
 
-        defaultPropertyService.(
-                propertyName,
-                selectedCategory,
-                unitName
-        );
+        try (Connection conn =
+                     DBUtil.getConnection()) {
 
-        propertyList.getItems()
-                .add(propertyName + " (" + unitName + ")");
+            int unitId;
+            String unitName;
 
-        propertyField.clear();
-        customUnitField.clear();
-        unitComboBox.setValue(null);
+            if (!customUnitField.getText()
+                    .trim()
+                    .isBlank()) {
+
+                unitName =
+                        customUnitField.getText().trim();
+
+                unitId =
+                        unitService.createUnitIfNotExists(
+                                conn,
+                                unitName
+                        );
+
+                loadUnits();
+
+            } else {
+
+                Unit selectedUnit =
+                        unitComboBox.getValue();
+
+                if (selectedUnit == null) {
+
+                    System.out.println(
+                            "Select a unit"
+                    );
+
+                    return;
+                }
+
+                unitId =
+                        selectedUnit.getUnitId();
+
+                unitName =
+                        selectedUnit.getUnit();
+            }
+
+            Category category =
+                    categoryService.getCategory(
+                            conn,
+                            selectedCategory
+                    );
+
+            if (category == null) {
+
+                System.out.println(
+                        "Category not found"
+                );
+
+                return;
+            }
+
+            int rows = 1; // replace with rows field later
+
+            System.out.println("========== INSERTING PROPERTY ==========");
+            System.out.println("Property Name = " + propertyName);
+            System.out.println("Category ID   = " + category.getCategoryId());
+            System.out.println("Unit ID       = " + unitId);
+            System.out.println("Rows          = " + rows);
+            defaultPropertyService
+                    .createDefaultProperty(
+                            conn,
+                            propertyName,
+                            category.getCategoryId(),
+                            unitId,
+                            rows
+                    );
+
+            propertyList.getItems().add(
+                    propertyName +
+                            " (" +
+                            unitName +
+                            ")"
+            );
+
+            propertyField.clear();
+            customUnitField.clear();
+            unitComboBox.setValue(null);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
     }
 }
