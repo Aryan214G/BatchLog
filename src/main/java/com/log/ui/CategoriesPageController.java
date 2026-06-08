@@ -147,6 +147,8 @@ public class CategoriesPageController {
 
             categoriesListView.setDisable(true);
             propertiesListView.setDisable(true);
+            searchField.setDisable(true);
+
         }
         refreshcatmap();
 
@@ -160,10 +162,11 @@ public class CategoriesPageController {
 
         editMenu = new ContextMenu(addItem, deleteItem);
     }
+
+    private TextField searchField;
     private void setupSearchBar() {
 
-        TextField searchField =
-                searchBarController.getSearchField();
+        searchField = searchBarController.getSearchField();
 
         ContextMenu suggestionsPopup =
                 new ContextMenu();
