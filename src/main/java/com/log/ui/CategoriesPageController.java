@@ -144,6 +144,9 @@ public class CategoriesPageController {
             propertiesListView.getSelectionModel().select(
                     selectedState.getSelectedProperty()
             );
+
+            categoriesListView.setDisable(true);
+            propertiesListView.setDisable(true);
         }
         refreshcatmap();
 
