@@ -1,5 +1,6 @@
 package com.log.ui;
 
+import com.log.core.AppState;
 import com.log.core.BasePropertiesState;
 import com.log.database.DBUtil;
 import com.log.model.BatchRow;
@@ -39,6 +40,7 @@ public class ProjectPageController {
 
     private String currentProjectName;
     private final BasePropertiesState bpropState = BasePropertiesState.getInstance();
+    private final AppState appState = AppState.getInstance();
     private final ProjectService projectService = new ProjectService();
     private ProjectExportService projectExportService = new ProjectExportService();
     private BatchService batchService = new BatchService();
@@ -264,6 +266,8 @@ public class ProjectPageController {
         bpropState.setTestId(b.getTestId());
         bpropState.setSop(b.getSop());
         bpropState.setBatchCode(b.getBatchCode());
+
+        appState.setProjectCreated(true);
 
         try {
             FXMLLoader loader = new FXMLLoader(
