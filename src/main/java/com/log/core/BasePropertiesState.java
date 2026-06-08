@@ -13,7 +13,7 @@ public class BasePropertiesState {
     private int projectId;
     private String projectName;
     private String batchNo;
-    private int batchCode;
+    private Integer batchCode;
     private String productName;
     private String productID;
     private int productCode;
@@ -37,11 +37,11 @@ public class BasePropertiesState {
         this.testId = testId;
     }
 
-    public int getBatchCode() {
+    public Integer getBatchCode() {
         return batchCode;
     }
 
-    public void setBatchCode(int batchCode) {
+    public void setBatchCode(Integer batchCode) {
         this.batchCode = batchCode;
     }
 
