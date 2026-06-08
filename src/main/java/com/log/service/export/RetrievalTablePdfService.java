@@ -3,10 +3,7 @@ package com.log.service.export;
 import com.log.dto.RetrievalTableReportData;
 import com.log.util.DateUtils;
 import com.log.util.DialogUtils;
-import com.log.util.pdf.PdfConstants;
-import com.log.util.pdf.PdfLayoutUtils;
-import com.log.util.pdf.PdfTableConstants;
-import com.log.util.pdf.PdfUtils;
+import com.log.util.pdf.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -25,68 +22,77 @@ import static com.log.util.pdf.PdfUtils.*;
 public class RetrievalTablePdfService
         implements Exporter<RetrievalTableReportData> {
 
-    @Override
+        @Override
     public void export(RetrievalTableReportData data)
             throws Exception {
 
         Optional<String> result = DialogUtils.showTextInputDialog(
-        "Report Number",
-        "Generate Report",
-        "Enter report number:"
-    );
-        String reportNumber = result.orElse(null);
+                "Report Number",
+                "Generate Report",
+                "Enter report number:"
+        );
 
+        String reportNumber = result.orElse(null);
 
         try (PDDocument document = new PDDocument()) {
 
-            PDPage page = new PDPage(PDRectangle.A4);
-            document.addPage(page);
+            String title = "TEST REPORT";
 
-            try (PDPageContentStream content =
-                         new PDPageContentStream(document, page)) {
+            PdfPageContext context =
+                    createNewPage(document);
 
-                String title = "TEST REPORT";
+            float leftMargin =
+                    PdfLayoutUtils.getLeftMargin(
+                            context.getPage()
+                    );
 
-                 // ========= CONSTANTS =============================================
-                float y = PdfConstants.TOP_Y;
-                float leftMargin = PdfLayoutUtils.getLeftMargin(page);
-                float titleX = PdfLayoutUtils.getCenteredTextX(
-                        page,
-                        title,
-                        PdfUtils.BOLD_FONT,
-                        PdfConstants.FONT_SIZE
-                );
-                float rightMargin = PdfLayoutUtils.getRightMargin(page);
+            float rightMargin =
+                    PdfLayoutUtils.getRightMargin(
+                            context.getPage()
+                    );
 
-                 // ========= HEADER SECTION =============================================
+            float titleX =
+                    PdfLayoutUtils.getCenteredTextX(
+                            context.getPage(),
+                            title,
+                            PdfUtils.BOLD_FONT,
+                            PdfConstants.FONT_SIZE
+                    );
 
-                y = drawReportHeader(
-                        page,
-                        content,
-                        data,
-                        reportNumber,
-                        y,
-                        leftMargin,
-                        titleX,
-                        rightMargin,
-                        title
-                );
+            float y = drawReportHeader(
+                    context.getPage(),
+                    context.getContent(),
+                    data,
+                    reportNumber,
+                    PdfConstants.TOP_Y,
+                    leftMargin,
+                    titleX,
+                    rightMargin,
+                    title
+            );
 
-                drawLine(content, leftMargin, y, rightMargin, y);
+            drawLine(
+                    context.getContent(),
+                    leftMargin,
+                    y,
+                    rightMargin,
+                    y
+            );
 
-                y -= PdfConstants.LINE_SPACING;
-                // ========= TABLE SECTION =============================================
+            context.setCurrentY(
+                    y - PdfConstants.LINE_SPACING
+            );
 
-                drawTableSection(
-                        content,
-                        data,
-                        y,
-                        leftMargin,
-                        rightMargin
-                );
+            context = drawTableSection(
+                    document,
+                    context,
+                    data,
+                    leftMargin,
+                    rightMargin
+            );
 
+            context.getContent().close();
 
-            }
             document.save("retrieval-report.pdf");
 
             printReport(document);
@@ -203,16 +209,18 @@ public class RetrievalTablePdfService
         }
 
 
-        private float drawTableSection(
-        PDPageContentStream content,
+        private PdfPageContext drawTableSection(
+                PDDocument document,
+        PdfPageContext context,
         RetrievalTableReportData data,
-        float y,
         float leftMargin,
         float rightMargin
         ) throws IOException {
 
         float tableX = leftMargin;
-                float tableY = y - PdfConstants.SECTION_SPACING;
+        context.setCurrentY(context.getCurrentY()
+                        - PdfConstants.SECTION_SPACING
+        );
 
                 float rowHeight = PdfTableConstants.ROW_HEIGHT;
 
@@ -262,30 +270,43 @@ public class RetrievalTablePdfService
                 }
 
                 for (Map.Entry<String, List<List<String>>> section
-        : data.getGroupedRows().entrySet()) {
+                    : data.getGroupedRows().entrySet()) {
 
+                List<List<String>> rows = section.getValue();
+
+                float requiredHeight =
+                        rowHeight +                    // category row
+                        rowHeight +                    // header row
+                        rows.size() * rowHeight +
+                        PdfConstants.SECTION_SPACING;
+
+                context = checkPageBreak(
+                        document,
+                        context,
+                        requiredHeight
+                );
                 // =====================================================
                 // CATEGORY ROW (merged cell)
                 // =====================================================
 
                 drawCell(
-                        content,
+                        context.getContent(),
                         tableX,
-                        tableY,
+                        context.getCurrentY(),
                         availableWidth,
                         rowHeight
                 );
 
                 drawCellTextBold(
-                        content,
+                        context.getContent(),
                         section.getKey().toUpperCase(),
                         tableX,
-                        tableY,
+                        context.getCurrentY(),
                         availableWidth,
                         rowHeight
                 );
 
-                tableY -= rowHeight;
+                context.setCurrentY(context.getCurrentY() - rowHeight);
 
                 // =====================================================
                 // HEADER ROW
@@ -298,18 +319,18 @@ public class RetrievalTablePdfService
                     float width = columnWidths.get(header);
 
                     drawCell(
-                            content,
+                            context.getContent(),
                             currentX,
-                            tableY,
+                            context.getCurrentY(),
                             width,
                             rowHeight
                     );
 
                     drawCellTextBold(
-                            content,
+                            context.getContent(),
                             header,
                             currentX,
-                            tableY,
+                            context.getCurrentY(),
                             width,
                             rowHeight
                     );
@@ -317,13 +338,12 @@ public class RetrievalTablePdfService
                     currentX += width;
                 }
 
-                tableY -= rowHeight;
+                context.setCurrentY(context.getCurrentY() - rowHeight);
 
                 // =====================================================
                 // DATA ROWS (MERGED PROPERTY CELLS)
                 // =====================================================
 
-                List<List<String>> rows = section.getValue();
 
                 int rowIndex = 0;
 
@@ -362,11 +382,10 @@ public class RetrievalTablePdfService
                     float mergedHeight =
                             spanCount * rowHeight;
 
-                    float mergedY =
-                            tableY - mergedHeight + rowHeight;
+                    float mergedY = context.getCurrentY() - mergedHeight + rowHeight;
 
                     drawCell(
-                            content,
+                            context.getContent(),
                             propertyX,
                             mergedY,
                             propertyWidth,
@@ -374,7 +393,7 @@ public class RetrievalTablePdfService
                     );
 
                     drawWrappedCellText(
-                            content,
+                            context.getContent(),
                             propertyText,
                             propertyX,
                             mergedY,
@@ -391,8 +410,7 @@ public class RetrievalTablePdfService
                         List<String> row =
                                 rows.get(rowIndex + offset);
 
-                        float currentRowY =
-                                tableY - (offset * rowHeight);
+                        float currentRowY = context.getCurrentY() - (offset * rowHeight);
 
                         currentX = tableX;
 
@@ -410,7 +428,7 @@ public class RetrievalTablePdfService
                             }
 
                             drawCell(
-                                    content,
+                                    context.getContent(),
                                     currentX,
                                     currentRowY,
                                     width,
@@ -418,7 +436,7 @@ public class RetrievalTablePdfService
                             );
 
                             drawCellText(
-                                    content,
+                                    context.getContent(),
                                     row.get(col),
                                     currentX,
                                     currentRowY,
@@ -430,14 +448,57 @@ public class RetrievalTablePdfService
                         }
                     }
 
-                    tableY -= spanCount * rowHeight;
+                    context.setCurrentY(
+                    context.getCurrentY()
+                            - (spanCount * rowHeight)
+            );
 
                     rowIndex += spanCount;
                 }
 
-                tableY -= PdfConstants.SECTION_SPACING;
+                context.setCurrentY(context.getCurrentY() - PdfConstants.SECTION_SPACING);
             }
 
-                return tableY;
+                return context;
         }
+
+
+        private PdfPageContext createNewPage(PDDocument document) throws IOException {
+
+            PDPage page = new PDPage(PDRectangle.A4);
+
+            document.addPage(page);
+
+            PDPageContentStream content =
+                    new PDPageContentStream(
+                            document,
+                            page
+                    );
+
+            return new PdfPageContext(
+                    page,
+                    content,
+                    PdfConstants.TOP_Y
+            );
+        }
+
+        private PdfPageContext checkPageBreak(
+                PDDocument document,
+                PdfPageContext context,
+                float requiredHeight
+        ) throws IOException {
+
+            if (
+                    context.getCurrentY() - requiredHeight
+                            < PdfConstants.BOTTOM_MARGIN
+            ) {
+
+                context.getContent().close();
+
+                return createNewPage(document);
+            }
+
+            return context;
+        }
+
 }
