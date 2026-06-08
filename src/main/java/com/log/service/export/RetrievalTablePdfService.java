@@ -68,22 +68,126 @@ public class RetrievalTablePdfService
 
                 // ========= TABLE SECTION =============================================
 
-                // TABLE CONSTANTS
+                drawTableSection(
+                        content,
+                        data,
+                        y,
+                        leftMargin,
+                        rightMargin
+                );
 
-                float tableX = leftMargin;
+
+            }
+            document.save("retrieval-report.pdf");
+        }
+    }
+
+    private float drawReportHeader(
+            PDPage page,
+            PDPageContentStream content,
+            RetrievalTableReportData data,
+            String reportNumber,
+            float y,
+            float leftMargin,
+            float titleX,
+            float rightMargin,
+            String title
+    ) throws IOException {
+
+        writeBoldText(content, title, titleX, y);
+
+                y -= PdfConstants.SECTION_SPACING;
+
+                writeText(content, "Report number: " + reportNumber,
+                        leftMargin, y);
+
+                writeRightAlignedText(content, "Date: " + DateUtils.getCurrentDateFormatted(),
+                        rightMargin, y);
+
+                y -= PdfConstants.SECTION_SPACING;
+
+                writeText(
+                        content,
+                        "Project name: " + data.getProjectName(),
+                        leftMargin,
+                        y
+                );
+
+                y -= PdfConstants.LINE_SPACING;
+
+                writeText(
+                        content,
+                        "Product: " + data.getProduct(),
+                        leftMargin,
+                        y
+                );
+
+
+
+                y -= PdfConstants.LINE_SPACING;
+
+                if(data.getBatchNo() != null){
+
+                    writeText(content, "Batch No.: " + data.getBatchNo(),
+                            leftMargin,
+                            y);
+
+                    y -= PdfConstants.LINE_SPACING;
+                }
+                writeText(
+                        content,
+                        "Component ID: "+ data.getComponentId(),
+                        leftMargin,
+                        y
+                );
+
+                y -= PdfConstants.LINE_SPACING;
+
+                writeText(
+                        content,
+                        "SOP: " + data.getSop(),
+                        leftMargin,
+                        y
+                );
+
+                y -= PdfConstants.LINE_SPACING;
+
+                writeText(
+                        content,
+                        "Test Schedule: " + data.getTestSchedule(),
+                        leftMargin,
+                        y
+                );
+
+                y -= PdfConstants.SECTION_SPACING;
+
+                return y;
+
+        }
+
+
+        private void drawTableSection(
+        PDPageContentStream content,
+        RetrievalTableReportData data,
+        float y,
+        float leftMargin,
+        float rightMargin
+        ) throws IOException {
+
+        float tableX = leftMargin;
                 float tableY = y;
 
                 float rowHeight = PdfTableConstants.ROW_HEIGHT;
 
                 List<String> headers = data.getHeaders();
 
+                int propertyIndex = headers.indexOf("Property");
 
                 // ================= COLUMN WIDTHS =================
 
                 Map<String, Float> weights = new HashMap<>();
 
                 weights.put("Property", 3f);
-                weights.put("Category", 2f);
                 weights.put("Temperature", 2f);
                 weights.put("Direction", 2f);
                 weights.put("Average Value", 1.5f);
@@ -179,133 +283,122 @@ public class RetrievalTablePdfService
                 tableY -= rowHeight;
 
                 // =====================================================
-                // DATA ROWS
+                // DATA ROWS (MERGED PROPERTY CELLS)
                 // =====================================================
 
-                for (List<String> row : section.getValue()) {
+                List<List<String>> rows = section.getValue();
 
-                    currentX = tableX;
+                int rowIndex = 0;
 
-                    for (int i = 0; i < row.size(); i++) {
+                while (rowIndex < rows.size()) {
 
-                        String cellValue = row.get(i);
+                    List<String> firstRow = rows.get(rowIndex);
 
-                        String header = headers.get(i);
+                    String propertyText =
+                            firstRow.get(propertyIndex);
 
-                        float width = columnWidths.get(header);
+                    int spanCount = 1;
 
-                        drawCell(
-                                content,
-                                currentX,
-                                tableY,
-                                width,
-                                rowHeight
-                        );
-
-                        drawCellText(
-                                content,
-                                cellValue,
-                                currentX,
-                                tableY,
-                                width,
-                                rowHeight
-                        );
-
-                        currentX += width;
+                    while (
+                            rowIndex + spanCount < rows.size()
+                            &&
+                            rows.get(rowIndex + spanCount)
+                                    .get(propertyIndex)
+                                    .equals(propertyText)
+                    ) {
+                        spanCount++;
                     }
 
-                    tableY -= rowHeight;
+                    // ==========================================
+                    // PROPERTY CELL
+                    // ==========================================
+
+                    float propertyX = tableX;
+
+                    for (int i = 0; i < propertyIndex; i++) {
+                        propertyX += columnWidths.get(headers.get(i));
+                    }
+
+                    float propertyWidth =
+                            columnWidths.get(headers.get(propertyIndex));
+
+                    float mergedHeight =
+                            spanCount * rowHeight;
+
+                    float mergedY =
+                            tableY - mergedHeight + rowHeight;
+
+                    drawCell(
+                            content,
+                            propertyX,
+                            mergedY,
+                            propertyWidth,
+                            mergedHeight
+                    );
+
+                    drawWrappedCellText(
+                            content,
+                            propertyText,
+                            propertyX,
+                            mergedY,
+                            propertyWidth,
+                            mergedHeight
+                    );
+
+                    // ==========================================
+                    // OTHER CELLS
+                    // ==========================================
+
+                    for (int offset = 0; offset < spanCount; offset++) {
+
+                        List<String> row =
+                                rows.get(rowIndex + offset);
+
+                        float currentRowY =
+                                tableY - (offset * rowHeight);
+
+                        currentX = tableX;
+
+                        for (int col = 0; col < headers.size(); col++) {
+
+                            String header = headers.get(col);
+
+                            float width =
+                                    columnWidths.get(header);
+
+                            if (col == propertyIndex) {
+
+                                currentX += width;
+                                continue;
+                            }
+
+                            drawCell(
+                                    content,
+                                    currentX,
+                                    currentRowY,
+                                    width,
+                                    rowHeight
+                            );
+
+                            drawCellText(
+                                    content,
+                                    row.get(col),
+                                    currentX,
+                                    currentRowY,
+                                    width,
+                                    rowHeight
+                            );
+
+                            currentX += width;
+                        }
+                    }
+
+                    tableY -= spanCount * rowHeight;
+
+                    rowIndex += spanCount;
                 }
 
                 tableY -= PdfConstants.SECTION_SPACING;
             }
-
-
-            }
-            document.save("retrieval-report.pdf");
-        }
-    }
-
-    private float drawReportHeader(
-            PDPage page,
-            PDPageContentStream content,
-            RetrievalTableReportData data,
-            String reportNumber,
-            float y,
-            float leftMargin,
-            float titleX,
-            float rightMargin,
-            String title
-    ) throws IOException {
-
-        writeBoldText(content, title, titleX, y);
-
-                y -= PdfConstants.SECTION_SPACING;
-
-                writeText(content, "Report number: " + reportNumber,
-                        leftMargin, y);
-
-                writeRightAlignedText(content, "Date: " + DateUtils.getCurrentDateFormatted(),
-                        rightMargin, y);
-
-                y -= PdfConstants.SECTION_SPACING;
-
-                writeText(
-                        content,
-                        "Project name: " + data.getProjectName(),
-                        leftMargin,
-                        y
-                );
-
-                y -= PdfConstants.LINE_SPACING;
-
-                writeText(
-                        content,
-                        "Product: " + data.getProduct(),
-                        leftMargin,
-                        y
-                );
-
-
-
-                y -= PdfConstants.LINE_SPACING;
-
-                if(data.getBatchNo() != null){
-
-                    writeText(content, "Batch No.: " + data.getBatchNo(),
-                            leftMargin,
-                            y);
-
-                    y -= PdfConstants.LINE_SPACING;
-                }
-                writeText(
-                        content,
-                        "Component ID: "+ data.getComponentId(),
-                        leftMargin,
-                        y
-                );
-
-                y -= PdfConstants.LINE_SPACING;
-
-                writeText(
-                        content,
-                        "SOP: " + data.getSop(),
-                        leftMargin,
-                        y
-                );
-
-                y -= PdfConstants.LINE_SPACING;
-
-                writeText(
-                        content,
-                        "Test Schedule: " + data.getTestSchedule(),
-                        leftMargin,
-                        y
-                );
-
-                y -= PdfConstants.SECTION_SPACING;
-
-                return y;
-
         }
 }

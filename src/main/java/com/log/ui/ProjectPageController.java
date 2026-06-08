@@ -250,7 +250,7 @@ public class ProjectPageController {
         MenuItem openResultsItem = new MenuItem("View Results");
         openResultsItem.setOnAction(e -> openBatchResults(b));
 
-        MenuItem openCategoriesItem = new MenuItem("Edit in Categories");
+        MenuItem openCategoriesItem = new MenuItem("Add new entries");
         openCategoriesItem.setOnAction(e -> openInCategories(b));
 
         contextMenu.getItems().addAll(openResultsItem, openCategoriesItem);
