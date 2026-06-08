@@ -7,11 +7,13 @@ public final class StateManager {
     }
 
     public static void clearAll() {
-
-        AppState.getInstance().clear();
+        AppState appState = AppState.getInstance();
+        appState.clear();
+        appState.setEditMode(false);
         BasePropertiesState.getInstance().clear();
         DefaultMapState.getInstance().clear();
         SelectedState.getInstance().clear();
+
     }
 
 }

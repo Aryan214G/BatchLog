@@ -1,6 +1,5 @@
 package com.log.service.export;
 
-import com.log.database.DBUtil;
 import com.log.dto.ReportData;
 import com.log.model.BatchTest;
 import com.log.model.Property;
@@ -9,8 +8,6 @@ import com.log.service.*;
 import com.log.util.DateUtils;
 import com.log.util.DialogUtils;
 
-import javafx.stage.FileChooser;
-import javafx.stage.Window;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -22,14 +19,16 @@ import org.apache.pdfbox.printing.PDFPageable;
 import java.awt.*;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class PdfReportService {
+import static com.log.util.pdf.PdfUtils.*;
+
+public class PropertyReportService
+        implements Exporter<ReportData>  {
 
     // ============== IMPORT SERVICES ====================
 
@@ -39,7 +38,6 @@ public class PdfReportService {
 
     // ============== IMPORT UTILITY CLASSES ====================
 
-    private DateUtils dateUtils = new DateUtils();
 
     // ======================================================================
 
@@ -86,7 +84,7 @@ public class PdfReportService {
                 property.getTemperature().getTempVal(),
                 property.getTemperature().getTempUnitVal(),
                 reportNumber,
-                dateUtils.getCurrentDateFormatted(),
+                DateUtils.getCurrentDateFormatted(),
                 findMin(property),
                 findMax(property),
                 average,
@@ -128,7 +126,10 @@ public class PdfReportService {
             .orElse(null);
     }
 
-    public void printPdf(ReportData reportData) throws IOException, PrinterException {
+     // ======================================================================
+
+    @Override
+    public void export(ReportData reportData) throws IOException, PrinterException {
 
 //        FileChooser chooser = new FileChooser();
 //
@@ -279,24 +280,34 @@ public class PdfReportService {
 
             y-= 20;
 
-            String standardDeviation = String.format("%.1f", reportData.getStandardDeviation());
+            String standardDeviation =
+        reportData.getStandardDeviation() == null
+                ? "-"
+                : String.format(
+                        "%.1f",
+                        reportData.getStandardDeviation()
+                );
 
             writeText(content, "Standard deviation: " + standardDeviation, 50, y);
 
         }
 
         try {
+
             PrinterJob job = PrinterJob.getPrinterJob();
 
-            job.setPageable(
-                    new PDFPageable(document)
-            );
 
-            if (job.printDialog()) {
+            job.setPageable(new PDFPageable(document));
+
+            boolean accepted = job.printDialog();
+
+            System.out.println("Dialog result = " + accepted);
+
+            if (accepted) {
+                System.out.println(job.getPrintService());
                 job.print();
+                System.out.println("Print done");
             }
-        } catch (NullPointerException e) {
-            throw new RuntimeException(e);
         } catch (HeadlessException e) {
             throw new RuntimeException(e);
         } catch (PrinterException e) {
@@ -306,85 +317,5 @@ public class PdfReportService {
 
 
 }
-
-    private void writeText(
-        PDPageContentStream content,
-        String text,
-        float x,
-        float y)
-        throws IOException {
-
-        content.beginText();
-        content.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 12);
-        content.newLineAtOffset(x, y);
-        content.showText(text);
-        content.endText();
-    }
-
-    private void writeBoldText(
-        PDPageContentStream content,
-        String text,
-        float x,
-        float y)
-        throws IOException {
-
-        content.beginText();
-        content.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 12);
-        content.newLineAtOffset(x, y);
-        content.showText(text);
-        content.endText();
-    }
-
-    private void writeRightAlignedText(PDPageContentStream content, String text, float rightX, float y) throws IOException {
-
-        PDFont font = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
-        float fontSize = 12;
-
-        float textWidth = font.getStringWidth(text) / 1000 * fontSize;
-
-        writeText(content, text, rightX - textWidth, y);
-    }
-
-    private void drawLine(PDPageContentStream content, float startX, float startY, float endX, float endY) throws IOException {
-
-    content.moveTo(startX, startY);
-    content.lineTo(endX, endY);
-    content.stroke();
-}
-
-    // ======================== TABLES ====================================
-
-    private void drawCell(PDPageContentStream content, float x, float y, float width, float height) throws IOException {
-
-        content.addRect(x, y, width, height);
-        content.stroke();
-    }
-
-    private void drawCellText(PDPageContentStream content, String text, float x, float y, float cellWidth, float cellHeight) throws IOException {
-
-    PDFont font = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
-    float fontSize = 12;
-
-    float textWidth = font.getStringWidth(text) / 1000 * fontSize;
-
-    float textX = x + (cellWidth - textWidth) / 2;
-    float textY = y + (cellHeight - fontSize) / 2 + 4;
-
-    writeText(content, text, textX, textY);
-}
-
-private void drawCellTextBold(PDPageContentStream content, String text, float x, float y, float cellWidth, float cellHeight) throws IOException {
-
-    PDFont font = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
-    float fontSize = 12;
-
-    float textWidth = font.getStringWidth(text) / 1000 * fontSize;
-
-    float textX = x + (cellWidth - textWidth) / 2;
-    float textY = y + (cellHeight - fontSize) / 2 + 4;
-
-    writeBoldText(content, text, textX, textY);
-}
-
 
 }

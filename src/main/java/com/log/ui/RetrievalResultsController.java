@@ -4,12 +4,15 @@ import com.log.core.AppState;
 import com.log.core.BasePropertiesState;
 import com.log.database.DBUtil;
 import com.log.dto.ReportData;
+import com.log.dto.RetrievalTableReportData;
 import com.log.model.Batch;
 import com.log.model.BatchTest;
 import com.log.model.PropertyRow;
 import com.log.service.BatchService;
 import com.log.service.BatchTestService;
-import com.log.service.export.PdfReportService;
+import com.log.service.export.PropertyReportService;
+import com.log.service.export.RetrievalTablePdfService;
+import com.log.util.AlertUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -63,10 +66,11 @@ public class RetrievalResultsController {
 
     private int testId;
 
-    private PdfReportService pdfReportService = new PdfReportService();
+    private PropertyReportService propertyReportService = new PropertyReportService();
 
     private BatchTestService batchTestService = new BatchTestService();
     private BatchService batchService = new BatchService();
+    private RetrievalTablePdfService rtPdfService = new RetrievalTablePdfService();
     // ── Row model ─────────────────────────────────────────────────────────────
 
 
@@ -391,11 +395,11 @@ public class RetrievalResultsController {
             throws SQLException, IOException, PrinterException {
 
         ReportData propertyReport =
-                pdfReportService.buildReportData(propertyId);
+                propertyReportService.buildReportData(propertyId);
 
         Thread printThread = new Thread(() -> {
             try {
-                pdfReportService.printPdf(propertyReport);
+                propertyReportService.export(propertyReport);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -454,8 +458,8 @@ public class RetrievalResultsController {
     }
 
     @FXML
-    private void handlePrint() {
-        // Filter rows same way as populateGrid
+    private void handlePrint() throws Exception {
+
         List<PropertyRow> visibleRows = cachedRows.stream()
                 .filter(r -> propertyStates.getOrDefault(r.getName(), true))
                 .toList();
@@ -463,6 +467,34 @@ public class RetrievalResultsController {
         if (visibleRows.isEmpty()) {
             return;
         }
+
+        // ── Unit consistency check ────────────────────────────────────────────────
+        Map<String, String> propertyUnits = new LinkedHashMap<>();
+        List<String> inconsistentProperties = new ArrayList<>();
+
+        for (PropertyRow p : visibleRows) {
+            String unit = p.getUnit() != null ? p.getUnit() : "";
+            String existingUnit = propertyUnits.get(p.getName());
+
+            if (existingUnit == null) {
+                propertyUnits.put(p.getName(), unit);
+            } else if (!existingUnit.equals(unit)) {
+                if (!inconsistentProperties.contains(p.getName())) {
+                    inconsistentProperties.add(p.getName());
+                }
+            }
+        }
+
+        if (!inconsistentProperties.isEmpty()) {
+            String propertyList = String.join(", ", inconsistentProperties);
+            AlertUtil.showError(
+                    "Cannot export: the following properties have inconsistent units across entries:\n\n"
+                            + propertyList
+                            + "\n\nPlease ensure all entries for the same property use the same unit."
+            );
+            return;
+        }
+        // ─────────────────────────────────────────────────────────────────────────
 
         int maxValues = visibleRows.stream()
                 .mapToInt(r -> r.getValues().size())
@@ -472,7 +504,6 @@ public class RetrievalResultsController {
         // Build headers respecting column filters
         List<String> headers = new ArrayList<>();
         if (columnStates.getOrDefault("Property",      true)) headers.add("Property");
-        if (columnStates.getOrDefault("Category",      true)) headers.add("Category");
         if (columnStates.getOrDefault("Temperature",   true)) headers.add("Temperature");
         if (columnStates.getOrDefault("Direction",     true)) headers.add("Direction");
         if (columnStates.getOrDefault("Values",        true)) {
@@ -481,14 +512,13 @@ public class RetrievalResultsController {
         if (columnStates.getOrDefault("Average Value", true)) headers.add("Average Value");
 
         // Build rows respecting column filters
-        List<List<String>> tableData = new ArrayList<>();
+        Map<String, List<List<String>>> groupedTableData = new LinkedHashMap<>();
+
         for (PropertyRow p : visibleRows) {
             List<String> rowData = new ArrayList<>();
 
             if (columnStates.getOrDefault("Property",      true))
                 rowData.add(p.getName() + (p.getUnit() != null ? " (" + p.getUnit() + ")" : ""));
-            if (columnStates.getOrDefault("Category",      true))
-                rowData.add(p.getCategory() != null ? p.getCategory() : "—");
             if (columnStates.getOrDefault("Temperature",   true))
                 rowData.add(p.getTemperature() != null ? p.getTemperature() : "—");
             if (columnStates.getOrDefault("Direction",     true))
@@ -501,10 +531,40 @@ public class RetrievalResultsController {
             if (columnStates.getOrDefault("Average Value", true))
                 rowData.add(formatDouble(p.getAverage()));
 
-            tableData.add(rowData);
+            groupedTableData
+                .computeIfAbsent(
+                        p.getCategory(),
+                        k -> new ArrayList<>()
+                )
+                .add(rowData);
         }
 
         System.out.println(headers);
-        System.out.println(tableData);
+        System.out.println(headers);
+
+        groupedTableData.forEach(
+                (category, rows) -> {
+
+                    System.out.println(category);
+
+                    rows.forEach(System.out::println);
+                }
+        );
+        System.out.println(basePropertiesState.getProductID());
+        RetrievalTableReportData data =
+        new RetrievalTableReportData(
+                headers,
+                groupedTableData,
+                basePropertiesState.getProjectName(),
+                basePropertiesState.getSop(),
+                basePropertiesState.getProductName(),
+                basePropertiesState.getProductID(),
+                basePropertiesState.getBatchNo(),
+                null //TODO: replace this after adding test schedule everywhere else
+        );
+
+    rtPdfService.export(data);
     }
+
+
 }
