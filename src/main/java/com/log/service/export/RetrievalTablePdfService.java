@@ -68,9 +68,113 @@ public class RetrievalTablePdfService
 
                 // ========= TABLE SECTION =============================================
 
-                // TABLE CONSTANTS
+                drawTableSection(
+                        content,
+                        data,
+                        y,
+                        leftMargin,
+                        rightMargin
+                );
 
-                float tableX = leftMargin;
+
+            }
+            document.save("retrieval-report.pdf");
+        }
+    }
+
+    private float drawReportHeader(
+            PDPage page,
+            PDPageContentStream content,
+            RetrievalTableReportData data,
+            String reportNumber,
+            float y,
+            float leftMargin,
+            float titleX,
+            float rightMargin,
+            String title
+    ) throws IOException {
+
+        writeBoldText(content, title, titleX, y);
+
+                y -= PdfConstants.SECTION_SPACING;
+
+                writeText(content, "Report number: " + reportNumber,
+                        leftMargin, y);
+
+                writeRightAlignedText(content, "Date: " + DateUtils.getCurrentDateFormatted(),
+                        rightMargin, y);
+
+                y -= PdfConstants.SECTION_SPACING;
+
+                writeText(
+                        content,
+                        "Project name: " + data.getProjectName(),
+                        leftMargin,
+                        y
+                );
+
+                y -= PdfConstants.LINE_SPACING;
+
+                writeText(
+                        content,
+                        "Product: " + data.getProduct(),
+                        leftMargin,
+                        y
+                );
+
+
+
+                y -= PdfConstants.LINE_SPACING;
+
+                if(data.getBatchNo() != null){
+
+                    writeText(content, "Batch No.: " + data.getBatchNo(),
+                            leftMargin,
+                            y);
+
+                    y -= PdfConstants.LINE_SPACING;
+                }
+                writeText(
+                        content,
+                        "Component ID: "+ data.getComponentId(),
+                        leftMargin,
+                        y
+                );
+
+                y -= PdfConstants.LINE_SPACING;
+
+                writeText(
+                        content,
+                        "SOP: " + data.getSop(),
+                        leftMargin,
+                        y
+                );
+
+                y -= PdfConstants.LINE_SPACING;
+
+                writeText(
+                        content,
+                        "Test Schedule: " + data.getTestSchedule(),
+                        leftMargin,
+                        y
+                );
+
+                y -= PdfConstants.SECTION_SPACING;
+
+                return y;
+
+        }
+
+
+        private void drawTableSection(
+        PDPageContentStream content,
+        RetrievalTableReportData data,
+        float y,
+        float leftMargin,
+        float rightMargin
+        ) throws IOException {
+
+        float tableX = leftMargin;
                 float tableY = y;
 
                 float rowHeight = PdfTableConstants.ROW_HEIGHT;
@@ -219,93 +323,5 @@ public class RetrievalTablePdfService
 
                 tableY -= PdfConstants.SECTION_SPACING;
             }
-
-
-            }
-            document.save("retrieval-report.pdf");
-        }
-    }
-
-    private float drawReportHeader(
-            PDPage page,
-            PDPageContentStream content,
-            RetrievalTableReportData data,
-            String reportNumber,
-            float y,
-            float leftMargin,
-            float titleX,
-            float rightMargin,
-            String title
-    ) throws IOException {
-
-        writeBoldText(content, title, titleX, y);
-
-                y -= PdfConstants.SECTION_SPACING;
-
-                writeText(content, "Report number: " + reportNumber,
-                        leftMargin, y);
-
-                writeRightAlignedText(content, "Date: " + DateUtils.getCurrentDateFormatted(),
-                        rightMargin, y);
-
-                y -= PdfConstants.SECTION_SPACING;
-
-                writeText(
-                        content,
-                        "Project name: " + data.getProjectName(),
-                        leftMargin,
-                        y
-                );
-
-                y -= PdfConstants.LINE_SPACING;
-
-                writeText(
-                        content,
-                        "Product: " + data.getProduct(),
-                        leftMargin,
-                        y
-                );
-
-
-
-                y -= PdfConstants.LINE_SPACING;
-
-                if(data.getBatchNo() != null){
-
-                    writeText(content, "Batch No.: " + data.getBatchNo(),
-                            leftMargin,
-                            y);
-
-                    y -= PdfConstants.LINE_SPACING;
-                }
-                writeText(
-                        content,
-                        "Component ID: "+ data.getComponentId(),
-                        leftMargin,
-                        y
-                );
-
-                y -= PdfConstants.LINE_SPACING;
-
-                writeText(
-                        content,
-                        "SOP: " + data.getSop(),
-                        leftMargin,
-                        y
-                );
-
-                y -= PdfConstants.LINE_SPACING;
-
-                writeText(
-                        content,
-                        "Test Schedule: " + data.getTestSchedule(),
-                        leftMargin,
-                        y
-                );
-
-                y -= PdfConstants.SECTION_SPACING;
-
-                return y;
-
         }
 }
