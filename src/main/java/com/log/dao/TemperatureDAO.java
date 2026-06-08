@@ -28,12 +28,11 @@ public class TemperatureDAO {
             stmt.executeUpdate();
 
             ResultSet rs = stmt.getGeneratedKeys();
-            int tempId = -1;
 
             if(rs.next()){
                 return tempId = rs.getInt(1);
             }
-            this.tempId = tempId;
+            return -1;
         } catch (SQLException e) {
             e.printStackTrace();
         }

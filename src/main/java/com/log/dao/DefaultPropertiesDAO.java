@@ -14,6 +14,35 @@ import java.util.List;
 
 public class DefaultPropertiesDAO {
 
+    public boolean propertyExists(
+            Connection conn,
+            String propertyName,
+            int categoryId
+    ) {
+
+        String sql = """
+        SELECT 1
+        FROM Default_Properties
+        WHERE Def_PropName = ?
+        AND Category_ID = ?
+        """;
+
+        try (PreparedStatement stmt =
+                     conn.prepareStatement(sql)) {
+
+            stmt.setString(1, propertyName);
+            stmt.setInt(2, categoryId);
+
+            ResultSet rs = stmt.executeQuery();
+
+            return rs.next();
+
+        } catch (SQLException e) {
+
+            throw new RuntimeException(e);
+        }
+    }
+
     public ObservableList<DefaultProperty> getDefaultProperties(String categoryName){
 
 
@@ -182,5 +211,71 @@ JOIN Units
 
             e.printStackTrace();
         }
+    }
+
+    public int insertDefaultProperty(
+            Connection conn,
+            DefaultProperty property
+    ) {
+
+        String sql = """
+        INSERT INTO Default_Properties
+        (
+            Def_PropName,
+            Unit_ID,
+            Rows,
+            Category_ID,
+            Has_Component_Number
+        )
+        VALUES (?, ?, ?, ?, ?)
+        """;
+
+        try (PreparedStatement stmt =
+                     conn.prepareStatement(
+                             sql,
+                             Statement.RETURN_GENERATED_KEYS
+                     )) {
+
+            stmt.setString(
+                    1,
+                    property.getPropertyName()
+            );
+
+            stmt.setInt(
+                    2,
+                    property.getUnitId()
+            );
+
+            stmt.setInt(
+                    3,
+                    property.getRows()
+            );
+
+            stmt.setInt(
+                    4,
+                    property.getCategoryId()
+            );
+
+            stmt.setInt(
+                    5,
+                    property.getHasComponentNumber()
+            );
+
+            stmt.executeUpdate();
+
+            ResultSet rs =
+                    stmt.getGeneratedKeys();
+
+            if (rs.next()) {
+
+                return rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+
+            throw new RuntimeException(e);
+        }
+
+        return -1;
     }
 }

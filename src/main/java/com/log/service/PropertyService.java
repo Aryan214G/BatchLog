@@ -14,6 +14,7 @@ import javafx.collections.ObservableList;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 public class PropertyService {
     private final PropertyDAO propertyDAO;
@@ -66,4 +67,5 @@ public class PropertyService {
         }
     }
 
+    public Map<String,Double> getAverageFromTest(Connection conn, int TestId) throws SQLException {return propertyDAO.getPropertyAveragesByTest(conn,TestId);}
 }

@@ -9,23 +9,6 @@ import java.util.List;
 
 public class UnitsDAO {
 
-    public void insertUnit(Unit unit) {
-
-        String sql = "INSERT INTO Units (Unit_ID, Unit) VALUES (?, ?)";
-
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, unit.getUnitId());
-            stmt.setString(2, unit.getUnit());
-
-            stmt.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     public Unit getUnitById(int unitId) {
 
