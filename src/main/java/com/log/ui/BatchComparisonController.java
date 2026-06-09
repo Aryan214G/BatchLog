@@ -2,7 +2,10 @@ package com.log.ui;
 
 import com.log.dao.PropertyDAO;
 import com.log.database.DBUtil;
+import com.log.dto.ComparisonReportData;
 import com.log.model.BatchTest;
+import com.log.service.export.ComparisonReportService;
+import com.log.service.export.ReportGenerator;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -27,6 +30,8 @@ public class BatchComparisonController {
     private List<String> allProperties = new ArrayList<>();
     private List<BatchTest> batches;
     private PropertyDAO propertyDAO = new PropertyDAO();
+
+    private ReportGenerator<ComparisonReportData> reportService = new ComparisonReportService();
 
     // ── Filter state ──────────────────────────────────────────────────────────
     // Column = each batch row, Property = each property column
@@ -251,5 +256,58 @@ public class BatchComparisonController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    //TODO: feeding example data currently, replace that with actual implememtation
+    @FXML
+    private void handlePrint(){
+        Map<String, List<String>> rows =
+            new LinkedHashMap<>();
+
+    rows.put(
+            "Density",
+            List.of(
+                    "1.23",
+                    "1.45",
+                    "1.31"
+            )
+    );
+
+    rows.put(
+            "Open Porosity",
+            List.of(
+                    "2.10",
+                    "2.30",
+                    "2.25"
+            )
+    );
+
+    rows.put(
+            "Flexural Strength",
+            List.of(
+                    "45.2",
+                    "47.8",
+                    "44.9"
+            )
+    );
+
+    ComparisonReportData data =
+            new ComparisonReportData(
+                    List.of(
+                            "Batch-101",
+                            "Batch-102",
+                            "Batch-103"
+                    ),
+                    rows
+            );
+
+    try {
+        new ComparisonReportService()
+                .generateReport(data);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
     }
 }

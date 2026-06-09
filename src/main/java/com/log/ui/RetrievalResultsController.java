@@ -10,8 +10,9 @@ import com.log.model.BatchTest;
 import com.log.model.PropertyRow;
 import com.log.service.BatchService;
 import com.log.service.BatchTestService;
+import com.log.service.export.ReportGenerator;
 import com.log.service.export.PropertyReportService;
-import com.log.service.export.RetrievalTablePdfService;
+import com.log.service.export.RetrievalTableReportService;
 import com.log.util.AlertUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -66,13 +67,14 @@ public class RetrievalResultsController {
 
     private int testId;
 
-    private PropertyReportService propertyReportService = new PropertyReportService();
+// ============== SERVICES =============================================
 
     private BatchTestService batchTestService = new BatchTestService();
     private BatchService batchService = new BatchService();
-    private RetrievalTablePdfService rtPdfService = new RetrievalTablePdfService();
-    // ── Row model ─────────────────────────────────────────────────────────────
 
+    // REPORT SERVICES
+    private PropertyReportService propertyReportService = new PropertyReportService();
+    private ReportGenerator<RetrievalTableReportData> rtReportService = new RetrievalTableReportService();
 
 
     // ── Entry point ───────────────────────────────────────────────────────────
@@ -399,7 +401,7 @@ public class RetrievalResultsController {
 
         Thread printThread = new Thread(() -> {
             try {
-                propertyReportService.export(propertyReport);
+                propertyReportService.generateReport(propertyReport);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -563,7 +565,7 @@ public class RetrievalResultsController {
                 null //TODO: replace this after adding test schedule everywhere else
         );
 
-    rtPdfService.export(data);
+    rtReportService.generateReport(data);
     }
 
 

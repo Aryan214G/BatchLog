@@ -101,8 +101,7 @@ public class BatchDAO {
                 p.Product_name,
                 bt.Test_date,
                 bt.Test_site,
-                bt.SOP,
-                bt.Test_schedule
+                bt.SOP
             FROM Batch b
             JOIN Product   p  ON b.Product_CODE  = p.Product_code
             JOIN Project   pr ON p.Project_ID    = pr.Project_ID
@@ -124,8 +123,7 @@ public class BatchDAO {
                         rs.getString("Test_date"),
                         rs.getString("Test_site"),
                         rs.getInt("Product_CODE"),
-                        rs.getString("SOP"),
-                        rs.getString("Test_schedule")
+                        rs.getString("SOP")
                 ));
             }
         }

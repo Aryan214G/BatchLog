@@ -29,8 +29,7 @@ public class ProjectContentService {
 
                 bt.Test_date,
                 bt.Test_site,
-                bt.SOP,
-                bt.Test_schedule
+                bt.SOP
 
             FROM Batch_Test bt
 
@@ -74,8 +73,7 @@ public class ProjectContentService {
                                 rs.getInt("Test_ID"),
                                 rs.getInt("Product_CODE"),
                                 rs.getString("Product_ID"),
-                                rs.getString("SOP"),
-                                rs.getString("Test_schedule")
+                                rs.getString("SOP")
                         )
                 );
             }

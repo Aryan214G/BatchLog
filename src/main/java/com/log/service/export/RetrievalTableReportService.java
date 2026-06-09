@@ -19,11 +19,11 @@ import java.util.List;
 
 import static com.log.util.pdf.PdfUtils.*;
 
-public class RetrievalTablePdfService
-        implements Exporter<RetrievalTableReportData> {
+public class RetrievalTableReportService
+        implements ReportGenerator<RetrievalTableReportData> {
 
         @Override
-    public void export(RetrievalTableReportData data)
+    public void generateReport(RetrievalTableReportData data)
             throws Exception {
 
         Optional<String> result = DialogUtils.showTextInputDialog(

@@ -76,7 +76,7 @@ public class ProjectPageController {
         batchesGrid.getChildren().clear();
         batchesGrid.getColumnConstraints().clear();
 
-        String[] headers = {"Batch ID","Component ID", "Product", "Test Date", "Test Site","SOP","Test schedule"};
+        String[] headers = {"Batch ID","Component ID", "Product", "Test Date", "Test Site","SOP"};
 
         for (int i = 0; i < headers.length; i++) {
             ColumnConstraints cc = new ColumnConstraints();
@@ -101,10 +101,9 @@ public class ProjectPageController {
             Label testDateCell    = makeCell(b.getTestDate(),    isAlt);
             Label testSiteCell    = makeCell(b.getTestSite(),    isAlt);
             Label sopCell         = makeCell(b.getSop(),         isAlt);
-            Label testschedulecell =makeCell(b.getTestSchedule(),isAlt);
 
             // Left click opens results, right click shows context menu
-            for (Label cell : List.of(batchIdCell, componentIdCell, productCell, testDateCell, testSiteCell, sopCell, testschedulecell)) {
+            for (Label cell : List.of(batchIdCell, componentIdCell, productCell, testDateCell, testSiteCell, sopCell)) {
                 cell.getStyleClass().add("clickable-row");
                 cell.setOnMouseClicked(e -> {
                     if (e.getButton() == javafx.scene.input.MouseButton.PRIMARY) {
@@ -120,7 +119,6 @@ public class ProjectPageController {
             batchesGrid.add(testDateCell,    3, row);
             batchesGrid.add(testSiteCell,    4, row);
             batchesGrid.add(sopCell,         5, row);
-            batchesGrid.add(testschedulecell, 6, row);
             row++;
         }
 
@@ -141,7 +139,6 @@ public class ProjectPageController {
         bpropState.setPlaceOfTesting((b.getTestSite()));
         bpropState.setTestId(b.getTestId());
         bpropState.setSop(b.getSop());
-        bpropState.setTestSchedule(b.getTestSchedule());
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/log/ui/views/RetrievalResults.fxml")
@@ -154,8 +151,7 @@ public class ProjectPageController {
                     b.getTestDate(),
                     b.getTestSite(),
                     b.getProductCode(),
-                    b.getSop(),
-                    b.getTestSchedule()
+                    b.getSop()
             );
 
             RetrievalResultsController controller = loader.getController();
@@ -270,7 +266,6 @@ public class ProjectPageController {
         bpropState.setTestId(b.getTestId());
         bpropState.setSop(b.getSop());
         bpropState.setBatchCode(b.getBatchCode());
-        bpropState.setTestSchedule(b.getTestSchedule());
 
         appState.setProjectCreated(true);
 
