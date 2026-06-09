@@ -17,7 +17,8 @@ public class SearchUtil {
                                      String batchId,
                                      String testDate,
                                      String testSite,
-                                     String sop) throws SQLException {
+                                     String sop,
+                                     String testschedule) throws SQLException {
 
         StringBuilder sql = new StringBuilder("""
             SELECT
@@ -27,7 +28,8 @@ public class SearchUtil {
                             bt.Test_Date,
                             bt.Test_Site,
                             bt.Product_CODE,
-                            bt.SOP
+                            bt.SOP,
+                            bt.Test_schedule
             FROM Batch b
             JOIN Product pd         ON b.Product_CODE  = pd.Product_code
             JOIN Project pr         ON pd.Project_ID   = pr.Project_ID
@@ -61,6 +63,11 @@ public class SearchUtil {
             sql.append(" AND LOWER(bt.SOP) LIKE ?");
             params.add("%" + sop.toLowerCase() + "%");
         }
+        if (testschedule != null && !testschedule.isBlank()) {
+            sql.append(" AND LOWER(bt.Test_schedule) LIKE ?");
+            params.add("%" + testschedule.toLowerCase() + "%");
+        }
+
         sql.append(" ORDER BY b.Batch_CODE, bt.Test_ID");
 
         PreparedStatement stmt = conn.prepareStatement(sql.toString());
@@ -109,7 +116,8 @@ public class SearchUtil {
             String productName,
             String testDate,
             String testSite,
-            String sop
+            String sop,
+            String testschedule
     ) throws SQLException {
 
         StringBuilder sql = new StringBuilder("""
@@ -119,6 +127,7 @@ public class SearchUtil {
         bt.Test_Site,
         bt.Product_CODE,
         bt.SOP,
+        bt.Test_schedule,
         pd.Product_name
     FROM Batch_Test bt
     JOIN Product pd
@@ -153,6 +162,11 @@ public class SearchUtil {
         if (sop != null && !sop.isBlank()) {
             sql.append(" AND LOWER(bt.SOP) LIKE ?");
             params.add("%" + sop.toLowerCase() + "%");
+        }
+
+        if (testschedule != null && !testschedule.isBlank()) {
+            sql.append(" AND LOWER(bt.Test_schedule) LIKE ?");
+            params.add("%" + testschedule.toLowerCase() + "%");
         }
 
         PreparedStatement stmt =

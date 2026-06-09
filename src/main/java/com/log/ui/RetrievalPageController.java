@@ -39,6 +39,7 @@ public class RetrievalPageController {
     @FXML private TextField Dateoftestingfield;
     @FXML private TextField Placeoftestingfield;
     @FXML private TextField SOPfield;
+    @FXML private TextField testschedulefield;
     @FXML private VBox sidebar;
     @FXML private Button toggleBtn;
     @FXML private VBox resultsContainer;
@@ -315,7 +316,9 @@ public class RetrievalPageController {
                     BatchIDfield.getText(),
                     Dateoftestingfield.getText(),
                     Placeoftestingfield.getText(),
-                    SOPfield.getText()
+                    SOPfield.getText(),
+                    testschedulefield.getText()
+
             );
             populateBatchResults(results);
         } catch (SQLException e) {
@@ -341,7 +344,8 @@ public class RetrievalPageController {
                     productField.getText(),
                     Dateoftestingfield.getText(),
                     Placeoftestingfield.getText(),
-                    SOPfield.getText()
+                    SOPfield.getText(),
+                    testschedulefield.getText()
             );
             populateProductResults(results);
         } catch (SQLException e) {
