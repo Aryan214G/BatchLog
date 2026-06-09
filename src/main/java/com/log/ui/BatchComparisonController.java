@@ -261,36 +261,22 @@ public class BatchComparisonController {
 
     //TODO: feeding example data currently, replace that with actual implememtation
     @FXML
-    private void handlePrint(){
-        Map<String, List<String>> rows =
+private void handlePrint() {
+
+    Map<String, List<String>> rows =
             new LinkedHashMap<>();
 
-    rows.put(
-            "Density",
-            List.of(
-                    "1.23",
-                    "1.45",
-                    "1.31"
-            )
-    );
+    for (int i = 1; i <= 60; i++) {
 
-    rows.put(
-            "Open Porosity",
-            List.of(
-                    "2.10",
-                    "2.30",
-                    "2.25"
-            )
-    );
-
-    rows.put(
-            "Flexural Strength",
-            List.of(
-                    "45.2",
-                    "47.8",
-                    "44.9"
-            )
-    );
+        rows.put(
+                "Property " + i,
+                List.of(
+                        String.format("%.2f", 1.0 + i * 0.1),
+                        String.format("%.2f", 2.0 + i * 0.1),
+                        String.format("%.2f", 3.0 + i * 0.1)
+                )
+        );
+    }
 
     ComparisonReportData data =
             new ComparisonReportData(
@@ -303,11 +289,13 @@ public class BatchComparisonController {
             );
 
     try {
+
         new ComparisonReportService()
                 .generateReport(data);
 
     } catch (Exception e) {
+
         e.printStackTrace();
     }
-    }
+}
 }
