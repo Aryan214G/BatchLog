@@ -268,15 +268,15 @@ public class PropertyReportService
 
             y-= 20;
 
-            writeText(content, "Minimum: " + reportData.getMin(), 50, y);
+            writeText(content, "Minimum: " + String.format("%.1f", reportData.getMin()), 50, y);
 
             y-= 20;
 
-            writeText(content, "Maximum: " + reportData.getMax(), 50, y);
+            writeText(content, "Maximum: " + String.format("%.1f", reportData.getMax()), 50, y);
 
             y-= 20;
 
-            writeText(content, "Average: " + reportData.getAverage(), 50, y);
+            writeText(content, "Average: " + String.format("%.1f", reportData.getAverage()), 50, y);
 
             y-= 20;
 
