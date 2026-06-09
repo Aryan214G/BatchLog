@@ -18,6 +18,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -32,10 +33,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class RetrievalResultsController {
 
@@ -45,6 +43,14 @@ public class RetrievalResultsController {
     private List<PropertyRow> cachedRows = new ArrayList<>();
 
     private String backDestination = "/com/log/ui/views/RetrievalPage.fxml";
+
+    private boolean groupByCategory = false;
+
+    @FXML
+    private void handleToggleGrouping() {
+        groupByCategory = !groupByCategory;
+        populateGrid(cachedRows);
+    }
 
     private Map<String, Boolean> columnStates = new LinkedHashMap<>() {{
         put("Property",      true);
@@ -220,10 +226,18 @@ public class RetrievalResultsController {
         propertiesGrid.getChildren().clear();
         propertiesGrid.getColumnConstraints().clear();
 
-        // Filter rows by property visibility
         List<PropertyRow> visibleRows = rows.stream()
                 .filter(r -> propertyStates.getOrDefault(r.getName(), true))
                 .toList();
+
+        // ── Group by category if enabled ──────────────────────────────────────────
+        if (groupByCategory) {
+            visibleRows = visibleRows.stream()
+                    .sorted(Comparator.comparing(
+                            r -> r.getCategory() != null ? r.getCategory() : ""
+                    ))
+                    .toList();
+        }
 
         if (visibleRows.isEmpty()) {
             Label empty = new Label("No properties to display.");
@@ -239,12 +253,9 @@ public class RetrievalResultsController {
         if (columnStates.getOrDefault("Temperature",   true)) headers.add("Temperature");
         if (columnStates.getOrDefault("Direction",     true)) headers.add("Direction");
 
-
         int maxValues = visibleRows.stream().mapToInt(r -> r.getValues().size()).max().orElse(0);
         if (columnStates.getOrDefault("Values", true)) {
-            for (int i = 0; i < maxValues; i++) {
-                headers.add("Value " + (i + 1));
-            }
+            for (int i = 0; i < maxValues; i++) headers.add("Value " + (i + 1));
         }
         if (columnStates.getOrDefault("Average Value", true)) headers.add("Average Value");
 
@@ -261,48 +272,59 @@ public class RetrievalResultsController {
             propertiesGrid.add(makeHeader(headers.get(i)), i, 0);
         }
 
-        // Data rows
-        // Data rows
+        // Data rows — insert category divider rows when grouping
         int row = 1;
+        String lastCategory = null;
 
         for (PropertyRow p : visibleRows) {
-
             boolean isAlt = (row % 2 == 0);
             int col = 0;
+
+            // ── Category divider when grouped ─────────────────────────────────────
+            if (groupByCategory) {
+                String currentCategory = p.getCategory() != null ? p.getCategory() : "—";
+                if (!currentCategory.equals(lastCategory)) {
+                    propertiesGrid.add(
+                            makeCategoryDivider(currentCategory, headers.size()),
+                            0, row
+                    );
+                    row++;
+                    lastCategory = currentCategory;
+                    isAlt = false;
+                }
+            }
 
             ContextMenu rowMenu = createRowContextMenu(p);
 
             if (columnStates.getOrDefault("Property", true))
-                propertiesGrid.add(makeCell(p.getName()+" ("+ (p.getUnit() != null ? p.getUnit()+")" : ""), isAlt, rowMenu),
-                        col++, row);
-
+                propertiesGrid.add(makeCell(p.getName() + " (" + (p.getUnit() != null ? p.getUnit() + ")" : ""), isAlt, rowMenu), col++, row);
             if (columnStates.getOrDefault("Category", true))
                 propertiesGrid.add(makeCell(p.getCategory(), isAlt, rowMenu), col++, row);
-
             if (columnStates.getOrDefault("Temperature", true))
                 propertiesGrid.add(makeCell(p.getTemperature() != null ? p.getTemperature() : "—", isAlt, rowMenu), col++, row);
-
             if (columnStates.getOrDefault("Direction", true))
                 propertiesGrid.add(makeCell(p.getDirection(), isAlt, rowMenu), col++, row);
 
             if (columnStates.getOrDefault("Values", true)) {
-
                 for (int i = 0; i < maxValues; i++) {
-
                     String val = i < p.getValues().size() ? formatDouble(p.getValues().get(i)) + " " : "";
-
-                    propertiesGrid.add(makeCell(val, isAlt, rowMenu), col++, row
-                    );
+                    propertiesGrid.add(makeCell(val, isAlt, rowMenu), col++, row);
                 }
             }
 
             if (columnStates.getOrDefault("Average Value", true))
-                propertiesGrid.add(
-                        makeCell(formatDouble(p.getAverage()), isAlt, rowMenu), col++, row
-                );
+                propertiesGrid.add(makeCell(formatDouble(p.getAverage()), isAlt, rowMenu), col++, row);
 
             row++;
         }
+    }
+
+    private Label makeCategoryDivider(String categoryName, int colSpan) {
+        Label label = new Label(categoryName);
+        label.getStyleClass().add("category-divider");
+        label.setMaxWidth(Double.MAX_VALUE);
+        GridPane.setColumnSpan(label, colSpan);
+        return label;
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
@@ -567,6 +589,10 @@ public class RetrievalResultsController {
 
     rtReportService.generateReport(data);
     }
+
+    @FXML private Button groupToggleBtn;
+
+
 
 
 }

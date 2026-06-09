@@ -27,6 +27,7 @@
                 <Button onAction="#handleFilter" styleClass="primary-btn" text="⚙ Filter" />
                 <Button text="🖶 Print" onAction="#handlePrint" styleClass="primary-btn"/>
             <!--<Button fx:id="editBtn" mnemonicParsing="false" onAction="#handleEdit" text="Edit" />-->
+                <Button text="⊞ Group by Category" onAction="#handleToggleGrouping" styleClass="primary-btn" fx:id="groupToggleBtn"/>
             </HBox>
             <Label fx:id="batchTitleLabel" styleClass="batch-title" />
             <!--
