@@ -11,6 +11,7 @@ import com.log.util.DialogUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
@@ -154,7 +155,7 @@ public class PropertyReportService
 
     try (PDDocument document = new PDDocument()) {
 
-        PDPage page = new PDPage();
+        PDPage page = new PDPage(PDRectangle.A4);
         document.addPage(page);
 
         try (PDPageContentStream content =
@@ -169,7 +170,7 @@ public class PropertyReportService
 
             float RIGHT_COLUMN_X = pageWidth - 200;
 
-            float y = 700;
+            float y = 750;
             // ________________________________________________________________________________
 
 
@@ -223,7 +224,10 @@ public class PropertyReportService
             String propertyName = reportData.getPropertyName().toUpperCase();
             String unit = reportData.getUnit();
 
-            writeBoldText(content, propertyName  + " (" + unit + ")", 250, y);
+            float propertyWidth = font.getStringWidth(propertyName) / 1000 * fontSize;
+            float propertyX = (page.getMediaBox().getWidth() - propertyWidth) / 2;
+
+            writeBoldText(content, propertyName  + " (" + unit + ")", propertyX, y);
 
             y -= 60;
 
