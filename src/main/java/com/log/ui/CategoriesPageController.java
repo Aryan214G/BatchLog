@@ -30,9 +30,6 @@ import java.util.*;
 public class CategoriesPageController {
 
     @FXML
-    private Button editButton;
-
-    @FXML
     private SearchBarController searchBarController;
 
     private ContextMenu editMenu;
@@ -151,16 +148,6 @@ public class CategoriesPageController {
 
         }
         refreshcatmap();
-
-        // EDIT MENU SETUP
-        MenuItem addItem = new MenuItem("Add Category");
-        MenuItem deleteItem = new MenuItem("Delete Selected Category");
-
-        //TODO: un-comment later
-//        addItem.setOnAction(e -> openAddCategoryPopup());
-        deleteItem.setOnAction(e -> handleDeleteCategory());
-
-        editMenu = new ContextMenu(addItem, deleteItem);
     }
 
     private TextField searchField;
@@ -437,40 +424,6 @@ public class CategoriesPageController {
     private void isPrintButtonVisible(boolean value){
         printButton.setVisible(value);
         submitButton.setManaged(value);
-    }
-
-    @FXML
-    private void handleEditClick() {
-        if(instance.isProjectCreated())
-        {
-        editMenu.show(editButton, Side.BOTTOM, 0, 0);
-        }
-        else if(!instance.isProjectCreated())
-        {
-            AlertUtil.showError("Please create a project before editing categories.");
-        }
-
-    }
-
-    private void handleDeleteCategory() {
-
-        String selectedCategory =
-                categoriesListView.getSelectionModel().getSelectedItem();
-
-        if (selectedCategory == null) return;
-
-        List<Category> dbCategories = categoryService.getAllCategories();
-
-        for (Category c : dbCategories) {
-
-            if (c.getCategoryName().equals(selectedCategory)) {
-
-                categoryService.deleteCategory(c.getCategoryId());
-                break;
-            }
-        }
-
-        loadCategoriesFromDB();
     }
 
     private void CategorySelectionListener() {

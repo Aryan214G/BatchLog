@@ -95,7 +95,8 @@ public class SearchUtil {
                         rs.getString("Test_Date"),
                         rs.getString("Test_Site"),
                         rs.getInt("Product_CODE"),
-                        rs.getString("SOP")
+                        rs.getString("SOP"),
+                        rs.getString("Test_schedule")
                 ));
             }
         }
@@ -175,7 +176,8 @@ public class SearchUtil {
                             rs.getString("Test_Date"),
                             rs.getString("Test_Site"),
                             rs.getInt("Product_CODE"),
-                            rs.getString("SOP")
+                            rs.getString("SOP"),
+                            rs.getString("Test_schedule")
                     )
             );
         }

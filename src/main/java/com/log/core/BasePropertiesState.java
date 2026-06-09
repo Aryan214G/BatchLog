@@ -21,6 +21,7 @@ public class BasePropertiesState {
     private String placeOfTesting;
     private int testId;
     private String sop;
+    private String testSchedule;
 
     public int getTestId() {
         System.out.println(
@@ -83,6 +84,10 @@ public class BasePropertiesState {
         this.sop = sop;
     }
 
+    public String getTestSchedule() { return testSchedule; }
+
+    public void setTestSchedule(String testSchedule) { this.testSchedule = testSchedule; }
+
     public void clear() {
 
         projectId = 0;
@@ -102,6 +107,8 @@ public class BasePropertiesState {
         sop = null;
 
         testId = 0;
+
+        testSchedule = null;
 
         System.out.println("BasePropertiesState cleared");
     }
