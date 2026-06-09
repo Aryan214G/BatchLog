@@ -65,14 +65,6 @@ public class ComparisonReportService
             float rightMargin =
                     PdfLayoutUtils.getRightMargin(page);
 
-            drawLine(
-                    content,
-                    leftMargin,
-                    y,
-                    rightMargin,
-                    y
-            );
-
             y -= PdfConstants.SECTION_SPACING;
 
             startRow = drawComparisonTable(
@@ -153,21 +145,17 @@ public class ComparisonReportService
         float tableX = leftMargin;
         float tableY = y;
 
-        float rowHeight = 30;
+        float rowHeight = 45;
 
         List<String> headers =
                 new ArrayList<>();
 
         headers.add("Property");
-        headers.addAll(
-                data.getColumnHeaders()
-        );
+        headers.addAll(data.getColumnHeaders());
 
-        float availableWidth =
-                rightMargin - leftMargin;
+        float availableWidth = rightMargin - leftMargin;
 
-        float propertyWidth =
-                availableWidth * 0.30f;
+        float propertyWidth = availableWidth * 0.30f;
 
         float valueWidth =
                 (availableWidth - propertyWidth)
@@ -238,7 +226,7 @@ while (rowIndex < rows.size()) {
             rowHeight
     );
 
-    drawCellText(
+    drawWrappedCellText(
             content,
             row.getKey(),
             currentX,
