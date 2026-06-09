@@ -1138,7 +1138,7 @@ public class CategoriesPageController {
 
             Thread t = new Thread(() -> {
                 try {
-                    propertyReportService.export(report);
+                    propertyReportService.generateReport(report);
 
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -28,7 +28,7 @@ import java.util.Optional;
 import static com.log.util.pdf.PdfUtils.*;
 
 public class PropertyReportService
-        implements Exporter<ReportData>  {
+        implements ReportGenerator<ReportData> {
 
     // ============== IMPORT SERVICES ====================
 
@@ -129,7 +129,7 @@ public class PropertyReportService
      // ======================================================================
 
     @Override
-    public void export(ReportData reportData) throws IOException, PrinterException {
+    public void generateReport(ReportData reportData) throws IOException, PrinterException {
 
 //        FileChooser chooser = new FileChooser();
 //

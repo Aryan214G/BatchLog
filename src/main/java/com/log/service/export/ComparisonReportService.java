@@ -3,10 +3,10 @@ package com.log.service.export;
 import com.log.dto.ComparisonReportData;
 
 public class ComparisonReportService
-        implements Exporter<ComparisonReportData> {
+        implements ReportGenerator<ComparisonReportData> {
 
     @Override
-    public void export(
+    public void generateReport(
             ComparisonReportData data
     ) throws Exception {
 
