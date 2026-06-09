@@ -11,11 +11,10 @@ public class BatchRow {
         private String sop;
         private String componentId;
         private Integer productCode;
-        private String testSchedule;
 
 
 
-    public BatchRow(Integer batchCode, String batchId, String productName, String testDate, String testSite,Integer productCode,String sop,String testSchedule) {
+    public BatchRow(Integer batchCode, String batchId, String productName, String testDate, String testSite,Integer productCode,String sop) {
         this.batchCode = batchCode;
         this.batchId = batchId;
         this.productName = productName;
@@ -23,9 +22,8 @@ public class BatchRow {
         this.testSite = testSite;
         this.productCode= productCode;
         this.sop= sop;
-        this.testSchedule=testSchedule;
     }
-    public BatchRow(Integer batchCode, String batchId, String productName, String testDate, String testSite, int testId,Integer productCode,String sop,String testSchedule) {
+    public BatchRow(Integer batchCode, String batchId, String productName, String testDate, String testSite, int testId,Integer productCode,String sop) {
         this.batchCode = batchCode;
         this.batchId = batchId;
         this.productName = productName;
@@ -34,10 +32,9 @@ public class BatchRow {
         this.testId = testId;
         this.productCode=productCode;
         this.sop=sop;
-        this.testSchedule=testSchedule;
     }
 
-    public BatchRow(Integer batchCode, String batchId, String productName, String testDate, String testSite, Integer productCode, String componentId,String sop,String testSchedule) {
+    public BatchRow(Integer batchCode, String batchId, String productName, String testDate, String testSite, Integer productCode, String componentId,String sop) {
         this.batchCode = batchCode;
         this.batchId = batchId;
         this.productName = productName;
@@ -46,10 +43,9 @@ public class BatchRow {
         this.productCode = productCode;
         this.componentId = componentId;
         this.sop=sop;
-        this.testSchedule=testSchedule;
     }
 
-    public BatchRow(Integer batchCode, String batchId, String productName, String testDate, String testSite, int testId, Integer productCode, String componentId,String sop,String testSchedule) {
+    public BatchRow(Integer batchCode, String batchId, String productName, String testDate, String testSite, int testId, Integer productCode, String componentId,String sop) {
         this.batchCode = batchCode;
         this.batchId = batchId;
         this.productName = productName;
@@ -59,7 +55,6 @@ public class BatchRow {
         this.productCode = productCode;
         this.componentId = componentId;
         this.sop=sop;
-        this.testSchedule=testSchedule;
     }
 
     public Integer getBatchCode() {
@@ -129,9 +124,4 @@ public class BatchRow {
     public void setSop(String sop) {
         this.sop = sop;
     }
-
-    public void setTestSchedule(String testSchedule) {this.testSchedule = testSchedule;}
-
-    public String getTestSchedule() {return testSchedule;}
-
 }

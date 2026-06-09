@@ -1,26 +1,22 @@
 package com.log.ui;
 
-import com.log.core.StateManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class MenubarController {
 
-    public MenuItem newProjectBtn;
     @FXML
     private MenuBar menuBar;
 
     @FXML
     private void loadBasePropertiesView(ActionEvent event) throws IOException {
-        StateManager.clearAll();
         String path = "/com/log/ui/views/BaseProperties.fxml";
         loadScene(event, path);
     }
@@ -120,7 +116,7 @@ public class MenubarController {
 
     @FXML
     private void openbaseprops() {
-        
+
         try {
 
             FXMLLoader loader =
