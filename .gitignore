@@ -41,3 +41,4 @@ build/
 /database/BatchLog_test.db-journal
 /report.pdf
 /retrieval-report.pdf
+/comparison-report.pdf
