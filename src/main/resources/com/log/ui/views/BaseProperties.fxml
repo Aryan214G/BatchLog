@@ -44,6 +44,9 @@
             <Label text="Place of Testing" />
             <TextField fx:id="placeOfTesting" alignment="CENTER" maxWidth="700.0" />
 
+            <Label text="Test Schedule"/>
+            <TextField fx:id="testschedule" alignment="CENTER" maxWidth="700.0" promptText="Optional" />
+
         </VBox>
     </center>
 

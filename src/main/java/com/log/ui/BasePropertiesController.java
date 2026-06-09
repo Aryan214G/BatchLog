@@ -34,6 +34,7 @@ public class BasePropertiesController {
     @FXML private DatePicker testDate;
     @FXML private TextField placeOfTesting;
     @FXML private TextField sop;
+    @FXML private TextField testschedule;
     private boolean isEdit = false;
     private final AppState appState = AppState.getInstance();
     private final BasePropertiesState bpropState = BasePropertiesState.getInstance();
@@ -62,7 +63,7 @@ public class BasePropertiesController {
         String component = productID.getText();
         LocalDate date = testDate.getValue();
         String place = placeOfTesting.getText();
-
+        String schedule = testschedule.getText().trim();
 
         bpropState.setProjectName(projectName.getText());
         bpropState.setBatchNo(StringUtils.nullIfBlank(batchNo.getText()));
@@ -71,14 +72,13 @@ public class BasePropertiesController {
         bpropState.setProductID(productID.getText());
         bpropState.setTestDate(testDate.getValue());
         bpropState.setPlaceOfTesting(placeOfTesting.getText());
+        bpropState.setTestSchedule(schedule.isBlank() ? null : schedule);
 
 
         if(isEdit){
             handleEditBatch();
             return;
         }
-
-        //manual transaction handling to prevent DB lock issues
         Connection conn = null;
 
         try {
@@ -130,6 +130,7 @@ public class BasePropertiesController {
             String sop=bpropState.getSop();
             String testDate = bpropState.getTestDate().toString();
             String testSite = bpropState.getPlaceOfTesting();
+            String testSchedule=bpropState.getTestSchedule();
 
             int productCode =
                     productService.getProductCodeFromDB(
@@ -152,7 +153,8 @@ public class BasePropertiesController {
                                 testDate,
                                 testSite,
                                 productCode,
-                                sop
+                                sop,
+                                testSchedule
                         )
                 );
 
@@ -175,7 +177,8 @@ public class BasePropertiesController {
                             testDate,
                             testSite,
                             productCode,
-                            sop
+                            sop,
+                            testSchedule
                     )
             );
         }
@@ -214,16 +217,6 @@ public class BasePropertiesController {
         if (productName.getText().isBlank()) return false;
 
         return true;
-    }
-
-    private void clearFields() {
-        projectName.clear();
-        batchNo.clear();
-        productName.clear();
-        productID.clear();
-        placeOfTesting.clear();
-        testDate.setValue(null);
-        sop.setText(null);
     }
 
     public void setEdit(boolean value){
@@ -269,6 +262,9 @@ public class BasePropertiesController {
                 bpropState.getPlaceOfTesting()
         );
 
+        testschedule.setText(
+                bpropState.getTestSchedule()
+        );
 
         System.out.println("Project Name = " + bpropState.getProjectName());
         System.out.println("Batch No = " + bpropState.getBatchNo());
@@ -277,6 +273,7 @@ public class BasePropertiesController {
         System.out.println("Test Date = " + bpropState.getTestDate());
         System.out.println("Place = " + bpropState.getPlaceOfTesting());
         System.out.println("SOP = " + bpropState.getSop());
+        System.out.println("Test Schedule = " + bpropState.getTestSchedule());
     }
 
     private void handleEditBatch() throws SQLException {
@@ -287,6 +284,7 @@ public class BasePropertiesController {
         String component = productID.getText();
         LocalDate date = testDate.getValue();
         String place = placeOfTesting.getText();
+        String schedule = testschedule.getText().trim();
 
 
         Connection connection = DBUtil.getConnection();
@@ -318,6 +316,7 @@ public class BasePropertiesController {
         bpropState.setProductID(productID.getText());
         bpropState.setTestDate(testDate.getValue());
         bpropState.setPlaceOfTesting(placeOfTesting.getText());
+        bpropState.setTestSchedule(schedule);
 
         loadCategoriesPage();
     }
