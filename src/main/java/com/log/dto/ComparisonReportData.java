@@ -5,26 +5,17 @@ import java.util.Map;
 
 public class ComparisonReportData {
 
-    private String title;
-
-    // Batch No. / Component ID headers
     private List<String> columnHeaders;
 
-    // Property -> values
+    // Property -> averages
     private Map<String, List<String>> rows;
 
     public ComparisonReportData(
-            String title,
             List<String> columnHeaders,
             Map<String, List<String>> rows
     ) {
-        this.title = title;
         this.columnHeaders = columnHeaders;
         this.rows = rows;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public List<String> getColumnHeaders() {
