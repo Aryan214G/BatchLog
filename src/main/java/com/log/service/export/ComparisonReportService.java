@@ -9,7 +9,11 @@ import com.log.util.pdf.PdfUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.printing.PDFPageable;
 
+import java.awt.*;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +82,8 @@ public class ComparisonReportService
         }
     }
 
-    document.save("comparison-report.pdf");
+//    document.save("comparison-report.pdf");
+    printReport(document);
 }
     }
 
@@ -266,4 +271,30 @@ while (rowIndex < rows.size()) {
 
 return rowIndex;
     }
+
+    private void printReport(PDDocument document){
+
+        try {
+
+            PrinterJob job = PrinterJob.getPrinterJob();
+
+
+            job.setPageable(new PDFPageable(document));
+
+            boolean accepted = job.printDialog();
+
+            System.out.println("Dialog result = " + accepted);
+
+            if (accepted) {
+                System.out.println(job.getPrintService());
+                job.print();
+                System.out.println("Print done");
+            }
+        } catch (HeadlessException e) {
+            throw new RuntimeException(e);
+        } catch (PrinterException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
