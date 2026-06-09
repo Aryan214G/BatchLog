@@ -1,5 +1,7 @@
 package com.log.ui;
 
+import com.log.dao.BatchTestDAO;
+import com.log.dao.ProductDAO;
 import com.log.dao.PropertyDAO;
 import com.log.database.DBUtil;
 import com.log.dto.ComparisonReportData;
@@ -30,8 +32,11 @@ public class BatchComparisonController {
     private List<String> allProperties = new ArrayList<>();
     private List<BatchTest> batches;
     private PropertyDAO propertyDAO = new PropertyDAO();
+    private BatchTestDAO batchTestDAO = new BatchTestDAO();
+    private ProductDAO productDAO = new ProductDAO();
 
     private ReportGenerator<ComparisonReportData> reportService = new ComparisonReportService();
+
 
     // ── Filter state ──────────────────────────────────────────────────────────
     // Column = each batch row, Property = each property column
@@ -82,7 +87,11 @@ public class BatchComparisonController {
                 batchStates.putAll(result.columnStates);
                 propertyStates.clear();
                 propertyStates.putAll(result.propertyStates);
-                populateGrid();
+                try {
+                    populateGrid();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             });
 
             Stage popupStage = new Stage();
@@ -143,9 +152,10 @@ public class BatchComparisonController {
 
     // ── Grid rendering ────────────────────────────────────────────────────────
 
-    private void populateGrid() {
+    private void populateGrid() throws SQLException {
         comparisonGrid.getChildren().clear();
         comparisonGrid.getColumnConstraints().clear();
+        Connection conn = DBUtil.getConnection();
 
         // Filter visible properties and batches
         List<String> visibleProperties = allProperties.stream()
@@ -180,8 +190,8 @@ public class BatchComparisonController {
             BatchTest test = visibleBatches.get(i);
             String title;
             if (test.getBatchCode() != null) {
-                title = "Batch " + test.getBatchCode();
-            } else {title = "Test " + test.getTestId();}
+                title = "Batch " + batchTestDAO.getBatchIdByTestId(conn,test.getTestId());
+            } else {title = "Test " + test.getProductCode();}
             comparisonGrid.add(makeHeader(title), i + 1, 0);
         }
 
@@ -259,55 +269,61 @@ public class BatchComparisonController {
     }
 
 
-    //TODO: feeding example data currently, replace that with actual implememtation
     @FXML
-    private void handlePrint(){
-        Map<String, List<String>> rows =
-            new LinkedHashMap<>();
+    private void handlePrint() {
+        // Build batch labels — same logic as populateGrid headers
+        List<String> batchLabels = new ArrayList<>();
 
-    rows.put(
-            "Density",
-            List.of(
-                    "1.23",
-                    "1.45",
-                    "1.31"
-            )
-    );
+        try (Connection conn = DBUtil.getConnection()) {
+            List<BatchTest> visibleBatches = batches.stream()
+                    .filter(b -> {
+                        String key = b.getBatchCode() != null
+                                ? "Batch " + b.getBatchCode()
+                                : "Test " + b.getTestId();
+                        return batchStates.getOrDefault(key, true);
+                    })
+                    .toList();
 
-    rows.put(
-            "Open Porosity",
-            List.of(
-                    "2.10",
-                    "2.30",
-                    "2.25"
-            )
-    );
+            List<String> visibleProperties = allProperties.stream()
+                    .filter(p -> propertyStates.getOrDefault(p, true))
+                    .toList();
 
-    rows.put(
-            "Flexural Strength",
-            List.of(
-                    "45.2",
-                    "47.8",
-                    "44.9"
-            )
-    );
+            for (BatchTest test : visibleBatches) {
+                String label;
+                if (test.getBatchCode() != null) {
+                    label = batchTestDAO.getBatchIdByTestId(conn, test.getTestId());
+                } else {
+                    label = productDAO.getProductNameByCode(conn, test.getProductCode());
+                }
+                batchLabels.add(label != null ? label : "Test " + test.getTestId());
+            }
 
-    ComparisonReportData data =
-            new ComparisonReportData(
-                    List.of(
-                            "Batch-101",
-                            "Batch-102",
-                            "Batch-103"
-                    ),
-                    rows
-            );
+            // Build rows — one entry per property, values in batch order
+            Map<String, List<String>> rows = new LinkedHashMap<>();
 
-    try {
-        new ComparisonReportService()
-                .generateReport(data);
+            for (String propName : visibleProperties) {
+                List<String> values = new ArrayList<>();
 
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
+                for (BatchTest test : visibleBatches) {
+                    Integer key = test.getBatchCode() != null
+                            ? test.getBatchCode()
+                            : -test.getTestId();
+
+                    Map<String, Double> props = data.getOrDefault(key, Collections.emptyMap());
+                    values.add(props.containsKey(propName)
+                            ? formatDouble(props.get(propName))
+                            : "—");
+                }
+
+                rows.put(propName, values);
+            }
+
+            ComparisonReportData reportData = new ComparisonReportData(batchLabels, rows);
+
+            new ComparisonReportService().generateReport(reportData);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
