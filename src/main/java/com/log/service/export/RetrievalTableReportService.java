@@ -19,7 +19,7 @@ import java.util.List;
 
 import static com.log.util.pdf.PdfUtils.*;
 
-public class RetrievalTablePdfService
+public class RetrievalTableReportService
         implements Exporter<RetrievalTableReportData> {
 
         @Override

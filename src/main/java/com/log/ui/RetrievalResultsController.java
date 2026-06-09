@@ -10,8 +10,9 @@ import com.log.model.BatchTest;
 import com.log.model.PropertyRow;
 import com.log.service.BatchService;
 import com.log.service.BatchTestService;
+import com.log.service.export.Exporter;
 import com.log.service.export.PropertyReportService;
-import com.log.service.export.RetrievalTablePdfService;
+import com.log.service.export.RetrievalTableReportService;
 import com.log.util.AlertUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -70,7 +71,7 @@ public class RetrievalResultsController {
 
     private BatchTestService batchTestService = new BatchTestService();
     private BatchService batchService = new BatchService();
-    private RetrievalTablePdfService rtPdfService = new RetrievalTablePdfService();
+    private Exporter<RetrievalTableReportData> rtPdfService = new RetrievalTableReportService();
     // ── Row model ─────────────────────────────────────────────────────────────
 
 
