@@ -211,15 +211,17 @@ public class PropertyReportService
                 writeText(content, "Batch ID: " + reportData.getBatchId(), 50, y);
                 y -= 20;
             }
+//            writeText(content, "Product name: " + , 50, y);
+
             writeText(content, "Component ID: " + reportData.getComponentId(), 50, y);
 
             y-= 20;
 
             if(reportData.getSop() != null){
                 writeText(content, "SOP: " + reportData.getSop(), 50, y);
+                y -= 20;
             }
 
-            y -= 20;
 
             writeText(content, "Test Site: " + reportData.getTestSite(), 50, y);
 
