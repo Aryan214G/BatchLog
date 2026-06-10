@@ -1,13 +1,17 @@
 package com.log.ui;
 
+import com.log.core.AppState;
 import com.log.dao.BatchTestDAO;
 import com.log.dao.ProductDAO;
 import com.log.dao.PropertyDAO;
 import com.log.database.DBUtil;
 import com.log.dto.ComparisonReportData;
 import com.log.model.BatchTest;
+import com.log.model.DefaultProperty;
+import com.log.service.CategoryService;
 import com.log.service.export.ComparisonReportService;
 import com.log.service.export.ReportGenerator;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -35,6 +39,15 @@ public class BatchComparisonController {
     private BatchTestDAO batchTestDAO = new BatchTestDAO();
     private ProductDAO productDAO = new ProductDAO();
 
+
+    private AppState appState = AppState.getInstance();
+    private CategoryService categoryService = new CategoryService();
+
+    private Map<Integer, Map<String, Map<String, Double>>> unitData = new LinkedHashMap<>();
+
+    // Add this field to store category-ordered properties
+    private List<String> allPropertiesOrdered = new ArrayList<>();
+
     private ReportGenerator<ComparisonReportData> reportService = new ComparisonReportService();
 
 
@@ -57,7 +70,7 @@ public class BatchComparisonController {
             }
 
             propertyStates.clear();
-            for (String p : allProperties) {
+            for (String p : allPropertiesOrdered) {
                 propertyStates.put(p, true);
             }
 
@@ -112,42 +125,57 @@ public class BatchComparisonController {
         Set<String> propertySet = new LinkedHashSet<>();
 
         for (BatchTest test : batches) {
-
             Map<String, Double> averages;
+            Map<String, Map<String, Double>> unitAverages;
 
             if (test.getBatchCode() != null) {
-
-                averages =
-                        propertyDAO.getPropertyAveragesByBatch(
-                                conn,
-                                test.getBatchCode()
-                        );
-
-                data.put(
-                        test.getBatchCode(),
-                        averages
-                );
-
+                averages     = propertyDAO.getPropertyAveragesByBatch(conn, test.getBatchCode());
+                unitAverages = propertyDAO.getPropertyAveragesByBatchWithUnits(conn, test.getBatchCode());
+                data.put(test.getBatchCode(), averages);
+                unitData.put(test.getBatchCode(), unitAverages);
             } else {
-
-                averages =
-                        propertyDAO.getPropertyAveragesByTest(
-                                conn,
-                                test.getTestId()
-                        );
-
-                data.put(
-                        -test.getTestId(),   // unique key
-                        averages
-                );
+                averages     = propertyDAO.getPropertyAveragesByTest(conn, test.getTestId());
+                unitAverages = propertyDAO.getPropertyAveragesByTestWithUnits(conn, test.getTestId());
+                data.put(-test.getTestId(), averages);
+                unitData.put(-test.getTestId(), unitAverages);
             }
 
-            propertySet.addAll(
-                    averages.keySet()
-            );
+            propertySet.addAll(averages.keySet());
         }
 
+        allPropertiesOrdered = buildCategoryOrderedProperties(conn, propertySet);
         allProperties = new ArrayList<>(propertySet);
+    }
+
+
+    private List<String> buildCategoryOrderedProperties(Connection conn, Set<String> propertyNames) throws SQLException {
+        // Get categories in the same order AppState loads them
+        categoryService.refreshCategoriesState();
+        List<String> categoryOrder = appState.getCategories();
+
+        List<String> ordered = new ArrayList<>();
+
+        for (String category : categoryOrder) {
+            ObservableList<DefaultProperty> propertiesInCategory =
+                    appState.getCategoriesMap().get(category);
+
+            if (propertiesInCategory == null) continue;
+
+            for (DefaultProperty dp : propertiesInCategory) {
+                if (propertyNames.contains(dp.getPropertyName())) {
+                    ordered.add(dp.getPropertyName());
+                }
+            }
+        }
+
+        // Add any remaining properties not found in the category map
+        for (String p : propertyNames) {
+            if (!ordered.contains(p)) {
+                ordered.add(p);
+            }
+        }
+
+        return ordered;
     }
 
     // ── Grid rendering ────────────────────────────────────────────────────────
@@ -157,13 +185,17 @@ public class BatchComparisonController {
         comparisonGrid.getColumnConstraints().clear();
         Connection conn = DBUtil.getConnection();
 
-        // Filter visible properties and batches
-        List<String> visibleProperties = allProperties.stream()
+        List<String> visibleProperties = allPropertiesOrdered.stream()
                 .filter(p -> propertyStates.getOrDefault(p, true))
                 .toList();
 
         List<BatchTest> visibleBatches = batches.stream()
-                .filter(b -> batchStates.getOrDefault("Batch " + b.getBatchCode(), true))
+                .filter(b -> {
+                    String key = b.getBatchCode() != null
+                            ? "Batch " + b.getBatchCode()
+                            : "Test " + b.getTestId();
+                    return batchStates.getOrDefault(key, true);
+                })
                 .toList();
 
         if (visibleBatches.isEmpty() || visibleProperties.isEmpty()) {
@@ -173,7 +205,20 @@ public class BatchComparisonController {
             return;
         }
 
-        // Columns: "Property" + one per batch
+        // Collect all unique units per property across all visible batches
+        // propertyName → Set<unit>
+        Map<String, Set<String>> propertyUnits = new LinkedHashMap<>();
+        for (String propName : visibleProperties) {
+            Set<String> units = new LinkedHashSet<>();
+            for (BatchTest test : visibleBatches) {
+                Integer key = test.getBatchCode() != null ? test.getBatchCode() : -test.getTestId();
+                Map<String, Map<String, Double>> batchUnitData = unitData.getOrDefault(key, Collections.emptyMap());
+                Map<String, Double> unitMap = batchUnitData.getOrDefault(propName, Collections.emptyMap());
+                units.addAll(unitMap.keySet());
+            }
+            propertyUnits.put(propName, units);
+        }
+
         int totalCols = 1 + visibleBatches.size();
 
         for (int i = 0; i < totalCols; i++) {
@@ -184,46 +229,59 @@ public class BatchComparisonController {
             comparisonGrid.getColumnConstraints().add(cc);
         }
 
-        // Header row — "Property" + batch identifiers
+        // Header row
         comparisonGrid.add(makeHeader("Property"), 0, 0);
         for (int i = 0; i < visibleBatches.size(); i++) {
             BatchTest test = visibleBatches.get(i);
-            String title;
-            if (test.getBatchCode() != null) {
-                title = "Batch " + batchTestDAO.getBatchIdByTestId(conn,test.getTestId());
-            } else {title = "Test " + test.getProductCode();}
-            comparisonGrid.add(makeHeader(title), i + 1, 0);
+            String title = test.getBatchCode() != null
+                    ? batchTestDAO.getBatchIdByTestId(conn, test.getTestId())
+                    : productDAO.getProductNameByCode(conn, test.getProductCode());
+            comparisonGrid.add(makeHeader(title != null ? title : "Test " + test.getTestId()), i + 1, 0);
         }
 
-        // Data rows — one per property
+        // Data rows — one row per property+unit combination
         int row = 1;
         for (String propName : visibleProperties) {
             boolean isAlt = (row % 2 == 0);
+            Set<String> units = propertyUnits.getOrDefault(propName, Collections.emptySet());
 
-            // First cell — property name
-            comparisonGrid.add(makeCell(propName, isAlt), 0, row);
+            if (units.size() <= 1) {
+                // Single unit — display normally
+                String unit = units.isEmpty() ? "" : units.iterator().next();
+                String label = propName + (unit.isBlank() ? "" : " (" + unit + ")");
 
-            // Batch cells — average value for this property in each batch
-            for (int i = 0; i < visibleBatches.size(); i++) {
-                BatchTest test = visibleBatches.get(i);
+                comparisonGrid.add(makeCell(label, isAlt), 0, row);
 
-                Integer key =
-                        (test.getBatchCode() != null)
-                                ? test.getBatchCode()
-                                : -test.getTestId();
+                for (int i = 0; i < visibleBatches.size(); i++) {
+                    BatchTest test = visibleBatches.get(i);
+                    Integer key = test.getBatchCode() != null ? test.getBatchCode() : -test.getTestId();
+                    Map<String, Double> props = data.getOrDefault(key, Collections.emptyMap());
+                    String val = props.containsKey(propName) ? formatDouble(props.get(propName)) : "—";
+                    comparisonGrid.add(makeCell(val, isAlt), i + 1, row);
+                }
 
-                Map<String, Double> props =
-                        data.getOrDefault(
-                                key,
-                                Collections.emptyMap()
-                        );
-                String val = props.containsKey(propName)
-                        ? formatDouble(props.get(propName))
-                        : "—";
-                comparisonGrid.add(makeCell(val, isAlt), i + 1, row);
+                row++;
+
+            } else {
+                // Multiple units — one row per unit
+                for (String unit : units) {
+                    boolean unitRowIsAlt = (row % 2 == 0);
+                    String label = propName + " (" + unit + ")";
+
+                    comparisonGrid.add(makeCell(label, unitRowIsAlt), 0, row);
+
+                    for (int i = 0; i < visibleBatches.size(); i++) {
+                        BatchTest test = visibleBatches.get(i);
+                        Integer key = test.getBatchCode() != null ? test.getBatchCode() : -test.getTestId();
+                        Map<String, Map<String, Double>> batchUnitData = unitData.getOrDefault(key, Collections.emptyMap());
+                        Map<String, Double> unitMap = batchUnitData.getOrDefault(propName, Collections.emptyMap());
+                        String val = unitMap.containsKey(unit) ? formatDouble(unitMap.get(unit)) : "—";
+                        comparisonGrid.add(makeCell(val, unitRowIsAlt), i + 1, row);
+                    }
+
+                    row++;
+                }
             }
-
-            row++;
         }
     }
 
@@ -271,10 +329,10 @@ public class BatchComparisonController {
 
     @FXML
     private void handlePrint() {
-        // Build batch labels — same logic as populateGrid headers
         List<String> batchLabels = new ArrayList<>();
 
         try (Connection conn = DBUtil.getConnection()) {
+
             List<BatchTest> visibleBatches = batches.stream()
                     .filter(b -> {
                         String key = b.getBatchCode() != null
@@ -284,10 +342,11 @@ public class BatchComparisonController {
                     })
                     .toList();
 
-            List<String> visibleProperties = allProperties.stream()
+            List<String> visibleProperties = allPropertiesOrdered.stream()
                     .filter(p -> propertyStates.getOrDefault(p, true))
                     .toList();
 
+            // ── Build batch labels ────────────────────────────────────────────────
             for (BatchTest test : visibleBatches) {
                 String label;
                 if (test.getBatchCode() != null) {
@@ -298,28 +357,66 @@ public class BatchComparisonController {
                 batchLabels.add(label != null ? label : "Test " + test.getTestId());
             }
 
-            // Build rows — one entry per property, values in batch order
+            // ── Build rows — unit aware ───────────────────────────────────────────
             Map<String, List<String>> rows = new LinkedHashMap<>();
 
             for (String propName : visibleProperties) {
-                List<String> values = new ArrayList<>();
 
+                // Collect all unique units for this property across visible batches
+                Set<String> units = new LinkedHashSet<>();
                 for (BatchTest test : visibleBatches) {
                     Integer key = test.getBatchCode() != null
                             ? test.getBatchCode()
                             : -test.getTestId();
-
-                    Map<String, Double> props = data.getOrDefault(key, Collections.emptyMap());
-                    values.add(props.containsKey(propName)
-                            ? formatDouble(props.get(propName))
-                            : "—");
+                    Map<String, Double> unitMap = unitData
+                            .getOrDefault(key, Collections.emptyMap())
+                            .getOrDefault(propName, Collections.emptyMap());
+                    units.addAll(unitMap.keySet());
                 }
 
-                rows.put(propName, values);
+                if (units.size() <= 1) {
+                    // Single unit — one row
+                    String unit = units.isEmpty() ? "" : units.iterator().next();
+                    List<String> values = new ArrayList<>();
+
+                    for (BatchTest test : visibleBatches) {
+                        Integer key = test.getBatchCode() != null
+                                ? test.getBatchCode()
+                                : -test.getTestId();
+                        Map<String, Double> props = data.getOrDefault(
+                                key, Collections.emptyMap()
+                        );
+                        values.add(props.containsKey(propName)
+                                ? formatDouble(props.get(propName))
+                                : "—");
+                    }
+
+                    String rowLabel = propName + (unit.isBlank() ? "" : " (" + unit + ")");
+                    rows.put(rowLabel, values);
+
+                } else {
+                    // Multiple units — one row per unit
+                    for (String unit : units) {
+                        List<String> values = new ArrayList<>();
+
+                        for (BatchTest test : visibleBatches) {
+                            Integer key = test.getBatchCode() != null
+                                    ? test.getBatchCode()
+                                    : -test.getTestId();
+                            Map<String, Double> unitMap = unitData
+                                    .getOrDefault(key, Collections.emptyMap())
+                                    .getOrDefault(propName, Collections.emptyMap());
+                            values.add(unitMap.containsKey(unit)
+                                    ? formatDouble(unitMap.get(unit))
+                                    : "—");
+                        }
+
+                        rows.put(propName + " (" + unit + ")", values);
+                    }
+                }
             }
 
             ComparisonReportData reportData = new ComparisonReportData(batchLabels, rows);
-
             new ComparisonReportService().generateReport(reportData);
 
         } catch (Exception e) {
