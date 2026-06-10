@@ -14,15 +14,17 @@ import com.log.util.StringUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 
+import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import com.log.service.ProductService;
-import com.log.core.StateManager;
+import javafx.stage.Stage;
 
 public class BasePropertiesController {
 
@@ -34,6 +36,7 @@ public class BasePropertiesController {
     @FXML private DatePicker testDate;
     @FXML private TextField placeOfTesting;
     @FXML private TextField sop;
+    @FXML private TextField testSchedulefield;
     private boolean isEdit = false;
     private final AppState appState = AppState.getInstance();
     private final BasePropertiesState bpropState = BasePropertiesState.getInstance();
@@ -57,11 +60,12 @@ public class BasePropertiesController {
 
         String project = projectName.getText();
         String batch = batchNo.getText();
-        String sopValue = sop.getText().trim();
+        String sopValue = sop.getText() == null ? "" : sop.getText().trim();
         String product = productName.getText();
         String component = productID.getText();
         LocalDate date = testDate.getValue();
         String place = placeOfTesting.getText();
+        String testScheduleValue = testSchedulefield.getText() == null ? "" : testSchedulefield.getText().trim();
 
 
         bpropState.setProjectName(projectName.getText());
@@ -71,6 +75,7 @@ public class BasePropertiesController {
         bpropState.setProductID(productID.getText());
         bpropState.setTestDate(testDate.getValue());
         bpropState.setPlaceOfTesting(placeOfTesting.getText());
+        bpropState.setTestSchedule(testScheduleValue.isBlank() ? null : testScheduleValue);
 
 
         if(isEdit){
@@ -130,6 +135,7 @@ public class BasePropertiesController {
             String sop=bpropState.getSop();
             String testDate = bpropState.getTestDate().toString();
             String testSite = bpropState.getPlaceOfTesting();
+            String testSchedule=bpropState.getTestSchedule();
 
             int productCode =
                     productService.getProductCodeFromDB(
@@ -152,7 +158,8 @@ public class BasePropertiesController {
                                 testDate,
                                 testSite,
                                 productCode,
-                                sop
+                                sop,
+                                testSchedule
                         )
                 );
 
@@ -175,7 +182,8 @@ public class BasePropertiesController {
                             testDate,
                             testSite,
                             productCode,
-                            sop
+                            sop,
+                            testSchedule
                     )
             );
         }
@@ -197,10 +205,26 @@ public class BasePropertiesController {
         }
     }
 
+    private void loadhomepage()
+    {
+      try
+      {
+          FXMLLoader loader = new FXMLLoader(
+          getClass().getResource("/com/log/ui/views/homepage.fxml")
+                  );
+
+          Parent root = loader.load();
+
+      }
+      catch (IOException e)
+      {
+          e.printStackTrace();
+      }
+    }
     private ProductService productService = new ProductService();
     @FXML
     private void handleCancel() {
-        loadCategoriesPage();
+        loadhomepage();
     }
 
     // ===== HELPERS =====
@@ -224,6 +248,7 @@ public class BasePropertiesController {
         placeOfTesting.clear();
         testDate.setValue(null);
         sop.setText(null);
+        testSchedulefield.setText(null);
     }
 
     public void setEdit(boolean value){
@@ -269,6 +294,10 @@ public class BasePropertiesController {
                 bpropState.getPlaceOfTesting()
         );
 
+        testSchedulefield.setText(
+                bpropState.getTestSchedule()
+        );
+
 
         System.out.println("Project Name = " + bpropState.getProjectName());
         System.out.println("Batch No = " + bpropState.getBatchNo());
@@ -287,6 +316,7 @@ public class BasePropertiesController {
         String component = productID.getText();
         LocalDate date = testDate.getValue();
         String place = placeOfTesting.getText();
+        String testSchedulevalue = testSchedulefield.getText().trim();
 
 
         Connection connection = DBUtil.getConnection();
@@ -318,6 +348,8 @@ public class BasePropertiesController {
         bpropState.setProductID(productID.getText());
         bpropState.setTestDate(testDate.getValue());
         bpropState.setPlaceOfTesting(placeOfTesting.getText());
+        bpropState.setTestSchedule(testSchedulevalue.isBlank() ? null : testSchedulevalue);
+
 
         loadCategoriesPage();
     }
