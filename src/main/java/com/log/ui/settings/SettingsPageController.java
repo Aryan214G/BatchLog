@@ -1,4 +1,4 @@
-package com.log.ui;
+package com.log.ui.settings;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -51,4 +51,7 @@ public class SettingsPageController {
 
     @FXML
     private void showCategoriesPage() { loadPage("AddCategorySettings.fxml"); }
+
+    @FXML
+    private void showBackupPage(){ loadPage("BackupAndRestorePage.fxml");}
 }

@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="TOP_CENTER" spacing="30" styleClass="entries-panel" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.DefaultsSettingsController">
+<VBox alignment="TOP_CENTER" spacing="30" styleClass="entries-panel" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.settings.DefaultsSettingsController">
 
     <padding>
         <Insets bottom="30" left="30" right="30" top="30" />
