@@ -215,7 +215,9 @@ public class PropertyReportService
 
             y-= 20;
 
-            writeText(content, "SOP: " + reportData.getSop(), 50, y);
+            if(reportData.getSop() != null){
+                writeText(content, "SOP: " + reportData.getSop(), 50, y);
+            }
 
             y -= 20;
 
