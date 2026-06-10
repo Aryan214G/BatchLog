@@ -238,7 +238,7 @@ public class PropertyReportService
             writeRightAlignedText(content, "Test Method: " + reportData.getTestMethod(), RIGHT_EDGE, rightSectionY);
                 rightSectionY-= 20;
 
-                writeRightAlignedText(content, "Test temperature: " + reportData.getTemperature(), RIGHT_EDGE, rightSectionY);
+                writeRightAlignedText(content, "Test temperature: " + reportData.getTemperature() + " " + reportData.getTemperatureUnit(), RIGHT_EDGE, rightSectionY);
 
                 rightSectionY-= 20;
 
