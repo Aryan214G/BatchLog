@@ -15,6 +15,10 @@ public class BackupService {
     public void createBackup(Path destination)
             throws IOException {
 
+        if (!Files.exists(DBUtil.getDatabasePath())) {
+            throw new IOException("Database file not found.");
+        }
+
         Files.copy(
                 DBUtil.getDatabasePath(),
                 destination,
@@ -24,6 +28,13 @@ public class BackupService {
 
     public void restoreBackup(Path backupFile)
             throws IOException {
+
+        if (!Files.exists(backupFile)) {
+            throw new IOException("Backup file not found.");
+        }
+        if (!backupFile.toString().toLowerCase().endsWith(".db")) {
+            throw new IOException("Selected file is not a database backup.");
+        }
 
         createSafetyBackup();
 
