@@ -128,8 +128,6 @@
 
                 <ListView fx:id="categoriesListView" styleClass="buttons-list" VBox.vgrow="ALWAYS" />
 
-                <Button fx:id="editButton" onAction="#handleEditClick" styleClass="edit-button" text="Edit" />
-
             </children>
         </VBox>
     </left>

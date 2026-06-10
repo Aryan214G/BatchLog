@@ -139,6 +139,7 @@ public class ProjectPageController {
         bpropState.setPlaceOfTesting((b.getTestSite()));
         bpropState.setTestId(b.getTestId());
         bpropState.setSop(b.getSop());
+        bpropState.setTestSchedule(b.getTestSchedule());
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/log/ui/views/RetrievalResults.fxml")
@@ -151,7 +152,8 @@ public class ProjectPageController {
                     b.getTestDate(),
                     b.getTestSite(),
                     b.getProductCode(),
-                    b.getSop()
+                    b.getSop(),
+                    b.getTestSchedule()
             );
 
             RetrievalResultsController controller = loader.getController();

@@ -7,22 +7,25 @@ public class BatchTest {
     private String testSite;
     private String SOP;
     private Integer productCode;
+    private String testSchedule;
 
-    public BatchTest(int testId, Integer batchCode, String testDate, String testSite, Integer productCode,String SOP) {
+    public BatchTest(int testId, Integer batchCode, String testDate, String testSite, Integer productCode,String SOP, String testSchedule) {
         this.testId = testId;
         this.batchCode = batchCode;
         this.testDate = testDate;
         this.testSite = testSite;
         this.productCode = productCode;
         this.SOP = SOP;
+        this.testSchedule = testSchedule;
     }
 
-    public BatchTest(Integer batchCode, String testDate, String testSite,Integer productCode,String SOP) {
+    public BatchTest(Integer batchCode, String testDate, String testSite,Integer productCode,String SOP, String testSchedule) {
         this.batchCode = batchCode;
         this.testDate = testDate;
         this.testSite = testSite;
         this.productCode = productCode;
         this.SOP = SOP;
+        this.testSchedule = testSchedule;
     }
 
     public int getTestId() {
@@ -70,6 +73,14 @@ public class BatchTest {
 
     public void setProductCode(Integer productCode) {
         this.productCode = productCode;
+    }
+
+    public String getTestSchedule() {
+        return testSchedule;
+    }
+
+    public void setTestSchedule(String testSchedule) {
+        this.testSchedule = testSchedule;
     }
 
     @Override

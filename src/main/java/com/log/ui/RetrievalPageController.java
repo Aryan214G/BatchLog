@@ -318,7 +318,6 @@ public class RetrievalPageController {
                     Placeoftestingfield.getText(),
                     SOPfield.getText(),
                     testschedulefield.getText()
-
             );
             populateBatchResults(results);
         } catch (SQLException e) {

@@ -8,7 +8,7 @@ import java.sql.*;
 public class BatchTestDAO {
 
     public int insertBatchTest(Connection conn, BatchTest batchTest) {
-        String sql = "INSERT INTO Batch_Test (Batch_CODE, Test_date, Test_site,Product_CODE,SOP) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Batch_Test (Batch_CODE, Test_date, Test_site,Product_CODE,SOP,Test_schedule) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             //BatchCode
             if (batchTest.getBatchCode() == null) {
@@ -21,6 +21,7 @@ public class BatchTestDAO {
             stmt.setString(3, batchTest.getTestSite());
             stmt.setInt(4, batchTest.getProductCode());
             stmt.setString(5, batchTest.getSOP());
+            stmt.setString(6, batchTest.getTestSchedule());
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs.next()) return rs.getInt(1);
@@ -43,6 +44,7 @@ public class BatchTestDAO {
                   AND Test_date = ?
                   AND Test_site = ?
                   AND SOP = ?
+                  AND Test_schedule = ?
                 """;
         } else {
             sql = """
@@ -53,6 +55,7 @@ public class BatchTestDAO {
                   AND Test_date = ?
                   AND Test_site = ?
                   AND SOP = ?
+                  AND Test_schedule = ?
                 """;
         }
 
@@ -62,11 +65,15 @@ public class BatchTestDAO {
                 stmt.setInt(1, batchTest.getProductCode());
                 stmt.setString(2, batchTest.getTestDate());
                 stmt.setString(3, batchTest.getTestSite());
-                // SOP is optional — handle null
                 if (batchTest.getSOP() != null && !batchTest.getSOP().isBlank()) {
                     stmt.setString(4, batchTest.getSOP());
                 } else {
                     stmt.setNull(4, Types.VARCHAR);
+                }
+                if (batchTest.getTestSchedule() != null && !batchTest.getTestSchedule().isBlank()) {
+                    stmt.setString(5, batchTest.getTestSchedule());
+                } else {
+                    stmt.setNull(5, Types.VARCHAR);
                 }
             } else {
                 stmt.setInt(1, batchTest.getProductCode());
@@ -75,6 +82,11 @@ public class BatchTestDAO {
                 stmt.setString(4, batchTest.getTestSite());
                 if (batchTest.getSOP() != null && !batchTest.getSOP().isBlank()) {
                     stmt.setString(5, batchTest.getSOP());
+                } else {
+                    stmt.setNull(5, Types.VARCHAR);
+                }
+                if (batchTest.getTestSchedule() != null && !batchTest.getTestSchedule().isBlank()) {
+                    stmt.setString(6, batchTest.getTestSchedule());
                 } else {
                     stmt.setNull(5, Types.VARCHAR);
                 }
@@ -145,7 +157,8 @@ public class BatchTestDAO {
                     rs.getString("Test_date"),
                     rs.getString("Test_site"),
                     rs.getInt("Product_CODE"),
-                    rs.getString("SOP")
+                    rs.getString("SOP"),
+                    rs.getString("Test_schedule")
             );
 
             batchTest.setProductCode(rs.getInt("Product_CODE"));
