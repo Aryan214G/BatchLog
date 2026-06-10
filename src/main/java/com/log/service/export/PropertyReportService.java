@@ -236,7 +236,7 @@ public class PropertyReportService
 
                 writeRightAlignedText(content, "Direction: " + reportData.getDirection(), RIGHT_EDGE, rightSectionY);
 
-                y = Math.max(y, rightSectionY);
+                y = Math.min(y, rightSectionY);
             // ________________________________________________________________________________
 
             y -= 30;
