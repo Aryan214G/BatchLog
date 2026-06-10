@@ -363,6 +363,68 @@ System.out.println("Test Method   = " + property.getTestMethod());
         return propertyAverages;
     }
 
+    // In PropertyDAO
+    public Map<String, Map<String, Double>> getPropertyAveragesByBatchWithUnits(Connection conn, int batchCode) throws SQLException {
+        Map<String, Map<String, Double>> result = new LinkedHashMap<>();
+
+        String sql = """
+        SELECT
+            p.Property_name,
+            u.Unit,
+            AVG(pv.Prop_VAL) AS avg_val
+        FROM Property p
+        JOIN Property_Values pv ON pv.Property_ID = p.Property_ID
+        JOIN Units u            ON p.Unit_ID       = u.Unit_ID
+        JOIN Batch_Test bt      ON p.Test_ID       = bt.Test_ID
+        WHERE bt.Batch_CODE = ?
+        GROUP BY p.Property_name, u.Unit
+    """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, batchCode);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                String propName = rs.getString("Property_name");
+                String unit     = rs.getString("Unit");
+                double avg      = rs.getDouble("avg_val");
+                result.computeIfAbsent(propName, k -> new LinkedHashMap<>())
+                        .put(unit, avg);
+            }
+        }
+
+        return result;
+    }
+
+    public Map<String, Map<String, Double>> getPropertyAveragesByTestWithUnits(Connection conn, int testId) throws SQLException {
+        Map<String, Map<String, Double>> result = new LinkedHashMap<>();
+
+        String sql = """
+        SELECT
+            p.Property_name,
+            u.Unit,
+            AVG(pv.Prop_VAL) AS avg_val
+        FROM Property p
+        JOIN Property_Values pv ON pv.Property_ID = p.Property_ID
+        JOIN Units u            ON p.Unit_ID       = u.Unit_ID
+        WHERE p.Test_ID = ?
+        GROUP BY p.Property_name, u.Unit
+    """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, testId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                String propName = rs.getString("Property_name");
+                String unit     = rs.getString("Unit");
+                double avg      = rs.getDouble("avg_val");
+                result.computeIfAbsent(propName, k -> new LinkedHashMap<>())
+                        .put(unit, avg);
+            }
+        }
+
+        return result;
+    }
+
 
 }
 
