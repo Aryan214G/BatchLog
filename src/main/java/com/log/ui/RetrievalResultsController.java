@@ -584,7 +584,7 @@ public class RetrievalResultsController {
                 basePropertiesState.getProductName(),
                 basePropertiesState.getProductID(),
                 basePropertiesState.getBatchNo(),
-                null //TODO: replace this after adding test schedule everywhere else
+                basePropertiesState.getTestSchedule()
         );
 
     rtReportService.generateReport(data);
