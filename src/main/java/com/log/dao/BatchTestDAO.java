@@ -43,8 +43,14 @@ public class BatchTestDAO {
                   AND Batch_CODE IS NULL
                   AND Test_date = ?
                   AND Test_site = ?
-                  AND SOP = ?
-                  AND Test_schedule = ?
+                   AND (
+                        SOP = ?
+                        OR (SOP IS NULL AND ? IS NULL)
+                        )
+                        AND (
+                        Test_schedule = ?
+                        OR (Test_schedule IS NULL AND ? IS NULL)
+                        )
                 """;
         } else {
             sql = """
@@ -54,8 +60,14 @@ public class BatchTestDAO {
                   AND Batch_CODE = ?
                   AND Test_date = ?
                   AND Test_site = ?
-                  AND SOP = ?
-                  AND Test_schedule = ?
+                   AND (
+                       SOP = ?
+                       OR (SOP IS NULL AND ? IS NULL)
+                       )
+                       AND (
+                            Test_schedule = ?
+                            OR (Test_schedule IS NULL AND ? IS NULL)
+                            )
                 """;
         }
 
@@ -65,31 +77,23 @@ public class BatchTestDAO {
                 stmt.setInt(1, batchTest.getProductCode());
                 stmt.setString(2, batchTest.getTestDate());
                 stmt.setString(3, batchTest.getTestSite());
-                if (batchTest.getSOP() != null && !batchTest.getSOP().isBlank()) {
-                    stmt.setString(4, batchTest.getSOP());
-                } else {
-                    stmt.setNull(4, Types.VARCHAR);
-                }
-                if (batchTest.getTestSchedule() != null && !batchTest.getTestSchedule().isBlank()) {
-                    stmt.setString(5, batchTest.getTestSchedule());
-                } else {
-                    stmt.setNull(5, Types.VARCHAR);
-                }
+
+                stmt.setString(4, batchTest.getSOP());
+                stmt.setString(5, batchTest.getSOP());
+
+                stmt.setString(6, batchTest.getTestSchedule());
+                stmt.setString(7, batchTest.getTestSchedule());
             } else {
                 stmt.setInt(1, batchTest.getProductCode());
                 stmt.setInt(2, batchTest.getBatchCode());
                 stmt.setString(3, batchTest.getTestDate());
                 stmt.setString(4, batchTest.getTestSite());
-                if (batchTest.getSOP() != null && !batchTest.getSOP().isBlank()) {
-                    stmt.setString(5, batchTest.getSOP());
-                } else {
-                    stmt.setNull(5, Types.VARCHAR);
-                }
-                if (batchTest.getTestSchedule() != null && !batchTest.getTestSchedule().isBlank()) {
-                    stmt.setString(6, batchTest.getTestSchedule());
-                } else {
-                    stmt.setNull(5, Types.VARCHAR);
-                }
+
+                stmt.setString(5, batchTest.getSOP());
+                stmt.setString(6, batchTest.getSOP());
+
+                stmt.setString(7, batchTest.getTestSchedule());
+                stmt.setString(8, batchTest.getTestSchedule());
             }
 
             ResultSet rs = stmt.executeQuery();
