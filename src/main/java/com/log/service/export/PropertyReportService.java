@@ -83,6 +83,7 @@ public class PropertyReportService
                 property.getPropertyName(),
                 batchId,
                 product.getProductId(),
+                product.getProductName(),
                 batchTest.getSOP(),
                 property.getTestMethod(),
                 batchTest.getTestDate(),
@@ -211,7 +212,10 @@ public class PropertyReportService
                 writeText(content, "Batch ID: " + reportData.getBatchId(), 50, y);
                 y -= 20;
             }
-//            writeText(content, "Product name: " + , 50, y);
+
+            writeText(content, "Product name: " + reportData.getProductName(), 50, y);
+
+            y -= 20;
 
             writeText(content, "Component ID: " + reportData.getComponentId(), 50, y);
 
@@ -302,15 +306,15 @@ public class PropertyReportService
 
             y-= 20;
 
-            writeText(content, "Minimum: " + String.format("%.1f", reportData.getMin()), 50, y);
+            writeText(content, "Minimum: " + String.format("%.2f", reportData.getMin()), 50, y);
 
             y-= 20;
 
-            writeText(content, "Maximum: " + String.format("%.1f", reportData.getMax()), 50, y);
+            writeText(content, "Maximum: " + String.format("%.2f", reportData.getMax()), 50, y);
 
             y-= 20;
 
-            writeText(content, "Average: " + String.format("%.1f", reportData.getAverage()), 50, y);
+            writeText(content, "Average: " + String.format("%.2f", reportData.getAverage()), 50, y);
 
             y-= 20;
 
@@ -318,7 +322,7 @@ public class PropertyReportService
         reportData.getStandardDeviation() == null
                 ? "-"
                 : String.format(
-                        "%.1f",
+                        "%.2f",
                         reportData.getStandardDeviation()
                 );
 
