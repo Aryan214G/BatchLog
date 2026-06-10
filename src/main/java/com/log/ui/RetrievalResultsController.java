@@ -353,6 +353,7 @@ public class RetrievalResultsController {
 
         label.setMaxWidth(Double.MAX_VALUE);
         GridPane.setFillWidth(label, true);
+        GridPane.setFillHeight(label, true);
         GridPane.setColumnSpan(label, colSpan);
 
         return label;
@@ -370,7 +371,8 @@ public class RetrievalResultsController {
     private Label makeHeader(String text) {
         Label label = new Label(text);
         label.getStyleClass().add("grid-header");
-        label.setMaxWidth(Double.MAX_VALUE);
+        label.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
         label.setWrapText(true);
         return label;
     }
