@@ -44,7 +44,9 @@
             <!-- Table -->
             <ScrollPane fitToWidth="true" styleClass="table-scroll" VBox.vgrow="ALWAYS">
                 <content>
-                    <GridPane fx:id="propertiesGrid" styleClass="property-table">
+                    <GridPane fx:id="propertiesGrid"
+                              maxWidth="Infinity"
+                              styleClass="property-table">
                         <padding>
                             <Insets bottom="0" left="0" right="0" top="0" />
                         </padding>

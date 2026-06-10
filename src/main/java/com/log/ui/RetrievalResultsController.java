@@ -342,6 +342,8 @@ public class RetrievalResultsController {
             if (columnStates.getOrDefault("Average Value", true))
                 propertiesGrid.add(makeCell(formatDouble(p.getAverage()), isAlt, rowMenu), col++, row);
 
+            propertiesGrid.setMaxWidth(Double.MAX_VALUE);
+
             row++;
         }
     }
