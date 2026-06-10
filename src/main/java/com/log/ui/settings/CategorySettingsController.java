@@ -1,8 +1,7 @@
-package com.log.ui;
+package com.log.ui.settings;
 
 import com.log.database.DBUtil;
 import com.log.model.Category;
-import com.log.model.DefaultProperty;
 import com.log.model.Unit;
 import com.log.service.*;
 import javafx.collections.FXCollections;
