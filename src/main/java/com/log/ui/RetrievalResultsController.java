@@ -10,6 +10,7 @@ import com.log.model.BatchTest;
 import com.log.model.PropertyRow;
 import com.log.service.BatchService;
 import com.log.service.BatchTestService;
+import com.log.service.CategoryService;
 import com.log.service.export.ReportGenerator;
 import com.log.service.export.PropertyReportService;
 import com.log.service.export.RetrievalTableReportService;
@@ -46,6 +47,8 @@ public class RetrievalResultsController {
 
     private boolean groupByCategory = false;
 
+
+
     @FXML
     private void handleToggleGrouping() {
         groupByCategory = !groupByCategory;
@@ -70,6 +73,7 @@ public class RetrievalResultsController {
     private BasePropertiesState basePropertiesState = BasePropertiesState.getInstance();
 
     private AppState appState = AppState.getInstance();
+    private CategoryService categoryService = new CategoryService();
 
     private int testId;
 
@@ -105,6 +109,24 @@ public class RetrievalResultsController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private List<PropertyRow> sortByCategoryOrder(List<PropertyRow> rows) {
+        categoryService.refreshCategoriesState();
+        List<String> categoryOrder = appState.getCategories();
+
+        // Build a category index map for fast lookup
+        Map<String, Integer> categoryIndex = new LinkedHashMap<>();
+        for (int i = 0; i < categoryOrder.size(); i++) {
+            categoryIndex.put(categoryOrder.get(i), i);
+        }
+
+        return rows.stream()
+                .sorted(Comparator.comparingInt(r -> {
+                    String cat = r.getCategory();
+                    return cat != null ? categoryIndex.getOrDefault(cat, Integer.MAX_VALUE) : Integer.MAX_VALUE;
+                }))
+                .toList();
     }
 
     // New query — fetches properties across ALL tests in the batch
@@ -232,11 +254,7 @@ public class RetrievalResultsController {
 
         // ── Group by category if enabled ──────────────────────────────────────────
         if (groupByCategory) {
-            visibleRows = visibleRows.stream()
-                    .sorted(Comparator.comparing(
-                            r -> r.getCategory() != null ? r.getCategory() : ""
-                    ))
-                    .toList();
+            visibleRows = sortByCategoryOrder(visibleRows);
         }
 
         if (visibleRows.isEmpty()) {
