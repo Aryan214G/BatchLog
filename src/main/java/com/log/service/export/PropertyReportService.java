@@ -2,6 +2,7 @@ package com.log.service.export;
 
 import com.log.dto.ReportData;
 import com.log.model.BatchTest;
+import com.log.model.Product;
 import com.log.model.Property;
 import com.log.model.PropertyValue;
 import com.log.service.*;
@@ -11,6 +12,7 @@ import com.log.util.DialogUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
@@ -35,6 +37,7 @@ public class PropertyReportService
     private PropertyService propertyService = new PropertyService();
     private BatchTestService batchTestService = new BatchTestService();
     private PropertyValuesService propertyValuesService = new PropertyValuesService();
+    private ProductService productService = new ProductService();
 
     // ============== IMPORT UTILITY CLASSES ====================
 
@@ -55,6 +58,8 @@ public class PropertyReportService
         BatchTest batchTest = batchTestService.getBatchTestById(
                 property.getTestID()
         );
+
+        Product product = productService.getProduct(batchTest.getProductCode());
 
         List<Double> values = getPropertyValueList(property);
 
@@ -77,6 +82,9 @@ public class PropertyReportService
         ReportData reportData = new ReportData(
                 property.getPropertyName(),
                 batchId,
+                product.getProductId(),
+                product.getProductName(),
+                batchTest.getSOP(),
                 property.getTestMethod(),
                 batchTest.getTestDate(),
                 batchTest.getTestSite(),
@@ -154,7 +162,7 @@ public class PropertyReportService
 
     try (PDDocument document = new PDDocument()) {
 
-        PDPage page = new PDPage();
+        PDPage page = new PDPage(PDRectangle.A4);
         document.addPage(page);
 
         try (PDPageContentStream content =
@@ -169,7 +177,7 @@ public class PropertyReportService
 
             float RIGHT_COLUMN_X = pageWidth - 200;
 
-            float y = 700;
+            float y = 750;
             // ________________________________________________________________________________
 
 
@@ -196,20 +204,47 @@ public class PropertyReportService
             // ________________________________________________________________________________
 
             y -= 40;
+            float rightSectionY = y;
 
-            writeText(content, "Batch ID: " + reportData.getBatchId(), 50, y);
-            writeRightAlignedText(content, "Test Method: " + reportData.getTestMethod(), RIGHT_EDGE, y);
+            // ============= LEFT SECTION ==================
+
+            if(reportData.getBatchId() != null) {
+                writeText(content, "Batch ID: " + reportData.getBatchId(), 50, y);
+                y -= 20;
+            }
+
+            writeText(content, "Product name: " + reportData.getProductName(), 50, y);
 
             y -= 20;
 
+            writeText(content, "Component ID: " + reportData.getComponentId(), 50, y);
+
+            y-= 20;
+
+            if(reportData.getSop() != null){
+                writeText(content, "SOP: " + reportData.getSop(), 50, y);
+                y -= 20;
+            }
+
+
             writeText(content, "Test Site: " + reportData.getTestSite(), 50, y);
-            writeRightAlignedText(content, "Test temperature: " + reportData.getTemperature(), RIGHT_EDGE, y);
 
             y -= 20;
 
             writeText(content, "Test Date: " + reportData.getTestDate(), 50, y);
-            writeRightAlignedText(content, "Direction: " + reportData.getDirection(), RIGHT_EDGE, y);
 
+
+            // =================== RIGHT SECTION ==========================
+            writeRightAlignedText(content, "Test Method: " + reportData.getTestMethod(), RIGHT_EDGE, rightSectionY);
+                rightSectionY-= 20;
+
+                writeRightAlignedText(content, "Test temperature: " + reportData.getTemperature(), RIGHT_EDGE, rightSectionY);
+
+                rightSectionY-= 20;
+
+                writeRightAlignedText(content, "Direction: " + reportData.getDirection(), RIGHT_EDGE, rightSectionY);
+
+                y = Math.min(y, rightSectionY);
             // ________________________________________________________________________________
 
             y -= 30;
@@ -223,7 +258,10 @@ public class PropertyReportService
             String propertyName = reportData.getPropertyName().toUpperCase();
             String unit = reportData.getUnit();
 
-            writeBoldText(content, propertyName  + " (" + unit + ")", 250, y);
+            float propertyWidth = font.getStringWidth(propertyName) / 1000 * fontSize;
+            float propertyX = (page.getMediaBox().getWidth() - propertyWidth) / 2;
+
+            writeBoldText(content, propertyName  + " (" + unit + ")", propertyX, y);
 
             y -= 60;
 
@@ -268,15 +306,15 @@ public class PropertyReportService
 
             y-= 20;
 
-            writeText(content, "Minimum: " + reportData.getMin(), 50, y);
+            writeText(content, "Minimum: " + String.format("%.2f", reportData.getMin()), 50, y);
 
             y-= 20;
 
-            writeText(content, "Maximum: " + reportData.getMax(), 50, y);
+            writeText(content, "Maximum: " + String.format("%.2f", reportData.getMax()), 50, y);
 
             y-= 20;
 
-            writeText(content, "Average: " + reportData.getAverage(), 50, y);
+            writeText(content, "Average: " + String.format("%.2f", reportData.getAverage()), 50, y);
 
             y-= 20;
 
@@ -284,7 +322,7 @@ public class PropertyReportService
         reportData.getStandardDeviation() == null
                 ? "-"
                 : String.format(
-                        "%.1f",
+                        "%.2f",
                         reportData.getStandardDeviation()
                 );
 
