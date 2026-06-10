@@ -171,7 +171,7 @@ public class RetrievalTableReportService
 
                 if(data.getBatchNo() != null){
 
-                    writeText(content, "Batch No.: " + data.getBatchNo(),
+                    writeText(content, "Batch ID.: " + data.getBatchNo(),
                             leftMargin,
                             y);
 

@@ -2,6 +2,7 @@ package com.log.service.export;
 
 import com.log.dto.ReportData;
 import com.log.model.BatchTest;
+import com.log.model.Product;
 import com.log.model.Property;
 import com.log.model.PropertyValue;
 import com.log.service.*;
@@ -36,6 +37,7 @@ public class PropertyReportService
     private PropertyService propertyService = new PropertyService();
     private BatchTestService batchTestService = new BatchTestService();
     private PropertyValuesService propertyValuesService = new PropertyValuesService();
+    private ProductService productService = new ProductService();
 
     // ============== IMPORT UTILITY CLASSES ====================
 
@@ -56,6 +58,8 @@ public class PropertyReportService
         BatchTest batchTest = batchTestService.getBatchTestById(
                 property.getTestID()
         );
+
+        Product product = productService.getProduct(batchTest.getProductCode());
 
         List<Double> values = getPropertyValueList(property);
 
@@ -78,6 +82,8 @@ public class PropertyReportService
         ReportData reportData = new ReportData(
                 property.getPropertyName(),
                 batchId,
+                product.getProductId(),
+                batchTest.getSOP(),
                 property.getTestMethod(),
                 batchTest.getTestDate(),
                 batchTest.getTestSite(),
@@ -197,20 +203,40 @@ public class PropertyReportService
             // ________________________________________________________________________________
 
             y -= 40;
+            float rightSectionY = y;
 
-            writeText(content, "Batch ID: " + reportData.getBatchId(), 50, y);
-            writeRightAlignedText(content, "Test Method: " + reportData.getTestMethod(), RIGHT_EDGE, y);
+            // ============= LEFT SECTION ==================
+
+            if(reportData.getBatchId() != null) {
+                writeText(content, "Batch ID: " + reportData.getBatchId(), 50, y);
+                y -= 20;
+            }
+            writeText(content, "Component ID: " + reportData.getComponentId(), 50, y);
+
+            y-= 20;
+
+            writeText(content, "SOP: " + reportData.getSop(), 50, y);
 
             y -= 20;
 
             writeText(content, "Test Site: " + reportData.getTestSite(), 50, y);
-            writeRightAlignedText(content, "Test temperature: " + reportData.getTemperature(), RIGHT_EDGE, y);
 
             y -= 20;
 
             writeText(content, "Test Date: " + reportData.getTestDate(), 50, y);
-            writeRightAlignedText(content, "Direction: " + reportData.getDirection(), RIGHT_EDGE, y);
 
+
+            // =================== RIGHT SECTION ==========================
+            writeRightAlignedText(content, "Test Method: " + reportData.getTestMethod(), RIGHT_EDGE, rightSectionY);
+                rightSectionY-= 20;
+
+                writeRightAlignedText(content, "Test temperature: " + reportData.getTemperature(), RIGHT_EDGE, rightSectionY);
+
+                rightSectionY-= 20;
+
+                writeRightAlignedText(content, "Direction: " + reportData.getDirection(), RIGHT_EDGE, rightSectionY);
+
+                y = Math.max(y, rightSectionY);
             // ________________________________________________________________________________
 
             y -= 30;

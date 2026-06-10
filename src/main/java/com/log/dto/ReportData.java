@@ -6,6 +6,8 @@ public class ReportData {
 
     private String propertyName;
     private String BatchId;
+    private String componentId;
+    private String sop;
     private String testMethod;
     private String testDate;
     private String testSite;
@@ -28,9 +30,11 @@ public class ReportData {
     public ReportData() {
 }
 
-    public ReportData(String propertyName, String batchId, String testMethod, String testDate, String testSite, String direction, String temperature, String temperatureUnit, String testReportNo, String date, Double min, Double max, Double average, Double standardDeviation, List<Double> values, String unit) {
+    public ReportData(String propertyName, String batchId, String componentId, String sop, String testMethod, String testDate, String testSite, String direction, String temperature, String temperatureUnit, String testReportNo, String date, Double min, Double max, Double average, Double standardDeviation, List<Double> values, String unit) {
         this.propertyName = propertyName;
-        BatchId = batchId;
+        this.BatchId = batchId;
+        this.componentId = componentId;
+        this.sop = sop;
         this.testMethod = testMethod;
         this.testDate = testDate;
         this.testSite = testSite;
@@ -176,5 +180,21 @@ public class ReportData {
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+    public String getSop() {
+        return sop;
+    }
+
+    public void setSop(String sop) {
+        this.sop = sop;
+    }
+
+    public String getComponentId() {
+        return componentId;
+    }
+
+    public void setComponentId(String componentId) {
+        this.componentId = componentId;
     }
 }
