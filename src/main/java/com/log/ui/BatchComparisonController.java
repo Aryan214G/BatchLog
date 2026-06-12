@@ -263,21 +263,21 @@ public class BatchComparisonController {
             StringBuilder label =
                     new StringBuilder(propertyName);
 
-            if (!unit.isBlank()) {
-                label.append(" (")
-                        .append(unit)
-                        .append(")");
-            }
-
-            if (!temperature.isBlank()) {
-                label.append(" | ")
-                        .append(temperature);
-            }
-
-            if (!direction.isBlank()) {
-                label.append(" | ")
-                        .append(direction);
-            }
+//            if (!unit.isBlank()) {
+//                label.append(" (")
+//                        .append(unit)
+//                        .append(")");
+//            }
+//
+//            if (!temperature.isBlank()) {
+//                label.append(" | ")
+//                        .append(temperature);
+//            }
+//
+//            if (!direction.isBlank()) {
+//                label.append(" | ")
+//                        .append(direction);
+//            }
 
             comparisonGrid.add(
                     makeCell(label.toString(), isAlt),
