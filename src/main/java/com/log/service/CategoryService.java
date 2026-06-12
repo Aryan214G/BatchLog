@@ -67,9 +67,8 @@ public class CategoryService {
             );
 
             ObservableList<DefaultProperty> properties =
-                    propertyService.getPropertiesByCategory(
-                            c.getCategoryName()
-                    );
+                    defaultPropertyService.getPropertiesByCategory(
+                            c.getCategoryId()                    );
 
             state.getCategoriesMap().put(
                     c.getCategoryName(),
@@ -97,8 +96,8 @@ public class CategoryService {
         return categoryDAO.getCategoryIdByName(conn, categoryName);
     }
 
-
-    public void deleteCategory(int categoryId) {
-        categoryDAO.deleteCategory(categoryId);
+    public void renamecategory(int catid, String newcategoryName)
+    {
+        categoryDAO.renamecategory(catid, newcategoryName);
     }
 }

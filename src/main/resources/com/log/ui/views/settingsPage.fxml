@@ -60,6 +60,13 @@
                 text="Add Categories and Properties"
                 onAction="#showCategoriesPage" />
 
+                <Button fx:id="renamecatprop"
+                        mnemonicParsing="false"
+                        prefHeight="50.0"
+                        prefWidth="218.0"
+                        text="Rename Categories and Properties"
+                        onAction="#showCategoriesrenamePage" />
+
                 <ListView fx:id="SettingsListView"
                           prefHeight="353.0"
                           prefWidth="218.0"

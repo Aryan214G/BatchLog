@@ -3,6 +3,7 @@ package com.log.service;
 import com.log.model.DefaultProperty;
 import com.log.dao.DefaultPropertiesDAO;
 import com.log.service.PropertyUnitsService;
+import javafx.collections.ObservableList;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -79,6 +80,10 @@ public class DefaultPropertyService {
         );
     }
 
+    public ObservableList<DefaultProperty> getPropertiesByCategory(int catid){
+        return DPdao.getDefaultProperties(catid);
+    }
+
     public boolean propertyExists(
             Connection conn,
             String propertyName,
@@ -145,6 +150,11 @@ public class DefaultPropertyService {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void renamedefpropname(int propertyid, String newname)
+    {
+        DPdao.renamedefprop(propertyid, newname);
     }
 
 }

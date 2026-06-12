@@ -98,23 +98,6 @@ public class CategoryDAO {
 
         return categories;
     }
-
-    // DELETE
-    public void deleteCategory(int categoryId) {
-
-        String sql = "DELETE FROM Category WHERE Category_ID = ?";
-
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, categoryId);
-
-            stmt.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
     public int getCategoryIdByName(Connection conn, String categoryName) {
 
         String sql = "SELECT Category_ID FROM Category WHERE Category_name = ?";
@@ -134,5 +117,19 @@ public class CategoryDAO {
         }
 
         return -1; // not found
+    }
+    public void renamecategory(int catid, String newcategoryName)
+    {
+        String sql= "UPDATE Category SET Category_name = ? WHERE Category_ID = ?";
+
+        try(Connection conn = DBUtil.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql);)
+        {
+            stmt.setString(1,newcategoryName);
+            stmt.setInt(2,catid);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

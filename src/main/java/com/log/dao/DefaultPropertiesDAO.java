@@ -1,6 +1,7 @@
 package com.log.dao;
 
 import com.log.database.DBUtil;
+import com.log.model.Category;
 import com.log.model.DefaultProperty;
 import com.log.model.Property;
 import com.log.model.PropertyView;
@@ -43,7 +44,7 @@ public class DefaultPropertiesDAO {
         }
     }
 
-    public ObservableList<DefaultProperty> getDefaultProperties(String categoryName){
+    public ObservableList<DefaultProperty> getDefaultProperties(int catid){
 
 
         ObservableList<DefaultProperty> properties = FXCollections.observableArrayList();
@@ -57,7 +58,7 @@ public class DefaultPropertiesDAO {
                         p.Has_Component_Number
                     FROM Default_Properties p
                     JOIN Category c ON p.Category_ID = c.Category_ID
-                    WHERE c.Category_name = ?
+                    WHERE c.Category_ID = ?
                     """;
 
 
@@ -65,7 +66,7 @@ public class DefaultPropertiesDAO {
         try(Connection conn = DBUtil.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, categoryName);
+            stmt.setInt(1, catid);
 
             try(ResultSet rs = stmt.executeQuery()) {
 
@@ -277,5 +278,22 @@ JOIN Units
         }
 
         return -1;
+    }
+    public void renamedefprop(int propertyid,String newname)
+    {
+        String sql="UPDATE Default_Properties SET Def_PropName=? WHERE Def_PropID=?";
+        if(propertyid!=-1)
+        {
+            try(Connection conn=DBUtil.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql))
+            {
+                stmt.setString(1,newname);
+                stmt.setInt(2,propertyid);
+                stmt.executeUpdate();
+
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

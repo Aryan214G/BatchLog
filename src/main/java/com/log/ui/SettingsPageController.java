@@ -51,4 +51,7 @@ public class SettingsPageController {
 
     @FXML
     private void showCategoriesPage() { loadPage("AddCategorySettings.fxml"); }
+
+    @FXML
+    private void showCategoriesrenamePage() { loadPage("CatRenamesettingspage.fxml"); }
 }

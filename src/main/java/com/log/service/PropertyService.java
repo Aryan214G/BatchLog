@@ -31,10 +31,6 @@ public class PropertyService {
         return propertyDAO.getPropertiesByTest(testId);
     }
 
-    public ObservableList<DefaultProperty> getPropertiesByCategory(String categoryName){
-        return defaultPropertiesDAO.getDefaultProperties(categoryName);
-    }
-
     public int insertProperty(Connection conn, Property property){
         return propertyDAO.insertProperty(conn, property);
     }
