@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 
 import java.util.HashMap;
 import java.time.LocalDate;
+import java.util.Map;
 
 //singleton class
 //TODO: plan to use synchronized object creation
@@ -15,13 +16,14 @@ public class AppState {
 
     private static final AppState instance = new AppState();
 
-    AppState(){};
+    AppState() {
+    }
+
+    ;
+
 
     private HashMap<String, ObservableList<DefaultProperty>> categoriesMap = new HashMap<>();
 
-
-    //TODO: change the list to not be hardcoded
-    //Todo:put this list in controller and read from that
     private ObservableList<String> categories = FXCollections.observableArrayList();
 
     public static AppState getInstance() {
@@ -44,9 +46,28 @@ public class AppState {
         this.categories = categories;
     }
 
+    private Map<Integer, Map<String, DefaultProperty>> defaultPropertiesMap
+            = new HashMap<>();
+
+    public Map<Integer, Map<String, DefaultProperty>> getDefaultPropertiesMap() {
+        return defaultPropertiesMap;
+    }
+
+    public void setDefaultPropertiesMap(
+            Map<Integer, Map<String, DefaultProperty>> defaultPropertiesMap
+    ) {
+        this.defaultPropertiesMap = defaultPropertiesMap;
+    }
+
 
     //============ FLAGS =================
     private boolean projectCreated = false;
+
+    // EDIT ____________________
+    private boolean editMode;
+    private Integer editPropertyId;
+
+    // ____________________
 
     public boolean isProjectCreated() {
         return projectCreated;
@@ -56,6 +77,32 @@ public class AppState {
         this.projectCreated = projectCreated;
     }
 
+    public boolean isEditMode() {
+        return editMode;
+    }
+
+    public void setEditMode(boolean editMode) {
+        this.editMode = editMode;
+    }
+
+    public Integer getEditPropertyId() {
+        return editPropertyId;
+    }
+
+    public void setEditPropertyId(Integer editPropertyId) {
+        this.editPropertyId = editPropertyId;
+    }
+
+    public void clear() {
+
+        categoriesMap.clear();
+
+        categories.clear();
+
+        defaultPropertiesMap.clear();
+
+        projectCreated = false;
+    }
 
 }
 

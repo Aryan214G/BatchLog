@@ -39,8 +39,14 @@
                 <Label style="-fx-text-fill: white;" text="Place of testing" />
                 <TextField fx:id="Placeoftestingfield" />
 
-                <Button maxWidth="Infinity" onAction="#handleSearch" text="Search Products" />
-            <Button layoutX="25.0" layoutY="365.0" maxWidth="Infinity" onAction="#handleSearch" text="Search Batches" />
+                <Label style="-fx-text-fill: white;" text="SOP" />
+                <TextField fx:id="SOPfield" />
+
+                <Label style="-fx-text-fill: white;" text="Test schedule" />
+                <TextField fx:id="testschedulefield" />
+
+                <Button maxWidth="Infinity" onAction="#handleSearchProducts" text="Search Products" />
+                <Button maxWidth="Infinity" onAction="#handleSearchBatches" text="Search Batches" />
             </VBox>
 
             <!-- Toggle button -->

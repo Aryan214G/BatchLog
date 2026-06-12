@@ -4,7 +4,6 @@ import com.log.dao.TemperatureDAO;
 import com.log.model.Temperature;
 
 import java.sql.Connection;
-import java.util.List;
 
 public class TemperatureService {
 
@@ -14,7 +13,7 @@ public class TemperatureService {
         this.temperatureDAO = new TemperatureDAO();
     }
 
-    public int createTemperature(Connection conn, Temperature temperature) {
+    public int insertTemperature(Connection conn, Temperature temperature) {
 
         if (temperature == null) {
             throw new IllegalArgumentException("Temperature cannot be null");

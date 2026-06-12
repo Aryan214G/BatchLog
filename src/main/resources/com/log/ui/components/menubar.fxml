@@ -11,7 +11,6 @@
         <MenuItem fx:id="homePageBtn" mnemonicParsing="false" onAction="#openHomePage" text="Home" />
             <MenuItem fx:id="newProjectBtn" mnemonicParsing="false" onAction="#loadBasePropertiesView" text="New project" />
             <MenuItem mnemonicParsing="false" text="Open folder" />
-          <MenuItem fx:id="newBatchBtn" mnemonicParsing="false" onAction="#loadNewBatchView" text="New Batch" />
             <MenuItem fx:id="saveAsBtn" mnemonicParsing="false" onAction="#openSaveFilePopup"  text="Save as" />
             <MenuItem mnemonicParsing="false" text="Retrieval page" onAction="#openRetrievalPage"/>
             <MenuItem fx:id="settingsBtn" mnemonicParsing="false" onAction="#openSettingsPagePopup"  text="Settings" />
@@ -21,7 +20,7 @@
     </Menu>
     <Menu mnemonicParsing="false" text="Edit">
       <items>
-        <MenuItem mnemonicParsing="false" text="Delete" />
+        <MenuItem mnemonicParsing="false" text="Project Details" fx:id="editprojbtn" onAction="#openbaseprops" />
       </items>
     </Menu>
     <Menu mnemonicParsing="false" text="Help">

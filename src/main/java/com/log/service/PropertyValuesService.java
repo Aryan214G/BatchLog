@@ -1,0 +1,62 @@
+package com.log.service;
+
+import com.log.dao.DefaultPropertiesDAO;
+import com.log.dao.PropertyDAO;
+import com.log.dao.PropertyValuesDAO;
+import com.log.database.DBUtil;
+import com.log.model.PropertyValue;
+import com.log.ui.InputRow;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+
+public class PropertyValuesService {
+
+    private final PropertyValuesDAO propertyValuesDAO;
+
+
+    public PropertyValuesService(){
+        this.propertyValuesDAO = new PropertyValuesDAO();
+    }
+
+    public int insertPropertyValue(Connection conn, InputRow row){
+
+            PropertyValue propertyValue = row.getPropertyValue();
+             return propertyValuesDAO.insertValue(conn, propertyValue);
+
+    }
+
+     public void updatePropertyValue(Connection conn, InputRow row) {
+
+        PropertyValue propertyValue = row.getPropertyValue();
+        propertyValuesDAO.updatePropertyValue(conn, propertyValue);
+    }
+
+
+    public int getPropertyValueId(Connection conn, int propertyID){
+        return propertyValuesDAO.getPropertyValueId(conn, propertyID);
+    }
+
+    public List<PropertyValue> getValuesByProperty(Connection conn, int propertyID){
+        return propertyValuesDAO.getValuesByProperty(conn, propertyID);
+    }
+
+    public List<PropertyValue> getValuesByProperty(int propertyID){
+
+        try(Connection conn = DBUtil.getConnection())
+        {
+            return propertyValuesDAO.getValuesByProperty(conn, propertyID);
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void deletePropertyValue(Connection conn, int propertyValId){
+
+        propertyValuesDAO.deletePropertyValue(conn, propertyValId);
+    }
+
+}

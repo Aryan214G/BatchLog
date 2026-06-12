@@ -39,4 +39,88 @@ public class PropertyUnitsDAO {
 
     return units;
 }
+
+    public void addUnitToProperty(
+            Connection conn,
+            int defPropId,
+            int unitId
+    ) {
+
+        String sql = """
+        INSERT INTO Property_Units
+        (
+            Def_PropID,
+            Unit_ID
+        )
+        VALUES (?, ?)
+        """;
+
+        try (PreparedStatement stmt =
+                     conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, defPropId);
+            stmt.setInt(2, unitId);
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void removeUnitFromProperty(
+            Connection conn,
+            int defPropId,
+            int unitId
+    ) {
+
+        String sql = """
+        DELETE FROM Property_Units
+        WHERE Def_PropID = ?
+        AND Unit_ID = ?
+        """;
+
+        try (PreparedStatement stmt =
+                     conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, defPropId);
+            stmt.setInt(2, unitId);
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean unitExistsForProperty(
+            Connection conn,
+            int defPropId,
+            int unitId
+    ) {
+
+        String sql = """
+        SELECT 1
+        FROM Property_Units
+        WHERE Def_PropID = ?
+        AND Unit_ID = ?
+        """;
+
+        try (PreparedStatement stmt =
+                     conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, defPropId);
+            stmt.setInt(2, unitId);
+
+            ResultSet rs = stmt.executeQuery();
+
+            return rs.next();
+
+        } catch (SQLException e) {
+
+            throw new RuntimeException(e);
+        }
+    }
 }

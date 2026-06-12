@@ -14,16 +14,16 @@ import javafx.collections.ObservableList;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 public class PropertyService {
     private final PropertyDAO propertyDAO;
     private final DefaultPropertiesDAO defaultPropertiesDAO;
-    private final PropertyValuesDAO propertyValuesDAO;
+
 
     public PropertyService(){
         this.propertyDAO = new PropertyDAO();
         this.defaultPropertiesDAO = new DefaultPropertiesDAO();
-        this.propertyValuesDAO = new PropertyValuesDAO();
     }
 
 
@@ -31,51 +31,37 @@ public class PropertyService {
         return propertyDAO.getPropertiesByTest(testId);
     }
 
-    public ObservableList<DefaultProperty> getPropertiesByCategory(String categoryName){
-        return defaultPropertiesDAO.getDefaultProperties(categoryName);
-    }
-
     public int insertProperty(Connection conn, Property property){
-
-        int propertyId = getPropertyId(conn, property);
-
-        if (propertyId != -1) {
-            // already exists
-            System.out.println("Property already exists in DB. Returning id");
-            return propertyId;
-        } else {
-            // insert new
-            return propertyDAO.insertProperty(conn, property);
-        }
-
+        return propertyDAO.insertProperty(conn, property);
     }
-
 
     public int getPropertyId(Connection conn, Property property){
         return propertyDAO.getPropertyId(conn, property);
     }
 
-    public void insertPropertyValue(Connection conn, InputRow row){
-
-            PropertyValue propertyValue = row.getPropertyValue();
-            int propertyValId = propertyValuesDAO.insertValue(conn, propertyValue);
-            row.getPropertyValue().setPropertyValID(propertyValId);
-    }
-
-    public void updatePropertyValue(Connection conn, InputRow row) {
-
-        PropertyValue propertyValue = row.getPropertyValue();
-        propertyValuesDAO.updatePropertyValue(conn, propertyValue);
-    }
-
-    public int getPropertyValueId(Connection conn, int propertyID){
-        return propertyValuesDAO.getPropertyValueId(conn, propertyID);
-    }
     public void updateProperty(Connection conn, Property property) {
         propertyDAO.updateProperty(conn, property);
     }
 
-    public List<PropertyValue> getValuesByProperty(Connection conn, int propertyID){
-        return propertyValuesDAO.getValuesByProperty(conn, propertyID);
+    // for transactions
+    public Property getPropertyById(Connection conn, int propertyId) {
+
+        return propertyDAO.getPropertyById(conn, propertyId);
     }
+
+    public Property getPropertyById(int propertyId) {
+
+        try (Connection conn = DBUtil.getConnection()) {
+
+            return getPropertyById(
+                    conn,
+                    propertyId
+            );
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Map<String,Double> getAverageFromTest(Connection conn, int TestId) throws SQLException {return propertyDAO.getPropertyAveragesByTest(conn,TestId);}
 }

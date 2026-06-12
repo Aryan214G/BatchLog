@@ -15,7 +15,7 @@ public class UnitsService {
         this.unitsDAO = new UnitsDAO();
     }
 
-    public void createUnit(Unit unit) {
+    public int createUnit(Unit unit) {
 
         if (unit == null) {
             throw new IllegalArgumentException("Unit cannot be null");
@@ -25,7 +25,29 @@ public class UnitsService {
             throw new IllegalArgumentException("Unit name cannot be empty");
         }
 
-        unitsDAO.insertUnit(unit);
+        String unitName = unit.getUnit().trim();
+
+        try (Connection conn = DBUtil.getConnection()) {
+
+            Unit existing =
+                    unitsDAO.getUnitByName(
+                            conn,
+                            unit.getUnit()
+                    );
+
+            if (existing != null) {
+                return existing.getUnitId();
+            }
+
+            return unitsDAO.insertUnit(
+                    conn,
+                    unit
+            );
+
+        } catch (Exception e) {
+
+            throw new RuntimeException(e);
+        }
     }
     public String getUnitNameById(int unitId) {
 
@@ -76,5 +98,73 @@ public class UnitsService {
         }
 
         unitsDAO.deleteUnit(unitId);
+    }
+
+    public int getUnitIdByName(String unitName) {
+
+        try (Connection conn = DBUtil.getConnection()) {
+
+            Unit unit =
+                    unitsDAO.getUnitByName(
+                            conn,
+                            unitName
+                    );
+
+            if (unit != null) {
+
+                return unit.getUnitId();
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        return -1;
+    }
+    public boolean unitExists(
+            Connection conn,
+            String unitName
+    ) {
+
+        return unitsDAO.unitExists(
+                conn,
+                unitName
+        );
+    }
+
+    public int createUnitIfNotExists(
+            Connection conn,
+            String unitName
+    ) {
+
+        Unit existing =
+                unitsDAO.getUnitByName(
+                        conn,
+                        unitName
+                );
+
+        if (existing != null) {
+            return existing.getUnitId();
+        }
+
+        return unitsDAO.insertUnit(
+                conn,
+                new Unit(unitName)
+        );
+    }
+
+    public int insertUnit(
+            Connection conn,
+            String unitName
+    ) {
+
+        Unit unit = new Unit();
+        unit.setUnit(unitName);
+
+        return unitsDAO.insertUnit(
+                conn,
+                unit
+        );
     }
 }

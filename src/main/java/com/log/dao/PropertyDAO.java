@@ -5,16 +5,27 @@ import com.log.model.Property;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class  PropertyDAO {
 
     public int insertProperty(Connection conn, Property property) {
         String sql = """
                 INSERT INTO Property
-                (Property_name, Category_ID, Temp_ID, Dir_ID, Unit_ID, Test_ID)
-                VALUES (?, ?, ?, ?, ?, ?)
+                (Property_name, Category_ID, Temp_ID, Dir_ID, Unit_ID, Test_ID, test_method)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
                 """;
+
+        System.out.println("=== INSERT PROPERTY ===");
+System.out.println("Property Name = " + property.getPropertyName());
+System.out.println("Category ID   = " + property.getCategory().getCategoryId());
+System.out.println("Temp ID       = " + property.getTemperature().getTempId());
+System.out.println("Dir ID        = " + property.getDirection().getDirId());
+System.out.println("Unit ID       = " + property.getUnit().getUnitId());
+System.out.println("Test ID       = " + property.getTestID());
+System.out.println("Test Method   = " + property.getTestMethod());
 
         try(PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -24,6 +35,7 @@ public class  PropertyDAO {
             statement.setInt(4, property.getDirection().getDirId());
             statement.setInt(5, property.getUnit().getUnitId());
             statement.setInt(6, property.getTestID());
+            statement.setString(7, property.getTestMethod());
 
             statement.executeUpdate();
             ResultSet rs = statement.getGeneratedKeys();
@@ -46,6 +58,7 @@ public class  PropertyDAO {
         SELECT
             p.Property_ID,
             p.Property_name,
+            p.test_method,
 
             p.Category_ID,
             c.Category_name,
@@ -101,9 +114,9 @@ public class  PropertyDAO {
             property.getCategory().setCategoryName(rs.getString("Category_name"));
 
             property.getTemperature().setTempId(rs.getInt("Temp_ID"));
-            property.getTemperature().setTempVal(rs.getDouble("Temp_VAL"));
+            property.getTemperature().setTempVal(rs.getString("Temp_VAL"));
             property.getTemperature().setTempUnitVal(rs.getString("Temp_Unit"));
-            property.getTemperature().setTempUnitId(rs.getInt("Temp_Unit_ID"));
+            property.getTemperature().setTempUnitID(rs.getInt("Temp_Unit_ID"));
 
             property.getDirection().setDirId(rs.getInt("Dir_ID"));
             property.getDirection().setDirVal(rs.getString("Dir_VAL"));
@@ -112,6 +125,8 @@ public class  PropertyDAO {
             property.getUnit().setUnit(rs.getString("Property_Unit"));
 
             property.setTestID(rs.getInt("Test_ID"));
+
+            property.setTestMethod(rs.getString("test_method"));
 
             properties.add(property);
         }
@@ -135,7 +150,8 @@ public class  PropertyDAO {
                 Temp_ID = ?, 
                 Dir_ID = ?, 
                 Unit_ID = ?, 
-                Test_ID = ?
+                Test_ID = ?,
+                test_method = ?
             WHERE Property_ID = ?
             """;
 
@@ -147,7 +163,8 @@ public class  PropertyDAO {
             stmt.setInt(4, property.getDirection().getDirId());
             stmt.setInt(5, property.getUnit().getUnitId());
             stmt.setInt(6, property.getTestID());
-            stmt.setInt(7, property.getPropertyID());
+            stmt.setString(7, property.getTestMethod());
+            stmt.setInt(8, property.getPropertyID());
 
             int rowsAffected = stmt.executeUpdate();
 
@@ -194,4 +211,371 @@ public class  PropertyDAO {
 
         return -1; // not found
     }
+
+    public Map<String, Double> getPropertyAveragesByBatch(
+            Connection conn,
+            int batchCode
+    ) throws SQLException {
+
+        Map<String, Double> propertyAverages = new LinkedHashMap<>();
+
+        String sql = """
+        SELECT
+            p.Property_name,
+            COALESCE(t.Temp_VAL || ' ' || tu.Temp_Unit, '') AS temperature,
+            COALESCE(d.Dir_VAL, '')                         AS direction,
+            COALESCE(u.Unit, '')                            AS unit,
+            AVG(pv.Prop_VAL)                                AS avg_val
+        FROM Property p
+        JOIN Property_Values pv ON pv.Property_ID = p.Property_ID
+        JOIN Batch_Test bt      ON p.Test_ID      = bt.Test_ID
+
+        LEFT JOIN Temperature t
+               ON p.Temp_ID = t.Temp_ID
+
+        LEFT JOIN Temperature_Units tu
+               ON t.Temp_Unit_ID = tu.Temp_Unit_ID
+
+        LEFT JOIN Direction d
+               ON p.Dir_ID = d.Dir_ID
+
+        LEFT JOIN Units u
+               ON p.Unit_ID = u.Unit_ID
+
+        WHERE bt.Batch_CODE = ?
+
+        GROUP BY
+            p.Property_name,
+            temperature,
+            direction,
+            unit
+    """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, batchCode);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+
+                String key = buildComparisonKey(
+                        rs.getString("Property_name"),
+                        rs.getString("temperature"),
+                        rs.getString("direction"),
+                        rs.getString("unit")
+                );
+
+                propertyAverages.put(
+                        key,
+                        rs.getDouble("avg_val")
+                );
+            }
+        }
+
+        return propertyAverages;
+    }
+    public Property getPropertyById(Connection conn, int propertyId){
+
+        String sql = """
+                SELECT
+            p.Property_name,
+            p.test_method,
+
+            p.Category_ID,
+            c.Category_name,
+
+            p.Temp_ID,
+            t.Temp_VAL,
+            t.Temp_Unit_ID,
+            tu.Temp_Unit AS Temp_Unit,
+
+            p.Dir_ID,
+            d.Dir_VAL,
+
+            p.Unit_ID,
+            u.Unit AS Property_Unit,
+
+            p.Test_ID
+
+        FROM Property p
+
+        JOIN Category c
+            ON p.Category_ID = c.Category_ID
+
+        JOIN Units u
+            ON p.Unit_ID = u.Unit_ID
+
+        JOIN Direction d
+            ON p.Dir_ID = d.Dir_ID
+
+        JOIN Temperature t
+            ON p.Temp_ID = t.Temp_ID
+
+        JOIN Temperature_Units tu
+            ON t.Temp_Unit_ID = tu.Temp_Unit_ID
+
+        WHERE p.Property_ID = ?""";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, propertyId);
+
+            ResultSet rs = stmt.executeQuery();
+
+            Property property = new Property();
+
+            if (rs.next()) {
+
+            property.setPropertyID(propertyId);
+            property.setPropertyName(rs.getString("Property_name"));
+
+            property.getCategory().setCategoryId(rs.getInt("Category_ID"));
+            property.getCategory().setCategoryName(rs.getString("Category_name"));
+
+            property.getTemperature().setTempId(rs.getInt("Temp_ID"));
+            property.getTemperature().setTempVal(rs.getString("Temp_VAL"));
+            property.getTemperature().setTempUnitVal(rs.getString("Temp_Unit"));
+            property.getTemperature().setTempUnitID(rs.getInt("Temp_Unit_ID"));
+
+            property.getDirection().setDirId(rs.getInt("Dir_ID"));
+            property.getDirection().setDirVal(rs.getString("Dir_VAL"));
+
+            property.getUnit().setUnitId(rs.getInt("Unit_ID"));
+            property.getUnit().setUnit(rs.getString("Property_Unit"));
+
+            property.setTestID(rs.getInt("Test_ID"));
+
+            property.setTestMethod(rs.getString("test_method"));
+
+                return property;
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public Map<String, Double> getPropertyAveragesByTest(
+            Connection conn,
+            int testId
+    ) throws SQLException {
+
+        Map<String, Double> propertyAverages = new LinkedHashMap<>();
+
+        String sql = """
+        SELECT
+            p.Property_name,
+            COALESCE(t.Temp_VAL || ' ' || tu.Temp_Unit, '') AS temperature,
+            COALESCE(d.Dir_VAL, '')                         AS direction,
+            COALESCE(u.Unit, '')                            AS unit,
+            AVG(pv.Prop_VAL)                                AS avg_val
+        FROM Property p
+
+        JOIN Property_Values pv
+             ON pv.Property_ID = p.Property_ID
+
+        LEFT JOIN Temperature t
+             ON p.Temp_ID = t.Temp_ID
+
+        LEFT JOIN Temperature_Units tu
+             ON t.Temp_Unit_ID = tu.Temp_Unit_ID
+
+        LEFT JOIN Direction d
+             ON p.Dir_ID = d.Dir_ID
+
+        LEFT JOIN Units u
+             ON p.Unit_ID = u.Unit_ID
+
+        WHERE p.Test_ID = ?
+
+        GROUP BY
+            p.Property_name,
+            temperature,
+            direction,
+            unit
+    """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, testId);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+
+                String key = buildComparisonKey(
+                        rs.getString("Property_name"),
+                        rs.getString("temperature"),
+                        rs.getString("direction"),
+                        rs.getString("unit")
+                );
+
+                propertyAverages.put(
+                        key,
+                        rs.getDouble("avg_val")
+                );
+            }
+        }
+
+        return propertyAverages;
+    }
+
+    // In PropertyDAO
+    public Map<String, Map<String, Double>>
+    getPropertyAveragesByBatchWithUnits(
+            Connection conn,
+            int batchCode
+    ) throws SQLException {
+
+        Map<String, Map<String, Double>> result =
+                new LinkedHashMap<>();
+
+        String sql = """
+        SELECT
+            p.Property_name,
+            COALESCE(t.Temp_VAL || ' ' || tu.Temp_Unit, '') AS temperature,
+            COALESCE(d.Dir_VAL, '')                         AS direction,
+            COALESCE(u.Unit, '')                            AS unit,
+            AVG(pv.Prop_VAL)                                AS avg_val
+        FROM Property p
+        JOIN Property_Values pv ON pv.Property_ID = p.Property_ID
+        JOIN Batch_Test bt      ON p.Test_ID      = bt.Test_ID
+
+        LEFT JOIN Temperature t
+               ON p.Temp_ID = t.Temp_ID
+
+        LEFT JOIN Temperature_Units tu
+               ON t.Temp_Unit_ID = tu.Temp_Unit_ID
+
+        LEFT JOIN Direction d
+               ON p.Dir_ID = d.Dir_ID
+
+        LEFT JOIN Units u
+               ON p.Unit_ID = u.Unit_ID
+
+        WHERE bt.Batch_CODE = ?
+
+        GROUP BY
+            p.Property_name,
+            temperature,
+            direction,
+            unit
+    """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, batchCode);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+
+                String key = buildComparisonKey(
+                        rs.getString("Property_name"),
+                        rs.getString("temperature"),
+                        rs.getString("direction"),
+                        rs.getString("unit")
+                );
+
+                result.computeIfAbsent(
+                        key,
+                        k -> new LinkedHashMap<>()
+                ).put(
+                        rs.getString("unit"),
+                        rs.getDouble("avg_val")
+                );
+            }
+        }
+
+        return result;
+    }
+
+    public Map<String, Map<String, Double>> getPropertyAveragesByTestWithUnits(
+            Connection conn,
+            int testId
+    ) throws SQLException {
+
+        Map<String, Map<String, Double>> result =
+                new LinkedHashMap<>();
+
+        String sql = """
+        SELECT
+            p.Property_name,
+            COALESCE(t.Temp_VAL || ' ' || tu.Temp_Unit, '') AS temperature,
+            COALESCE(d.Dir_VAL, '')                         AS direction,
+            COALESCE(u.Unit, '')                            AS unit,
+            AVG(pv.Prop_VAL)                                AS avg_val
+
+        FROM Property p
+
+        JOIN Property_Values pv
+             ON pv.Property_ID = p.Property_ID
+
+        LEFT JOIN Temperature t
+             ON p.Temp_ID = t.Temp_ID
+
+        LEFT JOIN Temperature_Units tu
+             ON t.Temp_Unit_ID = tu.Temp_Unit_ID
+
+        LEFT JOIN Direction d
+             ON p.Dir_ID = d.Dir_ID
+
+        LEFT JOIN Units u
+             ON p.Unit_ID = u.Unit_ID
+
+        WHERE p.Test_ID = ?
+
+        GROUP BY
+            p.Property_name,
+            temperature,
+            direction,
+            unit
+    """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, testId);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+
+                String key =
+                        rs.getString("Property_name") + "||" +
+                                rs.getString("temperature") + "||" +
+                                rs.getString("direction") + "||" +
+                                rs.getString("unit");
+
+                result.computeIfAbsent(
+                        key,
+                        k -> new LinkedHashMap<>()
+                ).put(
+                        rs.getString("unit"),
+                        rs.getDouble("avg_val")
+                );
+            }
+        }
+
+        return result;
+    }
+
+
+    private String buildComparisonKey(
+            String propertyName,
+            String temperature,
+            String direction,
+            String unit
+    ) {
+        return (propertyName != null ? propertyName : "") + "||"
+                + (temperature != null ? temperature : "") + "||"
+                + (direction != null ? direction : "") + "||"
+                + (unit != null ? unit : "");
+    }
+
+
 }
+

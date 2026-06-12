@@ -25,7 +25,9 @@
             <HBox alignment="CENTER_LEFT" spacing="12">
                 <Button onAction="#handleBack" styleClass="back-btn" text="← Back" />
                 <Button onAction="#handleFilter" styleClass="primary-btn" text="⚙ Filter" />
-            <Button fx:id="editBtn" mnemonicParsing="false" onAction="#handleEdit" text="Edit" />
+                <Button text="🖶 Print" onAction="#handlePrint" styleClass="primary-btn"/>
+            <!--<Button fx:id="editBtn" mnemonicParsing="false" onAction="#handleEdit" text="Edit" />-->
+                <Button text="⊞ Group by Category" onAction="#handleToggleGrouping" styleClass="primary-btn" fx:id="groupToggleBtn"/>
             </HBox>
             <Label fx:id="batchTitleLabel" styleClass="batch-title" />
             <!--
@@ -42,7 +44,9 @@
             <!-- Table -->
             <ScrollPane fitToWidth="true" styleClass="table-scroll" VBox.vgrow="ALWAYS">
                 <content>
-                    <GridPane fx:id="propertiesGrid" styleClass="property-table">
+                    <GridPane fx:id="propertiesGrid"
+                              maxWidth="Infinity"
+                              styleClass="property-table">
                         <padding>
                             <Insets bottom="0" left="0" right="0" top="0" />
                         </padding>

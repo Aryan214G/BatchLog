@@ -8,11 +8,8 @@ import javafx.stage.Stage;
 import com.log.database.DBUtil;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.logging.Handler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Main extends Application {
@@ -31,6 +28,23 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+
+//        try {
+//
+//
+//        PdfReportService pdfReportService = new PdfReportService();
+//
+//        ReportData reportData =
+//                pdfReportService.buildReportData(2); // existing Property_ID
+//
+//        pdfReportService.generatePdf(reportData);
+//
+//        System.out.println("PDF generated successfully");
+//
+//    } catch (Exception e) {
+//
+//        e.printStackTrace();
+//    }
 
         FXMLLoader loader = new FXMLLoader(getClass()
                 .getResource("/com/log/ui/views/HomePage.fxml")

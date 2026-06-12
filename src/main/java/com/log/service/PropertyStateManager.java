@@ -12,20 +12,26 @@ public class PropertyStateManager {
     private final Map<String, PropertyState> propertyStates = new HashMap<>();
 
     public void saveState(
-            String property,
+            Property property,
+            int propertyId,
+            String propertyName,
+            String testMethod,
             List<InputRow> inputRows,
             Temperature temperature,
             Direction direction,
             Unit unit
     ) {
-        if (property == null) return;
+        if (propertyName == null) return;
 
         PropertyState state = new PropertyState();
+        state.setProperty(property);
         state.setTemperature(temperature);
         state.setDirection(direction);
         state.setInputRows(inputRows);
         state.setUnit(unit);
-        propertyStates.put(property, state);
+        state.setTestMethod(testMethod);
+        state.setPropertyId(propertyId);
+        propertyStates.put(propertyName, state);
     }
 
     public PropertyState getState(String property) {
@@ -35,4 +41,5 @@ public class PropertyStateManager {
     public void clearState(String property) {
         propertyStates.remove(property);
     }
+
 }

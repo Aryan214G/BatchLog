@@ -20,11 +20,6 @@ public class MenubarController {
         String path = "/com/log/ui/views/BaseProperties.fxml";
         loadScene(event, path);
     }
-    @FXML
-    private void loadNewBatchView(ActionEvent event) throws IOException {
-        String path = "/com/log/ui/views/NewBatch.fxml";
-        loadScene(event, path);
-    }
     private void loadScene(ActionEvent event, String path) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
         Parent root = loader.load();
@@ -117,5 +112,37 @@ public class MenubarController {
         Stage stage = (Stage) menuBar.getScene().getWindow();
         stage.setScene(scene);
         stage.show();
+    }
+
+    @FXML
+    private void openbaseprops() {
+
+        try {
+
+            FXMLLoader loader =
+                    new FXMLLoader(
+                            getClass().getResource(
+                                    "/com/log/ui/views/BaseProperties.fxml"
+                            )
+                    );
+
+            Parent root = loader.load();
+
+            BasePropertiesController controller =
+                    loader.getController();
+
+            controller.loadExistingProject();
+
+            controller.setEdit(true);
+
+            Stage stage =
+                    (Stage) menuBar.getScene().getWindow();
+
+            stage.getScene().setRoot(root);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
     }
 }

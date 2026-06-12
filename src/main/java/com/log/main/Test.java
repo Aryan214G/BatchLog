@@ -1,12 +1,7 @@
 package com.log.main;
-import com.log.dao.BatchDAO;
-import com.log.dao.ProductDAO;
 import com.log.database.DBUtil;
-import com.log.ui.util.SearchUtil;
+import com.log.util.SearchUtil;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -45,7 +40,7 @@ public class Test extends Application {
             Connection connection = DBUtil.getConnection();
 
 
-            System.out.println(searchUtil.searchBatches(connection,"","Iphone","","",""));
+            //System.out.println(searchUtil.searchBatches(connection,"","Iphone","","",""));
         }
     }
 

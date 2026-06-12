@@ -14,7 +14,11 @@ public class ProductDAO {
 
         String sql = "INSERT INTO Product(Product_ID, Product_name, Project_ID) VALUES (?, ?, ?)";
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt =
+                     conn.prepareStatement(
+                             sql,
+                             Statement.RETURN_GENERATED_KEYS
+                     );){
 
             stmt.setString(1, product.getProductId());
             stmt.setString(2, product.getProductName());
@@ -161,6 +165,42 @@ public class ProductDAO {
                         rs.getString("Product_name"),
                         rs.getInt("Project_ID")
                 );
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public Integer getProductId(Connection conn, int productCode){
+        String sql = "SELECT Product_ID FROM Product WHERE Product_code = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, productCode);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                rs.getInt("Product_ID");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public String getProductNameByCode(Connection conn,int productCode){
+        String sql = "SELECT Product_name FROM Product WHERE Product_code = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, productCode);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                rs.getString("Product_name");
             }
 
         } catch (SQLException e) {

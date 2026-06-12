@@ -22,4 +22,9 @@ public class DBUtil {
 
         return conn;
     }
+
+    public static Path getDatabasePath() {
+        return DB_PATH;
+    }
+
 }

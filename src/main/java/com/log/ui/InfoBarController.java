@@ -8,10 +8,14 @@ import javafx.scene.control.Button;
 
 public class InfoBarController {
 
+    @FXML private Button infobar_projectName;
     @FXML private Button infobar_productName;
     @FXML private Button infobar_batchNo;
+    @FXML private Button infobar_testDate;
+    @FXML private Button infobar_testSite;
     @FXML private Button infobar_propertyName;
     @FXML private Button infobar_attributeName;
+    @FXML private Button infobar_componentID;
 
     private final AppState state = AppState.getInstance();
     private final BasePropertiesState bpropState = BasePropertiesState.getInstance();
@@ -24,11 +28,24 @@ public class InfoBarController {
 
     public void refresh() {
 
+        infobar_projectName.setText(
+                "Project: " + safe(bpropState.getProjectName()));
+
         infobar_productName.setText(
                 "Product: " + safe(bpropState.getProductName()));
 
+        infobar_componentID.setText("Component: "+safe(bpropState.getProductID()));
+
         infobar_batchNo.setText(
                 "Batch: " + safe(bpropState.getBatchNo()));
+
+        infobar_testDate.setText(
+                "Date: " + (bpropState.getTestDate() != null
+                        ? bpropState.getTestDate().toString()
+                        : "-"));
+
+        infobar_testSite.setText(
+                "Site: " + safe(bpropState.getPlaceOfTesting()));
 
         infobar_propertyName.setText(
                 safe(selectedState.getSelectedCategory()));

@@ -1,21 +1,26 @@
 package com.log.service;
 
+import com.log.core.AppState;
 import com.log.core.BasePropertiesState;
 import com.log.database.DBUtil;
 import com.log.model.*;
 import com.log.ui.InputRow;
+import com.log.util.AlertUtil;
 import javafx.scene.control.Alert;
 
 import java.sql.Connection;
-import java.util.List;
 
 public class PropertySubmissionService {
+
 
     private TemperatureService temperatureService;
     private DirectionService directionService;
     private CategoryService categoryService;
     private UnitsService unitsService;
     private PropertyService propertyService;
+    private PropertyValuesService propertyValuesService;
+
+    private AppState instance = AppState.getInstance();
     private BasePropertiesState bsinstance = BasePropertiesState.getInstance();
 
     private int tempId;
@@ -24,12 +29,13 @@ public class PropertySubmissionService {
                                      DirectionService directionService,
                                      CategoryService categoryService,
                                      UnitsService unitsService,
-                                     PropertyService propertyService) {
+                                     PropertyService propertyService, PropertyValuesService propertyValuesService) {
         this.temperatureService = temperatureService;
         this.directionService = directionService;
         this.categoryService = categoryService;
         this.unitsService = unitsService;
         this.propertyService = propertyService;
+        this.propertyValuesService = propertyValuesService;
     }
 
     public void submit(PropertyState propertyState, String propertyName, String selectedCategory) {
@@ -41,12 +47,14 @@ public class PropertySubmissionService {
 
             handleTemperature(conn, propertyState.getTemperature());
             handleDirection(conn, propertyState.getDirection());
-            handleProperty(conn, propertyState.getInputRows(), propertyName, selectedCategory);
+            handleProperty(conn, propertyState, propertyName, selectedCategory, propertyState.getTestMethod());
 
             conn.commit();
-            showAlert("Success", "Submission completed successfully!");
+
+            AlertUtil.showInfo("Submission completed successfully!");
+
         }  catch (Exception e) {
-            showAlert("Submit not successful",e.toString());
+            AlertUtil.showError("Submit not successful");
 
             e.printStackTrace();
 
@@ -72,7 +80,7 @@ public class PropertySubmissionService {
     private void handleTemperature(Connection conn, Temperature temp) {
         if (temp.getTempId() == null) {
 
-           this.tempId = temperatureService.createTemperature(conn, temp);
+           this.tempId = temperatureService.insertTemperature(conn, temp);
            temp.setTempId(tempId);
 
         } else {
@@ -85,18 +93,27 @@ public class PropertySubmissionService {
     private void handleDirection(Connection conn, Direction dir) {
         if (dir.getDirId() == null) {
             this.directionId = directionService.getDirectionByName(conn, dir.getDirVal()).getDirId();
+            dir.setDirId(directionId);
+        }
+        else {
+            this.directionId = dir.getDirId();
         }
     }
 
-    private void handleProperty(Connection conn, List<InputRow> inputRows, String propertyName, String selectedCategory){
+    private void handleProperty(
+            Connection conn,
+            PropertyState propertyState,
+            String propertyName,
+            String selectedCategory,
+            String testMethod){
+
         //TODO: might need to replace this unecessary db call
-        Category category =
-        categoryService.getCategory(conn, selectedCategory);
+        Category category = categoryService.getCategory(conn, selectedCategory);
 
         Unit unit =
                 unitsService.getUnit(
                         conn,
-                        inputRows.get(0)
+                        propertyState.getInputRows().get(0)
                                 .getUnitController()
                                 .getComboBox()
                                 .getValue()
@@ -108,39 +125,152 @@ public class PropertySubmissionService {
         Direction direction = new Direction();
         direction.setDirId(directionId);
 
-        Property property = new Property(
-                propertyName,
-                unit,
-                bsinstance.getTestId(),
-                category,
-                temperature,
-                direction
+        System.out.println(
+                "BasePropertiesState Test ID = " + bsinstance.getTestId());
+
+        // PROPERTY OBJECT
+
+        Property property = propertyState.getProperty();
+
+        if (property == null) {
+
+            property = new Property(
+                    propertyName,
+                    unit,
+                    bsinstance.getTestId(),
+                    category,
+                    temperature,
+                    direction
+            );
+
+            if (instance.isEditMode()) {
+                propertyState.setProperty(property);
+            }
+        }
+
+        // TEMPORARY LOGGING
+        //TODO: remove this logging later
+        System.out.println(
+                "Property from state = "
+                        + propertyState.getProperty()
         );
 
-        int propertyID = propertyService.getPropertyId(conn, property);
+        if (propertyState.getProperty() != null) {
+            System.out.println(
+                    "Property ID = "
+                            + propertyState.getProperty().getPropertyID()
+            );
+        }
 
-        if(propertyID != -1){
-            property.setPropertyID(propertyID);
+
+        property.setTestMethod(testMethod);
+
+        property.setPropertyName(propertyName);
+        property.setUnit(unit);
+        property.setCategory(category);
+        property.setTemperature(temperature);
+        property.setDirection(direction);
+        property.setTestMethod(testMethod);
+        // ________________________________________________________________________________
+
+        Integer propertyID = property.getPropertyID();
+
+        //TODO: remove this logging
+        System.out.println(
+                "Property ID before save = "
+                        + property.getPropertyID()
+        );
+
+        if(propertyID != null && propertyID > 0){
             propertyService.updateProperty(conn, property);
         }
         else{
             propertyID = propertyService.insertProperty(conn, property);
+            property.setPropertyID(propertyID);
         }
 
-        for (InputRow row : inputRows){
+        for (InputRow row : propertyState.getInputRows()) {
 
             PropertyValue pv = row.getPropertyValue();
 
             pv.setPropertyID(propertyID);
 
-            if (pv.getPropertyValID() != 0 && pv.getPropertyValID() != -1) {
+            String valueText = row.getField().getText();
 
-                System.out.println("Updating property value");
-                propertyService.updatePropertyValue(conn, row);
+            // =====================================
+            // EMPTY FIELD → DELETE EXISTING VALUE
+            // =====================================
 
-            } else {
-                System.out.println("Inserting property value");
-                propertyService.insertPropertyValue(conn, row);
+            if (valueText == null || valueText.isBlank()) {
+
+                if (pv.getPropertyValID() != 0
+                        && pv.getPropertyValID() != -1) {
+
+                    System.out.println( "Deleting property value");
+
+                    propertyValuesService.deletePropertyValue(
+                            conn,
+                            pv.getPropertyValID()
+                    );
+                }
+
+                continue;
+            }
+
+            // =====================================
+            // VALID NON-EMPTY VALUE
+            // =====================================
+
+            try {
+
+                double value =
+                        Double.parseDouble(valueText.trim());
+
+                pv.setPropertyVAL(value);
+
+            } catch (NumberFormatException e) {
+
+                System.out.println(
+                        "Invalid property value: "
+                                + valueText
+                );
+
+                continue;
+            }
+
+            // =====================================
+            // UPDATE
+            // =====================================
+
+            if (pv.getPropertyValID() != 0
+                    && pv.getPropertyValID() != -1) {
+
+                System.out.println(
+                        "Updating property value"
+                );
+
+                propertyValuesService.updatePropertyValue(
+                        conn,
+                        row
+                );
+            }
+
+            // =====================================
+            // INSERT
+            // =====================================
+
+            else {
+
+                System.out.println(
+                        "Inserting property value"
+                );
+
+                int propertyValId = propertyValuesService.insertPropertyValue(
+                        conn,
+                        row
+                );
+
+                row.getPropertyValue().setPropertyValID(propertyValId);
             }
         }
     }

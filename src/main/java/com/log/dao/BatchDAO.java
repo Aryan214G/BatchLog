@@ -1,30 +1,13 @@
 package com.log.dao;
 import com.log.database.DBUtil;
 import com.log.model.Batch;
+import com.log.model.BatchRow;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BatchDAO {
-
-    public void insertBatchByCODE(Batch batch) {
-
-        //TODO: recheck this query. Use WHERE batchCode keyword
-        String sql = "INSERT INTO Batch VALUES (?, ?, ?)";
-
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, batch.getBatchCode());
-            stmt.setString(2, batch.getBatchId());
-            stmt.setInt(4, batch.getProductCode());
-
-            stmt.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
     public int insertBatchByID(Connection conn, Batch batch) {
         String sql = "INSERT INTO Batch (Batch_ID, Product_CODE) VALUES (?, ?)";
@@ -109,6 +92,46 @@ public class BatchDAO {
         }
     }
 
+     public List<BatchRow> getBatchesInProject(Connection conn, String projectName) throws SQLException {
+        String sql = """
+            SELECT
+                b.Batch_CODE,
+                b.Batch_ID,
+                b.Product_CODE,
+                p.Product_name,
+                bt.Test_date,
+                bt.Test_site,
+                bt.SOP,
+                bt.Test_schedule
+            FROM Batch b
+            JOIN Product   p  ON b.Product_CODE  = p.Product_code
+            JOIN Project   pr ON p.Project_ID    = pr.Project_ID
+            LEFT JOIN Batch_Test bt ON bt.Batch_CODE = b.Batch_CODE
+            WHERE pr.Project_name = ?
+        """;
+
+        List<BatchRow> rows = new ArrayList<>();
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, projectName);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                rows.add(new BatchRow(
+                        rs.getInt("Batch_CODE"),
+                        rs.getString("Batch_ID"),
+                        rs.getString("Product_name"),
+                        rs.getString("Test_date"),
+                        rs.getString("Test_site"),
+                        rs.getInt("Product_CODE"),
+                        rs.getString("SOP"),
+                        rs.getString("Test_schedule")
+                ));
+            }
+        }
+
+        return rows;
+    }
 
     public int getBatchCode(Connection conn, Batch batch){
         String sql = "SELECT Batch_CODE FROM Batch WHERE Batch_ID=? AND Product_CODE=?";
@@ -129,6 +152,49 @@ public class BatchDAO {
         return -1;
 
 
+    }
+
+    public String getBatchIdByCode(Connection conn, int batchCode) {
+
+        String sql = """
+            SELECT Batch_ID
+            FROM Batch
+            WHERE Batch_CODE = ?
+            """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, batchCode);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("Batch_ID");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+
+    public boolean updateBatchId(Connection conn, int batchCode, String newBatchId) {
+        String sql = "UPDATE Batch SET Batch_ID = ? WHERE Batch_CODE = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, newBatchId);
+            stmt.setInt(2, batchCode);
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
 }

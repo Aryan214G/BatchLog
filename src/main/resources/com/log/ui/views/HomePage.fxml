@@ -5,66 +5,65 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.TextField?>
 <BorderPane prefHeight="800" prefWidth="1200"
-            xmlns="http://javafx.com/javafx/25"
+            stylesheets="@../styles/homepage.css"
+            xmlns="http://javafx.com/javafx/26"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.log.ui.HomePageController"
-            stylesheets="@../styles/homepage.css">
+            fx:controller="com.log.ui.HomePageController">
+
     <top>
         <fx:include source="../components/menubar.fxml" />
     </top>
+
     <!-- ================= LEFT SIDEBAR ================= -->
     <left>
         <VBox spacing="15" styleClass="sidebar" BorderPane.alignment="CENTER">
-
             <children>
-
-                <!-- App Title -->
-                <Label text="BatchLog" styleClass="app-title" />
-
-                <!-- Buttons -->
-                <Button text="New Project" styleClass="sidebar-button" maxWidth="Infinity" fx:id="newProjectBtn"/>
-                <Button text="New Batch Entry" styleClass="sidebar-button" maxWidth="Infinity" fx:id="newBatchEntryBtn"/>
-                <Button text="Retrieval Page" styleClass="sidebar-button" maxWidth="Infinity" fx:id="retrievalPageBtn"/>
-                <Button text="Settings" styleClass="sidebar-button" maxWidth="Infinity" fx:id="settingsPageBtn"/>
-                <Button text="Help" styleClass="sidebar-button" maxWidth="Infinity" fx:id="helpPageBtn"/>
-
+                <Label styleClass="app-title" text="BatchLog" />
+                <Button fx:id="newProjectBtn"    maxWidth="Infinity" styleClass="sidebar-button" text="New Project" />
+                <Button fx:id="retrievalPageBtn" maxWidth="Infinity" styleClass="sidebar-button" text="Retrieval Page" />
+                <Button fx:id="settingsPageBtn"  maxWidth="Infinity" styleClass="sidebar-button" text="Settings" />
+                <Button fx:id="helpPageBtn"      maxWidth="Infinity" styleClass="sidebar-button" text="Help" />
             </children>
-
             <padding>
-                <Insets top="20" left="15" right="15" bottom="20"/>
+                <Insets bottom="20" left="15" right="15" top="20" />
             </padding>
-
         </VBox>
     </left>
 
     <!-- ================= CENTER CONTENT ================= -->
     <center>
+
         <VBox spacing="20" styleClass="content-area">
 
             <children>
 
-                <!-- Title -->
-                <Label text="Recent Projects" styleClass="section-title"/>
+                <Label styleClass="section-title"
+                       text="Recent Projects" />
 
-                <!-- Scrollable Grid -->
-                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+                <TextField fx:id="projectSearchField"
+                           promptText="Search projects..." />
+
+                <ScrollPane fitToWidth="true"
+                            VBox.vgrow="ALWAYS">
 
                     <content>
-                        <GridPane fx:id="projectsGrid"
-                                  hgap="20"
-                                  vgap="20"
-                                  styleClass="projects-grid">
+
+                        <VBox fx:id="projectsList"
+                              spacing="8">
 
                             <padding>
-                                <Insets top="10" left="10" right="10" bottom="10"/>
+                                <Insets bottom="10"
+                                        left="10"
+                                        right="10"
+                                        top="10" />
                             </padding>
 
-                        </GridPane>
+                        </VBox>
+
                     </content>
 
                 </ScrollPane>
@@ -72,10 +71,14 @@
             </children>
 
             <padding>
-                <Insets top="20" left="20" right="20" bottom="20"/>
+                <Insets bottom="20"
+                        left="20"
+                        right="20"
+                        top="20" />
             </padding>
 
         </VBox>
+
     </center>
 
 </BorderPane>

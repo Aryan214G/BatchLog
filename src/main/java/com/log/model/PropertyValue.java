@@ -2,8 +2,9 @@ package com.log.model;
 
 public class PropertyValue {
     private int propertyValID;
-    private double propertyVAL;
+    private Double propertyVAL;
     private int propertyID;
+    private String componentNumber;
 
     public PropertyValue() {
     }
@@ -27,11 +28,11 @@ public class PropertyValue {
         this.propertyValID = propertyValID;
     }
 
-    public double getPropertyVAL() {
+    public Double getPropertyVAL() {
         return propertyVAL;
     }
 
-    public void setPropertyVAL(double propertyVAL) {
+    public void setPropertyVAL(Double propertyVAL) {
         this.propertyVAL = propertyVAL;
     }
 
@@ -41,5 +42,14 @@ public class PropertyValue {
 
     public void setPropertyID(int propertyID) {
         this.propertyID = propertyID;
+    }
+
+
+    public String getComponentNumber() {
+        return componentNumber;
+    }
+
+    public void setComponentNumber(String componentNumber) {
+        this.componentNumber = componentNumber;
     }
 }

@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 public class InputRow {
 
     private TextField field;
+    private TextField componentNumberField;
     private UnitsDropdownController unitController;
     private PropertyValue propertyValue;
 
@@ -45,4 +46,11 @@ public class InputRow {
         this.unitController = unitController;
     }
 
+    public TextField getComponentNumberField() {
+        return componentNumberField;
+    }
+
+    public void setComponentNumberField(TextField componentNumberField) {
+        this.componentNumberField = componentNumberField;
+    }
 }

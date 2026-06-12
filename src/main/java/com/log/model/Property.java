@@ -8,10 +8,12 @@ public class Property {
     // Core Property Fields
     // =========================
 
-    private int propertyID;
+    private Integer propertyID;
     private String propertyName;
 
     private int testID;
+
+    private String testMethod;
 
     // =========================
     // Related Objects
@@ -80,11 +82,11 @@ public class Property {
     // Getters and Setters
     // =========================
 
-    public int getPropertyID() {
+    public Integer getPropertyID() {
         return propertyID;
     }
 
-    public void setPropertyID(int propertyID) {
+    public void setPropertyID(Integer propertyID) {
         this.propertyID = propertyID;
     }
 
@@ -142,5 +144,13 @@ public class Property {
 
     public void setPropertyValues(List<PropertyValue> propertyValues) {
         this.propertyValues = propertyValues;
+    }
+
+    public String getTestMethod() {
+        return testMethod;
+    }
+
+    public void setTestMethod(String testMethod) {
+        this.testMethod = testMethod;
     }
 }
