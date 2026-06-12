@@ -327,9 +327,7 @@ public class BasePropertiesController {
 
         //TODO: update products later
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-
-        String newDate = date.format(formatter);
+        String newDate = date.toString();
 
         batchTestService.editTestDate(bpropState.getTestId(), newDate);
 
