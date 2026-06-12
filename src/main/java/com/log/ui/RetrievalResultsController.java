@@ -413,7 +413,7 @@ public class RetrievalResultsController {
 
     private ContextMenu createRowContextMenu(PropertyRow property) {
 
-        MenuItem exportItem = new MenuItem("Export Property");
+        MenuItem exportItem = new MenuItem("Print property report");
         exportItem.setOnAction(e -> {
             System.out.println("Export: " + property.getName());
             try {
