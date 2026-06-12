@@ -212,27 +212,62 @@ System.out.println("Test Method   = " + property.getTestMethod());
         return -1; // not found
     }
 
-    public Map<String, Double> getPropertyAveragesByBatch(Connection conn, int batchCode) throws SQLException {
+    public Map<String, Double> getPropertyAveragesByBatch(
+            Connection conn,
+            int batchCode
+    ) throws SQLException {
+
         Map<String, Double> propertyAverages = new LinkedHashMap<>();
 
         String sql = """
         SELECT
             p.Property_name,
-            AVG(pv.Prop_VAL) AS avg_val
+            COALESCE(t.Temp_VAL || ' ' || tu.Temp_Unit, '') AS temperature,
+            COALESCE(d.Dir_VAL, '')                         AS direction,
+            COALESCE(u.Unit, '')                            AS unit,
+            AVG(pv.Prop_VAL)                                AS avg_val
         FROM Property p
         JOIN Property_Values pv ON pv.Property_ID = p.Property_ID
         JOIN Batch_Test bt      ON p.Test_ID      = bt.Test_ID
+
+        LEFT JOIN Temperature t
+               ON p.Temp_ID = t.Temp_ID
+
+        LEFT JOIN Temperature_Units tu
+               ON t.Temp_Unit_ID = tu.Temp_Unit_ID
+
+        LEFT JOIN Direction d
+               ON p.Dir_ID = d.Dir_ID
+
+        LEFT JOIN Units u
+               ON p.Unit_ID = u.Unit_ID
+
         WHERE bt.Batch_CODE = ?
-        GROUP BY p.Property_name
+
+        GROUP BY
+            p.Property_name,
+            temperature,
+            direction,
+            unit
     """;
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setInt(1, batchCode);
+
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                propertyAverages.put(
+
+                String key = buildComparisonKey(
                         rs.getString("Property_name"),
+                        rs.getString("temperature"),
+                        rs.getString("direction"),
+                        rs.getString("unit")
+                );
+
+                propertyAverages.put(
+                        key,
                         rs.getDouble("avg_val")
                 );
             }
@@ -240,7 +275,6 @@ System.out.println("Test Method   = " + property.getTestMethod());
 
         return propertyAverages;
     }
-
     public Property getPropertyById(Connection conn, int propertyId){
 
         String sql = """
@@ -330,22 +364,42 @@ System.out.println("Test Method   = " + property.getTestMethod());
             int testId
     ) throws SQLException {
 
-        Map<String, Double> propertyAverages =
-                new LinkedHashMap<>();
+        Map<String, Double> propertyAverages = new LinkedHashMap<>();
 
         String sql = """
         SELECT
             p.Property_name,
-            AVG(pv.Prop_VAL) AS avg_val
+            COALESCE(t.Temp_VAL || ' ' || tu.Temp_Unit, '') AS temperature,
+            COALESCE(d.Dir_VAL, '')                         AS direction,
+            COALESCE(u.Unit, '')                            AS unit,
+            AVG(pv.Prop_VAL)                                AS avg_val
         FROM Property p
+
         JOIN Property_Values pv
-            ON pv.Property_ID = p.Property_ID
+             ON pv.Property_ID = p.Property_ID
+
+        LEFT JOIN Temperature t
+             ON p.Temp_ID = t.Temp_ID
+
+        LEFT JOIN Temperature_Units tu
+             ON t.Temp_Unit_ID = tu.Temp_Unit_ID
+
+        LEFT JOIN Direction d
+             ON p.Dir_ID = d.Dir_ID
+
+        LEFT JOIN Units u
+             ON p.Unit_ID = u.Unit_ID
+
         WHERE p.Test_ID = ?
-        GROUP BY p.Property_name
+
+        GROUP BY
+            p.Property_name,
+            temperature,
+            direction,
+            unit
     """;
 
-        try (PreparedStatement stmt =
-                     conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, testId);
 
@@ -353,8 +407,15 @@ System.out.println("Test Method   = " + property.getTestMethod());
 
             while (rs.next()) {
 
-                propertyAverages.put(
+                String key = buildComparisonKey(
                         rs.getString("Property_name"),
+                        rs.getString("temperature"),
+                        rs.getString("direction"),
+                        rs.getString("unit")
+                );
+
+                propertyAverages.put(
+                        key,
                         rs.getDouble("avg_val")
                 );
             }
@@ -364,65 +425,155 @@ System.out.println("Test Method   = " + property.getTestMethod());
     }
 
     // In PropertyDAO
-    public Map<String, Map<String, Double>> getPropertyAveragesByBatchWithUnits(Connection conn, int batchCode) throws SQLException {
-        Map<String, Map<String, Double>> result = new LinkedHashMap<>();
+    public Map<String, Map<String, Double>>
+    getPropertyAveragesByBatchWithUnits(
+            Connection conn,
+            int batchCode
+    ) throws SQLException {
+
+        Map<String, Map<String, Double>> result =
+                new LinkedHashMap<>();
 
         String sql = """
         SELECT
             p.Property_name,
-            u.Unit,
-            AVG(pv.Prop_VAL) AS avg_val
+            COALESCE(t.Temp_VAL || ' ' || tu.Temp_Unit, '') AS temperature,
+            COALESCE(d.Dir_VAL, '')                         AS direction,
+            COALESCE(u.Unit, '')                            AS unit,
+            AVG(pv.Prop_VAL)                                AS avg_val
         FROM Property p
         JOIN Property_Values pv ON pv.Property_ID = p.Property_ID
-        JOIN Units u            ON p.Unit_ID       = u.Unit_ID
-        JOIN Batch_Test bt      ON p.Test_ID       = bt.Test_ID
+        JOIN Batch_Test bt      ON p.Test_ID      = bt.Test_ID
+
+        LEFT JOIN Temperature t
+               ON p.Temp_ID = t.Temp_ID
+
+        LEFT JOIN Temperature_Units tu
+               ON t.Temp_Unit_ID = tu.Temp_Unit_ID
+
+        LEFT JOIN Direction d
+               ON p.Dir_ID = d.Dir_ID
+
+        LEFT JOIN Units u
+               ON p.Unit_ID = u.Unit_ID
+
         WHERE bt.Batch_CODE = ?
-        GROUP BY p.Property_name, u.Unit
+
+        GROUP BY
+            p.Property_name,
+            temperature,
+            direction,
+            unit
     """;
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setInt(1, batchCode);
+
             ResultSet rs = stmt.executeQuery();
+
             while (rs.next()) {
-                String propName = rs.getString("Property_name");
-                String unit     = rs.getString("Unit");
-                double avg      = rs.getDouble("avg_val");
-                result.computeIfAbsent(propName, k -> new LinkedHashMap<>())
-                        .put(unit, avg);
+
+                String key = buildComparisonKey(
+                        rs.getString("Property_name"),
+                        rs.getString("temperature"),
+                        rs.getString("direction"),
+                        rs.getString("unit")
+                );
+
+                result.computeIfAbsent(
+                        key,
+                        k -> new LinkedHashMap<>()
+                ).put(
+                        rs.getString("unit"),
+                        rs.getDouble("avg_val")
+                );
             }
         }
 
         return result;
     }
 
-    public Map<String, Map<String, Double>> getPropertyAveragesByTestWithUnits(Connection conn, int testId) throws SQLException {
-        Map<String, Map<String, Double>> result = new LinkedHashMap<>();
+    public Map<String, Map<String, Double>> getPropertyAveragesByTestWithUnits(
+            Connection conn,
+            int testId
+    ) throws SQLException {
+
+        Map<String, Map<String, Double>> result =
+                new LinkedHashMap<>();
 
         String sql = """
         SELECT
             p.Property_name,
-            u.Unit,
-            AVG(pv.Prop_VAL) AS avg_val
+            COALESCE(t.Temp_VAL || ' ' || tu.Temp_Unit, '') AS temperature,
+            COALESCE(d.Dir_VAL, '')                         AS direction,
+            COALESCE(u.Unit, '')                            AS unit,
+            AVG(pv.Prop_VAL)                                AS avg_val
+
         FROM Property p
-        JOIN Property_Values pv ON pv.Property_ID = p.Property_ID
-        JOIN Units u            ON p.Unit_ID       = u.Unit_ID
+
+        JOIN Property_Values pv
+             ON pv.Property_ID = p.Property_ID
+
+        LEFT JOIN Temperature t
+             ON p.Temp_ID = t.Temp_ID
+
+        LEFT JOIN Temperature_Units tu
+             ON t.Temp_Unit_ID = tu.Temp_Unit_ID
+
+        LEFT JOIN Direction d
+             ON p.Dir_ID = d.Dir_ID
+
+        LEFT JOIN Units u
+             ON p.Unit_ID = u.Unit_ID
+
         WHERE p.Test_ID = ?
-        GROUP BY p.Property_name, u.Unit
+
+        GROUP BY
+            p.Property_name,
+            temperature,
+            direction,
+            unit
     """;
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setInt(1, testId);
+
             ResultSet rs = stmt.executeQuery();
+
             while (rs.next()) {
-                String propName = rs.getString("Property_name");
-                String unit     = rs.getString("Unit");
-                double avg      = rs.getDouble("avg_val");
-                result.computeIfAbsent(propName, k -> new LinkedHashMap<>())
-                        .put(unit, avg);
+
+                String key =
+                        rs.getString("Property_name") + "||" +
+                                rs.getString("temperature") + "||" +
+                                rs.getString("direction") + "||" +
+                                rs.getString("unit");
+
+                result.computeIfAbsent(
+                        key,
+                        k -> new LinkedHashMap<>()
+                ).put(
+                        rs.getString("unit"),
+                        rs.getDouble("avg_val")
+                );
             }
         }
 
         return result;
+    }
+
+
+    private String buildComparisonKey(
+            String propertyName,
+            String temperature,
+            String direction,
+            String unit
+    ) {
+        return (propertyName != null ? propertyName : "") + "||"
+                + (temperature != null ? temperature : "") + "||"
+                + (direction != null ? direction : "") + "||"
+                + (unit != null ? unit : "");
     }
 
 

@@ -171,7 +171,7 @@ public class RetrievalTableReportService
 
                 if(data.getBatchNo() != null){
 
-                    writeText(content, "Batch No.: " + data.getBatchNo(),
+                    writeText(content, "Batch ID.: " + data.getBatchNo(),
                             leftMargin,
                             y);
 
@@ -186,21 +186,15 @@ public class RetrievalTableReportService
 
                 y -= PdfConstants.LINE_SPACING;
 
-                writeText(
-                        content,
-                        "SOP: " + data.getSop(),
-                        leftMargin,
-                        y
-                );
+                if(data.getSop() != null) {
+                    writeText(content, "SOP: " + data.getSop(), leftMargin, y);
+                }
 
                 y -= PdfConstants.LINE_SPACING;
 
-                writeText(
-                        content,
-                        "Test Schedule: " + data.getTestSchedule(),
-                        leftMargin,
-                        y
-                );
+                if(data.getTestSchedule() != null){
+                    writeText(content, "Test Schedule: " + data.getTestSchedule(), leftMargin, y);
+                }
 
                 y -= PdfConstants.SECTION_SPACING;
 

@@ -1,4 +1,4 @@
-package com.log.ui;
+package com.log.ui.settings;
 
 import com.log.database.DBUtil;
 import com.log.model.DefaultProperty;

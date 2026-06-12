@@ -9,7 +9,11 @@ import com.log.util.pdf.PdfUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.printing.PDFPageable;
 
+import java.awt.*;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,48 +41,50 @@ public class ComparisonReportService
 
         try (PDDocument document = new PDDocument()) {
 
-            PDPage page = new PDPage();
-            document.addPage(page);
+    List<Map.Entry<String, List<String>>> rows =
+            new ArrayList<>(data.getRows().entrySet());
 
-            try (PDPageContentStream content =
-                         new PDPageContentStream(document, page)) {
+    int startRow = 0;
 
-                float y = PdfConstants.TOP_Y;
+    while (startRow < rows.size()) {
 
-                y = drawReportHeader(
-                        page,
-                        content,
-                        reportNumber,
-                        y
-                );
+        PDPage page = new PDPage();
+        document.addPage(page);
 
-                float leftMargin =
-                        PdfLayoutUtils.getLeftMargin(page);
+        try (PDPageContentStream content =
+                     new PDPageContentStream(document, page)) {
 
-                float rightMargin =
-                        PdfLayoutUtils.getRightMargin(page);
+            float y = PdfConstants.TOP_Y;
 
-                drawLine(
-                        content,
-                        leftMargin,
-                        y,
-                        rightMargin,
-                        y
-                );
+            y = drawReportHeader(
+                    page,
+                    content,
+                    reportNumber,
+                    y
+            );
 
-                y -= PdfConstants.SECTION_SPACING;
+            float leftMargin =
+                    PdfLayoutUtils.getLeftMargin(page);
 
-                drawComparisonTable(
-                        content,
-                        data,
-                        y,
-                        leftMargin,
-                        rightMargin
-                );
-            }
+            float rightMargin =
+                    PdfLayoutUtils.getRightMargin(page);
 
-            document.save("comparison-report.pdf");
+            y -= PdfConstants.SECTION_SPACING;
+
+            startRow = drawComparisonTable(
+                    content,
+                    data,
+                    y,
+                    leftMargin,
+                    rightMargin,
+                    startRow
+            );
         }
+    }
+
+//    document.save("comparison-report.pdf");
+    printReport(document);
+}
     }
 
     private float drawReportHeader(
@@ -132,32 +138,29 @@ public class ComparisonReportService
         return y;
     }
 
-    private void drawComparisonTable(
+    private int drawComparisonTable(
             PDPageContentStream content,
             ComparisonReportData data,
             float y,
             float leftMargin,
-            float rightMargin
+            float rightMargin,
+            int startRow
     ) throws Exception {
 
         float tableX = leftMargin;
         float tableY = y;
 
-        float rowHeight = 30;
+        float rowHeight = 45;
 
         List<String> headers =
                 new ArrayList<>();
 
         headers.add("Property");
-        headers.addAll(
-                data.getColumnHeaders()
-        );
+        headers.addAll(data.getColumnHeaders());
 
-        float availableWidth =
-                rightMargin - leftMargin;
+        float availableWidth = rightMargin - leftMargin;
 
-        float propertyWidth =
-                availableWidth * 0.30f;
+        float propertyWidth = availableWidth * 0.30f;
 
         float valueWidth =
                 (availableWidth - propertyWidth)
@@ -202,53 +205,96 @@ public class ComparisonReportService
         // DATA ROWS
         // ====================================
 
-        for (Map.Entry<String, List<String>> row
-                : data.getRows().entrySet()) {
+        List<Map.Entry<String, List<String>>> rows =
+        new ArrayList<>(data.getRows().entrySet());
 
-            currentX = tableX;
+int rowIndex = startRow;
 
-            drawCell(
-                    content,
-                    currentX,
-                    tableY,
-                    propertyWidth,
-                    rowHeight
-            );
+while (rowIndex < rows.size()) {
 
-            drawCellText(
-                    content,
-                    row.getKey(),
-                    currentX,
-                    tableY,
-                    propertyWidth,
-                    rowHeight
-            );
+    if (tableY - rowHeight <
+            PdfConstants.BOTTOM_MARGIN) {
 
-            currentX += propertyWidth;
+        return rowIndex;
+    }
 
-            for (String value : row.getValue()) {
+    Map.Entry<String, List<String>> row =
+            rows.get(rowIndex);
 
-                drawCell(
-                        content,
-                        currentX,
-                        tableY,
-                        valueWidth,
-                        rowHeight
-                );
+    currentX = tableX;
 
-                drawCellText(
-                        content,
-                        value,
-                        currentX,
-                        tableY,
-                        valueWidth,
-                        rowHeight
-                );
+    drawCell(
+            content,
+            currentX,
+            tableY,
+            propertyWidth,
+            rowHeight
+    );
 
-                currentX += valueWidth;
+    drawWrappedCellText(
+            content,
+            row.getKey(),
+            currentX,
+            tableY,
+            propertyWidth,
+            rowHeight
+    );
+
+    currentX += propertyWidth;
+
+    for (String value : row.getValue()) {
+
+        drawCell(
+                content,
+                currentX,
+                tableY,
+                valueWidth,
+                rowHeight
+        );
+
+        drawCellText(
+                content,
+                value,
+                currentX,
+                tableY,
+                valueWidth,
+                rowHeight
+        );
+
+        currentX += valueWidth;
+    }
+
+    tableY -= rowHeight;
+
+    rowIndex++;
+}
+
+return rowIndex;
+    }
+
+    private void printReport(PDDocument document){
+
+        try {
+
+            PrinterJob job = PrinterJob.getPrinterJob();
+
+
+            job.setPageable(new PDFPageable(document));
+
+            boolean accepted = job.printDialog();
+
+            System.out.println("Dialog result = " + accepted);
+
+            if (accepted) {
+                System.out.println(job.getPrintService());
+                job.print();
+                System.out.println("Print done");
             }
-
-            tableY -= rowHeight;
+        } catch (HeadlessException e) {
+            throw new RuntimeException(e);
+        } catch (PrinterException e) {
+            throw new RuntimeException(e);
         }
     }
+
 }

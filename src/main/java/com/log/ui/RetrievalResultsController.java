@@ -267,7 +267,10 @@ public class RetrievalResultsController {
         // Build active column headers
         List<String> headers = new ArrayList<>();
         if (columnStates.getOrDefault("Property",      true)) headers.add("Property");
-        if (columnStates.getOrDefault("Category",      true)) headers.add("Category");
+        if (!groupByCategory &&
+                columnStates.getOrDefault("Category", true)) {
+            headers.add("Category");
+        }
         if (columnStates.getOrDefault("Temperature",   true)) headers.add("Temperature");
         if (columnStates.getOrDefault("Direction",     true)) headers.add("Direction");
 
@@ -277,11 +280,16 @@ public class RetrievalResultsController {
         }
         if (columnStates.getOrDefault("Average Value", true)) headers.add("Average Value");
 
-        for (int i = 0; i < headers.size(); i++) {
+        for (String header : headers) {
             ColumnConstraints cc = new ColumnConstraints();
-            cc.setMinWidth(80);
-            cc.setPrefWidth(headers.get(i).startsWith("Direction") ? 160 : 120);
-            cc.setHgrow(Priority.ALWAYS);
+
+            switch(header) {
+                case "Property" -> cc.setPrefWidth(250);
+                case "Direction" -> cc.setPrefWidth(180);
+                case "Temperature" -> cc.setPrefWidth(120);
+                default -> cc.setPrefWidth(90);
+            }
+
             propertiesGrid.getColumnConstraints().add(cc);
         }
 
@@ -316,7 +324,8 @@ public class RetrievalResultsController {
 
             if (columnStates.getOrDefault("Property", true))
                 propertiesGrid.add(makeCell(p.getName() + " (" + (p.getUnit() != null ? p.getUnit() + ")" : ""), isAlt, rowMenu), col++, row);
-            if (columnStates.getOrDefault("Category", true))
+            if (!groupByCategory &&
+                    columnStates.getOrDefault("Category", true))
                 propertiesGrid.add(makeCell(p.getCategory(), isAlt, rowMenu), col++, row);
             if (columnStates.getOrDefault("Temperature", true))
                 propertiesGrid.add(makeCell(p.getTemperature() != null ? p.getTemperature() : "—", isAlt, rowMenu), col++, row);
@@ -333,15 +342,22 @@ public class RetrievalResultsController {
             if (columnStates.getOrDefault("Average Value", true))
                 propertiesGrid.add(makeCell(formatDouble(p.getAverage()), isAlt, rowMenu), col++, row);
 
+            propertiesGrid.setMaxWidth(Double.MAX_VALUE);
+
             row++;
         }
     }
 
     private Label makeCategoryDivider(String categoryName, int colSpan) {
         Label label = new Label(categoryName);
+
         label.getStyleClass().add("category-divider");
+
         label.setMaxWidth(Double.MAX_VALUE);
+        GridPane.setFillWidth(label, true);
+        GridPane.setFillHeight(label, true);
         GridPane.setColumnSpan(label, colSpan);
+
         return label;
     }
 
@@ -357,7 +373,8 @@ public class RetrievalResultsController {
     private Label makeHeader(String text) {
         Label label = new Label(text);
         label.getStyleClass().add("grid-header");
-        label.setMaxWidth(Double.MAX_VALUE);
+        label.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
         label.setWrapText(true);
         return label;
     }

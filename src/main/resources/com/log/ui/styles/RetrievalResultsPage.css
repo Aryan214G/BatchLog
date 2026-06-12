@@ -103,3 +103,10 @@
 .clickable-row:hover {
     -fx-background-color: #dcd0f0;
 }
+
+.category-divider {
+    -fx-background-color: #d8cbe8;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 8 12 8 12;
+}

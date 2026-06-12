@@ -148,30 +148,48 @@ public class BatchComparisonController {
     }
 
 
-    private List<String> buildCategoryOrderedProperties(Connection conn, Set<String> propertyNames) throws SQLException {
-        // Get categories in the same order AppState loads them
-        categoryService.refreshCategoriesState();
-        List<String> categoryOrder = appState.getCategories();
+    private List<String> buildCategoryOrderedProperties(
+            Connection conn,
+            Set<String> propertyNames
+    ) throws SQLException {
 
-        List<String> ordered = new ArrayList<>();
+        categoryService.refreshCategoriesState();
+
+        List<String> categoryOrder =
+                appState.getCategories();
+
+        List<String> ordered =
+                new ArrayList<>();
 
         for (String category : categoryOrder) {
-            ObservableList<DefaultProperty> propertiesInCategory =
+
+            ObservableList<DefaultProperty> props =
                     appState.getCategoriesMap().get(category);
 
-            if (propertiesInCategory == null) continue;
+            if (props == null) {
+                continue;
+            }
 
-            for (DefaultProperty dp : propertiesInCategory) {
-                if (propertyNames.contains(dp.getPropertyName())) {
-                    ordered.add(dp.getPropertyName());
+            for (DefaultProperty dp : props) {
+
+                for (String key : propertyNames) {
+
+                    String propertyName =
+                            parseKey(key)[0];
+
+                    if (propertyName.equals(
+                            dp.getPropertyName()
+                    )) {
+                        ordered.add(key);
+                    }
                 }
             }
         }
 
-        // Add any remaining properties not found in the category map
-        for (String p : propertyNames) {
-            if (!ordered.contains(p)) {
-                ordered.add(p);
+        for (String key : propertyNames) {
+
+            if (!ordered.contains(key)) {
+                ordered.add(key);
             }
         }
 
@@ -207,17 +225,6 @@ public class BatchComparisonController {
 
         // Collect all unique units per property across all visible batches
         // propertyName → Set<unit>
-        Map<String, Set<String>> propertyUnits = new LinkedHashMap<>();
-        for (String propName : visibleProperties) {
-            Set<String> units = new LinkedHashSet<>();
-            for (BatchTest test : visibleBatches) {
-                Integer key = test.getBatchCode() != null ? test.getBatchCode() : -test.getTestId();
-                Map<String, Map<String, Double>> batchUnitData = unitData.getOrDefault(key, Collections.emptyMap());
-                Map<String, Double> unitMap = batchUnitData.getOrDefault(propName, Collections.emptyMap());
-                units.addAll(unitMap.keySet());
-            }
-            propertyUnits.put(propName, units);
-        }
 
         int totalCols = 1 + visibleBatches.size();
 
@@ -241,47 +248,76 @@ public class BatchComparisonController {
 
         // Data rows — one row per property+unit combination
         int row = 1;
-        for (String propName : visibleProperties) {
+
+        for (String compositeKey : visibleProperties) {
+
             boolean isAlt = (row % 2 == 0);
-            Set<String> units = propertyUnits.getOrDefault(propName, Collections.emptySet());
 
-            if (units.size() <= 1) {
-                // Single unit — display normally
-                String unit = units.isEmpty() ? "" : units.iterator().next();
-                String label = propName + (unit.isBlank() ? "" : " (" + unit + ")");
+            String[] parts = parseKey(compositeKey);
 
-                comparisonGrid.add(makeCell(label, isAlt), 0, row);
+            String propertyName = parts[0];
+            String temperature  = parts[1];
+            String direction    = parts[2];
+            String unit         = parts[3];
 
-                for (int i = 0; i < visibleBatches.size(); i++) {
-                    BatchTest test = visibleBatches.get(i);
-                    Integer key = test.getBatchCode() != null ? test.getBatchCode() : -test.getTestId();
-                    Map<String, Double> props = data.getOrDefault(key, Collections.emptyMap());
-                    String val = props.containsKey(propName) ? formatDouble(props.get(propName)) : "—";
-                    comparisonGrid.add(makeCell(val, isAlt), i + 1, row);
-                }
+            StringBuilder label =
+                    new StringBuilder(propertyName);
 
-                row++;
-
-            } else {
-                // Multiple units — one row per unit
-                for (String unit : units) {
-                    boolean unitRowIsAlt = (row % 2 == 0);
-                    String label = propName + " (" + unit + ")";
-
-                    comparisonGrid.add(makeCell(label, unitRowIsAlt), 0, row);
-
-                    for (int i = 0; i < visibleBatches.size(); i++) {
-                        BatchTest test = visibleBatches.get(i);
-                        Integer key = test.getBatchCode() != null ? test.getBatchCode() : -test.getTestId();
-                        Map<String, Map<String, Double>> batchUnitData = unitData.getOrDefault(key, Collections.emptyMap());
-                        Map<String, Double> unitMap = batchUnitData.getOrDefault(propName, Collections.emptyMap());
-                        String val = unitMap.containsKey(unit) ? formatDouble(unitMap.get(unit)) : "—";
-                        comparisonGrid.add(makeCell(val, unitRowIsAlt), i + 1, row);
-                    }
-
-                    row++;
-                }
+            if (!unit.isBlank()) {
+                label.append(" (")
+                        .append(unit)
+                        .append(")");
             }
+
+            if (!temperature.isBlank()) {
+                label.append(" | ")
+                        .append(temperature);
+            }
+
+            if (!direction.isBlank()) {
+                label.append(" | ")
+                        .append(direction);
+            }
+
+            comparisonGrid.add(
+                    makeCell(label.toString(), isAlt),
+                    0,
+                    row
+            );
+
+            for (int i = 0;
+                 i < visibleBatches.size();
+                 i++) {
+
+                BatchTest test =
+                        visibleBatches.get(i);
+
+                Integer key =
+                        test.getBatchCode() != null
+                                ? test.getBatchCode()
+                                : -test.getTestId();
+
+                Map<String, Double> props =
+                        data.getOrDefault(
+                                key,
+                                Collections.emptyMap()
+                        );
+
+                String value =
+                        props.containsKey(compositeKey)
+                                ? formatDouble(
+                                props.get(compositeKey)
+                        )
+                                : "—";
+
+                comparisonGrid.add(
+                        makeCell(value, isAlt),
+                        i + 1,
+                        row
+                );
+            }
+
+            row++;
         }
     }
 
@@ -422,5 +458,21 @@ public class BatchComparisonController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private String[] parseKey(String key) {
+
+        String[] parts = key.split("\\|\\|", -1);
+
+        if (parts.length < 4) {
+            return new String[] {
+                    key,
+                    "",
+                    "",
+                    ""
+            };
+        }
+
+        return parts;
     }
 }
