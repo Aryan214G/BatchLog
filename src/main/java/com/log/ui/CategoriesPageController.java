@@ -908,7 +908,12 @@ public class CategoriesPageController {
         directionController.setSelectedDirection(state.getDirection().getDirVal());
 
         // ================= RESTORE ROWS =================
-        for (int i = 0; i < defaultRows; i++) {
+
+        int rows = defaultRows;
+        if(instance.isEditMode()){
+            rows = state.getInputRows().size();
+        }
+        for (int i = 0; i < rows; i++) {
 
             InputRow inputRow;
 
