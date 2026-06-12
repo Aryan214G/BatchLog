@@ -174,7 +174,7 @@ public class ProductDAO {
         return null;
     }
 
-    public Integer getProductId(Connection conn, int productCode){
+    public String getProductId(Connection conn, int productCode){
         String sql = "SELECT Product_ID FROM Product WHERE Product_code = ?";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -182,7 +182,7 @@ public class ProductDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                rs.getInt("Product_ID");
+                return rs.getString("Product_ID");
             }
 
         } catch (SQLException e) {
@@ -200,7 +200,8 @@ public class ProductDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                rs.getString("Product_name");
+                String name = rs.getString("Product_name");
+                return name;
             }
 
         } catch (SQLException e) {
