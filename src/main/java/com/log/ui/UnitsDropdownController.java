@@ -30,6 +30,10 @@ public class UnitsDropdownController {
             int defPropId = defaultPropertyService.getPropertyId(conn, property);
         List<String> units = propertyUnitsService.getUnitsByProperty(conn, defPropId);
 
+        System.out.println("Property: " + property);
+        System.out.println("DefPropId: " + defPropId);
+        System.out.println("Units: " + units);
+
         unitsCombo.setItems(
                 FXCollections.observableArrayList(units)
         );
