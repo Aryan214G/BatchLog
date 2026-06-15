@@ -116,32 +116,21 @@ public class MenubarController {
 
     @FXML
     private void openbaseprops() {
-
         try {
-
-            FXMLLoader loader =
-                    new FXMLLoader(
-                            getClass().getResource(
-                                    "/com/log/ui/views/BaseProperties.fxml"
-                            )
-                    );
-
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/log/ui/views/BaseProperties.fxml")
+            );
             Parent root = loader.load();
 
-            BasePropertiesController controller =
-                    loader.getController();
-
-            controller.loadExistingProject();
-
+            BasePropertiesController controller = loader.getController();
             controller.setEdit(true);
+            // loadExistingProject is already called in initialize(),
+            // so fields are already populated — no need to call again
 
-            Stage stage =
-                    (Stage) menuBar.getScene().getWindow();
-
+            Stage stage = (Stage) menuBar.getScene().getWindow();
             stage.getScene().setRoot(root);
 
         } catch (Exception e) {
-
             e.printStackTrace();
         }
     }
