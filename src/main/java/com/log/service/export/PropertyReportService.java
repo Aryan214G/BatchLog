@@ -257,12 +257,13 @@ public class PropertyReportService
             y -= 30;
 
             String propertyName = reportData.getPropertyName().toUpperCase();
-            String unit = reportData.getUnit();
-
+            String unit = (reportData.getUnit().equals("Not Applicable"))
+                    ? ""
+                    : "(" + reportData.getUnit() + ")";
             float propertyWidth = font.getStringWidth(propertyName) / 1000 * fontSize;
             float propertyX = (page.getMediaBox().getWidth() - propertyWidth) / 2;
 
-            writeBoldText(content, propertyName  + " (" + unit + ")", propertyX, y);
+            writeBoldText(content, propertyName  + " " + unit, propertyX, y);
 
             y -= 60;
 
