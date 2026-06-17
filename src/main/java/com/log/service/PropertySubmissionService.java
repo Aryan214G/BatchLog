@@ -79,11 +79,23 @@ public class PropertySubmissionService {
 
     private void handleTemperature(Connection conn, Temperature temp) {
         if (temp.getTempId() == null) {
+            System.out.println(
+                    "Temperature object = "
+                            + temp.getTempVal()
+                            + " | "
+                            + temp.getTempUnitID()
+            );
 
            this.tempId = temperatureService.insertTemperature(conn, temp);
            temp.setTempId(tempId);
 
         } else {
+            System.out.println(
+                    "Temperature object = "
+                            + temp.getTempVal()
+                            + " | "
+                            + temp.getTempUnitID()
+            );
 
             this.tempId = temp.getTempId();
             temperatureService.updateTemperature(conn, temp);

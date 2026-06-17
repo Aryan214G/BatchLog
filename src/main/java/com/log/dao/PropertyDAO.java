@@ -31,7 +31,13 @@ System.out.println("Test Method   = " + property.getTestMethod());
 
             statement.setString(1, property.getPropertyName());
             statement.setInt(2, property.getCategory().getCategoryId());
-            statement.setInt(3, property.getTemperature().getTempId());
+            Integer tempId = property.getTemperature().getTempId();
+
+            if (tempId == null) {
+                statement.setNull(3, Types.INTEGER);
+            } else {
+                statement.setInt(3, tempId);
+            }
             statement.setInt(4, property.getDirection().getDirId());
             statement.setInt(5, property.getUnit().getUnitId());
             statement.setInt(6, property.getTestID());
@@ -87,10 +93,10 @@ System.out.println("Test Method   = " + property.getTestMethod());
         JOIN Direction d
             ON p.Dir_ID = d.Dir_ID
 
-        JOIN Temperature t
+        LEFT JOIN Temperature t
             ON p.Temp_ID = t.Temp_ID
 
-        JOIN Temperature_Units tu
+        LEFT JOIN Temperature_Units tu
             ON t.Temp_Unit_ID = tu.Temp_Unit_ID
 
         WHERE p.Test_ID = ?
@@ -113,7 +119,9 @@ System.out.println("Test Method   = " + property.getTestMethod());
             property.getCategory().setCategoryId(rs.getInt("Category_ID"));
             property.getCategory().setCategoryName(rs.getString("Category_name"));
 
-            property.getTemperature().setTempId(rs.getInt("Temp_ID"));
+            Integer tempId = (Integer) rs.getObject("Temp_ID");
+
+            property.getTemperature().setTempId(tempId);
             property.getTemperature().setTempVal(rs.getString("Temp_VAL"));
             property.getTemperature().setTempUnitVal(rs.getString("Temp_Unit"));
             property.getTemperature().setTempUnitID(rs.getInt("Temp_Unit_ID"));
@@ -159,7 +167,13 @@ System.out.println("Test Method   = " + property.getTestMethod());
 
             stmt.setString(1, property.getPropertyName());
             stmt.setInt(2, property.getCategory().getCategoryId());
-            stmt.setInt(3, property.getTemperature().getTempId());
+            Integer tempId = property.getTemperature().getTempId();
+
+            if (tempId == null) {
+                stmt.setNull(3, Types.INTEGER);
+            } else {
+                stmt.setInt(3, tempId);
+            }
             stmt.setInt(4, property.getDirection().getDirId());
             stmt.setInt(5, property.getUnit().getUnitId());
             stmt.setInt(6, property.getTestID());
@@ -309,10 +323,10 @@ System.out.println("Test Method   = " + property.getTestMethod());
         JOIN Direction d
             ON p.Dir_ID = d.Dir_ID
 
-        JOIN Temperature t
+        LEFT JOIN Temperature t
             ON p.Temp_ID = t.Temp_ID
 
-        JOIN Temperature_Units tu
+        LEFT JOIN Temperature_Units tu
             ON t.Temp_Unit_ID = tu.Temp_Unit_ID
 
         WHERE p.Property_ID = ?""";
@@ -333,7 +347,9 @@ System.out.println("Test Method   = " + property.getTestMethod());
             property.getCategory().setCategoryId(rs.getInt("Category_ID"));
             property.getCategory().setCategoryName(rs.getString("Category_name"));
 
-            property.getTemperature().setTempId(rs.getInt("Temp_ID"));
+                Integer tempId = (Integer) rs.getObject("Temp_ID");
+
+                property.getTemperature().setTempId(tempId);
             property.getTemperature().setTempVal(rs.getString("Temp_VAL"));
             property.getTemperature().setTempUnitVal(rs.getString("Temp_Unit"));
             property.getTemperature().setTempUnitID(rs.getInt("Temp_Unit_ID"));
