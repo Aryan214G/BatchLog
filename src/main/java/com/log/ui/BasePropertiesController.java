@@ -309,49 +309,64 @@ public class BasePropertiesController {
     }
 
     private void handleEditBatch() throws SQLException {
-        String project = projectName.getText();
-        String batch = batchNo.getText();
-        String sopValue = sop.getText().trim();
-        String product = productName.getText();
-        String component = productID.getText();
-        LocalDate date = testDate.getValue();
-        String place = placeOfTesting.getText();
-        String testSchedulevalue = testSchedulefield.getText().trim();
+        String project      = projectName.getText().trim();
+        String batch        = batchNo.getText() != null ? batchNo.getText().trim() : null;
+        String sopValue     = sop.getText() != null ? sop.getText().trim() : null;
+        String product      = productName.getText().trim();
+        String component    = productID.getText().trim();
+        LocalDate date      = testDate.getValue();
+        String place        = placeOfTesting.getText().trim();
+        String testScheduleValue = testSchedulefield.getText() != null
+                ? testSchedulefield.getText().trim() : null;
 
+        try (Connection connection = DBUtil.getConnection()) {
 
-        Connection connection = DBUtil.getConnection();
+            // ── Edit project name ─────────────────────────────────────────────
+            int projectId = projectService.getProjectId(connection, bpropState.getProjectName());
+            if (!project.equals(bpropState.getProjectName())) {
+                projectService.editProject(projectId, project);
+            }
 
-        projectService.editProject(projectService.getProjectId(connection, bpropState.getProjectName()),project);
+            // ── Edit batch ID (only if batch exists) ──────────────────────────
+            if (bpropState.getBatchCode() != null && batch != null && !batch.isBlank()) {
+                batchService.updateBatchId(connection, bpropState.getBatchCode(), batch);
+            }
 
-        batchService.updateBatchId(connection, bpropState.getBatchCode(), batch);
+            // ── Edit test date ────────────────────────────────────────────────
+            if (date != null) {
+                batchTestService.editTestDate(bpropState.getTestId(), date.toString());
+            }
 
-        //TODO: update products later
+            // ── Edit test site ────────────────────────────────────────────────
+            batchTestService.editTestSite(bpropState.getTestId(), place);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            // ── Edit SOP ──────────────────────────────────────────────────────
+            batchTestService.editSop(bpropState.getTestId(), sopValue);
 
-        String newDate = date.format(formatter);
+            // ── Edit test schedule ────────────────────────────────────────────
+            batchTestService.editTestSchedule(
+                    bpropState.getTestId(),
+                    testScheduleValue != null && !testScheduleValue.isBlank()
+                            ? testScheduleValue : null
+            );
+        }
 
-        batchTestService.editTestDate(bpropState.getTestId(), newDate);
-
-        //edit place
-        batchTestService.editTestSite(bpropState.getTestId(), place);
-
-
-        //edit file
-
-
-
-        bpropState.setProjectName(projectName.getText());
-        bpropState.setBatchNo(batchNo.getText());
-        bpropState.setSop(sopValue.isBlank() ? null : sopValue);
-        bpropState.setProductName(productName.getText());
-        bpropState.setProductID(productID.getText());
-        bpropState.setTestDate(testDate.getValue());
-        bpropState.setPlaceOfTesting(placeOfTesting.getText());
-        bpropState.setTestSchedule(testSchedulevalue.isBlank() ? null : testSchedulevalue);
-
+        // ── Update state ──────────────────────────────────────────────────────
+        bpropState.setProjectName(project);
+        bpropState.setBatchNo(batch);
+        bpropState.setSop(sopValue != null && !sopValue.isBlank() ? sopValue : null);
+        bpropState.setProductName(product);
+        bpropState.setProductID(component);
+        bpropState.setTestDate(date);
+        bpropState.setPlaceOfTesting(place);
+        bpropState.setTestSchedule(
+                testScheduleValue != null && !testScheduleValue.isBlank()
+                        ? testScheduleValue : null
+        );
 
         loadCategoriesPage();
     }
+
+
 
 }

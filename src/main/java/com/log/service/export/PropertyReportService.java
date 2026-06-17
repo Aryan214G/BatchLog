@@ -231,7 +231,8 @@ public class PropertyReportService
 
             y -= 20;
 
-            writeText(content, "Test Date: " + reportData.getTestDate(), 50, y);
+            String testDate = DateUtils.format(reportData.getTestDate());
+            writeText(content, "Test Date: " + testDate, 50, y);
 
 
             // =================== RIGHT SECTION ==========================

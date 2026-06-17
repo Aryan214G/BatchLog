@@ -26,9 +26,10 @@ public class UnitsDropdownController {
 
         try (Connection conn = DBUtil.getConnection()) {
 
-            //TODO: maybe store all the property unit mapping in a map instead of querying evertime
+            //TODO: maybe store all the property unit mapping in a map instead of querying everytime
             int defPropId = defaultPropertyService.getPropertyId(conn, property);
         List<String> units = propertyUnitsService.getUnitsByProperty(conn, defPropId);
+
 
         unitsCombo.setItems(
                 FXCollections.observableArrayList(units)

@@ -1,48 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx/25"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.log.ui.settings.DirectionSettingsController"
-      spacing="20"
-      alignment="TOP_CENTER">
+<VBox alignment="TOP_CENTER" spacing="20" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.settings.DirectionSettingsController">
 
     <padding>
-        <Insets top="30"
-                right="30"
-                bottom="30"
-                left="30"/>
+        <Insets bottom="30" left="30" right="30" top="30" />
     </padding>
 
     <children>
 
-        <Label text="Direction Settings"
-               style="-fx-font-size: 28px;
-                      -fx-font-weight: bold;"/>
+        <Label style="-fx-font-size: 28px;                       -fx-font-weight: bold;" text="Direction Settings" />
 
-        <ListView fx:id="directionsListView"
-                  prefWidth="350"
-                  prefHeight="250"/>
+        <ListView fx:id="directionsListView" prefHeight="250" prefWidth="350" />
 
-        <TextField fx:id="directionField"
-                   prefWidth="350"
-                   promptText="Enter New Direction"/>
+        <TextField fx:id="directionField" prefWidth="350" promptText="Enter New Direction" />
 
-        <HBox spacing="15"
-              alignment="CENTER">
+        <HBox alignment="CENTER" spacing="15">
 
             <children>
 
-                <Button text="Add Direction"
-                        prefWidth="140"
-                        onAction="#addDirection"/>
-
-                <Button text="Remove Selected"
-                        prefWidth="160"
-                        onAction="#removeDirection"/>
+                <Button onAction="#addDirection" prefWidth="140" text="Add Direction" />
 
             </children>
 

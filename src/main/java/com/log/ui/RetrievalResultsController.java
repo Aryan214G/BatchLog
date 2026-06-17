@@ -252,7 +252,6 @@ public class RetrievalResultsController {
                 .filter(r -> propertyStates.getOrDefault(r.getName(), true))
                 .toList();
 
-        // ── Group by category if enabled ──────────────────────────────────────────
         if (groupByCategory) {
             visibleRows = sortByCategoryOrder(visibleRows);
         }
@@ -267,10 +266,7 @@ public class RetrievalResultsController {
         // Build active column headers
         List<String> headers = new ArrayList<>();
         if (columnStates.getOrDefault("Property",      true)) headers.add("Property");
-        if (!groupByCategory &&
-                columnStates.getOrDefault("Category", true)) {
-            headers.add("Category");
-        }
+        if (!groupByCategory && columnStates.getOrDefault("Category", true)) headers.add("Category");
         if (columnStates.getOrDefault("Temperature",   true)) headers.add("Temperature");
         if (columnStates.getOrDefault("Direction",     true)) headers.add("Direction");
 
@@ -280,16 +276,17 @@ public class RetrievalResultsController {
         }
         if (columnStates.getOrDefault("Average Value", true)) headers.add("Average Value");
 
+        // Column constraints — grow to fill available width
         for (String header : headers) {
             ColumnConstraints cc = new ColumnConstraints();
-
-            switch(header) {
-                case "Property" -> cc.setPrefWidth(250);
-                case "Direction" -> cc.setPrefWidth(180);
-                case "Temperature" -> cc.setPrefWidth(120);
-                default -> cc.setPrefWidth(90);
+            switch (header) {
+                case "Property"     -> { cc.setMinWidth(150); cc.setPrefWidth(250); }
+                case "Direction"    -> { cc.setMinWidth(120); cc.setPrefWidth(180); }
+                case "Temperature"  -> { cc.setMinWidth(80);  cc.setPrefWidth(120); }
+                default             -> { cc.setMinWidth(60);  cc.setPrefWidth(90);  }
             }
-
+            cc.setHgrow(Priority.ALWAYS);
+            cc.setFillWidth(true);
             propertiesGrid.getColumnConstraints().add(cc);
         }
 
@@ -298,7 +295,7 @@ public class RetrievalResultsController {
             propertiesGrid.add(makeHeader(headers.get(i)), i, 0);
         }
 
-        // Data rows — insert category divider rows when grouping
+        // Data rows
         int row = 1;
         String lastCategory = null;
 
@@ -306,7 +303,7 @@ public class RetrievalResultsController {
             boolean isAlt = (row % 2 == 0);
             int col = 0;
 
-            // ── Category divider when grouped ─────────────────────────────────────
+            // Category divider when grouped
             if (groupByCategory) {
                 String currentCategory = p.getCategory() != null ? p.getCategory() : "—";
                 if (!currentCategory.equals(lastCategory)) {
@@ -324,8 +321,7 @@ public class RetrievalResultsController {
 
             if (columnStates.getOrDefault("Property", true))
                 propertiesGrid.add(makeCell(p.getName() + " (" + (p.getUnit() != null ? p.getUnit() + ")" : ""), isAlt, rowMenu), col++, row);
-            if (!groupByCategory &&
-                    columnStates.getOrDefault("Category", true))
+            if (!groupByCategory && columnStates.getOrDefault("Category", true))
                 propertiesGrid.add(makeCell(p.getCategory(), isAlt, rowMenu), col++, row);
             if (columnStates.getOrDefault("Temperature", true))
                 propertiesGrid.add(makeCell(p.getTemperature() != null ? p.getTemperature() : "—", isAlt, rowMenu), col++, row);
@@ -341,8 +337,6 @@ public class RetrievalResultsController {
 
             if (columnStates.getOrDefault("Average Value", true))
                 propertiesGrid.add(makeCell(formatDouble(p.getAverage()), isAlt, rowMenu), col++, row);
-
-            propertiesGrid.setMaxWidth(Double.MAX_VALUE);
 
             row++;
         }
@@ -373,8 +367,8 @@ public class RetrievalResultsController {
     private Label makeHeader(String text) {
         Label label = new Label(text);
         label.getStyleClass().add("grid-header");
-        label.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-
+        label.setMaxWidth(Double.MAX_VALUE);
+        label.setPrefWidth(Double.MAX_VALUE);  // add this
         label.setWrapText(true);
         return label;
     }
@@ -389,6 +383,7 @@ public class RetrievalResultsController {
             label.getStyleClass().add("grid-cell-alt");
 
         label.setMaxWidth(Double.MAX_VALUE);
+        label.setPrefWidth(Double.MAX_VALUE);
         label.setWrapText(true);
 
         label.setContextMenu(menu);
@@ -413,7 +408,7 @@ public class RetrievalResultsController {
 
     private ContextMenu createRowContextMenu(PropertyRow property) {
 
-        MenuItem exportItem = new MenuItem("Export Property");
+        MenuItem exportItem = new MenuItem("Print property report");
         exportItem.setOnAction(e -> {
             System.out.println("Export: " + property.getName());
             try {

@@ -8,7 +8,9 @@ import com.log.model.Batch;
 import com.log.model.BatchTest;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 
 public class BatchTestService {
 
@@ -73,6 +75,35 @@ public class BatchTestService {
         catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    // BatchTestDAO
+    public boolean editSop(int testId, String sop) throws SQLException {
+        Connection conn = DBUtil.getConnection();
+        String sql = "UPDATE Batch_Test SET SOP = ? WHERE Test_ID = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            if (sop != null) stmt.setString(1, sop);
+            else stmt.setNull(1, Types.VARCHAR);
+            stmt.setInt(2, testId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean editTestSchedule(int testId, String testSchedule) throws SQLException {
+        Connection conn = DBUtil.getConnection();
+        String sql = "UPDATE Batch_Test SET Test_Schedule = ? WHERE Test_ID = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            if (testSchedule != null) stmt.setString(1, testSchedule);
+            else stmt.setNull(1, Types.VARCHAR);
+            stmt.setInt(2, testId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }
