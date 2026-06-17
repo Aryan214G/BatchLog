@@ -77,37 +77,29 @@ public class PropertySubmissionService {
         }
     }
 
-private void handleTemperature(Connection conn, Temperature temp) {
+    private void handleTemperature(Connection conn, Temperature temp) {
 
     if (temp.isEmpty()) {
 
         System.out.println("Temperature is empty");
 
         this.tempId = null;
-
         return;
     }
 
-    if (temp.getTempId() == null) {
+    System.out.println(
+            "Temperature object = "
+                    + temp.getTempVal()
+                    + " | "
+                    + temp.getTempUnitID()
+    );
 
-        System.out.println(
-                "Temperature object = "
-                        + temp.getTempVal()
-                        + " | "
-                        + temp.getTempUnitID()
-        );
+    if (temp.getTempId() == null) {
 
         this.tempId = temperatureService.insertTemperature(conn, temp);
         temp.setTempId(tempId);
 
     } else {
-
-        System.out.println(
-                "Temperature object = "
-                        + temp.getTempVal()
-                        + " | "
-                        + temp.getTempUnitID()
-        );
 
         this.tempId = temp.getTempId();
         temperatureService.updateTemperature(conn, temp);
