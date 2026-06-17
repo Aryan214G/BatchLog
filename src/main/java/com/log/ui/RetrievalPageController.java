@@ -1,6 +1,7 @@
 package com.log.ui;
 
 import com.log.core.StateManager;
+import com.log.dao.ProductDAO;
 import com.log.database.DBUtil;
 import com.log.model.Batch;
 import com.log.model.BatchTest;
@@ -51,6 +52,8 @@ public class RetrievalPageController {
 
     private final ProjectService projectService =
             new ProjectService();
+
+    private ProductDAO productDAO = new ProductDAO();
 
     @FXML
     public void initialize() {
@@ -246,14 +249,17 @@ public class RetrievalPageController {
         isOpen = !isOpen;
     }
 
-    private VBox createProductTestCard(BatchTest test) {
+    private VBox createProductTestCard(BatchTest test) throws SQLException {
         CheckBox cb = new CheckBox();
         cb.selectedProperty().addListener((obs, oldVal, selected) -> {
             if (selected) { if (!selectedBatches.contains(test)) selectedBatches.add(test); }
             else selectedBatches.remove(test);
         });
+        Connection conn = DBUtil.getConnection();
 
-        String label = "Test ID: " + test.getTestId() +
+        String product_Id = productDAO.getProductId(conn,test.getProductCode());
+
+        String label = "Component ID: " + product_Id +
                 " | Date: " + (test.getTestDate() != null ? test.getTestDate() : "—") +
                 " | Site: " + (test.getTestSite() != null ? test.getTestSite() : "—") +
                 (test.getSOP() != null && !test.getSOP().isBlank() ? " | SOP: " + test.getSOP() : "");
@@ -370,7 +376,7 @@ public class RetrievalPageController {
         addCompareButton();
     }
 
-    private void populateProductResults(List<BatchTest> results) {
+    private void populateProductResults(List<BatchTest> results) throws SQLException {
         resultsContainer.getChildren().clear();
         selectedBatches.clear();
 
