@@ -246,6 +246,8 @@ public class PropertyReportService
                                     + " "
                                     + reportData.getTemperatureUnit(),
                             RIGHT_EDGE, rightSectionY);
+
+                    rightSectionY-= 20;
                 }
 
                 writeRightAlignedText(content, "Direction: " + reportData.getDirection(), RIGHT_EDGE, rightSectionY);
