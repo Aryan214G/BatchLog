@@ -56,5 +56,5 @@ public class SettingsPageController {
     private void showBackupPage(){ loadPage("BackupAndRestorePage.fxml");}
 
     @FXML
-    private void showCategoriesrenamePage() { loadPage("CatRenamesettingspage.fxml"); }
+    private void showCategoriesrenamePage() { loadPage("Catrenamesettingspage.fxml"); }
 }
