@@ -769,7 +769,7 @@ public class CategoriesPageController {
         }
     }
 
-    int tempUnitID;
+    Integer tempUnitID;
     String tempUnitVal;
 
     try (Connection conn = DBUtil.getConnection()) {
@@ -780,7 +780,7 @@ public class CategoriesPageController {
         // Avoid crashing state saving in that case.
         if (tempUnitVal == null || tempUnitVal.isBlank()) {
 
-            tempUnitID = -1;
+            tempUnitID = null;
             tempUnitVal = null;
 
         } else {
@@ -795,7 +795,7 @@ public class CategoriesPageController {
             } else {
 
                 // Unit name not found in DB.
-                tempUnitID = -1;
+                tempUnitID = null;
             }
         }
 
