@@ -210,4 +210,32 @@ public class ProductDAO {
 
         return null;
     }
+
+    public boolean updateProductName(Connection conn, int productCode, String newProductName) {
+        String sql = "UPDATE Product SET Product_name = ? WHERE Product_code = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, newProductName);
+            stmt.setInt(2, productCode);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean updateProductId(Connection conn, int productCode, String newProductId) {
+        String sql = "UPDATE Product SET Product_ID = ? WHERE Product_code = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, newProductId);
+            stmt.setInt(2, productCode);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 }

@@ -58,6 +58,10 @@ public class BasePropertiesController {
     @FXML
     private void handleNext() throws SQLException {
 
+        String originalProjectName = bpropState.getProjectName();
+        String originalProductName = bpropState.getProductName();
+        String originalProductId   = bpropState.getProductID();
+
         String project = projectName.getText();
         String batch = batchNo.getText();
         String sopValue = sop.getText() == null ? "" : sop.getText().trim();
@@ -78,8 +82,8 @@ public class BasePropertiesController {
         bpropState.setTestSchedule(testScheduleValue.isBlank() ? null : testScheduleValue);
 
 
-        if(isEdit){
-            handleEditBatch();
+        if (isEdit) {
+            handleEditBatch(originalProjectName, originalProductName, originalProductId);
             return;
         }
 
@@ -147,7 +151,7 @@ public class BasePropertiesController {
                             )
                     );
 
-            // ================= PRODUCT ONLY =================
+            // ================ PRODUCT ONLY =================
 
             if (batchID == null) {
 
@@ -308,26 +312,46 @@ public class BasePropertiesController {
         System.out.println("SOP = " + bpropState.getSop());
     }
 
-    private void handleEditBatch() throws SQLException {
-        String project      = projectName.getText().trim();
-        String batch        = batchNo.getText() != null ? batchNo.getText().trim() : null;
-        String sopValue     = sop.getText() != null ? sop.getText().trim() : null;
-        String product      = productName.getText().trim();
-        String component    = productID.getText().trim();
-        LocalDate date      = testDate.getValue();
-        String place        = placeOfTesting.getText().trim();
+    private void handleEditBatch(
+            String originalProjectName,
+            String originalProductName,
+            String originalProductId) throws SQLException {
+
+        String project           = projectName.getText().trim();
+        String batch             = batchNo.getText() != null ? batchNo.getText().trim() : null;
+        String sopValue          = sop.getText() != null ? sop.getText().trim() : null;
+        String newProductName    = productName.getText().trim();
+        String newProductId      = productID.getText().trim();
+        LocalDate date           = testDate.getValue();
+        String place             = placeOfTesting.getText().trim();
         String testScheduleValue = testSchedulefield.getText() != null
                 ? testSchedulefield.getText().trim() : null;
+
+        int productCode = bpropState.getProductCode();
+
+        System.out.println("Product code: " + productCode);
+        System.out.println("Original name: " + originalProductName + " → New: " + newProductName);
+        System.out.println("Original ID: "   + originalProductId   + " → New: " + newProductId);
 
         try (Connection connection = DBUtil.getConnection()) {
 
             // ── Edit project name ─────────────────────────────────────────────
-            int projectId = projectService.getProjectId(connection, bpropState.getProjectName());
-            if (!project.equals(bpropState.getProjectName())) {
+            int projectId = projectService.getProjectId(connection, originalProjectName);
+            if (projectId != -1 && !project.equals(originalProjectName)) {
                 projectService.editProject(projectId, project);
             }
 
-            // ── Edit batch ID (only if batch exists) ──────────────────────────
+            // ── Edit product name ─────────────────────────────────────────────
+            if (productCode > 0 && !newProductName.equals(originalProductName)) {
+                productDAO.updateProductName(connection, productCode, newProductName);
+            }
+
+            // ── Edit product ID ───────────────────────────────────────────────
+            if (productCode > 0 && !newProductId.equals(originalProductId)) {
+                productDAO.updateProductId(connection, productCode, newProductId);
+            }
+
+            // ── Edit batch ID ─────────────────────────────────────────────────
             if (bpropState.getBatchCode() != null && batch != null && !batch.isBlank()) {
                 batchService.updateBatchId(connection, bpropState.getBatchCode(), batch);
             }
@@ -355,8 +379,8 @@ public class BasePropertiesController {
         bpropState.setProjectName(project);
         bpropState.setBatchNo(batch);
         bpropState.setSop(sopValue != null && !sopValue.isBlank() ? sopValue : null);
-        bpropState.setProductName(product);
-        bpropState.setProductID(component);
+        bpropState.setProductName(newProductName);
+        bpropState.setProductID(newProductId);
         bpropState.setTestDate(date);
         bpropState.setPlaceOfTesting(place);
         bpropState.setTestSchedule(
@@ -366,7 +390,6 @@ public class BasePropertiesController {
 
         loadCategoriesPage();
     }
-
 
 
 }

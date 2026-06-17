@@ -140,6 +140,7 @@ public class ProjectPageController {
         bpropState.setTestId(b.getTestId());
         bpropState.setSop(b.getSop());
         bpropState.setTestSchedule(b.getTestSchedule());
+        bpropState.setProductCode(b.getProductCode());
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/log/ui/views/RetrievalResults.fxml")
@@ -268,6 +269,7 @@ public class ProjectPageController {
         bpropState.setTestId(b.getTestId());
         bpropState.setSop(b.getSop());
         bpropState.setBatchCode(b.getBatchCode());
+        bpropState.setProductCode(b.getProductCode());
 
         appState.setProjectCreated(true);
 
