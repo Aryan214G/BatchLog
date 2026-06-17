@@ -59,5 +59,11 @@ public class Temperature {
     public void setTempUnitVal(String tempUnitVal) {
         this.tempUnitVal = tempUnitVal;
     }
+
+    public boolean isEmpty() {
+        return (tempVal == null || tempVal.isBlank())
+                && tempUnitID == null;
+    }
+
     }
 
