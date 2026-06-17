@@ -124,7 +124,9 @@ System.out.println("Test Method   = " + property.getTestMethod());
             property.getTemperature().setTempId(tempId);
             property.getTemperature().setTempVal(rs.getString("Temp_VAL"));
             property.getTemperature().setTempUnitVal(rs.getString("Temp_Unit"));
-            property.getTemperature().setTempUnitID(rs.getInt("Temp_Unit_ID"));
+            property.getTemperature().setTempUnitID(
+                    (Integer) rs.getObject("Temp_Unit_ID")
+            );
 
             property.getDirection().setDirId(rs.getInt("Dir_ID"));
             property.getDirection().setDirVal(rs.getString("Dir_VAL"));
@@ -352,7 +354,9 @@ System.out.println("Test Method   = " + property.getTestMethod());
                 property.getTemperature().setTempId(tempId);
             property.getTemperature().setTempVal(rs.getString("Temp_VAL"));
             property.getTemperature().setTempUnitVal(rs.getString("Temp_Unit"));
-            property.getTemperature().setTempUnitID(rs.getInt("Temp_Unit_ID"));
+            property.getTemperature().setTempUnitID(
+                    (Integer) rs.getObject("Temp_Unit_ID")
+            );
 
             property.getDirection().setDirId(rs.getInt("Dir_ID"));
             property.getDirection().setDirVal(rs.getString("Dir_VAL"));

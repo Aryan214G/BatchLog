@@ -23,7 +23,7 @@ public class PropertySubmissionService {
     private AppState instance = AppState.getInstance();
     private BasePropertiesState bsinstance = BasePropertiesState.getInstance();
 
-    private int tempId;
+    private Integer tempId;
     private int directionId;
     public PropertySubmissionService(TemperatureService temperatureService,
                                      DirectionService directionService,
@@ -78,29 +78,33 @@ public class PropertySubmissionService {
     }
 
     private void handleTemperature(Connection conn, Temperature temp) {
-        if (temp.getTempId() == null) {
-            System.out.println(
-                    "Temperature object = "
-                            + temp.getTempVal()
-                            + " | "
-                            + temp.getTempUnitID()
-            );
 
-           this.tempId = temperatureService.insertTemperature(conn, temp);
-           temp.setTempId(tempId);
+    if (temp.isEmpty()) {
 
-        } else {
-            System.out.println(
-                    "Temperature object = "
-                            + temp.getTempVal()
-                            + " | "
-                            + temp.getTempUnitID()
-            );
+        System.out.println("Temperature is empty");
 
-            this.tempId = temp.getTempId();
-            temperatureService.updateTemperature(conn, temp);
-        }
+        this.tempId = null;
+        return;
     }
+
+    System.out.println(
+            "Temperature object = "
+                    + temp.getTempVal()
+                    + " | "
+                    + temp.getTempUnitID()
+    );
+
+    if (temp.getTempId() == null) {
+
+        this.tempId = temperatureService.insertTemperature(conn, temp);
+        temp.setTempId(tempId);
+
+    } else {
+
+        this.tempId = temp.getTempId();
+        temperatureService.updateTemperature(conn, temp);
+    }
+}
 
     private void handleDirection(Connection conn, Direction dir) {
         if (dir.getDirId() == null) {
