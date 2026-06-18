@@ -15,6 +15,9 @@ import java.util.logging.Logger;
 public class Main extends Application {
 
     public Main() throws SQLException {
+
+            System.out.println(DBUtil.getDatabasePath().toAbsolutePath());
+
         try(Connection conn = DBUtil.getConnection()){
 
             if (conn != null) {
@@ -22,7 +25,7 @@ public class Main extends Application {
             }
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 

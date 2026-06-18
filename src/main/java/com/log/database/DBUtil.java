@@ -14,6 +14,8 @@ public class DBUtil {
 
     public static Connection getConnection() throws SQLException {
 
+         System.out.println("DB Path: " + DB_PATH.toAbsolutePath());
+
         Connection conn = DriverManager.getConnection(URL);
 
         try (Statement stmt = conn.createStatement()) {
