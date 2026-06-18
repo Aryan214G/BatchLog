@@ -4,23 +4,21 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 
-<MenuBar fx:id="menuBar" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.MenubarController">
+<MenuBar fx:id="menuBar" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.MenubarController">
   <menus>
     <Menu mnemonicParsing="false" text="File">
       <items>
         <MenuItem fx:id="homePageBtn" mnemonicParsing="false" onAction="#openHomePage" text="Home" />
             <MenuItem fx:id="newProjectBtn" mnemonicParsing="false" onAction="#loadBasePropertiesView" text="New project" />
-            <MenuItem mnemonicParsing="false" text="Open folder" />
-            <MenuItem fx:id="saveAsBtn" mnemonicParsing="false" onAction="#openSaveFilePopup"  text="Save as" />
-            <MenuItem mnemonicParsing="false" text="Retrieval page" onAction="#openRetrievalPage"/>
-            <MenuItem fx:id="settingsBtn" mnemonicParsing="false" onAction="#openSettingsPagePopup"  text="Settings" />
+            <MenuItem mnemonicParsing="false" onAction="#openRetrievalPage" text="Retrieval page" />
+            <MenuItem fx:id="settingsBtn" mnemonicParsing="false" onAction="#openSettingsPagePopup" text="Settings" />
 
         <MenuItem mnemonicParsing="false" text="Exit" />
       </items>
     </Menu>
     <Menu mnemonicParsing="false" text="Edit">
       <items>
-        <MenuItem mnemonicParsing="false" text="Project Details" fx:id="editprojbtn" onAction="#openbaseprops" />
+        <MenuItem fx:id="editprojbtn" mnemonicParsing="false" onAction="#openbaseprops" text="Project Details" />
       </items>
     </Menu>
     <Menu mnemonicParsing="false" text="Help">
