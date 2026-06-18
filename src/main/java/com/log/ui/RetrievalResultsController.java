@@ -319,8 +319,20 @@ public class RetrievalResultsController {
 
             ContextMenu rowMenu = createRowContextMenu(p);
 
-            if (columnStates.getOrDefault("Property", true))
-                propertiesGrid.add(makeCell(p.getName() + " (" + (p.getUnit() != null ? p.getUnit() + ")" : ""), isAlt, rowMenu), col++, row);
+            String displayName = p.getName();
+
+            if (p.getUnit() != null
+                    && !p.getUnit().isBlank()
+                    && !"Not Applicable".equalsIgnoreCase(p.getUnit())) {
+
+                displayName += " (" + p.getUnit() + ")";
+            }
+
+            propertiesGrid.add(
+                    makeCell(displayName, isAlt, rowMenu),
+                    col++,
+                    row
+            );
             if (!groupByCategory && columnStates.getOrDefault("Category", true))
                 propertiesGrid.add(makeCell(p.getCategory(), isAlt, rowMenu), col++, row);
             if (columnStates.getOrDefault("Temperature", true))
