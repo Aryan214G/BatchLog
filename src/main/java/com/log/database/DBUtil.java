@@ -14,7 +14,7 @@ import java.sql.Statement;
 
 public class DBUtil {
 
-    private static final boolean TESTING = true;
+    private static final boolean TESTING = false;
 
     private static final Path APP_DIR =
         Paths.get(
