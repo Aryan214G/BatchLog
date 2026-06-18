@@ -410,6 +410,13 @@ public class RetrievalResultsController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(backDestination));
             Parent root = loader.load();
+
+            // If going back to ProjectPage, reload the project
+            if (backDestination.contains("ProjectPage")) {
+                ProjectPageController controller = loader.getController();
+                controller.loadProject(basePropertiesState.getProjectName());
+            }
+
             Stage stage = (Stage) propertiesGrid.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
