@@ -50,11 +50,16 @@ public class SettingsPageController {
     }
 
     @FXML
+    private void showAddTempUnitsPage(){loadPage("AddTempUnits.fxml");}
+
+    @FXML
     private void showCategoriesPage() { loadPage("AddCategorySettings.fxml"); }
+
+    @FXML
+    private void showCategoriesrenamePage() { loadPage("Catrenamesettingspage.fxml"); }
 
     @FXML
     private void showBackupPage(){ loadPage("BackupAndRestorePage.fxml");}
 
-    @FXML
-    private void showCategoriesrenamePage() { loadPage("Catrenamesettingspage.fxml"); }
+
 }
