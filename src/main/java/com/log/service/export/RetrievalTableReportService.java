@@ -93,7 +93,7 @@ public class RetrievalTableReportService
 
             context.getContent().close();
 
-            document.save("retrieval-report.pdf");
+//            document.save("retrieval-report.pdf");
 
             printReport(document);
         }

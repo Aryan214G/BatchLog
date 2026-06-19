@@ -319,8 +319,20 @@ public class RetrievalResultsController {
 
             ContextMenu rowMenu = createRowContextMenu(p);
 
-            if (columnStates.getOrDefault("Property", true))
-                propertiesGrid.add(makeCell(p.getName() + " (" + (p.getUnit() != null ? p.getUnit() + ")" : ""), isAlt, rowMenu), col++, row);
+            String displayName = p.getName();
+
+            if (p.getUnit() != null
+                    && !p.getUnit().isBlank()
+                    && !"Not Applicable".equalsIgnoreCase(p.getUnit())) {
+
+                displayName += " (" + p.getUnit() + ")";
+            }
+
+            propertiesGrid.add(
+                    makeCell(displayName, isAlt, rowMenu),
+                    col++,
+                    row
+            );
             if (!groupByCategory && columnStates.getOrDefault("Category", true))
                 propertiesGrid.add(makeCell(p.getCategory(), isAlt, rowMenu), col++, row);
             if (columnStates.getOrDefault("Temperature", true))
@@ -398,6 +410,13 @@ public class RetrievalResultsController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(backDestination));
             Parent root = loader.load();
+
+            // If going back to ProjectPage, reload the project
+            if (backDestination.contains("ProjectPage")) {
+                ProjectPageController controller = loader.getController();
+                controller.loadProject(basePropertiesState.getProjectName());
+            }
+
             Stage stage = (Stage) propertiesGrid.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
