@@ -14,7 +14,7 @@ import java.sql.Statement;
 
 public class DBUtil {
 
-    private static final boolean TESTING = true;
+    private static final boolean TESTING = false;
 
     private static final Path APP_DIR =
         Paths.get(
@@ -24,7 +24,9 @@ public class DBUtil {
 
     private static final Path DB_PATH = (TESTING)
         ? Paths.get("database", "BatchLog_test.db")
-        : APP_DIR.resolve("BatchLog.db");
+        : APP_DIR.resolve(
+                Paths.get("database", "BatchLog.db")
+    );
 
     private static final String URL = "jdbc:sqlite:" + DB_PATH.toAbsolutePath();
 
@@ -35,7 +37,9 @@ public class DBUtil {
 
         if (!TESTING) {
 
-            Files.createDirectories(APP_DIR);
+            Files.createDirectories(
+                    APP_DIR.resolve("database")
+            );
 
             if (!Files.exists(DB_PATH)) {
                 copyMasterDatabase();
