@@ -41,8 +41,8 @@
             <Label text="Place of Testing" />
             <TextField fx:id="placeOfTesting" alignment="CENTER" maxWidth="700.0" />
 
-            <Label text="File Name" />
-            <TextField fx:id="fileName" alignment="CENTER" maxWidth="700.0" />
+            <Label text="Test Schedule" />
+            <TextField fx:id="testSchedulefield" alignment="CENTER" maxWidth="700.0" />
 
         </VBox>
     </center>

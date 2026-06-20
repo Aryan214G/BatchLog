@@ -53,6 +53,7 @@ public class BasePropertiesController {
     public void initialize()
     {
         loadExistingProject();
+        System.out.println("BaseProperties initialized");
     }
     // ===== BUTTON ACTIONS =====
     @FXML

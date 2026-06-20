@@ -56,7 +56,7 @@ public class NewBatchController {
         bpropState.setPlaceOfTesting(placeOfTesting.getText().trim());
         bpropState.setSop(sopField.getText().trim());
         bpropState.setProductID(componentIdField.getText().trim());
-        bpropState.setTestSchedule(componentIdField.getText().trim());// maps to Product_ID
+        bpropState.setTestSchedule(testSchedulefield.getText().trim());// maps to Product_ID
 
         Connection conn = null;
 
@@ -67,7 +67,7 @@ public class NewBatchController {
             // 1. Create product if it doesn't exist
             productService.createProduct(
                     conn,
-                    bpropState.getProductName(),  // productId
+                    bpropState.getProductID(),  // productId
                     bpropState.getProductName()   // productName
             );
 
