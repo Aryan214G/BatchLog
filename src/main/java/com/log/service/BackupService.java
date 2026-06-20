@@ -9,8 +9,9 @@ import java.time.format.DateTimeFormatter;
 
 public class BackupService {
 
-    private static final String SAFETY_BACKUP_DIR =
-            "backups/safety-backups";
+    private static final Path SAFETY_BACKUP_DIR = DBUtil.getAppDir().resolve(
+            Paths.get("database", "backups")
+    );
 
     public void createBackup(Path destination)
             throws IOException {
@@ -48,10 +49,7 @@ public class BackupService {
     private Path createSafetyBackup()
             throws IOException {
 
-        Path backupDir =
-                Paths.get(SAFETY_BACKUP_DIR);
-
-        Files.createDirectories(backupDir);
+        Files.createDirectories(SAFETY_BACKUP_DIR);
 
         String timestamp =
                 LocalDateTime.now()
@@ -62,7 +60,7 @@ public class BackupService {
                         );
 
         Path safetyBackup =
-                backupDir.resolve(
+                SAFETY_BACKUP_DIR.resolve(
                         "BeforeRestore_" +
                         timestamp +
                         ".db"

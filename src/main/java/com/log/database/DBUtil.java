@@ -14,7 +14,7 @@ import java.sql.Statement;
 
 public class DBUtil {
 
-    private static final boolean TESTING = false;
+    private static final boolean TESTING = true;
 
     private static final Path APP_DIR =
         Paths.get(
@@ -68,6 +68,10 @@ public class DBUtil {
 
     public static Path getDatabasePath() {
         return DB_PATH;
+    }
+
+    public static Path getAppDir() {
+        return APP_DIR;
     }
 
     private static void copyMasterDatabase() throws IOException {
