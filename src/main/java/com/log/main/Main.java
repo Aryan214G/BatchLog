@@ -1,11 +1,15 @@
 package com.log.main;
 
+import com.log.ui.splash.SplashScreen;
+import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import com.log.database.DBUtil;
+import javafx.util.Duration;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -30,40 +34,43 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws IOException {
+public void start(Stage stage) throws IOException {
 
-//        try {
-//
-//
-//        PdfReportService pdfReportService = new PdfReportService();
-//
-//        ReportData reportData =
-//                pdfReportService.buildReportData(2); // existing Property_ID
-//
-//        pdfReportService.generatePdf(reportData);
-//
-//        System.out.println("PDF generated successfully");
-//
-//    } catch (Exception e) {
-//
-//        e.printStackTrace();
-//    }
+    FXMLLoader loader = new FXMLLoader(
+            getClass().getResource("/com/log/ui/views/HomePage.fxml")
+    );
 
-        FXMLLoader loader = new FXMLLoader(getClass()
-                .getResource("/com/log/ui/views/HomePage.fxml")
-        );
+    Parent root = loader.load();
 
-        Parent root = loader.load();
-        Scene scene = new Scene(root);
+    Scene scene = new Scene(root);
 
-        scene.getStylesheets().add(getClass()
-                .getResource("/com/log/ui/styles/homepage.css").toExternalForm()
-        );
+    scene.getStylesheets().add(
+            getClass()
+                    .getResource("/com/log/ui/styles/homepage.css")
+                    .toExternalForm()
+    );
+
+    // =========================================
+    // Splash Screen
+    // =========================================
+
+    SplashScreen splash = new SplashScreen();
+
+    splash.show();
+
+    PauseTransition delay = new PauseTransition(Duration.seconds(2));
+
+    delay.setOnFinished(e -> {
+
+        splash.close();
 
         stage.setTitle("BatchLog");
         stage.setScene(scene);
         stage.show();
-    }
+    });
+
+    delay.play();
+}
 
     private void handleJavaFXLogging(){
         Logger rootLogger = Logger.getLogger("");
@@ -72,9 +79,9 @@ public class Main extends Application {
             handler.setFilter(record -> {
                 String msg = record.getMessage();
                 if (msg != null && msg.contains("Loading FXML document with JavaFX API of version")) {
-                    return false; // ❌ block this specific warning
+                    return false;
                 }
-                return true; // ✅ allow everything else
+                return true;
             });
         }
     }
