@@ -591,7 +591,7 @@ public class RetrievalResultsController {
             List<String> rowData = new ArrayList<>();
 
             if (columnStates.getOrDefault("Property",      true))
-                rowData.add(p.getName() + (p.getUnit() != null ? " (" + p.getUnit() + ")" : ""));
+                rowData.add(p.getName() + formatUnitSuffix(p.getUnit()));
             if (columnStates.getOrDefault("Temperature",   true))
                 rowData.add(p.getTemperature() != null ? p.getTemperature() : "—");
             if (columnStates.getOrDefault("Direction",     true))
@@ -642,6 +642,13 @@ public class RetrievalResultsController {
     @FXML private Button groupToggleBtn;
 
 
-
+    private String formatUnitSuffix(String unit) {
+        if (unit != null && !unit.isBlank() && !"Not Applicable".equalsIgnoreCase(unit)) {
+            return " (" + unit + ")";
+        }
+        return "";
+    }
 
 }
+
+
