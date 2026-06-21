@@ -103,7 +103,7 @@ public class HomePageController implements Initializable {
     }
 
     private void handleHelp() {
-        System.out.println("Help clicked");
+        navigateTo("/com/log/ui/views/Help.fxml");
     }
 
     // ── Projects List ─────────────────────────────────────────────────────────
@@ -178,13 +178,13 @@ public class HomePageController implements Initializable {
 
         MenuItem openItem   = new MenuItem("Open");
         MenuItem renameItem = new MenuItem("Rename");
-        MenuItem deleteItem = new MenuItem("Delete");
+//        MenuItem deleteItem = new MenuItem("Delete");
 
         openItem.setOnAction(e -> handleProjectCardOpen(projectName));
         renameItem.setOnAction(e -> handleProjectCardEdit(projectName));
-        deleteItem.setOnAction(e -> handleProjectCardDelete(projectName));
+//        deleteItem.setOnAction(e -> handleProjectCardDelete(projectName));
 
-        contextMenu.getItems().addAll(openItem, renameItem, deleteItem);
+        contextMenu.getItems().addAll(openItem, renameItem);
         return contextMenu;
     }
 

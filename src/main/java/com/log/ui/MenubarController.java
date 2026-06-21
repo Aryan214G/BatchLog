@@ -134,4 +134,18 @@ public class MenubarController {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    private void openUserManual(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/com/log/ui/views/Help.fxml")
+        );
+
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+
+        Stage stage = (Stage) menuBar.getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
+    }
 }
