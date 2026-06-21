@@ -103,7 +103,7 @@ public class HomePageController implements Initializable {
     }
 
     private void handleHelp() {
-        System.out.println("Help clicked");
+        navigateTo("/com/log/ui/views/Help.fxml");
     }
 
     // ── Projects List ─────────────────────────────────────────────────────────

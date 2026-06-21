@@ -1,0 +1,53 @@
+.results-content {
+    -fx-background-color: #f7f7f9;
+}
+
+.manual-title {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #202124;
+}
+
+.manual-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: #5f6368;
+}
+
+.table-scroll {
+    -fx-background-color: transparent;
+    -fx-border-color: #d9d7df;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+.table-scroll > .viewport {
+    -fx-background-color: white;
+}
+
+.manual-content {
+    -fx-background-color: white;
+}
+
+.manual-section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #3b2f55;
+}
+
+.manual-body {
+    -fx-font-size: 13px;
+    -fx-line-spacing: 4px;
+    -fx-text-fill: #2f3136;
+}
+
+.back-btn {
+    -fx-background-color: #5c3d9e;
+    -fx-text-fill: white;
+    -fx-background-radius: 6;
+    -fx-padding: 8 16 8 16;
+    -fx-cursor: hand;
+}
+
+.back-btn:hover {
+    -fx-background-color: #4e328b;
+}
