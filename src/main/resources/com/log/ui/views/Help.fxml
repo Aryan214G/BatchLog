@@ -51,7 +51,7 @@
                             <Label styleClass="manual-body" text="BatchLog helps you record, organize, retrieve, compare, and export batch test data. The Home page lists your recent projects. Use New Project to start a new record, select an existing project to view its batches, or use the search box to narrow the project list." wrapText="true" />
                             <ImageView fitWidth="760" preserveRatio="true" smooth="true" styleClass="manual-image">
                                 <image>
-                                    <Image url="@../../../../images/BasePropertiesPage.png" />
+                                    <Image url="@../../../../images/HomePage.png" />
                                 </image>
                             </ImageView>
                         </VBox>
