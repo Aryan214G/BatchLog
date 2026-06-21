@@ -50,13 +50,23 @@
         -primary-navy
     );
 
-    -fx-background-radius: 32;
+    /* TL TR BR BL */
+    -fx-background-radius: 36 0 0 36;
 
     -fx-padding: 32;
 
     -fx-spacing: 24;
 
     -fx-min-width: 260;
+}
+
+.content-row {
+    -fx-spacing: 0;
+}
+
+.panel-scroll {
+    -fx-padding: 0;
+    -fx-background-insets: 0;
 }
 
 .subproperties-title {
@@ -371,12 +381,10 @@
 
 #testDetailsBox {
 
-    -fx-background-color: -surface-blue;
 
     -fx-background-radius: 16;
     -fx-border-radius: 16;
 
-    -fx-border-color: -border-color;
 
     -fx-padding: 16;
 

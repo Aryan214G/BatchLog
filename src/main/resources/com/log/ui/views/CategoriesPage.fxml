@@ -13,28 +13,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane
-        fx:id="root"
-        prefHeight="800.0"
-        prefWidth="1200.0"
-        styleClass="page-root"
-        stylesheets="
-            @../styles/base/colors.css,
-            @../styles/base/typography.css,
-            @../styles/base/common.css,
-            @../styles/base/spacing.css,
-
-            @../styles/components/buttons.css,
-            @../styles/components/forms.css,
-            @../styles/components/cards.css,
-            @../styles/components/listviews.css,
-            @../styles/components/sidebar.css,
-            @../styles/components/infoBar.css,
-
-            @../styles/pages/categoriesPage.css"
-        xmlns="http://javafx.com/javafx/25"
-        xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="com.log.ui.CategoriesPageController">
+<BorderPane fx:id="root" prefHeight="800.0" prefWidth="1200.0" styleClass="page-root" stylesheets="             @../styles/base/colors.css,             @../styles/base/typography.css,             @../styles/base/common.css,             @../styles/base/spacing.css,              @../styles/components/buttons.css,             @../styles/components/forms.css,             @../styles/components/cards.css,             @../styles/components/listviews.css,             @../styles/components/sidebar.css,             @../styles/components/infoBar.css,              @../styles/pages/categoriesPage.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.CategoriesPageController">
 
     <!-- ================= TOP ================= -->
     <top>
@@ -83,16 +62,17 @@
 
                                       <!-- Title -->
                                 <Label alignment="CENTER" maxWidth="Infinity" styleClass="entry-title" text="Entries" />
-                        <VBox fx:id="testDetailsBox" prefHeight="200.0" prefWidth="100.0" />
+                        <VBox fx:id="testDetailsBox" prefWidth="100.0" />
 
-                                <!-- Metric Chips -->
+                                            <!-- Metric Chips -->
 
-
-                                <!-- HEADER ROW -->
+            
+                                            <!-- HEADER ROW -->
                                 <HBox fx:id="headerBox" alignment="CENTER_LEFT" spacing="12">
                            <padding>
                               <Insets left="15.0" />
-                           </padding></HBox>
+                           </padding>
+                        </HBox>
 
                                 <!-- VALUE GRID -->
                                 <GridPane fx:id="entriesGrid" hgap="12" styleClass="input-field-container" vgap="16">
