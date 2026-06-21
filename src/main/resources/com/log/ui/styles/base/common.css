@@ -1,0 +1,25 @@
+.root {
+    -fx-background-color: -background-color;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.separator .line {
+    -fx-border-color: -border-color;
+}
+
+.label {
+    -fx-text-fill: -text-primary;
+}
+
+.list-view {
+    -fx-background-color: transparent;
+}
