@@ -40,6 +40,10 @@
     -fx-text-fill: #2f3136;
 }
 
+.manual-image {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.16), 8, 0, 0, 2);
+}
+
 .back-btn {
     -fx-background-color: #5c3d9e;
     -fx-text-fill: white;
