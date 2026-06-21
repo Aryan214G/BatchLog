@@ -79,6 +79,7 @@ public class CategoriesPageController {
     private Map<Integer, Map<String, DefaultProperty>> defaultPropertiesMap;
     private TextField temperatureField;
     private TextField testMethodField;
+    private TextField reportNumberField;
     private UnitsDropdownController tempUnitController;
     private DirectionDropdownController directionController;
 
@@ -330,6 +331,7 @@ public class CategoriesPageController {
                     property.getPropertyID(),
                     property.getPropertyName(),
                     property.getTestMethod(),
+                    property.getReportNumber(),
                     new ArrayList<>(inputRows),
                     property.getTemperature(),
                     property.getDirection(),
@@ -555,6 +557,7 @@ public class CategoriesPageController {
 
         testDetailsBox.getChildren().clear();
 
+        // TEST METHOD
         testMethodField = new TextField();
         testMethodField.setPromptText("Test method/Standard");
         testMethodField.getStyleClass().add("input-field");
@@ -563,6 +566,14 @@ public class CategoriesPageController {
         testMethodField
         );
 
+        // REPORT NUMBER
+        reportNumberField = new TextField();
+        reportNumberField.setPromptText("Report number");
+        reportNumberField.getStyleClass().add("input-field");
+
+        testDetailsBox.getChildren().addAll(
+        reportNumberField
+        );
     }
 
     private void updateInfoBar() {
@@ -838,6 +849,7 @@ public class CategoriesPageController {
 
     //StringUtils is a user defined class present in utility package
     String testMethod = StringUtils.nullIfBlank(testMethodField.getText());
+    String reportNumber = StringUtils.nullIfBlank(reportNumberField.getText());
 
     // retrieve existing property object and store it
     Property existingPropertyObj = null;
@@ -853,7 +865,7 @@ public class CategoriesPageController {
             property.getPropertyId(),
             property.getPropertyName(),
             testMethod,
-
+            reportNumber,
             new ArrayList<>(inputRows),
 
             new Temperature(existingTempId, tempVal, tempUnitID, tempUnitVal),
@@ -887,10 +899,10 @@ public class CategoriesPageController {
             return;
         }
 
-        //================== RESTORE TESTDETAIS =============
+        //================== RESTORE TEST DETAILS =============
 
         if (state.getTestMethod() != null) { testMethodField.setText(state.getTestMethod()); }
-
+        if (state.getReportNumber() != null) { reportNumberField.setText(state.getReportNumber()); }
 
         // ================= RESTORE HEADER =================
         String temp = "";
