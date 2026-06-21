@@ -3,12 +3,12 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="root" prefHeight="800.0" prefWidth="1200.0" styleClass="root-layout" stylesheets="@../styles/settingsPage.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.settings.SettingsPageController">
+<BorderPane fx:id="root" prefHeight="800.0" prefWidth="1200.0" styleClass="root-layout" stylesheets="@../styles/settingsPage.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.settings.SettingsPageController">
 
     <!-- LEFT SIDEBAR -->
 
@@ -18,23 +18,29 @@
             <children>
 
                 <Label alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="sidebar-title" text="Settings" />
-
-                <Button fx:id="defaultsBtn" mnemonicParsing="false" onAction="#showDefaultsPage" prefHeight="50.0" prefWidth="218.0" text="Set defaults" />
-
-
-                <Button fx:id="defunitsBtn" mnemonicParsing="false" onAction="#showUnitsPage" prefHeight="50.0" prefWidth="250.0" text="Add Units" />
-
-                <Button fx:id="directionsBtn" mnemonicParsing="false" onAction="#showDirectionsPage" prefHeight="50.0" prefWidth="250.0" text="Add Directions" />
-
-                <Button fx:id="addrenameunits" mnemonicParsing="false" onAction="#showAddTempUnitsPage" prefHeight="50.0" prefWidth="250.0" text="Rename/Add Temperature Units and Direction"/>
-
-                <Button fx:id="catbutton" mnemonicParsing="false" onAction="#showCategoriesPage" prefHeight="50.0" prefWidth="250.0" text="Add Categories and Properties" />
-
-                <Button fx:id="renamecatprop" mnemonicParsing="false" onAction="#showCategoriesrenamePage" prefHeight="50.0" prefWidth="250.0" text="Rename Categories and Properties" />
-
-                <Button fx:id="backupBtn" layoutX="31.0" layoutY="285.0" mnemonicParsing="false" onAction="#showBackupPage" prefHeight="50.0" prefWidth="250.0" text="Backup and restore" />
-
-                <ListView fx:id="SettingsListView" prefHeight="353.0" prefWidth="250.0" styleClass="buttons-list" VBox.vgrow="ALWAYS" />
+            <ScrollPane prefHeight="658.0" prefWidth="218.0">
+               <content>
+                  <VBox prefHeight="655.0" prefWidth="215.0" spacing="20.0">
+                     <children>
+            
+                                              <Button fx:id="defaultsBtn" mnemonicParsing="false" onAction="#showDefaultsPage" prefHeight="50.0" prefWidth="218.0" text="Set defaults" />
+            
+                                                
+                                                                <Button fx:id="defunitsBtn" mnemonicParsing="false" onAction="#showUnitsPage" prefHeight="50.0" prefWidth="250.0" text="Add Units" />
+            
+                                        <Button fx:id="directionsBtn" mnemonicParsing="false" onAction="#showDirectionsPage" prefHeight="50.0" prefWidth="250.0" text="Add Directions" />
+            
+                            <Button fx:id="addrenameunits" mnemonicParsing="false" onAction="#showAddTempUnitsPage" prefHeight="50.0" prefWidth="250.0" text="Rename/Add Temperature Units and Direction" />
+            
+                            <Button fx:id="catbutton" mnemonicParsing="false" onAction="#showCategoriesPage" prefHeight="50.0" prefWidth="250.0" text="Add Categories and Properties" />
+            
+                            <Button fx:id="renamecatprop" mnemonicParsing="false" onAction="#showCategoriesrenamePage" prefHeight="50.0" prefWidth="250.0" text="Rename Categories and Properties" />
+            
+                            <Button fx:id="backupBtn" mnemonicParsing="false" onAction="#showBackupPage" prefHeight="50.0" prefWidth="250.0" text="Backup and restore" />
+                     </children>
+                  </VBox>
+               </content>
+            </ScrollPane>
 
 
 

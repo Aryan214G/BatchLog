@@ -4,8 +4,10 @@ import com.log.ui.splash.SplashScreen;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import com.log.database.DBUtil;
 import javafx.util.Duration;
@@ -34,43 +36,64 @@ public class Main extends Application {
     }
 
     @Override
-public void start(Stage stage) throws IOException {
+    public void start(Stage stage) throws IOException {
 
-    FXMLLoader loader = new FXMLLoader(
-            getClass().getResource("/com/log/ui/views/HomePage.fxml")
-    );
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/com/log/ui/views/HomePage.fxml")
+        );
 
-    Parent root = loader.load();
+        Parent root = loader.load();
 
-    Scene scene = new Scene(root);
+        Scene scene = new Scene(root);
 
-    scene.getStylesheets().add(
-            getClass()
-                    .getResource("/com/log/ui/styles/homepage.css")
-                    .toExternalForm()
-    );
+        scene.getStylesheets().add(
+                getClass()
+                        .getResource("/com/log/ui/styles/homepage.css")
+                        .toExternalForm()
+        );
 
-    // =========================================
-    // Splash Screen
-    // =========================================
+        // =========================================
+        // Screen Size Handling
+        // =========================================
 
-    SplashScreen splash = new SplashScreen();
+        Rectangle2D screenBounds =
+                Screen.getPrimary().getVisualBounds();
 
-    splash.show();
+        if (screenBounds.getHeight() <= 720) {
 
-    PauseTransition delay = new PauseTransition(Duration.seconds(2));
+            // Small screens (720p laptops)
+            stage.setMaximized(true);
 
-    delay.setOnFinished(e -> {
+        } else {
 
-        splash.close();
+            // Normal screens
+            stage.setWidth(1200);
+            stage.setHeight(800);
+            stage.centerOnScreen();
+        }
 
-        stage.setTitle("BatchLog");
-        stage.setScene(scene);
-        stage.show();
-    });
+        // =========================================
+        // Splash Screen
+        // =========================================
 
-    delay.play();
-}
+        SplashScreen splash = new SplashScreen();
+
+        splash.show();
+
+        PauseTransition delay =
+                new PauseTransition(Duration.seconds(2));
+
+        delay.setOnFinished(e -> {
+
+            splash.close();
+
+            stage.setTitle("BatchLog");
+            stage.setScene(scene);
+            stage.show();
+        });
+
+        delay.play();
+    }
 
     private void handleJavaFXLogging(){
         Logger rootLogger = Logger.getLogger("");
