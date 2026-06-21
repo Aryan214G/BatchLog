@@ -37,7 +37,7 @@
 
             <children>
 
-                <Label styleClass="section-title" text="Recent Projects" />
+                <Label fx:id="rpLabel" styleClass="section-title" text="Recent Projects" />
 
                 <TextField fx:id="projectSearchField" promptText="Search projects..." />
 

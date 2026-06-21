@@ -93,31 +93,33 @@ public class Main extends Application {
     }
 
     public void loadFonts() {
-        Font.loadFont(
-                getClass().getResourceAsStream(
-                        "/com/log/ui/fonts/Inter_18pt-Regular.ttf"),
-                14
-        );
 
-        Font.loadFont(
-                getClass().getResourceAsStream(
-                        "/com/log/ui/fonts/Inter_18pt-SemiBold.ttf"),
-                14
-        );
+    Font font = Font.loadFont(
+            getClass().getResourceAsStream(
+                    "/com/log/ui/fonts/Inter-Regular.ttf"),
+            14
+    );
 
-        Font.loadFont(
-                getClass().getResourceAsStream(
-                        "/com/log/ui/fonts/Inter_18pt-Bold.ttf"),
-                14
-        );
+    Font.loadFont(
+            getClass().getResourceAsStream(
+                    "/com/log/ui/fonts/Inter-Medium.ttf"),
+            14
+    );
 
-        System.out.println(
-                Font.loadFont(
-                        getClass().getResourceAsStream(
-                                "/com/log/ui/fonts/Inter_18pt-Regular.ttf"),
-                        14
-                ).getFamily()
-        );
-    }
+    Font.loadFont(
+            getClass().getResourceAsStream(
+                    "/com/log/ui/fonts/Inter-SemiBold.ttf"),
+            14
+    );
+
+    Font.loadFont(
+            getClass().getResourceAsStream(
+                    "/com/log/ui/fonts/Inter-Bold.ttf"),
+            14
+    );
+
+    System.out.println("Family = " + font.getFamily());
+System.out.println("Name = " + font.getName());
+}
 }
 
