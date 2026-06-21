@@ -1109,6 +1109,11 @@ public class CategoriesPageController {
             ReportData report = propertyReportService
                             .buildReportData(propertyId);
 
+            if(report == null){
+                System.out.println("Report generation cancelled.");
+                return;
+            }
+
             Thread t = new Thread(() -> {
                 try {
                     propertyReportService.generateReport(report);
