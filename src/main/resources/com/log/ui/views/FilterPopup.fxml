@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="460" prefWidth="340" stylesheets="@../styles/RetrievalResultsPage.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.FilterPopupController">
+<BorderPane prefHeight="460" prefWidth="340" stylesheets="@../styles/pages/retrievalResultsPage.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.FilterPopupController">
 
     <top>
         <VBox alignment="CENTER">

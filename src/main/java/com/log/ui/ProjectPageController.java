@@ -53,6 +53,7 @@ public class ProjectPageController {
      {
          exportButton.setVisible(false);
      }
+
     public void loadProject(String projectName) {
         this.currentProjectName = projectName;
         projectTitleLabel.setText(projectName);

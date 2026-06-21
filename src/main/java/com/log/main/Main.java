@@ -46,7 +46,7 @@ public void start(Stage stage) throws IOException {
 
     scene.getStylesheets().add(
             getClass()
-                    .getResource("/com/log/ui/styles/homepage.css")
+                    .getResource("/com/log/ui/styles/pages/homePage.css")
                     .toExternalForm()
     );
 
