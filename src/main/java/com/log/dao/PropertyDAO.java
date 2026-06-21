@@ -160,16 +160,17 @@ System.out.println("Report Number   = " + property.getReportNumber());
     public void updateProperty(Connection conn, Property property) {
 
         String sql = """
-                SET Property_name = ?,
-                Category_ID = ?,
-                Temp_ID = ?,
-                Dir_ID = ?,
-                Unit_ID = ?,
-                Test_ID = ?,
-                test_method = ?,
-                report_number = ?
-            WHERE Property_ID = ?
-            """;
+        UPDATE Property
+        SET Property_name = ?,
+            Category_ID = ?,
+            Temp_ID = ?,
+            Dir_ID = ?,
+            Unit_ID = ?,
+            Test_ID = ?,
+            test_method = ?,
+            report_number = ?
+        WHERE Property_ID = ?
+        """;
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 

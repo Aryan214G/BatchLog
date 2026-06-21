@@ -47,7 +47,7 @@ public class PropertySubmissionService {
 
             handleTemperature(conn, propertyState.getTemperature());
             handleDirection(conn, propertyState.getDirection());
-            handleProperty(conn, propertyState, propertyName, selectedCategory, propertyState.getTestMethod());
+            handleProperty(conn, propertyState, propertyName, selectedCategory, propertyState.getTestMethod(), propertyState.getReportNumber());
 
             conn.commit();
 
@@ -121,7 +121,7 @@ public class PropertySubmissionService {
             PropertyState propertyState,
             String propertyName,
             String selectedCategory,
-            String testMethod){
+            String testMethod, String reportNumber){
 
         //TODO: might need to replace this unecessary db call
         Category category = categoryService.getCategory(conn, selectedCategory);
@@ -180,6 +180,7 @@ public class PropertySubmissionService {
 
 
         property.setTestMethod(testMethod);
+        property.setReportNumber(reportNumber);
 
         property.setPropertyName(propertyName);
         property.setUnit(unit);
@@ -187,6 +188,9 @@ public class PropertySubmissionService {
         property.setTemperature(temperature);
         property.setDirection(direction);
         property.setTestMethod(testMethod);
+        property.setReportNumber(
+        propertyState.getReportNumber()
+);
         // ________________________________________________________________________________
 
         Integer propertyID = property.getPropertyID();
