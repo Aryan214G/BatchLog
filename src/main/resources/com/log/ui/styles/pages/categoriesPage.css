@@ -8,6 +8,7 @@
 
 .topbar {
     -fx-background-color: transparent;
+    -fx-padding: 0 0 16 0;
 }
 
 .content-area {
