@@ -207,34 +207,35 @@ System.out.println("Report Number   = " + property.getReportNumber());
 
     }
 
-    public int getPropertyId(Connection conn, Property property) {
-
-        String sql = """
-            SELECT Property_ID
-            FROM Property
-            WHERE Property_name = ?
-              AND Category_ID = ?
-              AND Test_ID = ?
-            """;
-
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, property.getPropertyName());
-            stmt.setInt(2, property.getCategory().getCategoryId());
-            stmt.setInt(3, property.getTestID());
-
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return rs.getInt("Property_ID"); // found
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return -1; // not found
-    }
+    //TODO: fix method logic
+//    public int getPropertyId(Connection conn, Property property) {
+//
+//        String sql = """
+//            SELECT Property_ID
+//            FROM Property
+//            WHERE Property_name = ?
+//              AND Category_ID = ?
+//              AND Test_ID = ?
+//            """;
+//
+//        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+//
+//            stmt.setString(1, property.getPropertyName());
+//            stmt.setInt(2, property.getCategory().getCategoryId());
+//            stmt.setInt(3, property.getTestID());
+//
+//            ResultSet rs = stmt.executeQuery();
+//
+//            if (rs.next()) {
+//                return rs.getInt("Property_ID"); // found
+//            }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return -1; // not found
+//    }
 
     public Map<String, Double> getPropertyAveragesByBatch(
             Connection conn,

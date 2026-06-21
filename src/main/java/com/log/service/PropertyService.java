@@ -35,9 +35,10 @@ public class PropertyService {
         return propertyDAO.insertProperty(conn, property);
     }
 
-    public int getPropertyId(Connection conn, Property property){
-        return propertyDAO.getPropertyId(conn, property);
-    }
+    //TODO: only uncomment after fixing the DAO method logic
+//    public int getPropertyId(Connection conn, Property property){
+//        return propertyDAO.getPropertyId(conn, property);
+//    }
 
     public void updateProperty(Connection conn, Property property) {
         propertyDAO.updateProperty(conn, property);
