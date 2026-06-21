@@ -1,0 +1,27 @@
+.primary-button {
+    -fx-background-color: -accent-orange;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-background-radius: 10;
+    -fx-padding: 12 20;
+    -fx-cursor: hand;
+}
+
+.primary-button:hover {
+    -fx-background-color: #D97706;
+}
+
+.secondary-button {
+    -fx-background-color: #EEF4FF;
+    -fx-text-fill: -primary-blue;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-background-radius: 10;
+    -fx-padding: 12 20;
+    -fx-cursor: hand;
+}
+
+.secondary-button:hover {
+    -fx-background-color: #DCE8FF;
+}
