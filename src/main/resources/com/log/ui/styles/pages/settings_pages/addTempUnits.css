@@ -1,0 +1,159 @@
+/* =========================================
+   ROOT
+   ========================================= */
+
+.root {
+
+    -fx-background-color: transparent;
+}
+
+
+/* =========================================
+   PAGE TITLE
+   ========================================= */
+
+.settings-page-title {
+
+    -fx-font-size: 32px;
+
+    -fx-font-family: "Inter Bold";
+
+    -fx-text-fill: -text-primary;
+}
+
+
+/* =========================================
+   SETTINGS CARD
+   ========================================= */
+
+.settings-card {
+
+    -fx-background-color: -surface-blue;
+
+    -fx-background-radius: 24;
+
+    -fx-border-color: -border-color;
+
+    -fx-border-radius: 24;
+
+    -fx-padding: 24;
+
+    -fx-spacing: 18;
+}
+
+
+/* =========================================
+   SECTION TITLES
+   ========================================= */
+
+.settings-section-label {
+
+    -fx-font-size: 16px;
+
+    -fx-font-family: "Inter SemiBold";
+
+    -fx-text-fill: -text-primary;
+}
+
+
+/* =========================================
+   TEXT FIELDS
+   ========================================= */
+
+.text-field {
+
+    -fx-background-color: white;
+
+    -fx-background-radius: 12;
+
+    -fx-border-color: -border-color;
+
+    -fx-border-radius: 12;
+
+    -fx-pref-height: 42;
+
+    -fx-padding: 0 12;
+}
+
+.text-field:focused {
+
+    -fx-border-color: -accent-blue;
+
+    -fx-border-width: 2;
+}
+
+
+/* =========================================
+   LIST VIEWS
+   ========================================= */
+
+.list-view {
+
+    -fx-background-color: white;
+
+    -fx-background-radius: 12;
+
+    -fx-border-color: -border-color;
+
+    -fx-border-radius: 12;
+
+    -fx-padding: 8;
+}
+
+.list-view .viewport {
+
+    -fx-background-color: transparent;
+}
+
+.list-cell {
+
+    -fx-background-color: transparent;
+
+    -fx-text-fill: -text-primary;
+
+    -fx-padding: 10 12;
+}
+
+.list-cell:hover {
+
+    -fx-background-color: -surface-hover;
+}
+
+.list-cell:selected {
+
+    -fx-background-color: -primary-blue;
+
+    -fx-text-fill: white;
+}
+
+
+/* =========================================
+   SEPARATORS
+   ========================================= */
+
+.separator .line {
+
+    -fx-border-color: -border-color;
+
+    -fx-border-width: 1 0 0 0;
+}
+
+
+/* =========================================
+   BUTTON GROUPS
+   ========================================= */
+
+.action-row {
+
+    -fx-spacing: 10;
+}
+
+
+/* =========================================
+   CLOSE SECTION
+   ========================================= */
+
+.footer-row {
+
+    -fx-padding: 8 0 0 0;
+}

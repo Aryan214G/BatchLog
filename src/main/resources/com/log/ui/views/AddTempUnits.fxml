@@ -1,72 +1,120 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/21"
+<AnchorPane xmlns="http://javafx.com/javafx/25"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.log.ui.settings.Addtempunitscontroller"
-            prefHeight="500.0"
-            prefWidth="700.0">
+            fx:controller="com.log.ui.settings.Addtempunitscontroller">
 
-    <VBox spacing="15.0"
+    <VBox alignment="TOP_CENTER"
+          spacing="30"
           AnchorPane.topAnchor="20.0"
           AnchorPane.leftAnchor="20.0"
           AnchorPane.rightAnchor="20.0"
           AnchorPane.bottomAnchor="20.0">
 
-        <!-- Temperature Units -->
+        <!-- ========================================= -->
+        <!-- PAGE TITLE -->
+        <!-- ========================================= -->
 
-        <Label text="Temperature Units"
-               style="-fx-font-size:16px; -fx-font-weight:bold;" />
+        <Label text="Temperature Units and Directions"
+               styleClass="settings-page-title" />
 
-        <HBox spacing="10">
+        <!-- ========================================= -->
+        <!-- SETTINGS CARD -->
+        <!-- ========================================= -->
 
-            <TextField fx:id="temperatureUnitField"
-                       promptText="Enter temperature unit"
-                       HBox.hgrow="ALWAYS"/>
+        <VBox spacing="20"
+              styleClass="settings-card">
 
-            <Button text="Add"
-                    onAction="#handleAddTemperatureUnit"/>
+            <!-- TEMPERATURE UNITS -->
 
-            <Button text="Rename"
-                    onAction="#handleRenameTemperatureUnit"/>
-        </HBox>
+            <Label text="Temperature Units"
+                   styleClass="settings-section-label" />
 
-        <ListView fx:id="temperatureUnitList"
-                  prefHeight="150"/>
+            <HBox spacing="10"
+                  styleClass="action-row">
 
-        <Separator />
+                <children>
 
-        <!-- Directions -->
+                    <TextField fx:id="temperatureUnitField"
+                               promptText="Enter temperature unit"
+                               HBox.hgrow="ALWAYS" />
 
-        <Label text="Directions"
-               style="-fx-font-size:16px; -fx-font-weight:bold;" />
+                    <Button text="Add"
+                            styleClass="primary-button"
+                            onAction="#handleAddTemperatureUnit" />
 
-        <HBox spacing="10">
+                    <Button text="Rename"
+                            styleClass="secondary-button"
+                            onAction="#handleRenameTemperatureUnit" />
 
-            <TextField fx:id="directionField"
-                       promptText="Enter direction"
-                       HBox.hgrow="ALWAYS"/>
+                </children>
 
-            <Button text="Add"
-                    onAction="#handleAddDirection"/>
+            </HBox>
 
-            <Button text="Rename"
-                    onAction="#handleRenameDirection"/>
-        </HBox>
+            <ListView fx:id="temperatureUnitList"
+                      prefHeight="180" />
 
-        <ListView fx:id="directionList"
-                  prefHeight="150"/>
+            <Separator />
 
-        <Separator />
+            <!-- DIRECTIONS -->
 
-        <HBox spacing="10">
+            <Label text="Directions"
+                   styleClass="settings-section-label" />
 
-            <Region HBox.hgrow="ALWAYS"/>
+            <HBox spacing="10"
+                  styleClass="action-row">
 
-            <Button text="Close"
-                    onAction="#handleClose"/>
+                <children>
+
+                    <TextField fx:id="directionField"
+                               promptText="Enter direction"
+                               HBox.hgrow="ALWAYS" />
+
+                    <Button text="Add"
+                            styleClass="primary-button"
+                            onAction="#handleAddDirection" />
+
+                    <Button text="Rename"
+                            styleClass="secondary-button"
+                            onAction="#handleRenameDirection" />
+
+                </children>
+
+            </HBox>
+
+            <ListView fx:id="directionList"
+                      prefHeight="180" />
+
+        </VBox>
+
+        <!-- ========================================= -->
+        <!-- FOOTER -->
+        <!-- ========================================= -->
+
+        <HBox spacing="10"
+              alignment="CENTER_RIGHT"
+              styleClass="footer-row">
+
+            <children>
+
+                <Region HBox.hgrow="ALWAYS" />
+
+                <Button text="Close"
+                        styleClass="secondary-button"
+                        onAction="#handleClose" />
+
+            </children>
 
         </HBox>
 
