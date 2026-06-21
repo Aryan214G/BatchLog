@@ -11,6 +11,7 @@
 
     -background-color: #F5F8FC;
     -surface-color: #FFFFFF;
+    -surface-blue: #EEF4FF;
 
     /* Borders */
 
@@ -26,4 +27,11 @@
     -success-color: #4CAF50;
     -warning-color: #F59E0B;
     -danger-color: #EF4444;
+
+    /* Hover */
+
+    -surface-hover: #F8FAFF;
+    -surface-blue-hover: #DCE8FF;
+    -accent-orange-hover: #D97706;
+
 }

@@ -9,11 +9,11 @@
 }
 
 .primary-button:hover {
-    -fx-background-color: #D97706;
+    -fx-background-color:  -accent-orange-hover;
 }
 
 .secondary-button {
-    -fx-background-color: #EEF4FF;
+    -fx-background-color: -surface-blue;
     -fx-text-fill: -primary-blue;
     -fx-font-size: 14px;
     -fx-font-weight: 600;
@@ -23,5 +23,5 @@
 }
 
 .secondary-button:hover {
-    -fx-background-color: #DCE8FF;
+    -fx-background-color: -surface-blue-hover;
 }

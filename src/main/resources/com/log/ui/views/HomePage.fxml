@@ -4,27 +4,11 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.control.TextField?>
-<BorderPane prefHeight="800" prefWidth="1200"
-            stylesheets="
-            @../styles/base/colors.css,
-            @../styles/base/typography.css,
-            @../styles/base/common.css,
-
-            @../styles/components/buttons.css,
-            @../styles/components/forms.css,
-            @../styles/components/cards.css,
-            @../styles/components/listviews.css,
-            @../styles/components/sidebar.css,
-            @../styles/components/infoBar.css,
-
-            @../styles/pages/homePage.css"
-            xmlns="http://javafx.com/javafx/26"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.log.ui.HomePageController">
+<BorderPane prefHeight="800" prefWidth="1200" stylesheets="             @../styles/base/colors.css,             @../styles/base/typography.css,             @../styles/base/common.css,              @../styles/components/buttons.css,             @../styles/components/forms.css,             @../styles/components/cards.css,             @../styles/components/listviews.css,             @../styles/components/sidebar.css,             @../styles/components/infoBar.css,              @../styles/pages/homePage.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.HomePageController">
 
     <top>
         <fx:include source="../components/menubar.fxml" />
@@ -34,11 +18,11 @@
     <left>
         <VBox spacing="15" styleClass="sidebar" BorderPane.alignment="CENTER">
             <children>
-                <Label styleClass="app-title" text="BatchLog" />
-                <Button fx:id="newProjectBtn"    maxWidth="Infinity" styleClass="sidebar-button" text="New Project" />
-                <Button fx:id="retrievalPageBtn" maxWidth="Infinity" styleClass="sidebar-button" text="Retrieval Page" />
-                <Button fx:id="settingsPageBtn"  maxWidth="Infinity" styleClass="sidebar-button" text="Settings" />
-                <Button fx:id="helpPageBtn"      maxWidth="Infinity" styleClass="sidebar-button" text="Help" />
+                <Label styleClass="sidebar-title" text="BatchLog" />
+                <Button fx:id="newProjectBtn" maxWidth="Infinity" styleClass="nav-item" text="New Project" />
+                <Button fx:id="retrievalPageBtn" maxWidth="Infinity" styleClass="nav-item" text="Retrieval Page" />
+                <Button fx:id="settingsPageBtn" maxWidth="Infinity" styleClass="nav-item" text="Settings" />
+                <Button fx:id="helpPageBtn" maxWidth="Infinity" styleClass="nav-item" text="Help" />
             </children>
             <padding>
                 <Insets bottom="20" left="15" right="15" top="20" />
@@ -53,25 +37,18 @@
 
             <children>
 
-                <Label styleClass="section-title"
-                       text="Recent Projects" />
+                <Label styleClass="section-title" text="Recent Projects" />
 
-                <TextField fx:id="projectSearchField"
-                           promptText="Search projects..." />
+                <TextField fx:id="projectSearchField" promptText="Search projects..." />
 
-                <ScrollPane fitToWidth="true"
-                            VBox.vgrow="ALWAYS">
+                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
 
                     <content>
 
-                        <VBox fx:id="projectsList"
-                              spacing="8">
+                        <VBox fx:id="projectsList" spacing="8">
 
                             <padding>
-                                <Insets bottom="10"
-                                        left="10"
-                                        right="10"
-                                        top="10" />
+                                <Insets bottom="10" left="10" right="10" top="10" />
                             </padding>
 
                         </VBox>
@@ -83,10 +60,7 @@
             </children>
 
             <padding>
-                <Insets bottom="20"
-                        left="20"
-                        right="20"
-                        top="20" />
+                <Insets bottom="20" left="20" right="20" top="20" />
             </padding>
 
         </VBox>
