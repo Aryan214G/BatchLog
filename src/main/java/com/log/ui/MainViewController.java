@@ -26,7 +26,7 @@ import java.io.IOException;
                     .getWindow();
 
             // Set new scene
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(root);
             stage.show();
         }
     }

@@ -4,9 +4,15 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx/25"
+<ScrollPane xmlns="http://javafx.com/javafx/25"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.log.ui.Catrenamesettingspagecontroller">
+            fx:controller="com.log.ui.Catrenamesettingspagecontroller"
+            fitToWidth="true"
+            fitToHeight="true"
+            pannable="true">
+<content>
+<BorderPane xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1">
 
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
@@ -71,3 +77,5 @@
     </bottom>
 
 </BorderPane>
+</content>
+</ScrollPane>

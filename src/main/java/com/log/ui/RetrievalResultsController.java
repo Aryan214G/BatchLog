@@ -418,7 +418,7 @@ public class RetrievalResultsController {
             }
 
             Stage stage = (Stage) propertiesGrid.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(root);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -457,7 +457,7 @@ public class RetrievalResultsController {
             );
             Parent root = loader.load();
             Stage stage = (Stage) propertiesGrid.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(root);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

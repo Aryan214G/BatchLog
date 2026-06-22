@@ -3,10 +3,14 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/21"
-            xmlns:fx="http://javafx.com/fxml"
+<ScrollPane xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.log.ui.settings.Addtempunitscontroller"
-            prefHeight="500.0"
+            fitToWidth="true"
+            fitToHeight="true"
+            pannable="true">
+    <content>
+<AnchorPane prefHeight="500.0"
             prefWidth="700.0">
 
     <VBox spacing="15.0"
@@ -73,3 +77,5 @@
     </VBox>
 
 </AnchorPane>
+    </content>
+</ScrollPane>

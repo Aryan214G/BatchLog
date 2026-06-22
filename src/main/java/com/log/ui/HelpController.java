@@ -21,7 +21,7 @@ public class HelpController {
             );
             Parent root = loader.load();
             Stage stage = (Stage) manualContent.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(root);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

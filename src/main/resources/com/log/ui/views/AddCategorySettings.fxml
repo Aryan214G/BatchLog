@@ -1,63 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.VBox?>
+        <VBox spacing="15"
+              alignment="TOP_CENTER"
+              xmlns="http://javafx.com/javafx/25"
+              xmlns:fx="http://javafx.com/fxml/1"
+              fx:controller="com.log.ui.settings.CategorySettingsController">
 
-<VBox xmlns="http://javafx.com/javafx/25"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.log.ui.settings.CategorySettingsController"
-      spacing="15"
-      alignment="TOP_CENTER">
+            <padding>
+                <Insets top="20"
+                        right="20"
+                        bottom="20"
+                        left="20"/>
+            </padding>
 
-    <padding>
-        <Insets top="20" right="20" bottom="20" left="20"/>
-    </padding>
+            <!-- ===== TITLE ===== -->
 
-    <Label text="Category Settings"/>
+            <Label text="Category Settings"/>
 
-    <!-- Category -->
+            <!-- ===== CATEGORY SECTION ===== -->
 
-    <Label text="Category Name"/>
+            <Label text="Category Name"/>
 
-    <HBox spacing="10">
-        <TextField fx:id="categoryField"
-                   promptText="Enter category name"
-                   HBox.hgrow="ALWAYS"/>
+            <HBox spacing="10">
 
-        <Button text="Add Category"
-                onAction="#handleAddCategory"/>
-    </HBox>
+                <TextField fx:id="categoryField"
+                           promptText="Enter category name"
+                           HBox.hgrow="ALWAYS"/>
 
-    <ListView fx:id="categoryList"
-              prefHeight="120"/>
+                <Button text="Add Category"
+                        onAction="#handleAddCategory"/>
 
-    <!-- Property -->
+            </HBox>
 
-    <Label text="Property Name"/>
+            <ListView fx:id="categoryList"
+                      prefHeight="120"/>
 
-    <TextField fx:id="propertyField"
-               promptText="Enter property name"/>
+            <!-- ===== PROPERTY SECTION ===== -->
 
-    <Label text="Default Rows"/>
+            <Label text="Property Name"/>
 
-    <TextField fx:id="rowsField"
-               promptText="Enter default rows (e.g. 1)"/>
+            <TextField fx:id="propertyField"
+                       promptText="Enter property name"/>
 
-    <!-- Unit -->
+            <Label text="Default Rows"/>
 
-    <Label text="Default Unit"/>
+            <TextField fx:id="rowsField"
+                       promptText="Enter default rows (e.g. 1)"/>
 
-    <ComboBox fx:id="unitComboBox"
-              promptText="Select existing unit"/>
+            <!-- ===== UNIT SECTION ===== -->
 
-    <TextField fx:id="customUnitField"
-               promptText="Or enter a new unit"/>
+            <Label text="Default Unit"/>
 
-    <Button text="Add Property"
-            onAction="#handleAddProperty"/>
+            <ComboBox fx:id="unitComboBox"
+                      promptText="Select existing unit"
+                      maxWidth="Infinity"/>
 
-    <ListView fx:id="propertyList"
-              prefHeight="150"/>
+            <TextField fx:id="customUnitField"
+                       promptText="Or enter a new unit"/>
 
-</VBox>
+            <Button text="Add Property"
+                    onAction="#handleAddProperty"/>
+
+            <ListView fx:id="propertyList"
+                      prefHeight="150"/>
+
+        </VBox>

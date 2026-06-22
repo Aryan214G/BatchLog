@@ -5,73 +5,122 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Priority?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="root" prefHeight="800.0" prefWidth="1200.0" styleClass="root-layout" stylesheets="@../styles/settingsPage.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.settings.SettingsPageController">
+<BorderPane fx:id="root"
+            styleClass="root-layout"
+            stylesheets="@../styles/settingsPage.css"
+            xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.log.ui.settings.SettingsPageController">
 
-    <!-- LEFT SIDEBAR -->
+    <!-- ================= LEFT SIDEBAR ================= -->
 
     <left>
-        <VBox spacing="15" styleClass="sidebar" BorderPane.alignment="CENTER">
+
+        <VBox spacing="15"
+              styleClass="sidebar"
+              BorderPane.alignment="CENTER">
 
             <children>
 
-                <Label alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="sidebar-title" text="Settings" />
-            <ScrollPane prefHeight="658.0" prefWidth="218.0">
-               <content>
-                  <VBox prefHeight="655.0" prefWidth="215.0" spacing="20.0">
-                     <children>
-            
-                                              <Button fx:id="defaultsBtn" mnemonicParsing="false" onAction="#showDefaultsPage" prefHeight="50.0" prefWidth="218.0" text="Set defaults" />
-            
-                                                
-                                                                <Button fx:id="defunitsBtn" mnemonicParsing="false" onAction="#showUnitsPage" prefHeight="50.0" prefWidth="250.0" text="Add Units" />
-            
-                                        <Button fx:id="directionsBtn" mnemonicParsing="false" onAction="#showDirectionsPage" prefHeight="50.0" prefWidth="250.0" text="Add Directions" />
-            
-                            <Button fx:id="addrenameunits" mnemonicParsing="false" onAction="#showAddTempUnitsPage" prefHeight="50.0" prefWidth="250.0" text="Rename/Add Temperature Units and Direction" />
-            
-                            <Button fx:id="catbutton" mnemonicParsing="false" onAction="#showCategoriesPage" prefHeight="50.0" prefWidth="250.0" text="Add Categories and Properties" />
-            
-                            <Button fx:id="renamecatprop" mnemonicParsing="false" onAction="#showCategoriesrenamePage" prefHeight="50.0" prefWidth="250.0" text="Rename Categories and Properties" />
-            
-                            <Button fx:id="backupBtn" mnemonicParsing="false" onAction="#showBackupPage" prefHeight="50.0" prefWidth="250.0" text="Backup and restore" />
-                     </children>
-                  </VBox>
-               </content>
-            </ScrollPane>
+                <Label text="Settings"
+                       alignment="CENTER"
+                       maxWidth="Infinity"
+                       styleClass="sidebar-title"/>
 
+                <ScrollPane fitToWidth="true"
+                            fitToHeight="true"
+                            pannable="true"
+                            VBox.vgrow="ALWAYS">
 
+                    <content>
+
+                        <VBox spacing="20">
+
+                            <children>
+
+                                <Button fx:id="defaultsBtn"
+                                        text="Set Defaults"
+                                        onAction="#showDefaultsPage"
+                                        maxWidth="Infinity"/>
+
+                                <Button fx:id="defunitsBtn"
+                                        text="Add Units"
+                                        onAction="#showUnitsPage"
+                                        maxWidth="Infinity"/>
+
+                                <Button fx:id="directionsBtn"
+                                        text="Add Directions"
+                                        onAction="#showDirectionsPage"
+                                        maxWidth="Infinity"/>
+
+                                <Button fx:id="addrenameunits"
+                                        text="Rename/Add Temperature Units and Directions"
+                                        wrapText="true"
+                                        onAction="#showAddTempUnitsPage"
+                                        maxWidth="Infinity"/>
+
+                                <Button fx:id="catbutton"
+                                        text="Add Categories and Properties"
+                                        wrapText="true"
+                                        onAction="#showCategoriesPage"
+                                        maxWidth="Infinity"/>
+
+                                <Button fx:id="renamecatprop"
+                                        text="Rename Categories and Properties"
+                                        wrapText="true"
+                                        onAction="#showCategoriesrenamePage"
+                                        maxWidth="Infinity"/>
+
+                                <Button fx:id="backupBtn"
+                                        text="Backup and Restore"
+                                        onAction="#showBackupPage"
+                                        maxWidth="Infinity"/>
+
+                            </children>
+
+                        </VBox>
+
+                    </content>
+
+                </ScrollPane>
 
             </children>
+
         </VBox>
+
     </left>
 
-    <!-- RIGHT DYNAMIC CONTENT AREA -->
+    <!-- ================= RIGHT CONTENT AREA ================= -->
 
     <center>
 
-        <StackPane fx:id="contentArea" styleClass="content-area" BorderPane.alignment="CENTER" />
+        <StackPane fx:id="contentArea"
+                   styleClass="content-area"
+                   BorderPane.alignment="CENTER"/>
 
     </center>
 
-    <!-- BOTTOM BAR -->
+    <!-- ================= BOTTOM BAR ================= -->
 
     <bottom>
 
-        <VBox>
-            <children>
-                <VBox styleClass="bottombar" />
-            </children>
-        </VBox>
+        <VBox styleClass="bottombar"/>
 
     </bottom>
 
-    <!-- WINDOW PADDING -->
+    <!-- ================= WINDOW PADDING ================= -->
 
     <padding>
-        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+
+        <Insets top="15"
+                right="15"
+                bottom="15"
+                left="15"/>
+
     </padding>
 
 </BorderPane>
