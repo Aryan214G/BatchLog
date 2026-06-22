@@ -76,6 +76,8 @@ public class CategoriesPageController {
     @FXML
     private Button printButton;
 
+    @FXML
+    private VBox tempBox;
     private Map<Integer, Map<String, DefaultProperty>> defaultPropertiesMap;
     private TextField temperatureField;
     private TextField testMethodField;
@@ -683,6 +685,8 @@ public class CategoriesPageController {
 
 
 
+        Label temperatureLabel = new Label("Temperature value");
+
         temperatureField = new TextField();
         temperatureField.setPromptText("Temperature");
         temperatureField.getStyleClass().add("input-field");
@@ -699,7 +703,6 @@ public class CategoriesPageController {
         );
         Parent directionNode = directionLoader.load();
         directionController = directionLoader.getController();
-
 
 
         headerBox.getChildren().addAll(
