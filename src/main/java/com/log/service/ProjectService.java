@@ -1,6 +1,7 @@
 package com.log.service;
 
 import com.log.dao.ProjectDAO;
+import com.log.database.DBUtil;
 import com.log.model.Project;
 
 import java.sql.Connection;
@@ -47,8 +48,14 @@ public class ProjectService {
 
 
 
-    public void deleteProject(int projectId){
-        projectDAO.deleteProject(projectId);
+    // In ProjectService
+    public boolean deleteProject(int projectId) {
+        try (Connection conn = DBUtil.getConnection()) {
+            return projectDAO.setDeleted(conn, projectId, true);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 
