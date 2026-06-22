@@ -210,21 +210,24 @@ public class BasePropertiesController {
         }
     }
 
-    private void loadhomepage()
-    {
-      try
-      {
-          FXMLLoader loader = new FXMLLoader(
-          getClass().getResource("/com/log/ui/views/homepage.fxml")
-                  );
+    private void loadhomepage() {
 
-          Parent root = loader.load();
+        try {
 
-      }
-      catch (IOException e)
-      {
-          e.printStackTrace();
-      }
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource(
+                            "/com/log/ui/views/HomePage.fxml"
+                    )
+            );
+
+            Parent root = loader.load();
+
+            projectName.getScene().setRoot(root);
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
     }
     private ProductService productService = new ProductService();
     @FXML
