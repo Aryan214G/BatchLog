@@ -66,7 +66,7 @@ public class HomePageController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
             Stage stage = (Stage) projectsList.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(root);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -98,7 +98,7 @@ public class HomePageController implements Initializable {
             );
             Parent root = loader.load();
             Stage stage = (Stage) projectsList.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(root);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -245,7 +245,7 @@ public class HomePageController implements Initializable {
             controller.loadProject(projectName);
 
             Stage stage = (Stage) projectsList.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(root);
             stage.show();
 
         } catch (IOException e) {

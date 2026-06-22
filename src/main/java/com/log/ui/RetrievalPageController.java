@@ -199,7 +199,7 @@ public class RetrievalPageController {
             controller.loadBatch(batch);  // pass the whole batch
 
             Stage stage = (Stage) resultsContainer.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(root);
             stage.show();
 
         } catch (IOException e) {
@@ -223,7 +223,7 @@ public class RetrievalPageController {
             controller.loadComparison(selectedBatches);
 
             Stage stage = (Stage) resultsContainer.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(root);
             stage.show();
 
         } catch (IOException e) {
@@ -295,7 +295,7 @@ public class RetrievalPageController {
             controller.loadBatch(test);  // existing loadBatch(BatchTest) handles this
 
             Stage stage = (Stage) resultsContainer.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(root);
             stage.show();
 
         } catch (IOException e) {

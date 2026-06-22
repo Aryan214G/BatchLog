@@ -369,7 +369,7 @@ public class BatchComparisonController {
             );
             Parent root = loader.load();
             Stage stage = (Stage) comparisonGrid.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(root);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

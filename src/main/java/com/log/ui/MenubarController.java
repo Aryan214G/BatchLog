@@ -17,8 +17,15 @@ public class MenubarController {
 
     @FXML
     private void loadBasePropertiesView(ActionEvent event) throws IOException {
-        String path = "/com/log/ui/views/BaseProperties.fxml";
-        loadScene(event, path);
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/com/log/ui/views/BaseProperties.fxml")
+        );
+
+        Parent root = loader.load();
+
+        Stage stage = (Stage) menuBar.getScene().getWindow();
+        stage.getScene().setRoot(root);
+        stage.show();
     }
     private void loadScene(ActionEvent event, String path) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
@@ -91,10 +98,8 @@ public class MenubarController {
 
         Parent root = loader.load();
 
-        Scene scene = new Scene(root);
-
         Stage stage = (Stage) menuBar.getScene().getWindow();
-        stage.setScene(scene);
+        stage.getScene().setRoot(root);
         stage.show();
     }
 
@@ -107,10 +112,8 @@ public class MenubarController {
 
         Parent root = loader.load();
 
-        Scene scene = new Scene(root);
-
         Stage stage = (Stage) menuBar.getScene().getWindow();
-        stage.setScene(scene);
+        stage.getScene().setRoot(root);
         stage.show();
     }
 
@@ -129,6 +132,7 @@ public class MenubarController {
 
             Stage stage = (Stage) menuBar.getScene().getWindow();
             stage.getScene().setRoot(root);
+            stage.show();
 
         } catch (Exception e) {
             e.printStackTrace();
