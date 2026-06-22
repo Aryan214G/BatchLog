@@ -103,7 +103,8 @@ if (reportNumber == null || reportNumber.isBlank()) {
                 average,
                 stdDev,
                 values,
-                property.getUnit().getUnit()
+                property.getUnit().getUnit(),
+                property.getPropertyValues()
         );
 
 
@@ -288,25 +289,89 @@ if (reportNumber == null || reportNumber.isBlank()) {
             float col1 = 100;
             float col2 = 100;
 
-            drawCell(content, tableX, tableY, col1, rowHeight);
-            drawCell(content, tableX + col1, tableY, col2, rowHeight);
+            // ===============================
 
-            drawCellTextBold(content, "Specimen No.", tableX, tableY, col1, rowHeight);
-            drawCellTextBold(content, "Test value", tableX + col2, tableY, col2, rowHeight);
+            boolean hasComponentNumbers =
+        reportData.getPropertyValues()
+                .stream()
+                .anyMatch(propertyValue ->
+                        propertyValue.getComponentNumber() != null
+                        && !propertyValue.getComponentNumber().isBlank()
+                );
 
-            int sNo = 1;
-            for(Double value : reportData.getValues())
-            {
-                y-= 25;
+drawCell(content, tableX, tableY, col1, rowHeight);
+drawCell(content, tableX + col1, tableY, col2, rowHeight);
 
-                drawCell(content, tableX, y, col1, rowHeight);
-                drawCell(content, tableX + col1, y, col2, rowHeight);
+drawCellTextBold(
+        content,
+        hasComponentNumbers
+                ? "Component No."
+                : "Specimen No.",
+        tableX,
+        tableY,
+        col1,
+        rowHeight
+);
 
-                drawCellText(content, "Specimen " + String.valueOf(sNo), tableX, y, col1, rowHeight);
-                drawCellText(content, value.toString(), tableX + col1, y, col2, rowHeight);
+drawCellTextBold(
+        content,
+        "Test Value",
+        tableX + col1,
+        tableY,
+        col2,
+        rowHeight
+);
 
-                sNo++;
-            }
+int sNo = 1;
+
+for (PropertyValue propertyValue
+        : reportData.getPropertyValues()) {
+
+    y -= 25;
+
+    drawCell(content, tableX, y, col1, rowHeight);
+    drawCell(content, tableX + col1, y, col2, rowHeight);
+
+    String rowLabel;
+
+    if (hasComponentNumbers
+            && propertyValue.getComponentNumber() != null
+            && !propertyValue.getComponentNumber().isBlank()) {
+
+        rowLabel =
+                propertyValue.getComponentNumber();
+
+    } else {
+
+        rowLabel =
+                "Specimen " + sNo;
+    }
+
+    drawCellText(
+            content,
+            rowLabel,
+            tableX,
+            y,
+            col1,
+            rowHeight
+    );
+
+    drawCellText(
+            content,
+            String.format(
+                    "%.2f",
+                    propertyValue.getPropertyVAL()
+            ),
+            tableX + col1,
+            y,
+            col2,
+            rowHeight
+    );
+
+    sNo++;
+}
+
+            // ===============================
 
             y -= 30;
 
