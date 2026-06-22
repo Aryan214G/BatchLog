@@ -7,38 +7,105 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="800" prefWidth="1200" stylesheets="@../styles/pages/retrievalResultsPage.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.BatchComparisonController">
+<BorderPane prefHeight="800"
+            prefWidth="1200"
+            stylesheets="
+                @../styles/base/colors.css,
+                @../styles/base/typography.css,
+                @../styles/base/common.css,
+
+                @../styles/components/buttons.css,
+                @../styles/components/forms.css,
+                @../styles/components/menubar.css,
+
+                @../styles/pages/retrievalResultsPage.css"
+            xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.log.ui.BatchComparisonController">
+
+    <!-- ========================================= -->
+    <!-- TOP -->
+    <!-- ========================================= -->
 
     <top>
         <fx:include source="../components/menubar.fxml" />
     </top>
 
+    <!-- ========================================= -->
+    <!-- CENTER -->
+    <!-- ========================================= -->
+
     <center>
-        <VBox spacing="16">
+
+        <VBox spacing="20"
+              styleClass="results-content">
+
+            <children>
+
+                <!-- Toolbar -->
+
+                <HBox alignment="CENTER_LEFT"
+                      spacing="12">
+
+                    <children>
+
+                        <Button text="← Back"
+                                styleClass="secondary-button"
+                                onAction="#handleBack" />
+
+                        <Button text="⚙ Filter"
+                                styleClass="secondary-button"
+                                onAction="#handleFilter" />
+
+                        <Button text="🖶 Print"
+                                styleClass="primary-button"
+                                onAction="#handlePrint" />
+
+                        <Label fx:id="titleLabel"
+                               styleClass="batch-title" />
+
+                    </children>
+
+                </HBox>
+
+                <!-- Comparison Table -->
+
+                <ScrollPane fitToWidth="true"
+                            VBox.vgrow="ALWAYS"
+                            styleClass="table-scroll">
+
+                    <content>
+
+                        <GridPane fx:id="comparisonGrid"
+                                  styleClass="property-table">
+
+                            <padding>
+                                <Insets top="0"
+                                        right="0"
+                                        bottom="0"
+                                        left="0" />
+                            </padding>
+
+                        </GridPane>
+
+                    </content>
+
+                </ScrollPane>
+
+            </children>
+
             <padding>
-                <Insets bottom="24" left="24" right="24" top="24" />
+                <Insets top="24"
+                        right="24"
+                        bottom="24"
+                        left="24" />
             </padding>
 
-            <HBox alignment="CENTER_LEFT" spacing="12">
-                <Button onAction="#handleBack" styleClass="back-btn" text="← Back" />
-                <Button onAction="#handleFilter" styleClass="primary-btn" text="⚙ Filter" />
-            <Button mnemonicParsing="false" onAction="#handlePrint" text="🖶 Print" />
-                <Label fx:id="titleLabel" styleClass="batch-title" />
-            </HBox>
-
-            <ScrollPane fitToWidth="true" styleClass="table-scroll" VBox.vgrow="ALWAYS">
-                <content>
-                    <GridPane fx:id="comparisonGrid" styleClass="property-table">
-                        <padding>
-                            <Insets bottom="0" left="0" right="0" top="0" />
-                        </padding>
-                    </GridPane>
-                </content>
-            </ScrollPane>
-
         </VBox>
+
     </center>
 
 </BorderPane>
