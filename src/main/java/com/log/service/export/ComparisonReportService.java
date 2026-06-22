@@ -232,13 +232,13 @@ while (rowIndex < rows.size()) {
     );
 
     drawWrappedCellText(
-            content,
-            row.getKey(),
-            currentX,
-            tableY,
-            propertyWidth,
-            rowHeight
-    );
+        content,
+        formatPropertyName(row.getKey()),
+        currentX,
+        tableY,
+        propertyWidth,
+        rowHeight
+);
 
     currentX += propertyWidth;
 
@@ -297,4 +297,35 @@ return rowIndex;
         }
     }
 
+    private String formatPropertyName(
+        String propertyKey
+) {
+
+    String[] parts =
+            propertyKey.split("\\|\\|");
+
+    StringBuilder text =
+            new StringBuilder();
+
+    // Property name
+    text.append(parts[0]);
+
+    // Temperature
+    if (parts.length > 1
+            && !parts[1].equalsIgnoreCase("Not Applicable")) {
+
+        text.append("\n")
+            .append(parts[1]);
+    }
+
+    // Direction
+    if (parts.length > 2
+            && !parts[2].equalsIgnoreCase("Not Applicable")) {
+
+        text.append("\n")
+            .append(parts[2]);
+    }
+
+    return text.toString();
+}
 }
