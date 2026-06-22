@@ -8,103 +8,147 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane prefHeight="800.0"
-            prefWidth="1000.0"
-            xmlns="http://javafx.com/javafx/26"
+            prefWidth="1200.0"
+            stylesheets="
+                @../styles/base/colors.css,
+                @../styles/base/typography.css,
+                @../styles/base/common.css,
+
+                @../styles/components/buttons.css,
+                @../styles/components/forms.css,
+                @../styles/components/menubar.css,
+
+                @../styles/pages/baseCategory.css"
+            xmlns="http://javafx.com/javafx/25"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.log.ui.BasePropertiesController">
 
-    <!-- ===== TOP MENU ===== -->
+    <!-- ================= TOP ================= -->
+
     <top>
-        <fx:include source="../components/menubar.fxml"/>
+        <fx:include source="../components/menubar.fxml" />
     </top>
 
-    <!-- ===== CENTER FORM ===== -->
+    <!-- ================= CENTER ================= -->
+
     <center>
-        <ScrollPane fitToWidth="true"
-                    fitToHeight="true"
-                    pannable="true"
-                    BorderPane.alignment="CENTER">
 
-            <content>
-                <VBox alignment="CENTER"
-                      spacing="15"
-                      stylesheets="@../styles/baseCategory.css">
+        <VBox alignment="CENTER"
+              spacing="16"
+              styleClass="form-container">
 
-                    <padding>
-                        <Insets top="40.0"
-                                right="40.0"
-                                bottom="40.0"
-                                left="40.0"/>
-                    </padding>
+            <children>
 
-                    <Label text="Project Name"/>
-                    <TextField fx:id="projectName"
-                               alignment="CENTER"
-                               maxWidth="700.0"/>
+                <Label text="Project Details"
+                       styleClass="page-title" />
 
-                    <Label text="Batch ID"/>
-                    <TextField fx:id="batchNo"
-                               alignment="CENTER"
-                               maxWidth="700.0"/>
+                <ScrollPane fitToWidth="true"
+                            styleClass="form-scroll"
+                            VBox.vgrow="ALWAYS">
 
-                    <Label text="SOP"/>
-                    <TextField fx:id="sop"
-                               alignment="CENTER"
-                               maxWidth="700.0"
-                               promptText="Optional"/>
+                    <content>
 
-                    <Label text="Product Name"/>
-                    <TextField fx:id="productName"
-                               alignment="CENTER"
-                               maxWidth="700.0"/>
+                        <VBox alignment="TOP_CENTER"
+                              fillWidth="true"
+                              spacing="12">
 
-                    <Label text="Component ID"/>
-                    <TextField fx:id="productID"
-                               alignment="CENTER"
-                               maxWidth="700.0"/>
+                            <children>
 
-                    <Label text="Test Date"/>
-                    <DatePicker fx:id="testDate"
-                                maxWidth="250.0"/>
+                                <Label text="Project Name" />
+                                <TextField fx:id="projectName"
+                                           maxWidth="700.0" />
 
-                    <Label text="Place of Testing"/>
-                    <TextField fx:id="placeOfTesting"
-                               alignment="CENTER"
-                               maxWidth="700.0"/>
+                                <Label text="Batch ID" />
+                                <TextField fx:id="batchNo"
+                                           maxWidth="700.0" />
 
-                    <Label text="Test Schedule"/>
-                    <TextField fx:id="testSchedulefield"
-                               alignment="CENTER"
-                               maxWidth="700.0"
-                               promptText="Optional"/>
+                                <Label text="SOP" />
+                                <TextField fx:id="sop"
+                                           maxWidth="700.0"
+                                           promptText="Optional" />
 
-                </VBox>
-            </content>
+                                <Label text="Product Name" />
+                                <TextField fx:id="productName"
+                                           maxWidth="700.0" />
 
-        </ScrollPane>
-    </center>
+                                <Label text="Component ID" />
+                                <TextField fx:id="productID"
+                                           maxWidth="700.0" />
 
-    <!-- ===== BOTTOM BUTTONS ===== -->
-    <bottom>
-        <HBox alignment="CENTER_RIGHT"
-              spacing="10">
+                                <Label text="Test Date" />
+                                <DatePicker fx:id="testDate"
+                                            maxWidth="700.0" />
+
+                                <Label text="Place of Testing" />
+                                <TextField fx:id="placeOfTesting"
+                                           maxWidth="700.0" />
+
+                                <Label text="Test Schedule" />
+                                <TextField fx:id="testSchedulefield"
+                                           maxWidth="700.0"
+                                           promptText="Optional" />
+
+                            </children>
+
+                            <padding>
+                                <Insets top="10"
+                                        right="20"
+                                        bottom="20"
+                                        left="20" />
+                            </padding>
+
+                        </VBox>
+
+                    </content>
+
+                </ScrollPane>
+
+            </children>
 
             <padding>
-                <Insets right="20"
-                        bottom="20"
-                        top="10"/>
+                <Insets top="40"
+                        right="40"
+                        bottom="40"
+                        left="40" />
             </padding>
 
-            <Button text="Cancel"
-                    onMouseClicked="#handleCancel"/>
+        </VBox>
 
-            <Button text="Next"
-                    onMouseClicked="#handleNext"/>
+    </center>
+
+    <!-- ================= BOTTOM ================= -->
+
+    <bottom>
+
+        <HBox alignment="CENTER_RIGHT"
+              spacing="12"
+              styleClass="bottom-actions">
+
+            <children>
+
+                <Button text="Cancel"
+                        styleClass="cancel-btn"
+                        onMouseClicked="#handleCancel" />
+
+                <Button text="Next"
+                        styleClass="next-btn"
+                        onMouseClicked="#handleNext" />
+
+            </children>
+
+            <padding>
+                <Insets top="16"
+                        right="24"
+                        bottom="16"
+                        left="24" />
+            </padding>
 
         </HBox>
+
     </bottom>
 
 </BorderPane>

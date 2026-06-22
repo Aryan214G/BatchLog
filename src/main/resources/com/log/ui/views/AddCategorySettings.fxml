@@ -8,70 +8,76 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Priority?>
 <?import javafx.scene.layout.VBox?>
-        <VBox spacing="15"
-              alignment="TOP_CENTER"
-              xmlns="http://javafx.com/javafx/25"
-              xmlns:fx="http://javafx.com/fxml/1"
-              fx:controller="com.log.ui.settings.CategorySettingsController">
 
-            <padding>
-                <Insets top="20"
-                        right="20"
-                        bottom="20"
-                        left="20"/>
-            </padding>
+<VBox alignment="TOP_CENTER" spacing="30" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.settings.CategorySettingsController">
 
-            <!-- ===== TITLE ===== -->
+    <padding>
+        <Insets bottom="30" left="30" right="30" top="30" />
+    </padding>
 
-            <Label text="Category Settings"/>
+    <children>
 
-            <!-- ===== CATEGORY SECTION ===== -->
+        <!-- ========================================= -->
+        <!-- PAGE TITLE -->
+        <!-- ========================================= -->
 
-            <Label text="Category Name"/>
+        <Label styleClass="settings-page-title" text="Category Settings" />
+      <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+         <content>
+      
+              <!-- ========================================= -->
+              <!-- SETTINGS CARD -->
+              <!-- ========================================= -->
+      
+              <VBox spacing="18" styleClass="settings-card">
+      
+                  <children>
+      
+                      <!-- CATEGORY SECTION -->
+      
+                      <Label styleClass="settings-section-label" text="Category Name" />
+      
+                      <HBox spacing="12" styleClass="action-row">
+      
+                          <children>
+      
+                              <TextField fx:id="categoryField" promptText="Enter category name" HBox.hgrow="ALWAYS" />
+      
+                              <Button onAction="#handleAddCategory" styleClass="primary-button" text="Add Category" />
+      
+                          </children>
+      
+                      </HBox>
+      
+                      <ListView fx:id="categoryList" minHeight="140.0" prefHeight="140" />
+      
+                      <!-- PROPERTY SECTION -->
+      
+                      <Label styleClass="settings-section-label" text="Property Name" />
+      
+                      <TextField fx:id="propertyField" promptText="Enter property name" />
+      
+                      <Label styleClass="settings-section-label" text="Default Rows" />
+      
+                      <TextField fx:id="rowsField" promptText="Enter default rows (e.g. 1)" />
+      
+                      <Label styleClass="settings-section-label" text="Default Unit" />
+      
+                      <ComboBox fx:id="unitComboBox" promptText="Select existing unit" />
+      
+                      <TextField fx:id="customUnitField" promptText="Or enter a new unit" />
+      
+                      <Button onAction="#handleAddProperty" styleClass="primary-button" text="Add Property" />
+      
+                      <ListView fx:id="propertyList" minHeight="140.0" prefHeight="180" />
+      
+                  </children>
+      
+              </VBox>
+         </content>
+      </ScrollPane>
 
-            <HBox spacing="10">
+    </children>
 
-                <TextField fx:id="categoryField"
-                           promptText="Enter category name"
-                           HBox.hgrow="ALWAYS"/>
-
-                <Button text="Add Category"
-                        onAction="#handleAddCategory"/>
-
-            </HBox>
-
-            <ListView fx:id="categoryList"
-                      prefHeight="120"/>
-
-            <!-- ===== PROPERTY SECTION ===== -->
-
-            <Label text="Property Name"/>
-
-            <TextField fx:id="propertyField"
-                       promptText="Enter property name"/>
-
-            <Label text="Default Rows"/>
-
-            <TextField fx:id="rowsField"
-                       promptText="Enter default rows (e.g. 1)"/>
-
-            <!-- ===== UNIT SECTION ===== -->
-
-            <Label text="Default Unit"/>
-
-            <ComboBox fx:id="unitComboBox"
-                      promptText="Select existing unit"
-                      maxWidth="Infinity"/>
-
-            <TextField fx:id="customUnitField"
-                       promptText="Or enter a new unit"/>
-
-            <Button text="Add Property"
-                    onAction="#handleAddProperty"/>
-
-            <ListView fx:id="propertyList"
-                      prefHeight="150"/>
-
-        </VBox>
+</VBox>

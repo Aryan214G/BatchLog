@@ -14,8 +14,8 @@ public class  PropertyDAO {
     public int insertProperty(Connection conn, Property property) {
         String sql = """
                 INSERT INTO Property
-                (Property_name, Category_ID, Temp_ID, Dir_ID, Unit_ID, Test_ID, test_method)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                (Property_name, Category_ID, Temp_ID, Dir_ID, Unit_ID, Test_ID, test_method, report_number)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
         System.out.println("=== INSERT PROPERTY ===");
@@ -26,6 +26,7 @@ System.out.println("Dir ID        = " + property.getDirection().getDirId());
 System.out.println("Unit ID       = " + property.getUnit().getUnitId());
 System.out.println("Test ID       = " + property.getTestID());
 System.out.println("Test Method   = " + property.getTestMethod());
+System.out.println("Report Number   = " + property.getReportNumber());
 
         try(PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -42,6 +43,7 @@ System.out.println("Test Method   = " + property.getTestMethod());
             statement.setInt(5, property.getUnit().getUnitId());
             statement.setInt(6, property.getTestID());
             statement.setString(7, property.getTestMethod());
+            statement.setString(8, property.getReportNumber());
 
             statement.executeUpdate();
             ResultSet rs = statement.getGeneratedKeys();
@@ -65,6 +67,7 @@ System.out.println("Test Method   = " + property.getTestMethod());
             p.Property_ID,
             p.Property_name,
             p.test_method,
+            p.report_number,
 
             p.Category_ID,
             c.Category_name,
@@ -137,6 +140,9 @@ System.out.println("Test Method   = " + property.getTestMethod());
             property.setTestID(rs.getInt("Test_ID"));
 
             property.setTestMethod(rs.getString("test_method"));
+            property.setReportNumber(
+        rs.getString("report_number")
+);
 
             properties.add(property);
         }
@@ -154,16 +160,17 @@ System.out.println("Test Method   = " + property.getTestMethod());
     public void updateProperty(Connection conn, Property property) {
 
         String sql = """
-            UPDATE Property
-            SET Property_name = ?, 
-                Category_ID = ?, 
-                Temp_ID = ?, 
-                Dir_ID = ?, 
-                Unit_ID = ?, 
-                Test_ID = ?,
-                test_method = ?
-            WHERE Property_ID = ?
-            """;
+        UPDATE Property
+        SET Property_name = ?,
+            Category_ID = ?,
+            Temp_ID = ?,
+            Dir_ID = ?,
+            Unit_ID = ?,
+            Test_ID = ?,
+            test_method = ?,
+            report_number = ?
+        WHERE Property_ID = ?
+        """;
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -180,7 +187,8 @@ System.out.println("Test Method   = " + property.getTestMethod());
             stmt.setInt(5, property.getUnit().getUnitId());
             stmt.setInt(6, property.getTestID());
             stmt.setString(7, property.getTestMethod());
-            stmt.setInt(8, property.getPropertyID());
+            stmt.setString(8, property.getReportNumber());
+            stmt.setInt(9, property.getPropertyID());
 
             int rowsAffected = stmt.executeUpdate();
 
@@ -199,34 +207,35 @@ System.out.println("Test Method   = " + property.getTestMethod());
 
     }
 
-    public int getPropertyId(Connection conn, Property property) {
-
-        String sql = """
-            SELECT Property_ID
-            FROM Property
-            WHERE Property_name = ?
-              AND Category_ID = ?
-              AND Test_ID = ?
-            """;
-
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, property.getPropertyName());
-            stmt.setInt(2, property.getCategory().getCategoryId());
-            stmt.setInt(3, property.getTestID());
-
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return rs.getInt("Property_ID"); // found
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return -1; // not found
-    }
+    //TODO: fix method logic
+//    public int getPropertyId(Connection conn, Property property) {
+//
+//        String sql = """
+//            SELECT Property_ID
+//            FROM Property
+//            WHERE Property_name = ?
+//              AND Category_ID = ?
+//              AND Test_ID = ?
+//            """;
+//
+//        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+//
+//            stmt.setString(1, property.getPropertyName());
+//            stmt.setInt(2, property.getCategory().getCategoryId());
+//            stmt.setInt(3, property.getTestID());
+//
+//            ResultSet rs = stmt.executeQuery();
+//
+//            if (rs.next()) {
+//                return rs.getInt("Property_ID"); // found
+//            }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return -1; // not found
+//    }
 
     public Map<String, Double> getPropertyAveragesByBatch(
             Connection conn,
@@ -297,6 +306,7 @@ System.out.println("Test Method   = " + property.getTestMethod());
                 SELECT
             p.Property_name,
             p.test_method,
+            p.report_number,
 
             p.Category_ID,
             c.Category_name,
@@ -367,6 +377,9 @@ System.out.println("Test Method   = " + property.getTestMethod());
             property.setTestID(rs.getInt("Test_ID"));
 
             property.setTestMethod(rs.getString("test_method"));
+            property.setReportNumber(
+        rs.getString("report_number")
+);
 
                 return property;
             }

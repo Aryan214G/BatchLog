@@ -32,7 +32,7 @@ public class MenubarController {
         Parent root = loader.load();
         Scene scene = new Scene(root);
 
-        String css = getClass().getResource("/com/log/ui/styles/baseCategory.css").toExternalForm();
+        String css = getClass().getResource("/com/log/ui/styles/pages/baseCategory.css").toExternalForm();
         scene.getStylesheets().add(css);
 
         Stage stage = (Stage) menuBar.getScene().getWindow();

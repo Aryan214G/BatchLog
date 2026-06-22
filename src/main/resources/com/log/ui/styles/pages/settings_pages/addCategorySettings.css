@@ -1,0 +1,174 @@
+/* =========================================
+   PAGE TITLE
+   ========================================= */
+
+.settings-page-title {
+
+    -fx-font-size: 32px;
+
+    -fx-font-family: "Inter Bold";
+
+    -fx-text-fill: -text-primary;
+}
+
+
+/* =========================================
+   SETTINGS CARD
+   ========================================= */
+
+.settings-card {
+
+    -fx-background-color: -surface-blue;
+
+    -fx-background-radius: 24;
+
+    -fx-border-color: -border-color;
+
+    -fx-border-radius: 24;
+
+    -fx-padding: 24;
+
+    -fx-spacing: 18;
+
+    -fx-max-width: 700;
+}
+
+
+/* =========================================
+   SECTION LABELS
+   ========================================= */
+
+.settings-section-label {
+
+    -fx-font-size: 15px;
+
+    -fx-font-family: "Inter SemiBold";
+
+    -fx-text-fill: -text-primary;
+}
+
+
+/* =========================================
+   TEXT FIELDS
+   ========================================= */
+
+.text-field {
+
+    -fx-background-color: white;
+
+    -fx-background-radius: 12;
+
+    -fx-border-color: -border-color;
+
+    -fx-border-radius: 12;
+
+    -fx-pref-height: 42;
+
+    -fx-padding: 0 12;
+}
+
+.text-field:focused {
+
+    -fx-border-color: -accent-blue;
+
+    -fx-border-width: 2;
+}
+
+
+/* =========================================
+   COMBO BOX
+   ========================================= */
+
+.combo-box {
+
+    -fx-background-color: white;
+
+    -fx-background-radius: 12;
+
+    -fx-border-color: -border-color;
+
+    -fx-border-radius: 12;
+
+    -fx-pref-height: 42;
+}
+
+.combo-box:focused {
+
+    -fx-border-color: -accent-blue;
+
+    -fx-border-width: 2;
+}
+
+
+/* =========================================
+   LIST VIEW
+   ========================================= */
+
+.list-view {
+
+    -fx-background-color: white;
+
+    -fx-background-radius: 12;
+
+    -fx-border-color: -border-color;
+
+    -fx-border-radius: 12;
+
+    -fx-padding: 8;
+}
+
+.list-view .viewport {
+
+    -fx-background-color: transparent;
+}
+
+.list-cell {
+
+    -fx-background-color: transparent;
+
+    -fx-padding: 10 12;
+
+    -fx-text-fill: -text-primary;
+}
+
+.list-cell:hover {
+
+    -fx-background-color: -surface-hover;
+}
+
+.list-cell:selected {
+
+    -fx-background-color: -primary-blue;
+
+    -fx-text-fill: white;
+}
+
+
+/* =========================================
+   BUTTON ROWS
+   ========================================= */
+
+.action-row {
+
+    -fx-spacing: 12;
+}
+
+
+/* =========================================
+   SECTION DIVIDER
+   ========================================= */
+
+.section-divider {
+
+    -fx-padding: 10 0 0 0;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}

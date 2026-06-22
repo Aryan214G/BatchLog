@@ -24,6 +24,8 @@ public class Property {
     private Temperature temperature;
     private Direction direction;
 
+    private String reportNumber;
+
     // =========================
     // Property Values
     // =========================
@@ -152,5 +154,13 @@ public class Property {
 
     public void setTestMethod(String testMethod) {
         this.testMethod = testMethod;
+    }
+
+    public String getReportNumber() {
+        return reportNumber;
+    }
+
+    public void setReportNumber(String reportNumber) {
+        this.reportNumber = reportNumber;
     }
 }

@@ -7,34 +7,70 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.ScrollPane?>
 
-<ScrollPane xmlns="http://javafx.com/javafx/25"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.log.ui.settings.DirectionSettingsController"
-            fitToWidth="true"
-            fitToHeight="true"
-            pannable="true">
-<content>
-<VBox alignment="TOP_CENTER" spacing="20">
+<VBox alignment="TOP_CENTER"
+      spacing="30"
+      xmlns="http://javafx.com/javafx/25"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.log.ui.settings.DirectionSettingsController">
 
     <padding>
-        <Insets bottom="30" left="30" right="30" top="30" />
+        <Insets top="30"
+                right="30"
+                bottom="30"
+                left="30"/>
     </padding>
 
     <children>
 
-        <Label style="-fx-font-size: 28px;                       -fx-font-weight: bold;" text="Direction Settings" />
+        <!-- ========================================= -->
+        <!-- PAGE TITLE -->
+        <!-- ========================================= -->
 
-        <ListView fx:id="directionsListView" prefHeight="250" prefWidth="350" />
+        <Label text="Direction Settings"
+               styleClass="settings-page-title"/>
 
-        <TextField fx:id="directionField" prefWidth="350" promptText="Enter New Direction" />
+        <!-- ========================================= -->
+        <!-- SETTINGS CARD -->
+        <!-- ========================================= -->
 
-        <HBox alignment="CENTER" spacing="15">
+        <VBox alignment="TOP_CENTER"
+              spacing="18"
+              styleClass="settings-card">
 
             <children>
 
-                <Button onAction="#addDirection" prefWidth="140" text="Add Direction" />
+                <Label text="Available Directions"
+                       styleClass="settings-section-label"/>
+
+                <ListView fx:id="directionsListView"
+                          prefHeight="250"
+                          prefWidth="400"/>
+
+                <Label text="Add New Direction"
+                       styleClass="settings-section-label"/>
+
+                <TextField fx:id="directionField"
+                           prefWidth="400"
+                           promptText="Enter New Direction"/>
+
+            </children>
+
+        </VBox>
+
+        <!-- ========================================= -->
+        <!-- BUTTONS -->
+        <!-- ========================================= -->
+
+        <HBox alignment="CENTER"
+              spacing="16"
+              styleClass="settings-button-row">
+
+            <children>
+
+                <Button onAction="#addDirection"
+                        styleClass="primary-button"
+                        text="Add Direction"/>
 
             </children>
 
@@ -43,5 +79,3 @@
     </children>
 
 </VBox>
-</content>
-</ScrollPane>

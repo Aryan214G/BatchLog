@@ -4,6 +4,7 @@ import com.log.core.BasePropertiesState;
 import com.log.database.DBUtil;
 import com.log.model.Project;
 import com.log.service.ProjectService;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -14,6 +15,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -40,6 +42,7 @@ public class HomePageController implements Initializable {
     private TextField projectSearchField;
 
     private List<Project> allProjects = new ArrayList<>();
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

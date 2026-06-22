@@ -16,6 +16,7 @@ public class PropertyStateManager {
             int propertyId,
             String propertyName,
             String testMethod,
+            String reportNumber,
             List<InputRow> inputRows,
             Temperature temperature,
             Direction direction,
@@ -30,6 +31,7 @@ public class PropertyStateManager {
         state.setInputRows(inputRows);
         state.setUnit(unit);
         state.setTestMethod(testMethod);
+        state.setReportNumber(reportNumber);
         state.setPropertyId(propertyId);
         propertyStates.put(propertyName, state);
     }

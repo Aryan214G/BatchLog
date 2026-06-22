@@ -4,10 +4,9 @@ import com.log.ui.splash.SplashScreen;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.Screen;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import com.log.database.DBUtil;
 import javafx.util.Duration;
@@ -22,9 +21,9 @@ public class Main extends Application {
 
     public Main() throws SQLException {
 
-            System.out.println(DBUtil.getDatabasePath().toAbsolutePath());
+        System.out.println(DBUtil.getDatabasePath().toAbsolutePath());
 
-        try(Connection conn = DBUtil.getConnection()){
+        try (Connection conn = DBUtil.getConnection()) {
 
             if (conn != null) {
                 System.out.println("Connected to SQLite database!");
@@ -35,9 +34,17 @@ public class Main extends Application {
         }
     }
 
+    public static void main(String[] args) throws SQLException {
+        Main obj = new Main();
+        obj.handleJavaFXLogging();
+
+        launch();
+    }
+
     @Override
     public void start(Stage stage) throws IOException {
 
+        loadFonts();
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/com/log/ui/views/HomePage.fxml")
         );
@@ -48,29 +55,9 @@ public class Main extends Application {
 
         scene.getStylesheets().add(
                 getClass()
-                        .getResource("/com/log/ui/styles/homepage.css")
+                        .getResource("/com/log/ui/styles/pages/homePage.css")
                         .toExternalForm()
         );
-
-        // =========================================
-        // Screen Size Handling
-        // =========================================
-
-        Rectangle2D screenBounds =
-                Screen.getPrimary().getVisualBounds();
-
-        if (screenBounds.getHeight() <= 720) {
-
-            // Small screens (720p laptops)
-            stage.setMaximized(true);
-
-        } else {
-
-            // Normal screens
-            stage.setWidth(1200);
-            stage.setHeight(800);
-            stage.centerOnScreen();
-        }
 
         // =========================================
         // Splash Screen
@@ -80,8 +67,7 @@ public class Main extends Application {
 
         splash.show();
 
-        PauseTransition delay =
-                new PauseTransition(Duration.seconds(2));
+        PauseTransition delay = new PauseTransition(Duration.seconds(2));
 
         delay.setOnFinished(e -> {
 
@@ -95,24 +81,45 @@ public class Main extends Application {
         delay.play();
     }
 
-    private void handleJavaFXLogging(){
+    private void handleJavaFXLogging() {
         Logger rootLogger = Logger.getLogger("");
 
         for (Handler handler : rootLogger.getHandlers()) {
             handler.setFilter(record -> {
                 String msg = record.getMessage();
-                if (msg != null && msg.contains("Loading FXML document with JavaFX API of version")) {
-                    return false;
-                }
-                return true;
+                return msg == null || !msg.contains("Loading FXML document with JavaFX API of version");
             });
         }
     }
-    public static void main(String[] args) throws SQLException {
-        Main obj = new Main();
-        obj.handleJavaFXLogging();
 
-        launch();
-    }
+    public void loadFonts() {
+
+    Font font = Font.loadFont(
+            getClass().getResourceAsStream(
+                    "/com/log/ui/fonts/Inter-Regular.ttf"),
+            14
+    );
+
+    Font.loadFont(
+            getClass().getResourceAsStream(
+                    "/com/log/ui/fonts/Inter-Medium.ttf"),
+            14
+    );
+
+    Font.loadFont(
+            getClass().getResourceAsStream(
+                    "/com/log/ui/fonts/Inter-SemiBold.ttf"),
+            14
+    );
+
+    Font.loadFont(
+            getClass().getResourceAsStream(
+                    "/com/log/ui/fonts/Inter-Bold.ttf"),
+            14
+    );
+
+    System.out.println("Family = " + font.getFamily());
+System.out.println("Name = " + font.getName());
+}
 }
 

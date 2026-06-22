@@ -3,7 +3,13 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ToolBar?>
 
-<ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="900.0" stylesheets="@../styles/infoBar.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.InfoBarController">
+<ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="900.0" stylesheets="
+            @../styles/base/colors.css,
+            @../styles/base/typography.css,
+            @../styles/base/common.css,
+            @../styles/components/buttons.css,
+            @../styles/components/infoBar.css"
+         xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.InfoBarController">
   <items>
 
     <Button fx:id="infobar_projectName" />

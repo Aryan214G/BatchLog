@@ -1,0 +1,194 @@
+.root {
+    -fx-background-color: -background-color;
+}
+
+/* ==================================================
+   TITLE
+   ================================================== */
+
+.batch-title {
+
+    -fx-font-size: 32px;
+    -fx-font-weight: 700;
+
+    -fx-text-fill: -primary-navy;
+}
+
+/* ==================================================
+   ACTION BUTTONS
+   ================================================== */
+
+.back-btn {
+
+    -fx-background-color: -surface-blue;
+
+    -fx-text-fill: -primary-navy;
+
+    -fx-background-radius: 12;
+
+    -fx-padding: 12 20;
+
+    -fx-font-weight: 600;
+}
+
+.back-btn:hover {
+    -fx-background-color: -surface-blue-hover;
+}
+
+.primary-btn {
+
+    -fx-background-color: -primary-blue;
+
+    -fx-text-fill: white;
+
+    -fx-background-radius: 12;
+
+    -fx-padding: 12 20;
+
+    -fx-font-weight: 600;
+}
+
+.primary-btn:hover {
+    -fx-background-color: -primary-navy;
+}
+
+#exportButton {
+
+    -fx-background-color: -primary-blue;
+
+    -fx-text-fill: white;
+
+    -fx-background-radius: 12;
+
+    -fx-padding: 12 20;
+}
+
+#exportButton:hover {
+    -fx-background-color: -primary-navy;
+}
+
+/* ==================================================
+   TABLE CONTAINER
+   ================================================== */
+
+.table-scroll {
+
+    -fx-background-color: transparent;
+
+    -fx-background-insets: 0;
+
+    -fx-border-color: transparent;
+}
+
+.table-scroll > .viewport {
+
+    -fx-background-color: transparent;
+}
+
+.property-table {
+
+    -fx-background-color: -surface-color;
+
+    -fx-background-radius: 20;
+
+    -fx-padding: 0;
+
+    -fx-border-color: -border-color;
+
+    -fx-border-radius: 20;
+}
+
+/* ==================================================
+   TABLE HEADER
+   ================================================== */
+
+.grid-header {
+
+    -fx-background-color: linear-gradient(
+        to bottom,
+        -primary-blue,
+        -primary-navy
+    );
+
+    -fx-text-fill: white;
+
+    -fx-font-size: 14px;
+
+    -fx-font-weight: 700;
+
+    -fx-padding: 16 18;
+
+    -fx-min-height: 52;
+}
+
+/* ==================================================
+   TABLE CELLS
+   ================================================== */
+
+.grid-cell {
+
+    -fx-background-color: white;
+
+    -fx-text-fill: -text-primary;
+
+    -fx-font-size: 13px;
+
+    -fx-padding: 14 18;
+
+    -fx-border-color: transparent transparent -border-color transparent;
+
+    -fx-border-width: 0 0 1 0;
+
+    -fx-min-height: 48;
+}
+
+.grid-cell-alt {
+
+    -fx-background-color: -surface-blue;
+}
+
+/* ==================================================
+   ROW HOVER
+   ================================================== */
+
+.clickable-row {
+
+    -fx-cursor: hand;
+}
+
+.clickable-row:hover {
+
+    -fx-background-color: derive(-accent-blue, 80%);
+}
+
+/* ==================================================
+   EMPTY STATE
+   ================================================== */
+
+.empty-label {
+
+    -fx-text-fill: -text-secondary;
+
+    -fx-font-size: 16px;
+
+    -fx-padding: 40;
+}
+
+/* ==================================================
+   CATEGORY DIVIDER
+   ================================================== */
+
+.category-divider {
+
+    -fx-background-color: -surface-blue;
+
+    -fx-text-fill: -primary-navy;
+
+    -fx-font-weight: 700;
+
+    -fx-font-size: 14px;
+
+    -fx-padding: 12 16;
+
+    -fx-background-radius: 12;
+}

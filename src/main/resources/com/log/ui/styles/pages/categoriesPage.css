@@ -1,0 +1,394 @@
+/* =====================================================
+   PAGE LAYOUT
+   ===================================================== */
+
+.root-layout {
+    -fx-background-color: -background-color;
+}
+
+.topbar {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0 16 0;
+}
+
+.content-area {
+    -fx-padding: 0 0 0 16;
+}
+
+.content-row {
+
+    -fx-background-color: -surface-color;
+
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+
+    -fx-border-color: -border-color;
+}
+
+
+/* =====================================================
+   PANELS
+   ===================================================== */
+
+.sidebar {
+
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+
+    -fx-border-color: -border-color;
+
+    -fx-padding: 20;
+    -fx-spacing: 16;
+
+    -fx-pref-width: 250;
+}
+
+.subproperties-panel {
+
+    -fx-background-color: linear-gradient(
+        to bottom,
+        -primary-blue,
+        -primary-navy
+    );
+
+    /* TL TR BR BL */
+    -fx-background-radius: 36 0 0 36;
+
+    -fx-padding: 32;
+
+    -fx-spacing: 24;
+
+    -fx-min-width: 260;
+}
+
+.content-row {
+    -fx-spacing: 0;
+}
+
+.panel-scroll {
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+}
+
+.subproperties-title {
+
+    -fx-text-fill: white;
+
+    -fx-font-size: 28px;
+
+    -fx-font-weight: 700;
+
+    -fx-padding: 0 0 12 0;
+}
+
+.subproperties-panel .buttons-list {
+
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.subproperties-panel .list-cell {
+
+    -fx-background-color: transparent;
+
+    -fx-text-fill: rgba(255,255,255,0.85);
+
+    -fx-background-radius: 12;
+
+    -fx-padding: 12 16;
+}
+
+.subproperties-panel .list-cell:hover {
+
+    -fx-background-color: rgba(255,255,255,0.08);
+}
+
+.subproperties-panel .list-cell:selected {
+
+    -fx-background-color: rgba(93,181,255,0.20);
+
+    -fx-border-color: -accent-blue;
+
+    -fx-border-radius: 12;
+
+    -fx-background-radius: 12;
+
+    -fx-text-fill: white;
+}
+
+.panel-scroll {
+
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.panel-scroll > .viewport {
+
+    -fx-background-color: transparent;
+}
+
+
+.entries-panel {
+
+    -fx-background-color: transparent;
+}
+
+.entries-panel {
+
+    -fx-padding: 20;
+}
+
+
+/* =====================================================
+   TITLES
+   ===================================================== */
+
+.sidebar-title,
+.entry-title {
+
+    -fx-font-family: "Inter";
+
+    -fx-font-size: 24px;
+    -fx-font-weight: 700;
+
+    -fx-text-fill: white;
+}
+
+.sidebar-title {
+
+    -fx-padding: 0 0 12 0;
+}
+
+.subproperties-title,
+.entry-title {
+
+    -fx-padding: 0 0 8 0;
+}
+
+
+/* =====================================================
+   LIST VIEWS
+   ===================================================== */
+
+.buttons-list {
+
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+
+    -fx-padding: 4;
+}
+
+.buttons-list .viewport {
+
+    -fx-background-color: transparent;
+}
+
+.buttons-list .list-cell {
+
+    -fx-background-color: transparent;
+
+    -fx-text-fill: -text-primary;
+
+    -fx-background-radius: 12;
+
+    -fx-padding: 12 16;
+
+    -fx-font-size: 14px;
+
+    -fx-text-fill: white;
+}
+
+.buttons-list .list-cell:filled:hover {
+
+    -fx-background-color: -sidebar-hover;
+}
+
+.buttons-list .list-cell:filled:selected {
+
+    -fx-background-color: rgba(255,255,255,0.12);
+
+    -fx-background-radius: 12;
+
+    -fx-text-fill: white;
+
+    -fx-border-color: rgba(255,255,255,0.15);
+
+    -fx-border-radius: 12;
+}
+
+
+/* =====================================================
+   SCROLL PANES
+   ===================================================== */
+
+.panel-scroll {
+
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+
+    -fx-border-color: transparent;
+
+    -fx-padding: 0;
+}
+
+.panel-scroll > .viewport {
+
+    -fx-background-color: transparent;
+}
+
+.panel-scroll:focused {
+
+    -fx-border-color: transparent;
+}
+
+
+/* =====================================================
+   INPUTS
+   ===================================================== */
+
+.input-field {
+
+    -fx-background-color: -surface-color;
+
+    -fx-border-color: -border-color;
+
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+
+    -fx-padding: 12 16;
+
+    -fx-text-fill: -text-primary;
+}
+
+.input-field:focused {
+
+    -fx-border-color: -accent-blue;
+    -fx-border-width: 2;
+}
+
+.combo-box {
+
+    -fx-background-color: -surface-color;
+
+    -fx-border-color: -border-color;
+
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+}
+
+.combo-box:focused {
+
+    -fx-border-color: -accent-blue;
+}
+
+.text-field,
+.combo-box {
+
+    -fx-pref-height: 46;
+    -fx-min-height: 46;
+}
+
+
+/* =====================================================
+   GRID
+   ===================================================== */
+
+.input-field-container {
+
+    -fx-padding: 8 16 8 16;
+}
+
+
+/* =====================================================
+   METRICS
+   ===================================================== */
+
+.metric-chip {
+
+    -fx-background-color: -surface-blue;
+
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+
+    -fx-border-color: -border-color;
+
+    -fx-padding: 16;
+
+    -fx-spacing: 10;
+}
+
+.metric-chip-container {
+
+    -fx-spacing: 16;
+    -fx-padding: 8 16 8 16;
+}
+
+
+/* =====================================================
+   BUTTONS
+   ===================================================== */
+
+.submit-button {
+
+    -fx-background-color: -primary-blue;
+
+    -fx-text-fill: white;
+
+    -fx-font-weight: 600;
+
+    -fx-background-radius: 12;
+
+    -fx-padding: 12 24;
+}
+
+.submit-button:hover {
+
+    -fx-background-color: -primary-navy;
+}
+
+
+/* =====================================================
+   BODY TEXT
+   ===================================================== */
+
+.body-text {
+
+    -fx-font-family: "Inter";
+
+    -fx-font-size: 14px;
+
+    -fx-text-fill: -text-secondary;
+}
+
+
+/* =====================================================
+   SEPARATORS
+   ===================================================== */
+
+.separator:vertical {
+
+    -fx-padding: 0 8;
+}
+
+.separator .line {
+
+    -fx-border-color: -border-color;
+}
+
+
+/* =====================================================
+   TEST DETAILS
+   ===================================================== */
+
+#testDetailsBox {
+
+
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+
+
+    -fx-padding: 16;
+
+    -fx-spacing: 12;
+}
+

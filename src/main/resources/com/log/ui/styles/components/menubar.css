@@ -1,0 +1,114 @@
+/* ==================================================
+   MENU BAR
+   ================================================== */
+
+.menu-bar {
+
+    -fx-background-color: -surface-color;
+
+    -fx-border-color: transparent transparent -border-color transparent;
+
+    -fx-border-width: 0 0 1 0;
+
+    -fx-padding: 8 16;
+}
+
+/* ==================================================
+   TOP LEVEL MENUS
+   ================================================== */
+
+.menu-bar > .container > .menu-button {
+
+    -fx-background-color: transparent;
+
+    -fx-background-radius: 8;
+
+    -fx-padding: 6 12;
+}
+
+.menu-bar > .container > .menu-button > .label {
+
+    -fx-text-fill: -text-primary;
+
+    -fx-font-family: "Inter";
+
+    -fx-font-size: 14px;
+
+    -fx-font-weight: 500;
+}
+
+/* Hover */
+
+.menu-bar > .container > .menu-button:hover {
+
+    -fx-background-color: -surface-blue;
+}
+
+/* Open */
+
+.menu-bar > .container > .menu-button:showing {
+
+    -fx-background-color: -surface-blue;
+}
+
+/* ==================================================
+   DROPDOWN MENU
+   ================================================== */
+
+.context-menu {
+
+    -fx-background-color: -surface-color;
+
+    -fx-background-radius: 12;
+
+    -fx-border-color: -border-color;
+
+    -fx-border-radius: 12;
+
+    -fx-padding: 6;
+}
+
+/* ==================================================
+   MENU ITEMS
+   ================================================== */
+
+.menu-item {
+
+    -fx-background-color: transparent;
+
+    -fx-padding: 8 16;
+
+    -fx-background-radius: 8;
+}
+
+.menu-item .label {
+
+    -fx-text-fill: -text-primary;
+
+    -fx-font-family: "Inter";
+
+    -fx-font-size: 13px;
+}
+
+/* Hover */
+
+.menu-item:focused {
+
+    -fx-background-color: -surface-blue;
+
+    -fx-background-radius: 8;
+}
+
+.menu-item:focused .label {
+
+    -fx-text-fill: -primary-navy;
+}
+
+/* ==================================================
+   SEPARATORS
+   ================================================== */
+
+.separator .line {
+
+    -fx-border-color: -border-color;
+}

@@ -470,6 +470,11 @@ public class RetrievalResultsController {
         ReportData propertyReport =
                 propertyReportService.buildReportData(propertyId);
 
+        if(propertyReport == null){
+                System.out.println("Report generation cancelled.");
+                return;
+            }
+
         Thread printThread = new Thread(() -> {
             try {
                 propertyReportService.generateReport(propertyReport);

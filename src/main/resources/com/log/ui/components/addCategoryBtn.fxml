@@ -6,6 +6,6 @@
 <Button text="Add Category"
         prefHeight="40.0"
         prefWidth="180.0"
-        stylesheets="@../styles/infoBar.css"
+        stylesheets="@../styles/components/infoBar.css"
         xmlns="http://javafx.com/javafx/25"
         xmlns:fx="http://javafx.com/fxml/1"/>
