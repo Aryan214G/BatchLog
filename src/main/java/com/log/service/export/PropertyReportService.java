@@ -10,6 +10,7 @@ import com.log.util.AlertUtil;
 import com.log.util.DateUtils;
 import com.log.util.DialogUtils;
 
+import com.log.util.pdf.ReportPreviewDialog;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -143,296 +144,56 @@ if (reportNumber == null || reportNumber.isBlank()) {
      // ======================================================================
 
     @Override
-    public void generateReport(ReportData reportData) throws IOException, PrinterException {
+public void generateReport(
+        ReportData reportData
+) throws Exception {
 
-//        FileChooser chooser = new FileChooser();
-//
-//        chooser.setTitle("Save PDF Report");
-//
-//        chooser.getExtensionFilters().add(
-//                new FileChooser.ExtensionFilter(
-//                        "PDF Files",
-//                        "*.pdf"
-//                )
-//        );
-//
-//        chooser.setInitialFileName(
-//                reportData.getPropertyName() + "_Report.pdf"
-//        );
-//
-//        File file = chooser.showSaveDialog(ownerWindow);
-//
-//        if (file == null) {
-//            return null; // user pressed cancel
-//        }
+    PDDocument document =
+            createDocument(reportData);
 
-    try (PDDocument document = new PDDocument()) {
+    ReportPreviewDialog.show(document);
+}
 
-        PDPage page = new PDPage(PDRectangle.A4);
-        document.addPage(page);
+private PDDocument createDocument(
+        ReportData reportData
+) throws Exception {
 
-        try (PDPageContentStream content =
-                     new PDPageContentStream(document, page)) {
+    PDDocument document = new PDDocument();
 
-            // CONSTANTS
+    PDPage page = new PDPage(PDRectangle.A4);
+    document.addPage(page);
 
-            float pageWidth = page.getMediaBox().getWidth();
+    try (PDPageContentStream content =
+                 new PDPageContentStream(
+                         document,
+                         page
+                 )) {
 
-            float LEFT_MARGIN = pageWidth * 0.08f;
-            float RIGHT_MARGIN = pageWidth * 0.92f;
+        // MOVE EVERYTHING FROM YOUR CURRENT
+        // PDPageContentStream BLOCK HERE
 
-            float RIGHT_COLUMN_X = pageWidth - 200;
-
-            float y = 750;
-            // ________________________________________________________________________________
-
-
-            String title = "TEST REPORT - " + reportData.getPropertyName().toUpperCase();
-
-            PDFont font = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
-            float fontSize = 12;
-
-            float titleWidth = font.getStringWidth(title) / 1000 * fontSize;
-            float titleX = (page.getMediaBox().getWidth() - titleWidth) / 2;
-
-            writeBoldText(content, title, titleX, y);
-
-            // ________________________________________________________________________________
-
-            y -= 40;
-
-            float RIGHT_EDGE = 550;
-
-            writeText(content, "Report Number: " + reportData.getTestReportNo(), 50, y);
-
-            writeRightAlignedText(content, "Date: " + reportData.getDate(), RIGHT_EDGE, y);
-
-            // ________________________________________________________________________________
-
-            y -= 40;
-            float rightSectionY = y;
-
-            // ============= LEFT SECTION ==================
-
-            if(reportData.getBatchId() != null) {
-                writeText(content, "Batch ID: " + reportData.getBatchId(), 50, y);
-                y -= 20;
-            }
-
-            writeText(content, "Product name: " + reportData.getProductName(), 50, y);
-
-            y -= 20;
-
-            writeText(content, "Component ID: " + reportData.getComponentId(), 50, y);
-
-            y-= 20;
-
-            if(reportData.getSop() != null){
-                writeText(content, "SOP: " + reportData.getSop(), 50, y);
-                y -= 20;
-            }
-
-
-            writeText(content, "Test Site: " + reportData.getTestSite(), 50, y);
-
-            y -= 20;
-
-            String testDate = DateUtils.format(reportData.getTestDate());
-            writeText(content, "Test Date: " + testDate, 50, y);
-
-
-            // =================== RIGHT SECTION ==========================
-            writeRightAlignedText(content, "Test Method: " + reportData.getTestMethod(), RIGHT_EDGE, rightSectionY);
-                rightSectionY-= 20;
-
-                if(reportData.getTemperature() != null){
-                    writeRightAlignedText(content,
-                            "Test temperature: "
-                                    + reportData.getTemperature()
-                                    + " "
-                                    + reportData.getTemperatureUnit(),
-                            RIGHT_EDGE, rightSectionY);
-
-                    rightSectionY-= 20;
-                }
-
-                writeRightAlignedText(content, "Direction: " + reportData.getDirection(), RIGHT_EDGE, rightSectionY);
-
-                y = Math.min(y, rightSectionY);
-            // ________________________________________________________________________________
-
-            y -= 30;
-
-            drawLine(content, LEFT_MARGIN, y, RIGHT_MARGIN, y);
-
-            // ________________________________________________________________________________
-
-            y -= 30;
-
-            String propertyName = reportData.getPropertyName().toUpperCase();
-            String unit = (reportData.getUnit().equals("Not Applicable"))
-                    ? ""
-                    : "(" + reportData.getUnit() + ")";
-            float propertyWidth = font.getStringWidth(propertyName) / 1000 * fontSize;
-            float propertyX = (page.getMediaBox().getWidth() - propertyWidth) / 2;
-
-            writeBoldText(content, propertyName  + " " + unit, propertyX, y);
-
-            y -= 60;
-
-            //table constrains
-
-            float tableX = LEFT_MARGIN + 150;
-            float tableY = y;
-            float rowHeight = 25;
-
-            float col1 = 100;
-            float col2 = 100;
-
-            // ===============================
-
-            boolean hasComponentNumbers =
-        reportData.getPropertyValues()
-                .stream()
-                .anyMatch(propertyValue ->
-                        propertyValue.getComponentNumber() != null
-                        && !propertyValue.getComponentNumber().isBlank()
-                );
-
-drawCell(content, tableX, tableY, col1, rowHeight);
-drawCell(content, tableX + col1, tableY, col2, rowHeight);
-
-drawCellTextBold(
-        content,
-        hasComponentNumbers
-                ? "Component No."
-                : "Specimen No.",
-        tableX,
-        tableY,
-        col1,
-        rowHeight
-);
-
-drawCellTextBold(
-        content,
-        "Test Value",
-        tableX + col1,
-        tableY,
-        col2,
-        rowHeight
-);
-
-int sNo = 1;
-
-for (PropertyValue propertyValue
-        : reportData.getPropertyValues()) {
-
-    y -= 25;
-
-    drawCell(content, tableX, y, col1, rowHeight);
-    drawCell(content, tableX + col1, y, col2, rowHeight);
-
-    String rowLabel;
-
-    if (hasComponentNumbers
-            && propertyValue.getComponentNumber() != null
-            && !propertyValue.getComponentNumber().isBlank()) {
-
-        rowLabel =
-                propertyValue.getComponentNumber();
-
-    } else {
-
-        rowLabel =
-                "Specimen " + sNo;
+        // Start at:
+        //
+        // float pageWidth =
+        //         page.getMediaBox().getWidth();
+        //
+        // and end at:
+        //
+        // writeText(
+        //         content,
+        //         "Standard deviation: "
+        //                 + standardDeviation,
+        //         50,
+        //         y
+        // );
     }
 
-    drawCellText(
-            content,
-            rowLabel,
-            tableX,
-            y,
-            col1,
-            rowHeight
-    );
-
-    drawCellText(
-            content,
-            String.format(
-                    "%.2f",
-                    propertyValue.getPropertyVAL()
-            ),
-            tableX + col1,
-            y,
-            col2,
-            rowHeight
-    );
-
-    sNo++;
+    return document;
 }
 
-            // ===============================
 
-            y -= 30;
-
-            drawLine(content, LEFT_MARGIN, y, RIGHT_MARGIN, y);
-
-            // ________________________________________________________________________________
-
-            y -= 30;
-
-            writeBoldText(content, "STATISTICS", 250, y);
-
-            y-= 20;
-
-            writeText(content, "Minimum: " + String.format("%.2f", reportData.getMin()), 50, y);
-
-            y-= 20;
-
-            writeText(content, "Maximum: " + String.format("%.2f", reportData.getMax()), 50, y);
-
-            y-= 20;
-
-            writeText(content, "Average: " + String.format("%.2f", reportData.getAverage()), 50, y);
-
-            y-= 20;
-
-            String standardDeviation =
-        reportData.getStandardDeviation() == null
-                ? "-"
-                : String.format(
-                        "%.2f",
-                        reportData.getStandardDeviation()
-                );
-
-            writeText(content, "Standard deviation: " + standardDeviation, 50, y);
-
-        }
-
-        try {
-
-            PrinterJob job = PrinterJob.getPrinterJob();
-
-
-            job.setPageable(new PDFPageable(document));
-
-            boolean accepted = job.printDialog();
-
-            System.out.println("Dialog result = " + accepted);
-
-            if (accepted) {
-                System.out.println(job.getPrintService());
-                job.print();
-                System.out.println("Print done");
-            }
-        } catch (HeadlessException e) {
-            throw new RuntimeException(e);
-        } catch (PrinterException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
 
 }
 
-}
+
