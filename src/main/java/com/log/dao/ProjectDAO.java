@@ -35,7 +35,7 @@ public class ProjectDAO {
     public List<Project> getAllProjects() {
 
         List<Project> projects = new ArrayList<>();
-        String sql = "SELECT * FROM Project";
+        String sql = "SELECT * FROM Project WHERE is_deleted = 0";
 
         try (Connection conn = DBUtil.getConnection();
              Statement stmt = conn.createStatement();
@@ -133,6 +133,19 @@ public class ProjectDAO {
         }
 
         return projects;
+    }
+
+    // In ProjectDAO
+    public boolean setDeleted(Connection conn, int projectId, boolean deleted) {
+        String sql = "UPDATE Project SET is_deleted = ? WHERE Project_ID = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, deleted ? 1 : 0);
+            stmt.setInt(2, projectId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 

@@ -9,7 +9,15 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.NewBatchController">
+<?import javafx.scene.control.ScrollPane?>
+<ScrollPane xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.log.ui.NewBatchController"
+            fitToWidth="true"
+            fitToHeight="true"
+            pannable="true">
+    <content>
+        <BorderPane prefHeight="800.0" prefWidth="1200.0">
 
     <!-- ===== TOP MENU ===== -->
     <top>
@@ -59,3 +67,5 @@
     </bottom>
 
 </BorderPane>
+    </content>
+</ScrollPane>

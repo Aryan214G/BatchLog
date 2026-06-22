@@ -181,21 +181,35 @@ public class HomePageController implements Initializable {
 
         MenuItem openItem   = new MenuItem("Open");
         MenuItem renameItem = new MenuItem("Rename");
-//        MenuItem deleteItem = new MenuItem("Delete");
+        MenuItem deleteItem = new MenuItem("Delete");
 
         openItem.setOnAction(e -> handleProjectCardOpen(projectName));
         renameItem.setOnAction(e -> handleProjectCardEdit(projectName));
-//        deleteItem.setOnAction(e -> handleProjectCardDelete(projectName));
+        deleteItem.setOnAction(e -> handleProjectCardDeleteConfirm(projectName));
 
-        contextMenu.getItems().addAll(openItem, renameItem);
+        contextMenu.getItems().addAll(openItem, renameItem, deleteItem);
         return contextMenu;
+    }
+
+    private void handleProjectCardDeleteConfirm(String projectName) {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Delete Project");
+        confirm.setHeaderText(null);
+        confirm.setContentText("Are you sure you want to delete '" + projectName + "'? This cannot be undone.");
+
+        confirm.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                handleProjectCardDelete(projectName);
+            }
+        });
     }
 
     // ── Card actions ──────────────────────────────────────────────────────────
 
     private void handleProjectCardDelete(String projectName) {
         try (Connection connection = DBUtil.getConnection()) {
-            projectService.deleteProject(projectService.getProjectId(connection, projectName));
+            int projectId = projectService.getProjectId(connection, projectName);
+            projectService.deleteProject(projectId);
             refreshProjects();
         } catch (SQLException e) {
             e.printStackTrace();

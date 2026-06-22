@@ -95,10 +95,6 @@
                         styleClass="primary-button"
                         text="Add Unit"/>
 
-                <Button onAction="#removeUnit"
-                        styleClass="secondary-button"
-                        text="Remove Selected Unit"/>
-
             </children>
 
         </HBox>
