@@ -10,6 +10,8 @@ import com.log.util.AlertUtil;
 import com.log.util.DateUtils;
 import com.log.util.DialogUtils;
 
+import com.log.util.pdf.PdfConstants;
+import com.log.util.pdf.PdfLayoutUtils;
 import com.log.util.pdf.ReportPreviewDialog;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -154,42 +156,84 @@ public void generateReport(
     ReportPreviewDialog.show(document);
 }
 
-private PDDocument createDocument(
-        ReportData reportData
-) throws Exception {
+    private PDDocument createDocument(ReportData reportData) throws Exception {
 
-    PDDocument document = new PDDocument();
+        PDDocument document = new PDDocument();
+        PDPage page = new PDPage(PDRectangle.A4);
+        document.addPage(page);
 
-    PDPage page = new PDPage(PDRectangle.A4);
-    document.addPage(page);
+        try (PDPageContentStream content = new PDPageContentStream(document, page)) {
 
-    try (PDPageContentStream content =
-                 new PDPageContentStream(
-                         document,
-                         page
-                 )) {
+            float pageWidth = page.getMediaBox().getWidth();
+            float leftMargin = 50;
+            float rightMargin = pageWidth - 50;
+            float y = page.getMediaBox().getHeight() - 50;
 
-        // MOVE EVERYTHING FROM YOUR CURRENT
-        // PDPageContentStream BLOCK HERE
+            String title = "PROPERTY REPORT";
+            float titleX = PdfLayoutUtils.getCenteredTextX(page, title, BOLD_FONT, PdfConstants.FONT_SIZE);
 
-        // Start at:
-        //
-        // float pageWidth =
-        //         page.getMediaBox().getWidth();
-        //
-        // and end at:
-        //
-        // writeText(
-        //         content,
-        //         "Standard deviation: "
-        //                 + standardDeviation,
-        //         50,
-        //         y
-        // );
+            writeBoldText(content, title, titleX, y);
+            y -= PdfConstants.SECTION_SPACING;
+
+            writeText(content, "Report number: " + reportData.getTestReportNo(), leftMargin, y);
+            writeRightAlignedText(content, "Date: " + reportData.getDate(), rightMargin, y);
+            y -= PdfConstants.SECTION_SPACING;
+
+            writeText(content, "Property: " + reportData.getPropertyName(), leftMargin, y);
+            y -= PdfConstants.LINE_SPACING;
+
+            writeText(content, "Batch ID: " + reportData.getBatchId(), leftMargin, y);
+            y -= PdfConstants.LINE_SPACING;
+
+            writeText(content, "Product: " + reportData.getProductName() + " (" + reportData.getComponentId() + ")", leftMargin, y);
+            y -= PdfConstants.LINE_SPACING;
+
+            if (reportData.getSop() != null) {
+                writeText(content, "SOP: " + reportData.getSop(), leftMargin, y);
+                y -= PdfConstants.LINE_SPACING;
+            }
+
+            writeText(content, "Test Method: " + reportData.getTestMethod(), leftMargin, y);
+            y -= PdfConstants.LINE_SPACING;
+
+            writeText(content, "Test Date: " + reportData.getTestDate(), leftMargin, y);
+            y -= PdfConstants.LINE_SPACING;
+
+            writeText(content, "Test Site: " + reportData.getTestSite(), leftMargin, y);
+            y -= PdfConstants.LINE_SPACING;
+
+            writeText(content, "Direction: " + reportData.getDirection(), leftMargin, y);
+            y -= PdfConstants.LINE_SPACING;
+
+            writeText(content, "Temperature: " + reportData.getTemperature() + " " + reportData.getTemperatureUnit(), leftMargin, y);
+            y -= PdfConstants.SECTION_SPACING;
+
+            // ── Values ───────────────────────────────────────────────────────────
+            writeText(content, "Values: " + reportData.getValues(), leftMargin, y);
+            y -= PdfConstants.LINE_SPACING;
+
+            writeText(content, "Unit: " + reportData.getUnit(), leftMargin, y);
+            y -= PdfConstants.LINE_SPACING;
+
+            writeText(content, "Min: " + reportData.getMin(), leftMargin, y);
+            y -= PdfConstants.LINE_SPACING;
+
+            writeText(content, "Max: " + reportData.getMax(), leftMargin, y);
+            y -= PdfConstants.LINE_SPACING;
+
+            writeText(content, "Average: " + reportData.getAverage(), leftMargin, y);
+            y -= PdfConstants.LINE_SPACING;
+
+            writeText(
+                    content,
+                    "Standard deviation: " + reportData.getStandardDeviation(),
+                    leftMargin,
+                    y
+            );
+        }
+
+        return document;
     }
-
-    return document;
-}
 
 
 
