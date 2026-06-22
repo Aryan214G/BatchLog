@@ -21,6 +21,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -211,16 +212,31 @@ public class ProjectPageController {
 
     @FXML
     private void handleNewBatch() {
-        // State is already set in loadProject() — just navigate
+
         try {
+
             FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/log/ui/views/NewBatch.fxml")
+                    getClass().getResource(
+                            "/com/log/ui/views/NewBatch.fxml")
             );
+
             Parent root = loader.load();
-            Stage stage = (Stage) batchesGrid.getScene().getWindow();
-            stage.getScene().setRoot(root);
-            stage.show();
-        } catch (IOException e) {
+
+            Stage popup = new Stage();
+
+            popup.setTitle("New Batch");
+
+            popup.setScene(
+                    new Scene(root)
+            );
+
+            popup.initModality(
+                    Modality.APPLICATION_MODAL
+            );
+
+            popup.showAndWait();
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
