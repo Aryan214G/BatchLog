@@ -171,8 +171,11 @@ public class NewBatchController {
         }
     }
 
+
+
     @FXML
     private void handleCancel() {
+
         loadCategoriesPage();
     }
 }
