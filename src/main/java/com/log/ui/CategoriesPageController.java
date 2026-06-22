@@ -558,21 +558,26 @@ public class CategoriesPageController {
         testDetailsBox.getChildren().clear();
 
         // TEST METHOD
+
+        Label testMethodLabel = new Label("Test method/Standard");
+
         testMethodField = new TextField();
         testMethodField.setPromptText("Test method/Standard");
         testMethodField.getStyleClass().add("input-field");
 
         testDetailsBox.getChildren().addAll(
-        testMethodField
+        testMethodLabel, testMethodField
         );
 
         // REPORT NUMBER
+        Label reportNumberLabel = new Label("Report number");
+
         reportNumberField = new TextField();
         reportNumberField.setPromptText("Report number");
         reportNumberField.getStyleClass().add("input-field");
 
         testDetailsBox.getChildren().addAll(
-        reportNumberField
+        reportNumberLabel, reportNumberField
         );
     }
 
