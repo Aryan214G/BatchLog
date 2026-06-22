@@ -1,0 +1,38 @@
+.sidebar {
+    -fx-background-color: linear-gradient(
+        to bottom,
+        -primary-blue,
+        -primary-navy
+    );
+    -fx-pref-width: 240;
+
+    -fx-padding: 24;
+
+    -fx-spacing: 8;
+}
+
+
+.nav-item {
+    -fx-background-color: transparent;
+
+    -fx-text-fill: white;
+
+    -fx-background-radius: 12;
+
+    -fx-padding: 12 16;
+
+    -fx-alignment: CENTER_LEFT;
+
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+
+    -fx-cursor: hand;
+}
+
+.nav-item:hover {
+    -fx-background-color: rgba(255,255,255,0.12);
+}
+
+.nav-item-selected {
+    -fx-background-color: rgba(93,181,255,0.25);
+}

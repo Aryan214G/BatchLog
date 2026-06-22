@@ -6,6 +6,7 @@ import com.log.model.Product;
 import com.log.model.Property;
 import com.log.model.PropertyValue;
 import com.log.service.*;
+import com.log.util.AlertUtil;
 import com.log.util.DateUtils;
 import com.log.util.DialogUtils;
 
@@ -72,12 +73,16 @@ public class PropertyReportService
         }
 
 
-        Optional<String> result = DialogUtils.showTextInputDialog(
-        "Report Number",
-        "Generate Report",
-        "Enter report number:"
+        String reportNumber = property.getReportNumber();
+
+if (reportNumber == null || reportNumber.isBlank()) {
+
+    AlertUtil.showError(
+            "Please enter a Report Number before generating the report."
     );
-        String reportNumber = result.orElse(null);
+
+    return null;
+}
 
         ReportData reportData = new ReportData(
                 property.getPropertyName(),

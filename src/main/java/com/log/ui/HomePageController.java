@@ -4,6 +4,7 @@ import com.log.core.BasePropertiesState;
 import com.log.database.DBUtil;
 import com.log.model.Project;
 import com.log.service.ProjectService;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -14,6 +15,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -41,6 +43,7 @@ public class HomePageController implements Initializable {
 
     private List<Project> allProjects = new ArrayList<>();
 
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         StateManager.clearAll();
@@ -63,7 +66,7 @@ public class HomePageController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
             Stage stage = (Stage) projectsList.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(root);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -95,7 +98,7 @@ public class HomePageController implements Initializable {
             );
             Parent root = loader.load();
             Stage stage = (Stage) projectsList.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(root);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -242,7 +245,7 @@ public class HomePageController implements Initializable {
             controller.loadProject(projectName);
 
             Stage stage = (Stage) projectsList.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(root);
             stage.show();
 
         } catch (IOException e) {

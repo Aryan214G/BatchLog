@@ -49,6 +49,11 @@ public class ProjectPageController {
 
     // ── Entry point ───────────────────────────────────────────────────────────
 
+     public void initialize()
+     {
+         exportButton.setVisible(false);
+     }
+
     public void loadProject(String projectName) {
         this.currentProjectName = projectName;
         projectTitleLabel.setText(projectName);
@@ -162,7 +167,7 @@ public class ProjectPageController {
             controller.setBackDestination("/com/log/ui/views/ProjectPage.fxml");
 
             Stage stage = (Stage) batchesGrid.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(root);
             stage.show();
 
         } catch (IOException e) {
@@ -197,7 +202,7 @@ public class ProjectPageController {
             );
             Parent root = loader.load();
             Stage stage = (Stage) batchesGrid.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(root);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -213,7 +218,7 @@ public class ProjectPageController {
             );
             Parent root = loader.load();
             Stage stage = (Stage) batchesGrid.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(root);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -279,7 +284,7 @@ public class ProjectPageController {
             );
             Parent root = loader.load();
             Stage stage = (Stage) batchesGrid.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(root);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

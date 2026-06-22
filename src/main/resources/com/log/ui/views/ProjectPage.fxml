@@ -9,7 +9,19 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="800" prefWidth="1200" stylesheets="@../styles/RetrievalResultsPage.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.ProjectPageController">
+<BorderPane prefHeight="800" prefWidth="1200" stylesheets="
+    @../styles/base/colors.css,
+    @../styles/base/typography.css,
+    @../styles/base/common.css,
+
+    @../styles/components/buttons.css,
+    @../styles/components/cards.css,
+    @../styles/components/forms.css,
+    @../styles/components/listviews.css,
+    @../styles/components/menubar.css,
+
+    @../styles/pages/retrievalResultsPage.css"
+            xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.ProjectPageController">
 
     <top>
         <fx:include source="../components/menubar.fxml" />

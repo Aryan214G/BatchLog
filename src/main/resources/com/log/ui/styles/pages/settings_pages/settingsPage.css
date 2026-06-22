@@ -1,0 +1,186 @@
+/* =========================================
+   ROOT
+   ========================================= */
+
+.root-layout {
+    -fx-background-color: -background-color;
+}
+
+
+/* =========================================
+   SIDEBAR
+   ========================================= */
+
+.sidebar {
+
+    -fx-background-color: linear-gradient(
+        to bottom,
+        -primary-blue,
+        -primary-navy
+    );
+
+    -fx-background-radius: 32;
+
+    -fx-padding: 24;
+
+    -fx-spacing: 12;
+
+    -fx-pref-width: 320;
+}
+
+
+/* =========================================
+   TITLE
+   ========================================= */
+
+.sidebar-title {
+
+    -fx-text-fill: white;
+
+    -fx-font-size: 32px;
+
+    -fx-font-family: "Inter SemiBold";
+
+    -fx-padding: 0 0 16 0;
+}
+
+
+/* =========================================
+   SETTINGS BUTTONS
+   ========================================= */
+
+.sidebar .button {
+
+    -fx-background-color: transparent;
+
+    -fx-text-fill: white;
+
+    -fx-wrap-text: true;
+
+    -fx-background-radius: 12;
+
+    -fx-padding: 14 18;
+
+    -fx-alignment: CENTER_LEFT;
+
+    -fx-cursor: hand;
+
+    -fx-font-size: 14px;
+}
+
+.sidebar .button:hover {
+
+    -fx-background-color: rgba(255,255,255,0.10);
+}
+
+.sidebar .button:focused {
+
+    -fx-background-color: rgba(255,255,255,0.16);
+}
+
+
+/* =========================================
+   LIST VIEW
+   ========================================= */
+
+.buttons-list {
+
+    -fx-background-color: transparent;
+
+    -fx-border-color: transparent;
+
+    -fx-padding: 4;
+}
+
+.buttons-list .viewport {
+
+    -fx-background-color: transparent;
+}
+
+.buttons-list .list-cell {
+
+    -fx-background-color: transparent;
+
+    -fx-text-fill: white;
+
+    -fx-padding: 12 16;
+
+    -fx-background-radius: 12;
+
+    -fx-cursor: hand;
+}
+
+.buttons-list .list-cell:hover {
+
+    -fx-background-color: rgba(255,255,255,0.10);
+}
+
+.buttons-list .list-cell:selected {
+
+    -fx-background-color: rgba(93,181,255,0.25);
+
+    -fx-border-color: rgba(255,255,255,0.15);
+
+    -fx-border-radius: 12;
+
+    -fx-text-fill: white;
+}
+
+
+/* =========================================
+   CONTENT AREA
+   ========================================= */
+
+.content-area {
+
+    -fx-background-color: -surface-color;
+
+    -fx-background-radius: 32;
+
+    -fx-border-color: -border-color;
+
+    -fx-border-radius: 32;
+
+    -fx-padding: 24;
+}
+
+
+/* =========================================
+   BOTTOM BAR
+   ========================================= */
+
+.bottombar {
+
+    -fx-background-color: transparent;
+
+    -fx-pref-height: 0;
+}
+
+
+/* =========================================
+   COMMON SETTINGS CONTENT
+   ========================================= */
+
+.settings-section-title {
+
+    -fx-text-fill: -text-primary;
+
+    -fx-font-size: 24px;
+
+    -fx-font-family: "Inter SemiBold";
+}
+
+.settings-card {
+
+    -fx-background-color: -surface-blue;
+
+    -fx-background-radius: 16;
+
+    -fx-border-color: -border-color;
+
+    -fx-border-radius: 16;
+
+    -fx-padding: 20;
+}
+
+
