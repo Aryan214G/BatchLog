@@ -54,7 +54,7 @@
             -->
 
             <!-- Table -->
-            <ScrollPane fitToWidth="true" styleClass="table-scroll" VBox.vgrow="ALWAYS">
+            <ScrollPane fitToWidth="false" styleClass="table-scroll" VBox.vgrow="ALWAYS" hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED">
                 <content>
                     <GridPane fx:id="propertiesGrid"
                               maxWidth="Infinity"
