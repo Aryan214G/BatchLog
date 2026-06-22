@@ -290,15 +290,18 @@ public class RetrievalResultsController {
         for (String header : headers) {
             ColumnConstraints cc = new ColumnConstraints();
             switch (header) {
-                case "Print"        -> { cc.setMinWidth(50);  cc.setPrefWidth(60);  cc.setHgrow(Priority.NEVER); }
-                case "Property"     -> { cc.setMinWidth(150); cc.setPrefWidth(250); cc.setHgrow(Priority.ALWAYS); }
-                case "Direction"    -> { cc.setMinWidth(120); cc.setPrefWidth(180); cc.setHgrow(Priority.ALWAYS); }
-                case "Temperature"  -> { cc.setMinWidth(80);  cc.setPrefWidth(120); cc.setHgrow(Priority.ALWAYS); }
-                default             -> { cc.setMinWidth(60);  cc.setPrefWidth(90);  cc.setHgrow(Priority.ALWAYS); }
+                case "Print"        -> { cc.setMinWidth(50);  cc.setPrefWidth(60);  cc.setMaxWidth(60);  cc.setHgrow(Priority.NEVER); }
+                case "Property"     -> { cc.setMinWidth(180); cc.setPrefWidth(250); cc.setHgrow(Priority.SOMETIMES); }
+                case "Category"     -> { cc.setMinWidth(110); cc.setPrefWidth(120); cc.setHgrow(Priority.SOMETIMES); }
+                case "Direction"    -> { cc.setMinWidth(130); cc.setPrefWidth(180); cc.setHgrow(Priority.SOMETIMES); }
+                case "Temperature"  -> { cc.setMinWidth(110); cc.setPrefWidth(140); cc.setHgrow(Priority.SOMETIMES); }
+                case "Average Value"-> { cc.setMinWidth(100); cc.setPrefWidth(110); cc.setHgrow(Priority.SOMETIMES); }
+                default             -> { cc.setMinWidth(70);  cc.setPrefWidth(90);  cc.setHgrow(Priority.SOMETIMES); }
             }
             cc.setFillWidth(true);
             propertiesGrid.getColumnConstraints().add(cc);
         }
+
 
         // Header row
         for (int i = 0; i < headers.size(); i++) {
@@ -405,8 +408,10 @@ public class RetrievalResultsController {
         Label label = new Label(text);
         label.getStyleClass().add("grid-header");
         label.setMaxWidth(Double.MAX_VALUE);
-        label.setPrefWidth(Double.MAX_VALUE);  // add this
+        label.setPrefWidth(Double.MAX_VALUE);
+        label.setMinHeight(48);           // add this
         label.setWrapText(true);
+        label.setAlignment(javafx.geometry.Pos.CENTER_LEFT); // add this
         return label;
     }
 
@@ -688,7 +693,7 @@ public class RetrievalResultsController {
     }
 
 
-    private Label makeSelectAllHeader(List<PropertyRow> visibleRows) {
+    private javafx.scene.Node makeSelectAllHeader(List<PropertyRow> visibleRows) {
         CheckBox selectAll = new CheckBox();
         selectAll.setSelected(true);
         selectAll.setOnAction(e -> {
@@ -702,13 +707,11 @@ public class RetrievalResultsController {
         HBox wrapper = new HBox(selectAll);
         wrapper.setAlignment(javafx.geometry.Pos.CENTER);
         wrapper.getStyleClass().add("grid-header");
+        wrapper.setMaxWidth(Double.MAX_VALUE);
+        wrapper.setPrefWidth(Double.MAX_VALUE);
+        wrapper.setMinHeight(48); // match makeHeader
 
-        // makeHeader expects a Label, so wrap differently — use a custom node directly
-        Label container = new Label();
-        container.setGraphic(wrapper);
-        container.getStyleClass().add("grid-header");
-        container.setMaxWidth(Double.MAX_VALUE);
-        return container;
+        return wrapper;
     }
 
 }

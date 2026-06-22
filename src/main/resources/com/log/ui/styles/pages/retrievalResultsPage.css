@@ -192,3 +192,11 @@
 
     -fx-background-radius: 12;
 }
+
+.grid-header {
+    -fx-background-color: #1e2a5c;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 12 10 12 10;
+    -fx-alignment: CENTER_LEFT;
+}
