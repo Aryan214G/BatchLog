@@ -118,12 +118,12 @@
 
                         <!-- ===================== SECTION 7 ===================== -->
                         <VBox spacing="8">
-                            <Label styleClass="manual-section-title" text="7. Editing Entries" />
+                            <Label styleClass="manual-section-title" text="7. Using the Results Context Menu" />
                             <Separator />
-                            <Label styleClass="manual-body" text="Right-click rows where context actions are available. In the Results table, use the row menu to print an individual property report or edit saved property values. To update project or batch details such as batch ID, SOP, product details, test date, or test site, use Edit &gt; Project Details from the menu bar." wrapText="true" />
+                            <Label styleClass="manual-body" text="Right-click any property row in the Results table to open the context menu. Choose Print property report to generate a report for that specific property, or choose Edit Property to update the saved values for the selected row. To update project or batch details such as batch ID, SOP, product details, test date, or test site, use Edit &gt; Project Details from the menu bar." wrapText="true" />
                             <ImageView fitWidth="760" preserveRatio="true" smooth="true" styleClass="manual-image">
                                 <image>
-                                    <Image url="@../../../../images/CategoriesPage.png" />
+                                    <Image url="@../../../../images/ResultsContextMenu.png" />
                                 </image>
                             </ImageView>
                         </VBox>
