@@ -352,10 +352,17 @@ public class BasePropertiesController {
                 productDAO.updateProductId(connection, productCode, newProductId);
             }
 
-            // ── Edit batch ID ─────────────────────────────────────────────────
-            if (bpropState.getBatchCode() != null && batch != null && !batch.isBlank()) {
-                batchService.updateBatchId(connection, bpropState.getBatchCode(), batch);
-            }
+            System.out.println(
+                    "Batch code from state = "
+                            + bpropState.getBatchCode()
+            );
+
+            System.out.println(
+                    "New batch value = "
+                            + batch
+            );
+
+            batchService.updateBatchId(connection, bpropState.getBatchCode(), batch);
 
             // ── Edit test date ────────────────────────────────────────────────
             if (date != null) {
