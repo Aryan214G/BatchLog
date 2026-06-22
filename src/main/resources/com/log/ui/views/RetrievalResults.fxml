@@ -37,7 +37,7 @@
             <HBox alignment="CENTER_LEFT" spacing="12">
                 <Button onAction="#handleBack" styleClass="back-btn" text="← Back" />
                 <Button onAction="#handleFilter" styleClass="primary-btn" text="⚙ Filter" />
-                <Button text="🖶 Print" onAction="#handlePrint" styleClass="primary-btn"/>
+                <Button text="🖶 Print" onAction="#handlePrint" styleClass="primary-btn" fx:id="printBtn"/>
             <!--<Button fx:id="editBtn" mnemonicParsing="false" onAction="#handleEdit" text="Edit" />-->
                 <Button text="⊞ Group by Category" onAction="#handleToggleGrouping" styleClass="primary-btn" fx:id="groupToggleBtn"/>
             </HBox>
