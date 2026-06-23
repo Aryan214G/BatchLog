@@ -76,6 +76,8 @@ public class CategoriesPageController {
     @FXML
     private Button printButton;
 
+    @FXML
+    private VBox tempBox;
     private Map<Integer, Map<String, DefaultProperty>> defaultPropertiesMap;
     private TextField temperatureField;
     private TextField testMethodField;
@@ -558,21 +560,26 @@ public class CategoriesPageController {
         testDetailsBox.getChildren().clear();
 
         // TEST METHOD
+
+        Label testMethodLabel = new Label("Test method/Standard");
+
         testMethodField = new TextField();
         testMethodField.setPromptText("Test method/Standard");
         testMethodField.getStyleClass().add("input-field");
 
         testDetailsBox.getChildren().addAll(
-        testMethodField
+        testMethodLabel, testMethodField
         );
 
         // REPORT NUMBER
+        Label reportNumberLabel = new Label("Report number");
+
         reportNumberField = new TextField();
         reportNumberField.setPromptText("Report number");
         reportNumberField.getStyleClass().add("input-field");
 
         testDetailsBox.getChildren().addAll(
-        reportNumberField
+        reportNumberLabel, reportNumberField
         );
     }
 
@@ -678,6 +685,8 @@ public class CategoriesPageController {
 
 
 
+        Label temperatureLabel = new Label("Temperature value");
+
         temperatureField = new TextField();
         temperatureField.setPromptText("Temperature");
         temperatureField.getStyleClass().add("input-field");
@@ -694,7 +703,6 @@ public class CategoriesPageController {
         );
         Parent directionNode = directionLoader.load();
         directionController = directionLoader.getController();
-
 
 
         headerBox.getChildren().addAll(

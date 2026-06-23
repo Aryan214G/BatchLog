@@ -1,0 +1,171 @@
+/* =========================================
+   ROOT
+   ========================================= */
+
+.root {
+
+    -fx-background-color: -background-color;
+}
+
+
+/* =========================================
+   SIDEBAR
+   ========================================= */
+
+.retrieval-sidebar {
+
+    -fx-background-color: linear-gradient(
+        to bottom,
+        -primary-blue,
+        -primary-navy
+    );
+
+    -fx-background-radius: 24;
+
+    -fx-padding: 24;
+
+    -fx-spacing: 12;
+
+    -fx-pref-width: 280;
+}
+
+
+/* =========================================
+   SIDEBAR TITLES
+   ========================================= */
+
+.filter-title {
+
+    -fx-text-fill: white;
+
+    -fx-font-size: 24px;
+
+    -fx-font-family: "Inter Bold";
+}
+
+.filter-label {
+
+    -fx-text-fill: rgba(255,255,255,0.85);
+
+    -fx-font-size: 13px;
+
+    -fx-font-family: "Inter SemiBold";
+}
+
+
+/* =========================================
+   FILTER INPUTS
+   ========================================= */
+
+.retrieval-sidebar .text-field {
+
+    -fx-background-color: rgba(255,255,255,0.95);
+
+    -fx-background-radius: 10;
+
+    -fx-border-radius: 10;
+
+    -fx-padding: 10 12;
+}
+
+
+/* =========================================
+   TOGGLE BUTTON
+   ========================================= */
+
+.sidebar-toggle {
+
+    -fx-background-color: -surface-color;
+
+    -fx-background-radius: 12;
+
+    -fx-font-size: 16px;
+
+    -fx-cursor: hand;
+}
+
+
+/* =========================================
+   RESULTS AREA
+   ========================================= */
+
+.results-panel {
+
+    -fx-background-color: -surface-color;
+
+    -fx-background-radius: 24;
+
+    -fx-border-color: -border-color;
+
+    -fx-border-radius: 24;
+
+    -fx-padding: 24;
+}
+
+
+/* =========================================
+   RESULTS TITLE
+   ========================================= */
+
+.results-title {
+
+    -fx-font-size: 30px;
+
+    -fx-font-family: "Inter Bold";
+
+    -fx-text-fill: -text-primary;
+}
+
+
+/* =========================================
+   SCROLLPANE
+   ========================================= */
+
+.results-scroll {
+
+    -fx-background-color: transparent;
+
+    -fx-background: transparent;
+
+    -fx-border-color: transparent;
+}
+
+.results-scroll .viewport {
+
+    -fx-background-color: transparent;
+}
+
+
+/* =========================================
+   RESULT CARDS
+   ========================================= */
+
+.result-card {
+
+    -fx-background-color: white;
+
+    -fx-background-radius: 16;
+
+    -fx-border-color: -border-color;
+
+    -fx-border-radius: 16;
+
+    -fx-padding: 16;
+}
+
+.result-card:hover {
+
+    -fx-background-color: -surface-hover;
+}
+
+
+/* =========================================
+   EMPTY STATE
+   ========================================= */
+
+.empty-label {
+
+    -fx-font-size: 14px;
+
+    -fx-text-fill: -text-secondary;
+}

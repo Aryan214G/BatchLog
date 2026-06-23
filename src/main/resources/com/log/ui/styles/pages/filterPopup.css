@@ -1,0 +1,172 @@
+/* =========================================
+   ROOT
+   ========================================= */
+
+.root {
+
+    -fx-background-color: -background-color;
+}
+
+
+/* =========================================
+   TITLE
+   ========================================= */
+
+.filter-title {
+
+    -fx-font-size: 24px;
+
+    -fx-font-family: "Inter Bold";
+
+    -fx-text-fill: -text-primary;
+}
+
+
+/* =========================================
+   TAB PANE
+   ========================================= */
+
+.filter-tab-pane {
+
+    -fx-background-color: transparent;
+}
+
+.filter-tab-pane .tab-header-area {
+
+    -fx-padding: 0 16 0 16;
+}
+
+.filter-tab-pane .tab-header-background {
+
+    -fx-background-color: transparent;
+}
+
+.filter-tab-pane .tab {
+
+    -fx-background-color: -surface-blue;
+
+    -fx-background-radius: 12 12 0 0;
+
+    -fx-padding: 8 20;
+
+    -fx-border-color: transparent;
+}
+
+.filter-tab-pane .tab:selected {
+
+    -fx-background-color: -primary-blue;
+}
+
+.filter-tab-pane .tab-label {
+
+    -fx-text-fill: -text-primary;
+
+    -fx-font-size: 14px;
+
+    -fx-font-family: "Inter SemiBold";
+}
+
+.filter-tab-pane .tab:selected .tab-label {
+
+    -fx-text-fill: white;
+}
+
+.filter-tab-pane .tab-content-area {
+
+    -fx-background-color: white;
+
+    -fx-background-radius: 16;
+
+    -fx-border-color: -border-color;
+
+    -fx-border-radius: 16;
+
+    -fx-padding: 8;
+}
+
+
+/* =========================================
+   SCROLL PANE
+   ========================================= */
+
+.scroll-pane {
+
+    -fx-background-color: transparent;
+
+    -fx-background: transparent;
+
+    -fx-border-color: transparent;
+}
+
+.scroll-pane > .viewport {
+
+    -fx-background-color: transparent;
+}
+
+
+/* =========================================
+   CHECKBOX CONTAINERS
+   ========================================= */
+
+#columnCheckboxContainer,
+#propertyCheckboxContainer {
+
+    -fx-background-color: transparent;
+}
+
+
+/* =========================================
+   CHECKBOXES
+   ========================================= */
+
+.check-box {
+
+    -fx-font-size: 14px;
+
+    -fx-text-fill: -text-primary;
+}
+
+.check-box .box {
+
+    -fx-background-color: white;
+
+    -fx-border-color: -border-color;
+
+    -fx-border-radius: 4;
+
+    -fx-background-radius: 4;
+}
+
+.check-box:selected .box {
+
+    -fx-background-color: -primary-blue;
+
+    -fx-border-color: -primary-blue;
+}
+
+.check-box:selected .mark {
+
+    -fx-background-color: white;
+}
+
+
+/* =========================================
+   SEPARATOR
+   ========================================= */
+
+.separator .line {
+
+    -fx-border-color: -border-color;
+
+    -fx-border-width: 1 0 0 0;
+}
+
+
+/* =========================================
+   FOOTER
+   ========================================= */
+
+.filter-footer {
+
+    -fx-background-color: transparent;
+}
