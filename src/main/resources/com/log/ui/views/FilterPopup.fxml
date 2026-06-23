@@ -11,60 +11,163 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="460" prefWidth="340" stylesheets="@../styles/RetrievalResultsPage.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.FilterPopupController">
+<BorderPane prefHeight="460.0"
+            prefWidth="340.0"
+            stylesheets="
+                @../styles/base/colors.css,
+                @../styles/base/typography.css,
+                @../styles/base/common.css,
+
+                @../styles/components/buttons.css,
+                @../styles/components/forms.css,
+
+                @../styles/pages/filterPopup.css"
+            xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.log.ui.FilterPopupController">
+
+    <!-- ========================================= -->
+    <!-- HEADER -->
+    <!-- ========================================= -->
 
     <top>
+
         <VBox alignment="CENTER">
+
+            <children>
+
+                <Label text="Filter"
+                       styleClass="filter-title" />
+
+            </children>
+
             <padding>
-                <Insets bottom="12" top="20" />
+                <Insets top="20"
+                        bottom="16" />
             </padding>
-            <Label styleClass="batch-title" text="Filter" />
+
         </VBox>
+
     </top>
 
+    <!-- ========================================= -->
+    <!-- CONTENT -->
+    <!-- ========================================= -->
+
     <center>
-        <TabPane styleClass="filter-tab-pane" tabClosingPolicy="UNAVAILABLE">
 
-            <!-- ── Columns Tab ── -->
-            <Tab text="Columns">
-                <ScrollPane fitToWidth="true">
-                    <content>
-                        <VBox fx:id="columnCheckboxContainer" spacing="12">
-                            <padding>
-                                <Insets bottom="16" left="20" right="20" top="16" />
-                            </padding>
-                        </VBox>
-                    </content>
-                </ScrollPane>
-            </Tab>
+        <TabPane tabClosingPolicy="UNAVAILABLE"
+                 styleClass="filter-tab-pane">
 
-            <!-- ── Properties Tab ── -->
-            <Tab text="Properties">
-                <ScrollPane fitToWidth="true">
+            <!-- Columns -->
+
+            <tabs>
+
+                <Tab text="Columns">
+
                     <content>
-                        <VBox fx:id="propertyCheckboxContainer" spacing="12">
-                            <padding>
-                                <Insets bottom="16" left="20" right="20" top="16" />
-                            </padding>
-                        </VBox>
+
+                        <ScrollPane fitToWidth="true">
+
+                            <content>
+
+                                <VBox fx:id="columnCheckboxContainer"
+                                      spacing="12">
+
+                                    <padding>
+                                        <Insets top="16"
+                                                right="20"
+                                                bottom="16"
+                                                left="20" />
+                                    </padding>
+
+                                </VBox>
+
+                            </content>
+
+                        </ScrollPane>
+
                     </content>
-                </ScrollPane>
-            </Tab>
+
+                </Tab>
+
+                <!-- Properties -->
+
+                <Tab text="Properties">
+
+                    <content>
+
+                        <ScrollPane fitToWidth="true">
+
+                            <content>
+
+                                <VBox fx:id="propertyCheckboxContainer"
+                                      spacing="12">
+
+                                    <padding>
+                                        <Insets top="16"
+                                                right="20"
+                                                bottom="16"
+                                                left="20" />
+                                    </padding>
+
+                                </VBox>
+
+                            </content>
+
+                        </ScrollPane>
+
+                    </content>
+
+                </Tab>
+
+            </tabs>
 
         </TabPane>
+
     </center>
 
+    <!-- ========================================= -->
+    <!-- FOOTER -->
+    <!-- ========================================= -->
+
     <bottom>
+
         <VBox>
-            <Separator />
-            <HBox alignment="CENTER_RIGHT" spacing="10">
-                <padding>
-                    <Insets bottom="16" right="16" top="12" />
-                </padding>
-                <Button onAction="#handleCancel" styleClass="back-btn" text="Cancel" />
-                <Button onAction="#handleApply" styleClass="back-btn" text="Apply" />
-            </HBox>
+
+            <children>
+
+                <Separator />
+
+                <HBox alignment="CENTER_RIGHT"
+                      spacing="10"
+                      styleClass="filter-footer">
+
+                    <children>
+
+                        <Button text="Cancel"
+                                styleClass="secondary-button"
+                                onAction="#handleCancel" />
+
+                        <Button text="Apply"
+                                styleClass="primary-button"
+                                onAction="#handleApply" />
+
+                    </children>
+
+                    <padding>
+                        <Insets top="12"
+                                right="16"
+                                bottom="16"
+                                left="16" />
+                    </padding>
+
+                </HBox>
+
+            </children>
+
         </VBox>
+
     </bottom>
 
 </BorderPane>

@@ -1,87 +1,179 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.control.ScrollPane?>
-<BorderPane prefHeight="800" prefWidth="1200" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/25" fx:controller="com.log.ui.RetrievalPageController">
+<BorderPane prefHeight="800"
+            prefWidth="1200"
+            stylesheets="
+                @../styles/base/colors.css,
+                @../styles/base/typography.css,
+                @../styles/base/common.css,
 
-    <!-- TOP MENU -->
+                @../styles/components/buttons.css,
+                @../styles/components/forms.css,
+                @../styles/components/sidebar.css,
+                @../styles/components/menubar.css,
+
+                @../styles/pages/retrievalPage.css"
+            xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.log.ui.RetrievalPageController">
+
+    <!-- ========================================= -->
+    <!-- TOP -->
+    <!-- ========================================= -->
+
     <top>
-            <fx:include source="../components/menubar.fxml" />
+        <fx:include source="../components/menubar.fxml" />
     </top>
 
-    <!-- LEFT SIDEBAR (FULL HEIGHT BELOW MENU) -->
+    <!-- ========================================= -->
+    <!-- LEFT SIDEBAR -->
+    <!-- ========================================= -->
+
     <left>
+
         <AnchorPane>
 
-            <!-- Sidebar -->
-            <VBox fx:id="sidebar" prefWidth="250" spacing="10" style="-fx-background-color: #2c3e50; -fx-padding: 15;" AnchorPane.bottomAnchor="0" AnchorPane.topAnchor="0">
+            <children>
 
-                <Label style="-fx-text-fill: white; -fx-font-size: 16;" text="Filters" />
+                <VBox fx:id="sidebar"
+                      styleClass="retrieval-sidebar"
+                      AnchorPane.topAnchor="0.0"
+                      AnchorPane.bottomAnchor="0.0">
 
-                <Label style="-fx-text-fill: white;" text="Project Name" />
-                <TextField fx:id="projectField" />
+                    <children>
 
-                <Label style="-fx-text-fill: white;" text="Product Name" />
-                <TextField fx:id="productField" />
+                        <Label text="Filters"
+                               styleClass="filter-title" />
 
-                <Label style="-fx-text-fill: white;" text="Batch ID" />
-                <TextField fx:id="BatchIDfield" />
+                        <Label text="Project Name"
+                               styleClass="filter-label" />
 
-                <Label style="-fx-text-fill: white;" text="Date of testing" />
-                <TextField fx:id="Dateoftestingfield" />
+                        <TextField fx:id="projectField" />
 
-                <Label style="-fx-text-fill: white;" text="Place of testing" />
-                <TextField fx:id="Placeoftestingfield" />
+                        <Label text="Product Name"
+                               styleClass="filter-label" />
 
-                <Label style="-fx-text-fill: white;" text="SOP" />
-                <TextField fx:id="SOPfield" />
+                        <TextField fx:id="productField" />
 
-                <Label style="-fx-text-fill: white;" text="Test schedule" />
-                <TextField fx:id="testschedulefield" />
+                        <Label text="Batch ID"
+                               styleClass="filter-label" />
 
-                <Button maxWidth="Infinity" onAction="#handleSearchProducts" text="Search Products" />
-                <Button maxWidth="Infinity" onAction="#handleSearchBatches" text="Search Batches" />
-            </VBox>
+                        <TextField fx:id="BatchIDfield" />
 
-            <!-- Toggle button -->
-            <Button fx:id="toggleBtn" layoutX="250" layoutY="10" onAction="#toggleSidebar" text="☰" />
+                        <Label text="Date of Testing"
+                               styleClass="filter-label" />
+
+                        <TextField fx:id="Dateoftestingfield" />
+
+                        <Label text="Place of Testing"
+                               styleClass="filter-label" />
+
+                        <TextField fx:id="Placeoftestingfield" />
+
+                        <Label text="SOP"
+                               styleClass="filter-label" />
+
+                        <TextField fx:id="SOPfield" />
+
+                        <Label text="Test Schedule"
+                               styleClass="filter-label" />
+
+                        <TextField fx:id="testschedulefield" />
+
+                        <Button text="Search Products"
+                                maxWidth="Infinity"
+                                styleClass="primary-button"
+                                onAction="#handleSearchProducts" />
+
+                        <Button text="Search Batches"
+                                maxWidth="Infinity"
+                                styleClass="secondary-button"
+                                onAction="#handleSearchBatches" />
+
+                    </children>
+
+                </VBox>
+
+                <Button fx:id="toggleBtn"
+                        text="☰"
+                        styleClass="sidebar-toggle"
+                        onAction="#toggleSidebar"
+                        layoutX="285"
+                        layoutY="10" />
+
+            </children>
 
         </AnchorPane>
+
     </left>
 
+    <!-- ========================================= -->
     <!-- CENTER CONTENT -->
+    <!-- ========================================= -->
+
     <center>
-        <AnchorPane>
-            <VBox spacing="15"
-                  AnchorPane.topAnchor="20"
-                  AnchorPane.leftAnchor="50"
-                  AnchorPane.rightAnchor="50">
 
-                <!-- Title -->
+        <VBox spacing="20"
+              styleClass="results-panel">
+
+            <children>
+
                 <Label text="Results"
-                       style="-fx-font-size: 28; -fx-font-weight: bold;" />
+                       styleClass="results-title" />
 
-                <!-- Scrollable Results -->
                 <ScrollPane fitToWidth="true"
-                            AnchorPane.topAnchor="80"
-                            AnchorPane.bottomAnchor="0"
-                            AnchorPane.leftAnchor="0"
-                            AnchorPane.rightAnchor="0">
+                            VBox.vgrow="ALWAYS"
+                            styleClass="results-scroll">
 
-                    <VBox fx:id="resultsContainer"
-                          spacing="10"
-                          style="-fx-padding: 10;" />
+                    <content>
+
+                        <VBox fx:id="resultsContainer"
+                              spacing="12">
+
+                            <padding>
+                                <Insets top="10"
+                                        right="10"
+                                        bottom="10"
+                                        left="10" />
+                            </padding>
+
+                        </VBox>
+
+                    </content>
+
                 </ScrollPane>
 
-            </VBox>
-        </AnchorPane>
+            </children>
+
+            <padding>
+                <Insets top="24"
+                        right="24"
+                        bottom="24"
+                        left="24" />
+            </padding>
+
+        </VBox>
+
     </center>
 
+    <!-- ========================================= -->
+    <!-- WINDOW PADDING -->
+    <!-- ========================================= -->
+
+    <padding>
+        <Insets top="15"
+                right="15"
+                bottom="15"
+                left="15" />
+    </padding>
 
 </BorderPane>

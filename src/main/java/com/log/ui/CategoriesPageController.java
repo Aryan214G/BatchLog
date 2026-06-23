@@ -76,9 +76,12 @@ public class CategoriesPageController {
     @FXML
     private Button printButton;
 
+    @FXML
+    private VBox tempBox;
     private Map<Integer, Map<String, DefaultProperty>> defaultPropertiesMap;
     private TextField temperatureField;
     private TextField testMethodField;
+    private TextField reportNumberField;
     private UnitsDropdownController tempUnitController;
     private DirectionDropdownController directionController;
 
@@ -330,6 +333,7 @@ public class CategoriesPageController {
                     property.getPropertyID(),
                     property.getPropertyName(),
                     property.getTestMethod(),
+                    property.getReportNumber(),
                     new ArrayList<>(inputRows),
                     property.getTemperature(),
                     property.getDirection(),
@@ -555,14 +559,28 @@ public class CategoriesPageController {
 
         testDetailsBox.getChildren().clear();
 
+        // TEST METHOD
+
+        Label testMethodLabel = new Label("Test method/Standard");
+
         testMethodField = new TextField();
         testMethodField.setPromptText("Test method/Standard");
         testMethodField.getStyleClass().add("input-field");
 
         testDetailsBox.getChildren().addAll(
-        testMethodField
+        testMethodLabel, testMethodField
         );
 
+        // REPORT NUMBER
+        Label reportNumberLabel = new Label("Report number");
+
+        reportNumberField = new TextField();
+        reportNumberField.setPromptText("Report number");
+        reportNumberField.getStyleClass().add("input-field");
+
+        testDetailsBox.getChildren().addAll(
+        reportNumberLabel, reportNumberField
+        );
     }
 
     private void updateInfoBar() {
@@ -667,6 +685,8 @@ public class CategoriesPageController {
 
 
 
+        Label temperatureLabel = new Label("Temperature value");
+
         temperatureField = new TextField();
         temperatureField.setPromptText("Temperature");
         temperatureField.getStyleClass().add("input-field");
@@ -683,7 +703,6 @@ public class CategoriesPageController {
         );
         Parent directionNode = directionLoader.load();
         directionController = directionLoader.getController();
-
 
 
         headerBox.getChildren().addAll(
@@ -769,7 +788,7 @@ public class CategoriesPageController {
         }
     }
 
-    int tempUnitID;
+    Integer tempUnitID;
     String tempUnitVal;
 
     try (Connection conn = DBUtil.getConnection()) {
@@ -780,7 +799,7 @@ public class CategoriesPageController {
         // Avoid crashing state saving in that case.
         if (tempUnitVal == null || tempUnitVal.isBlank()) {
 
-            tempUnitID = -1;
+            tempUnitID = null;
             tempUnitVal = null;
 
         } else {
@@ -795,7 +814,7 @@ public class CategoriesPageController {
             } else {
 
                 // Unit name not found in DB.
-                tempUnitID = -1;
+                tempUnitID = null;
             }
         }
 
@@ -838,6 +857,7 @@ public class CategoriesPageController {
 
     //StringUtils is a user defined class present in utility package
     String testMethod = StringUtils.nullIfBlank(testMethodField.getText());
+    String reportNumber = StringUtils.nullIfBlank(reportNumberField.getText());
 
     // retrieve existing property object and store it
     Property existingPropertyObj = null;
@@ -853,7 +873,7 @@ public class CategoriesPageController {
             property.getPropertyId(),
             property.getPropertyName(),
             testMethod,
-
+            reportNumber,
             new ArrayList<>(inputRows),
 
             new Temperature(existingTempId, tempVal, tempUnitID, tempUnitVal),
@@ -887,10 +907,10 @@ public class CategoriesPageController {
             return;
         }
 
-        //================== RESTORE TESTDETAIS =============
+        //================== RESTORE TEST DETAILS =============
 
         if (state.getTestMethod() != null) { testMethodField.setText(state.getTestMethod()); }
-
+        if (state.getReportNumber() != null) { reportNumberField.setText(state.getReportNumber()); }
 
         // ================= RESTORE HEADER =================
         String temp = "";
@@ -1096,6 +1116,11 @@ public class CategoriesPageController {
             // FX thread — dialog allowed here
             ReportData report = propertyReportService
                             .buildReportData(propertyId);
+
+            if(report == null){
+                System.out.println("Report generation cancelled.");
+                return;
+            }
 
             Thread t = new Thread(() -> {
                 try {

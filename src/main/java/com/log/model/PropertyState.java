@@ -14,6 +14,7 @@ public class PropertyState {
     private Direction direction;
     private Unit unit;
     private String testMethod;
+    private String reportNumber;
     private int propertyId;
 
     public PropertyState() {
@@ -84,5 +85,13 @@ public class PropertyState {
 
     public void setProperty(Property property) {
         this.property = property;
+    }
+
+    public String getReportNumber() {
+        return reportNumber;
+    }
+
+    public void setReportNumber(String reportNumber) {
+        this.reportNumber = reportNumber;
     }
 }

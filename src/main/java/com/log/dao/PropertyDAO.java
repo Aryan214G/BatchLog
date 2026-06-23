@@ -14,8 +14,8 @@ public class  PropertyDAO {
     public int insertProperty(Connection conn, Property property) {
         String sql = """
                 INSERT INTO Property
-                (Property_name, Category_ID, Temp_ID, Dir_ID, Unit_ID, Test_ID, test_method)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                (Property_name, Category_ID, Temp_ID, Dir_ID, Unit_ID, Test_ID, test_method, report_number)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
         System.out.println("=== INSERT PROPERTY ===");
@@ -26,16 +26,24 @@ System.out.println("Dir ID        = " + property.getDirection().getDirId());
 System.out.println("Unit ID       = " + property.getUnit().getUnitId());
 System.out.println("Test ID       = " + property.getTestID());
 System.out.println("Test Method   = " + property.getTestMethod());
+System.out.println("Report Number   = " + property.getReportNumber());
 
         try(PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             statement.setString(1, property.getPropertyName());
             statement.setInt(2, property.getCategory().getCategoryId());
-            statement.setInt(3, property.getTemperature().getTempId());
+            Integer tempId = property.getTemperature().getTempId();
+
+            if (tempId == null) {
+                statement.setNull(3, Types.INTEGER);
+            } else {
+                statement.setInt(3, tempId);
+            }
             statement.setInt(4, property.getDirection().getDirId());
             statement.setInt(5, property.getUnit().getUnitId());
             statement.setInt(6, property.getTestID());
             statement.setString(7, property.getTestMethod());
+            statement.setString(8, property.getReportNumber());
 
             statement.executeUpdate();
             ResultSet rs = statement.getGeneratedKeys();
@@ -59,6 +67,7 @@ System.out.println("Test Method   = " + property.getTestMethod());
             p.Property_ID,
             p.Property_name,
             p.test_method,
+            p.report_number,
 
             p.Category_ID,
             c.Category_name,
@@ -87,10 +96,10 @@ System.out.println("Test Method   = " + property.getTestMethod());
         JOIN Direction d
             ON p.Dir_ID = d.Dir_ID
 
-        JOIN Temperature t
+        LEFT JOIN Temperature t
             ON p.Temp_ID = t.Temp_ID
 
-        JOIN Temperature_Units tu
+        LEFT JOIN Temperature_Units tu
             ON t.Temp_Unit_ID = tu.Temp_Unit_ID
 
         WHERE p.Test_ID = ?
@@ -113,10 +122,14 @@ System.out.println("Test Method   = " + property.getTestMethod());
             property.getCategory().setCategoryId(rs.getInt("Category_ID"));
             property.getCategory().setCategoryName(rs.getString("Category_name"));
 
-            property.getTemperature().setTempId(rs.getInt("Temp_ID"));
+            Integer tempId = (Integer) rs.getObject("Temp_ID");
+
+            property.getTemperature().setTempId(tempId);
             property.getTemperature().setTempVal(rs.getString("Temp_VAL"));
             property.getTemperature().setTempUnitVal(rs.getString("Temp_Unit"));
-            property.getTemperature().setTempUnitID(rs.getInt("Temp_Unit_ID"));
+            property.getTemperature().setTempUnitID(
+                    (Integer) rs.getObject("Temp_Unit_ID")
+            );
 
             property.getDirection().setDirId(rs.getInt("Dir_ID"));
             property.getDirection().setDirVal(rs.getString("Dir_VAL"));
@@ -127,6 +140,9 @@ System.out.println("Test Method   = " + property.getTestMethod());
             property.setTestID(rs.getInt("Test_ID"));
 
             property.setTestMethod(rs.getString("test_method"));
+            property.setReportNumber(
+        rs.getString("report_number")
+);
 
             properties.add(property);
         }
@@ -144,27 +160,35 @@ System.out.println("Test Method   = " + property.getTestMethod());
     public void updateProperty(Connection conn, Property property) {
 
         String sql = """
-            UPDATE Property
-            SET Property_name = ?, 
-                Category_ID = ?, 
-                Temp_ID = ?, 
-                Dir_ID = ?, 
-                Unit_ID = ?, 
-                Test_ID = ?,
-                test_method = ?
-            WHERE Property_ID = ?
-            """;
+        UPDATE Property
+        SET Property_name = ?,
+            Category_ID = ?,
+            Temp_ID = ?,
+            Dir_ID = ?,
+            Unit_ID = ?,
+            Test_ID = ?,
+            test_method = ?,
+            report_number = ?
+        WHERE Property_ID = ?
+        """;
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, property.getPropertyName());
             stmt.setInt(2, property.getCategory().getCategoryId());
-            stmt.setInt(3, property.getTemperature().getTempId());
+            Integer tempId = property.getTemperature().getTempId();
+
+            if (tempId == null) {
+                stmt.setNull(3, Types.INTEGER);
+            } else {
+                stmt.setInt(3, tempId);
+            }
             stmt.setInt(4, property.getDirection().getDirId());
             stmt.setInt(5, property.getUnit().getUnitId());
             stmt.setInt(6, property.getTestID());
             stmt.setString(7, property.getTestMethod());
-            stmt.setInt(8, property.getPropertyID());
+            stmt.setString(8, property.getReportNumber());
+            stmt.setInt(9, property.getPropertyID());
 
             int rowsAffected = stmt.executeUpdate();
 
@@ -183,34 +207,35 @@ System.out.println("Test Method   = " + property.getTestMethod());
 
     }
 
-    public int getPropertyId(Connection conn, Property property) {
-
-        String sql = """
-            SELECT Property_ID
-            FROM Property
-            WHERE Property_name = ?
-              AND Category_ID = ?
-              AND Test_ID = ?
-            """;
-
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, property.getPropertyName());
-            stmt.setInt(2, property.getCategory().getCategoryId());
-            stmt.setInt(3, property.getTestID());
-
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return rs.getInt("Property_ID"); // found
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return -1; // not found
-    }
+    //TODO: fix method logic
+//    public int getPropertyId(Connection conn, Property property) {
+//
+//        String sql = """
+//            SELECT Property_ID
+//            FROM Property
+//            WHERE Property_name = ?
+//              AND Category_ID = ?
+//              AND Test_ID = ?
+//            """;
+//
+//        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+//
+//            stmt.setString(1, property.getPropertyName());
+//            stmt.setInt(2, property.getCategory().getCategoryId());
+//            stmt.setInt(3, property.getTestID());
+//
+//            ResultSet rs = stmt.executeQuery();
+//
+//            if (rs.next()) {
+//                return rs.getInt("Property_ID"); // found
+//            }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return -1; // not found
+//    }
 
     public Map<String, Double> getPropertyAveragesByBatch(
             Connection conn,
@@ -281,6 +306,7 @@ System.out.println("Test Method   = " + property.getTestMethod());
                 SELECT
             p.Property_name,
             p.test_method,
+            p.report_number,
 
             p.Category_ID,
             c.Category_name,
@@ -309,10 +335,10 @@ System.out.println("Test Method   = " + property.getTestMethod());
         JOIN Direction d
             ON p.Dir_ID = d.Dir_ID
 
-        JOIN Temperature t
+        LEFT JOIN Temperature t
             ON p.Temp_ID = t.Temp_ID
 
-        JOIN Temperature_Units tu
+        LEFT JOIN Temperature_Units tu
             ON t.Temp_Unit_ID = tu.Temp_Unit_ID
 
         WHERE p.Property_ID = ?""";
@@ -333,10 +359,14 @@ System.out.println("Test Method   = " + property.getTestMethod());
             property.getCategory().setCategoryId(rs.getInt("Category_ID"));
             property.getCategory().setCategoryName(rs.getString("Category_name"));
 
-            property.getTemperature().setTempId(rs.getInt("Temp_ID"));
+                Integer tempId = (Integer) rs.getObject("Temp_ID");
+
+                property.getTemperature().setTempId(tempId);
             property.getTemperature().setTempVal(rs.getString("Temp_VAL"));
             property.getTemperature().setTempUnitVal(rs.getString("Temp_Unit"));
-            property.getTemperature().setTempUnitID(rs.getInt("Temp_Unit_ID"));
+            property.getTemperature().setTempUnitID(
+                    (Integer) rs.getObject("Temp_Unit_ID")
+            );
 
             property.getDirection().setDirId(rs.getInt("Dir_ID"));
             property.getDirection().setDirVal(rs.getString("Dir_VAL"));
@@ -347,6 +377,9 @@ System.out.println("Test Method   = " + property.getTestMethod());
             property.setTestID(rs.getInt("Test_ID"));
 
             property.setTestMethod(rs.getString("test_method"));
+            property.setReportNumber(
+        rs.getString("report_number")
+);
 
                 return property;
             }

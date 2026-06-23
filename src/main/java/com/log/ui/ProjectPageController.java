@@ -21,6 +21,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -48,6 +49,11 @@ public class ProjectPageController {
 
 
     // ── Entry point ───────────────────────────────────────────────────────────
+
+     public void initialize()
+     {
+         exportButton.setVisible(false);
+     }
 
     public void loadProject(String projectName) {
         this.currentProjectName = projectName;
@@ -133,6 +139,7 @@ public class ProjectPageController {
 
     private void openBatchResults(BatchRow b) {
         bpropState.setBatchNo(b.getBatchId());
+        bpropState.setBatchCode(b.getBatchCode());
         bpropState.setProductName(b.getProductName());
         bpropState.setProductID(b.getComponentId());
         bpropState.setTestDate(LocalDate.parse(b.getTestDate()));
@@ -140,6 +147,7 @@ public class ProjectPageController {
         bpropState.setTestId(b.getTestId());
         bpropState.setSop(b.getSop());
         bpropState.setTestSchedule(b.getTestSchedule());
+        bpropState.setProductCode(b.getProductCode());
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/log/ui/views/RetrievalResults.fxml")
@@ -161,7 +169,7 @@ public class ProjectPageController {
             controller.setBackDestination("/com/log/ui/views/ProjectPage.fxml");
 
             Stage stage = (Stage) batchesGrid.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(root);
             stage.show();
 
         } catch (IOException e) {
@@ -196,7 +204,7 @@ public class ProjectPageController {
             );
             Parent root = loader.load();
             Stage stage = (Stage) batchesGrid.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(root);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -205,16 +213,31 @@ public class ProjectPageController {
 
     @FXML
     private void handleNewBatch() {
-        // State is already set in loadProject() — just navigate
+
         try {
+
             FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/log/ui/views/NewBatch.fxml")
+                    getClass().getResource(
+                            "/com/log/ui/views/NewBatch.fxml")
             );
+
             Parent root = loader.load();
-            Stage stage = (Stage) batchesGrid.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
+
+            Stage popup = new Stage();
+
+            popup.setTitle("New Batch");
+
+            popup.setScene(
+                    new Scene(root)
+            );
+
+            popup.initModality(
+                    Modality.APPLICATION_MODAL
+            );
+
+            popup.showAndWait();
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -268,6 +291,7 @@ public class ProjectPageController {
         bpropState.setTestId(b.getTestId());
         bpropState.setSop(b.getSop());
         bpropState.setBatchCode(b.getBatchCode());
+        bpropState.setProductCode(b.getProductCode());
 
         appState.setProjectCreated(true);
 
@@ -277,7 +301,7 @@ public class ProjectPageController {
             );
             Parent root = loader.load();
             Stage stage = (Stage) batchesGrid.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(root);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,5 +1,7 @@
 package com.log.dto;
 
+import com.log.model.PropertyValue;
+
 import java.util.List;
 
 public class ReportData {
@@ -18,6 +20,7 @@ public class ReportData {
     private String testReportNo;
     private String date;
 
+    private List<PropertyValue> propertyValues;
     private Double min;
     private Double max;
     private Double average;
@@ -31,7 +34,7 @@ public class ReportData {
     public ReportData() {
 }
 
-    public ReportData(String propertyName, String batchId, String componentId, String productName, String sop, String testMethod, String testDate, String testSite, String direction, String temperature, String temperatureUnit, String testReportNo, String date, Double min, Double max, Double average, Double standardDeviation, List<Double> values, String unit) {
+    public ReportData(String propertyName, String batchId, String componentId, String productName, String sop, String testMethod, String testDate, String testSite, String direction, String temperature, String temperatureUnit, String testReportNo, String date, Double min, Double max, Double average, Double standardDeviation, List<Double> values, String unit, List<PropertyValue> propertyValues) {
         this.propertyName = propertyName;
         this.BatchId = batchId;
         this.componentId = componentId;
@@ -51,6 +54,7 @@ public class ReportData {
         this.standardDeviation = standardDeviation;
         this.values = values;
         this.unit = unit;
+        this.propertyValues = propertyValues;
     }
 
     //============= Getters and setters =============================
@@ -206,5 +210,13 @@ public class ReportData {
 
     public void setProductName(String productName) {
         this.productName = productName;
+    }
+
+    public List<PropertyValue> getPropertyValues() {
+        return propertyValues;
+    }
+
+    public void setPropertyValues(List<PropertyValue> propertyValues) {
+        this.propertyValues = propertyValues;
     }
 }

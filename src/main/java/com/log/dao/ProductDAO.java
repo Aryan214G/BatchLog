@@ -174,7 +174,7 @@ public class ProductDAO {
         return null;
     }
 
-    public Integer getProductId(Connection conn, int productCode){
+    public String getProductId(Connection conn, int productCode){
         String sql = "SELECT Product_ID FROM Product WHERE Product_code = ?";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -182,7 +182,7 @@ public class ProductDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                rs.getInt("Product_ID");
+                return rs.getString("Product_ID");
             }
 
         } catch (SQLException e) {
@@ -200,7 +200,8 @@ public class ProductDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                rs.getString("Product_name");
+                String name = rs.getString("Product_name");
+                return name;
             }
 
         } catch (SQLException e) {
@@ -208,5 +209,33 @@ public class ProductDAO {
         }
 
         return null;
+    }
+
+    public boolean updateProductName(Connection conn, int productCode, String newProductName) {
+        String sql = "UPDATE Product SET Product_name = ? WHERE Product_code = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, newProductName);
+            stmt.setInt(2, productCode);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean updateProductId(Connection conn, int productCode, String newProductId) {
+        String sql = "UPDATE Product SET Product_ID = ? WHERE Product_code = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, newProductId);
+            stmt.setInt(2, productCode);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 }

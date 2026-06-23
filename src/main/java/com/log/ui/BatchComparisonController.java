@@ -240,10 +240,24 @@ public class BatchComparisonController {
         comparisonGrid.add(makeHeader("Property"), 0, 0);
         for (int i = 0; i < visibleBatches.size(); i++) {
             BatchTest test = visibleBatches.get(i);
-            String title = test.getBatchCode() != null
-                    ? batchTestDAO.getBatchIdByTestId(conn, test.getTestId())
-                    : productDAO.getProductNameByCode(conn, test.getProductCode());
-            comparisonGrid.add(makeHeader(title != null ? title : "Test " + test.getTestId()), i + 1, 0);
+            String title;
+
+            if (test.getBatchCode() != null) {
+                title = batchTestDAO.getBatchIdByTestId(conn, test.getTestId());
+            } else {
+                // Product test — try product name, fall back to product ID string
+                title = productDAO.getProductId(conn, test.getProductCode());
+                System.out.println(title);
+                if (title == null || title.isBlank()) {
+                    title = "Product " + test.getProductCode();
+                }
+            }
+
+
+            comparisonGrid.add(
+                    makeHeader(title != null ? title : "Test " + test.getTestId()),
+                    i + 1, 0
+            );
         }
 
         // Data rows — one row per property+unit combination
@@ -263,21 +277,21 @@ public class BatchComparisonController {
             StringBuilder label =
                     new StringBuilder(propertyName);
 
-            if (!unit.isBlank()) {
-                label.append(" (")
-                        .append(unit)
-                        .append(")");
-            }
-
-            if (!temperature.isBlank()) {
-                label.append(" | ")
-                        .append(temperature);
-            }
-
-            if (!direction.isBlank()) {
-                label.append(" | ")
-                        .append(direction);
-            }
+//            if (!unit.isBlank()) {
+//                label.append(" (")
+//                        .append(unit)
+//                        .append(")");
+//            }
+//
+//            if (!temperature.isBlank()) {
+//                label.append(" | ")
+//                        .append(temperature);
+//            }
+//
+//            if (!direction.isBlank()) {
+//                label.append(" | ")
+//                        .append(direction);
+//            }
 
             comparisonGrid.add(
                     makeCell(label.toString(), isAlt),
@@ -355,7 +369,7 @@ public class BatchComparisonController {
             );
             Parent root = loader.load();
             Stage stage = (Stage) comparisonGrid.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(root);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

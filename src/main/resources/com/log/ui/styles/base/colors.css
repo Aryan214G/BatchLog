@@ -1,0 +1,38 @@
+.root {
+
+    /* Brand */
+
+    -primary-navy: #0B1F4A;
+    -primary-blue: #173B7A;
+    -accent-blue: #5DB5FF;
+    -accent-orange: #E67E00;
+
+    /* Surfaces */
+
+    -background-color: #F5F8FC;
+    -surface-color: #FFFFFF;
+    -surface-blue: #EEF4FF;
+
+    /* Borders */
+
+    -border-color: #D9E3F0;
+
+    /* Text */
+
+    -text-primary: #1B2430;
+    -text-secondary: #667085;
+
+    /* States */
+
+    -success-color: #4CAF50;
+    -warning-color: #F59E0B;
+    -danger-color: #EF4444;
+
+    /* Hover */
+
+    -surface-hover: #F8FAFF;
+    -surface-blue-hover: #DCE8FF;
+    -accent-orange-hover: #D97706;
+    -sidebar-hover: rgba(255,255,255,0.12);
+
+}

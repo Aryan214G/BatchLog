@@ -1,0 +1,30 @@
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+
+    -fx-border-color: -border-color;
+    -fx-border-radius: 16;
+
+    -fx-effect: dropshadow(
+        gaussian,
+        rgba(0,0,0,0.08),
+        12,
+        0,
+        0,
+        4
+    );
+}
+
+.card-large {
+    -fx-background-color: white;
+    -fx-background-radius: 24;
+
+    -fx-effect: dropshadow(
+        gaussian,
+        rgba(0,0,0,0.08),
+        16,
+        0,
+        0,
+        6
+    );
+}

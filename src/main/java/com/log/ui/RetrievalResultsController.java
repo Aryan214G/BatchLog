@@ -19,12 +19,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
@@ -47,7 +45,8 @@ public class RetrievalResultsController {
 
     private boolean groupByCategory = false;
 
-
+    private Map<Integer, CheckBox> rowCheckboxes = new LinkedHashMap<>(); // keyed by propertyId
+    private boolean selectModeActive = false;
 
     @FXML
     private void handleToggleGrouping() {
@@ -77,6 +76,8 @@ public class RetrievalResultsController {
 
     private int testId;
 
+    @FXML private Button printBtn;
+
 // ============== SERVICES =============================================
 
     private BatchTestService batchTestService = new BatchTestService();
@@ -103,6 +104,9 @@ public class RetrievalResultsController {
             for (PropertyRow r : cachedRows) {
                 propertyStates.put(r.getName(), true);
             }
+
+            rowCheckboxes.clear();    // add this
+            selectModeActive = false;
 
             appState.setProjectCreated(true);
             populateGrid(cachedRows);
@@ -183,12 +187,17 @@ public class RetrievalResultsController {
                 propertyStates.put(r.getName(), true);
             }
 
+            rowCheckboxes.clear();    // add this
+            selectModeActive = false;
+
             appState.setProjectCreated(true);
             populateGrid(cachedRows);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+
 
     // ── Filter button ─────────────────────────────────────────────────────────
 
@@ -252,7 +261,6 @@ public class RetrievalResultsController {
                 .filter(r -> propertyStates.getOrDefault(r.getName(), true))
                 .toList();
 
-        // ── Group by category if enabled ──────────────────────────────────────────
         if (groupByCategory) {
             visibleRows = sortByCategoryOrder(visibleRows);
         }
@@ -266,11 +274,9 @@ public class RetrievalResultsController {
 
         // Build active column headers
         List<String> headers = new ArrayList<>();
+        if (selectModeActive) headers.add("Print");  // checkbox column first
         if (columnStates.getOrDefault("Property",      true)) headers.add("Property");
-        if (!groupByCategory &&
-                columnStates.getOrDefault("Category", true)) {
-            headers.add("Category");
-        }
+        if (!groupByCategory && columnStates.getOrDefault("Category", true)) headers.add("Category");
         if (columnStates.getOrDefault("Temperature",   true)) headers.add("Temperature");
         if (columnStates.getOrDefault("Direction",     true)) headers.add("Direction");
 
@@ -280,25 +286,33 @@ public class RetrievalResultsController {
         }
         if (columnStates.getOrDefault("Average Value", true)) headers.add("Average Value");
 
+        // Column constraints — grow to fill available width
         for (String header : headers) {
             ColumnConstraints cc = new ColumnConstraints();
-
-            switch(header) {
-                case "Property" -> cc.setPrefWidth(250);
-                case "Direction" -> cc.setPrefWidth(180);
-                case "Temperature" -> cc.setPrefWidth(120);
-                default -> cc.setPrefWidth(90);
+            switch (header) {
+                case "Print"        -> { cc.setMinWidth(50);  cc.setPrefWidth(60);  cc.setMaxWidth(60);  cc.setHgrow(Priority.NEVER); }
+                case "Property"     -> { cc.setMinWidth(180); cc.setPrefWidth(250); cc.setHgrow(Priority.SOMETIMES); }
+                case "Category"     -> { cc.setMinWidth(110); cc.setPrefWidth(120); cc.setHgrow(Priority.SOMETIMES); }
+                case "Direction"    -> { cc.setMinWidth(130); cc.setPrefWidth(180); cc.setHgrow(Priority.SOMETIMES); }
+                case "Temperature"  -> { cc.setMinWidth(110); cc.setPrefWidth(140); cc.setHgrow(Priority.SOMETIMES); }
+                case "Average Value"-> { cc.setMinWidth(100); cc.setPrefWidth(110); cc.setHgrow(Priority.SOMETIMES); }
+                default             -> { cc.setMinWidth(70);  cc.setPrefWidth(90);  cc.setHgrow(Priority.SOMETIMES); }
             }
-
+            cc.setFillWidth(true);
             propertiesGrid.getColumnConstraints().add(cc);
         }
 
+
         // Header row
         for (int i = 0; i < headers.size(); i++) {
-            propertiesGrid.add(makeHeader(headers.get(i)), i, 0);
+            if (headers.get(i).equals("Print")) {
+                propertiesGrid.add(makeSelectAllHeader(visibleRows), i, 0);
+            } else {
+                propertiesGrid.add(makeHeader(headers.get(i)), i, 0);
+            }
         }
 
-        // Data rows — insert category divider rows when grouping
+        // Data rows
         int row = 1;
         String lastCategory = null;
 
@@ -306,7 +320,7 @@ public class RetrievalResultsController {
             boolean isAlt = (row % 2 == 0);
             int col = 0;
 
-            // ── Category divider when grouped ─────────────────────────────────────
+            // Category divider when grouped
             if (groupByCategory) {
                 String currentCategory = p.getCategory() != null ? p.getCategory() : "—";
                 if (!currentCategory.equals(lastCategory)) {
@@ -322,10 +336,32 @@ public class RetrievalResultsController {
 
             ContextMenu rowMenu = createRowContextMenu(p);
 
-            if (columnStates.getOrDefault("Property", true))
-                propertiesGrid.add(makeCell(p.getName() + " (" + (p.getUnit() != null ? p.getUnit() + ")" : ""), isAlt, rowMenu), col++, row);
-            if (!groupByCategory &&
-                    columnStates.getOrDefault("Category", true))
+            // Checkbox column
+            if (selectModeActive) {
+                CheckBox cb = rowCheckboxes.computeIfAbsent(p.getPropertyId(), id -> new CheckBox());
+                cb.setSelected(true); // default selected, but preserve state if already toggled
+                if (!rowCheckboxes.containsKey(p.getPropertyId())) {
+                    cb.setSelected(true);
+                }
+
+                HBox cbWrapper = new HBox(cb);
+                cbWrapper.setAlignment(javafx.geometry.Pos.CENTER);
+                cbWrapper.getStyleClass().add("grid-cell");
+                if (isAlt) cbWrapper.getStyleClass().add("grid-cell-alt");
+
+                propertiesGrid.add(cbWrapper, col++, row);
+            }
+
+            String displayName = p.getName();
+            if (p.getUnit() != null
+                    && !p.getUnit().isBlank()
+                    && !"Not Applicable".equalsIgnoreCase(p.getUnit())) {
+                displayName += " (" + p.getUnit() + ")";
+            }
+
+            propertiesGrid.add(makeCell(displayName, isAlt, rowMenu), col++, row);
+
+            if (!groupByCategory && columnStates.getOrDefault("Category", true))
                 propertiesGrid.add(makeCell(p.getCategory(), isAlt, rowMenu), col++, row);
             if (columnStates.getOrDefault("Temperature", true))
                 propertiesGrid.add(makeCell(p.getTemperature() != null ? p.getTemperature() : "—", isAlt, rowMenu), col++, row);
@@ -341,8 +377,6 @@ public class RetrievalResultsController {
 
             if (columnStates.getOrDefault("Average Value", true))
                 propertiesGrid.add(makeCell(formatDouble(p.getAverage()), isAlt, rowMenu), col++, row);
-
-            propertiesGrid.setMaxWidth(Double.MAX_VALUE);
 
             row++;
         }
@@ -373,9 +407,11 @@ public class RetrievalResultsController {
     private Label makeHeader(String text) {
         Label label = new Label(text);
         label.getStyleClass().add("grid-header");
-        label.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-
+        label.setMaxWidth(Double.MAX_VALUE);
+        label.setPrefWidth(Double.MAX_VALUE);
+        label.setMinHeight(48);           // add this
         label.setWrapText(true);
+        label.setAlignment(javafx.geometry.Pos.CENTER_LEFT); // add this
         return label;
     }
 
@@ -389,6 +425,7 @@ public class RetrievalResultsController {
             label.getStyleClass().add("grid-cell-alt");
 
         label.setMaxWidth(Double.MAX_VALUE);
+        label.setPrefWidth(Double.MAX_VALUE);
         label.setWrapText(true);
 
         label.setContextMenu(menu);
@@ -403,8 +440,15 @@ public class RetrievalResultsController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(backDestination));
             Parent root = loader.load();
+
+            // If going back to ProjectPage, reload the project
+            if (backDestination.contains("ProjectPage")) {
+                ProjectPageController controller = loader.getController();
+                controller.loadProject(basePropertiesState.getProjectName());
+            }
+
             Stage stage = (Stage) propertiesGrid.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(root);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -443,7 +487,7 @@ public class RetrievalResultsController {
             );
             Parent root = loader.load();
             Stage stage = (Stage) propertiesGrid.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(root);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -455,6 +499,11 @@ public class RetrievalResultsController {
 
         ReportData propertyReport =
                 propertyReportService.buildReportData(propertyId);
+
+        if(propertyReport == null){
+                System.out.println("Report generation cancelled.");
+                return;
+            }
 
         Thread printThread = new Thread(() -> {
             try {
@@ -519,11 +568,27 @@ public class RetrievalResultsController {
     @FXML
     private void handlePrint() throws Exception {
 
+        // First click — enter selection mode, don't export yet
+        if (!selectModeActive) {
+            selectModeActive = true;
+            printBtn.setText("✔ Confirm & Export"); // no-op, just clarity
+            populateGrid(cachedRows);
+            return;
+        }
+
+
+
+        // Second click — actually export using only checked rows
         List<PropertyRow> visibleRows = cachedRows.stream()
                 .filter(r -> propertyStates.getOrDefault(r.getName(), true))
+                .filter(r -> {
+                    CheckBox cb = rowCheckboxes.get(r.getPropertyId());
+                    return cb == null || cb.isSelected(); // default true if somehow missing
+                })
                 .toList();
 
         if (visibleRows.isEmpty()) {
+            AlertUtil.showWarning("No rows selected for export.");
             return;
         }
 
@@ -560,7 +625,6 @@ public class RetrievalResultsController {
                 .max()
                 .orElse(0);
 
-        // Build headers respecting column filters
         List<String> headers = new ArrayList<>();
         if (columnStates.getOrDefault("Property",      true)) headers.add("Property");
         if (columnStates.getOrDefault("Temperature",   true)) headers.add("Temperature");
@@ -570,14 +634,13 @@ public class RetrievalResultsController {
         }
         if (columnStates.getOrDefault("Average Value", true)) headers.add("Average Value");
 
-        // Build rows respecting column filters
         Map<String, List<List<String>>> groupedTableData = new LinkedHashMap<>();
 
         for (PropertyRow p : visibleRows) {
             List<String> rowData = new ArrayList<>();
 
             if (columnStates.getOrDefault("Property",      true))
-                rowData.add(p.getName() + (p.getUnit() != null ? " (" + p.getUnit() + ")" : ""));
+                rowData.add(p.getName() + formatUnitSuffix(p.getUnit()));
             if (columnStates.getOrDefault("Temperature",   true))
                 rowData.add(p.getTemperature() != null ? p.getTemperature() : "—");
             if (columnStates.getOrDefault("Direction",     true))
@@ -591,43 +654,66 @@ public class RetrievalResultsController {
                 rowData.add(formatDouble(p.getAverage()));
 
             groupedTableData
-                .computeIfAbsent(
-                        p.getCategory(),
-                        k -> new ArrayList<>()
-                )
-                .add(rowData);
+                    .computeIfAbsent(p.getCategory(), k -> new ArrayList<>())
+                    .add(rowData);
         }
 
-        System.out.println(headers);
-        System.out.println(headers);
-
-        groupedTableData.forEach(
-                (category, rows) -> {
-
-                    System.out.println(category);
-
-                    rows.forEach(System.out::println);
-                }
-        );
-        System.out.println(basePropertiesState.getProductID());
         RetrievalTableReportData data =
-        new RetrievalTableReportData(
-                headers,
-                groupedTableData,
-                basePropertiesState.getProjectName(),
-                basePropertiesState.getSop(),
-                basePropertiesState.getProductName(),
-                basePropertiesState.getProductID(),
-                basePropertiesState.getBatchNo(),
-                basePropertiesState.getTestSchedule()
-        );
+                new RetrievalTableReportData(
+                        headers,
+                        groupedTableData,
+                        basePropertiesState.getProjectName(),
+                        basePropertiesState.getSop(),
+                        basePropertiesState.getProductName(),
+                        basePropertiesState.getProductID(),
+                        basePropertiesState.getBatchNo(),
+                        basePropertiesState.getTestSchedule()
+                );
 
-    rtReportService.generateReport(data);
+        rtReportService.generateReport(data);
+
+        selectModeActive = false;
+        printBtn.setText("🖶 Print");
+        populateGrid(cachedRows);
+        // Exit select mode after export
+        selectModeActive = false;
+        populateGrid(cachedRows);
+
+
     }
 
     @FXML private Button groupToggleBtn;
 
 
+    private String formatUnitSuffix(String unit) {
+        if (unit != null && !unit.isBlank() && !"Not Applicable".equalsIgnoreCase(unit)) {
+            return " (" + unit + ")";
+        }
+        return "";
+    }
 
+
+    private javafx.scene.Node makeSelectAllHeader(List<PropertyRow> visibleRows) {
+        CheckBox selectAll = new CheckBox();
+        selectAll.setSelected(true);
+        selectAll.setOnAction(e -> {
+            boolean checked = selectAll.isSelected();
+            for (PropertyRow p : visibleRows) {
+                CheckBox cb = rowCheckboxes.get(p.getPropertyId());
+                if (cb != null) cb.setSelected(checked);
+            }
+        });
+
+        HBox wrapper = new HBox(selectAll);
+        wrapper.setAlignment(javafx.geometry.Pos.CENTER);
+        wrapper.getStyleClass().add("grid-header");
+        wrapper.setMaxWidth(Double.MAX_VALUE);
+        wrapper.setPrefWidth(Double.MAX_VALUE);
+        wrapper.setMinHeight(48); // match makeHeader
+
+        return wrapper;
+    }
 
 }
+
+

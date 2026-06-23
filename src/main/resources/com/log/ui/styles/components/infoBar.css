@@ -1,0 +1,78 @@
+/* ==================================================
+   INFO BAR CONTAINER
+   ================================================== */
+
+.tool-bar {
+
+    -fx-background-color: -surface-color;
+
+
+    -fx-border-color: -border-color;
+
+
+    -fx-padding: 10 16;
+
+    -fx-spacing: 10;
+}
+
+/* remove default JavaFX styling */
+
+.tool-bar .container {
+    -fx-background-color: transparent;
+}
+
+/* ==================================================
+   INFO TAGS
+   ================================================== */
+
+.tool-bar .button {
+
+    -fx-background-color: -surface-blue;
+
+    -fx-text-fill: -primary-navy;
+
+    -fx-background-radius: 12;
+
+    -fx-border-color: -border-color;
+
+    -fx-border-radius: 12;
+
+    -fx-padding: 8 14;
+
+    -fx-font-size: 13px;
+
+    -fx-font-family: "Inter";
+
+    -fx-font-weight: 600;
+
+    -fx-cursor: default;
+
+    -fx-focus-traversable: false;
+}
+
+/* ==================================================
+   HOVER
+   ================================================== */
+
+.tool-bar .button:hover {
+}
+
+/* ==================================================
+   PRESSED
+   ================================================== */
+
+.tool-bar .button:pressed {
+}
+
+/* ==================================================
+   OPTIONAL EMPHASIS
+   ================================================== */
+
+.tool-bar .button:first-child {
+
+    -fx-background-color: -primary-blue;
+
+    -fx-text-fill: white;
+
+    -fx-border-color: transparent;
+}

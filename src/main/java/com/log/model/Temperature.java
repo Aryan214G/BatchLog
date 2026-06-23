@@ -4,20 +4,20 @@ public class Temperature {
 
     private Integer tempId;
     private String tempVal;
-    private int tempUnitID;
+    private Integer tempUnitID;
     private String tempUnitVal;
 
     public Temperature() {
     }
 
-    public Temperature(Integer tempId, String tempVal, int tempUnitID, String tempUnitVal) {
+    public Temperature(Integer tempId, String tempVal, Integer tempUnitID, String tempUnitVal) {
         this.tempId = tempId;
         this.tempVal = tempVal;
         this.tempUnitID = tempUnitID;
         this.tempUnitVal = tempUnitVal;
     }
 
-    public Temperature(String tempVal, int tempUnitID, String tempUnitVal) {
+    public Temperature(String tempVal, Integer tempUnitID, String tempUnitVal) {
         this.tempVal = tempVal;
         this.tempUnitID = tempUnitID;
         this.tempUnitVal = tempUnitVal;
@@ -44,11 +44,11 @@ public class Temperature {
         this.tempVal = tempVal;
     }
 
-    public int getTempUnitID() {
+    public Integer getTempUnitID() {
         return tempUnitID;
     }
 
-    public void setTempUnitID(int tempUnitID) {
+    public void setTempUnitID(Integer tempUnitID) {
         this.tempUnitID = tempUnitID;
     }
 
@@ -59,5 +59,11 @@ public class Temperature {
     public void setTempUnitVal(String tempUnitVal) {
         this.tempUnitVal = tempUnitVal;
     }
+
+    public boolean isEmpty() {
+        return (tempVal == null || tempVal.isBlank())
+                && tempUnitID == null;
+    }
+
     }
 

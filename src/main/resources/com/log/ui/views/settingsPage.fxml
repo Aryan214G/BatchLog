@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="root" prefHeight="800.0" prefWidth="1200.0" styleClass="root-layout" stylesheets="@../styles/settingsPage.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.settings.SettingsPageController">
+<BorderPane fx:id="root" prefHeight="800.0" prefWidth="1200.0" styleClass="root-layout" stylesheets="     @../styles/base/colors.css,     @../styles/base/typography.css,     @../styles/base/common.css,      @../styles/components/buttons.css,     @../styles/components/forms.css,     @../styles/components/listviews.css,     @../styles/components/sidebar.css,      @../styles/pages/settings_pages/settingsPage.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.log.ui.settings.SettingsPageController">
 
     <!-- LEFT SIDEBAR -->
 
@@ -19,20 +19,22 @@
 
                 <Label alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="sidebar-title" text="Settings" />
 
-                <Button fx:id="defaultsBtn" mnemonicParsing="false" onAction="#showDefaultsPage" prefHeight="50.0" prefWidth="218.0" text="Set defaults" />
+                <Button fx:id="defaultsBtn" mnemonicParsing="false" onAction="#showDefaultsPage" prefWidth="218.0" text="Set defaults" wrapText="true" />
 
 
-                <Button fx:id="defunitsBtn" mnemonicParsing="false" onAction="#showUnitsPage" prefHeight="50.0" prefWidth="218.0" text="Add or remove Units" />
+                <Button fx:id="defunitsBtn" mnemonicParsing="false" onAction="#showUnitsPage" prefWidth="250.0" text="Add Units" wrapText="true" />
 
-                <Button fx:id="directionsBtn" mnemonicParsing="false" onAction="#showDirectionsPage" prefHeight="50.0" prefWidth="218.0" text="Add Directions" />
+                <Button fx:id="directionsBtn" mnemonicParsing="false" onAction="#showDirectionsPage" prefWidth="250.0" text="Add Directions" wrapText="true" />
 
-                <Button fx:id="catbutton" mnemonicParsing="false" onAction="#showCategoriesPage" prefHeight="50.0" prefWidth="218.0" text="Add Categories and Properties" />
+                <Button fx:id="addrenameunits" mnemonicParsing="false" onAction="#showAddTempUnitsPage" prefWidth="250.0" text="Rename/Add Temperature Units and Direction" wrapText="true" />
 
-                <Button fx:id="renamecatprop" mnemonicParsing="false" onAction="#showCategoriesrenamePage" prefHeight="50.0" prefWidth="218.0" text="Rename Categories and Properties" />
+                <Button fx:id="catbutton" mnemonicParsing="false" onAction="#showCategoriesPage" prefWidth="250.0" text="Add Categories and Properties" wrapText="true" />
 
-                <Button fx:id="backupBtn" layoutX="31.0" layoutY="285.0" mnemonicParsing="false" onAction="#showBackupPage" prefHeight="50.0" prefWidth="218.0" text="Backup and restore" />
+                <Button fx:id="renamecatprop" mnemonicParsing="false" onAction="#showCategoriesrenamePage" prefWidth="250.0" text="Rename Categories and Properties" wrapText="true" />
 
-                <ListView fx:id="SettingsListView" prefHeight="353.0" prefWidth="218.0" styleClass="buttons-list" VBox.vgrow="ALWAYS" />
+                <Button fx:id="backupBtn" layoutX="31.0" layoutY="285.0" mnemonicParsing="false" onAction="#showBackupPage" prefWidth="250.0" text="Backup and restore" wrapText="true" />
+
+                <ListView fx:id="SettingsListView" prefHeight="353.0" prefWidth="250.0" styleClass="buttons-list" VBox.vgrow="ALWAYS" />
 
 
 

@@ -177,5 +177,4 @@ public class DirectionDAO {
             throw new RuntimeException(e);
         }
     }
-
 }

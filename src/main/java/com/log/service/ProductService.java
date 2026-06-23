@@ -75,7 +75,7 @@ public class ProductService {
         }
     }
 
-    public Integer getProductId(int productCode){
+    public String getProductId(int productCode){
             try (Connection connection = DBUtil.getConnection()){
 
                 return productDAO.getProductId(connection, productCode);

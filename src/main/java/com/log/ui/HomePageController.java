@@ -4,6 +4,7 @@ import com.log.core.BasePropertiesState;
 import com.log.database.DBUtil;
 import com.log.model.Project;
 import com.log.service.ProjectService;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -14,6 +15,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -41,6 +43,7 @@ public class HomePageController implements Initializable {
 
     private List<Project> allProjects = new ArrayList<>();
 
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         StateManager.clearAll();
@@ -63,7 +66,7 @@ public class HomePageController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
             Stage stage = (Stage) projectsList.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(root);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -95,7 +98,7 @@ public class HomePageController implements Initializable {
             );
             Parent root = loader.load();
             Stage stage = (Stage) projectsList.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(root);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -103,7 +106,7 @@ public class HomePageController implements Initializable {
     }
 
     private void handleHelp() {
-        System.out.println("Help clicked");
+        navigateTo("/com/log/ui/views/Help.fxml");
     }
 
     // ── Projects List ─────────────────────────────────────────────────────────
@@ -182,17 +185,31 @@ public class HomePageController implements Initializable {
 
         openItem.setOnAction(e -> handleProjectCardOpen(projectName));
         renameItem.setOnAction(e -> handleProjectCardEdit(projectName));
-        deleteItem.setOnAction(e -> handleProjectCardDelete(projectName));
+        deleteItem.setOnAction(e -> handleProjectCardDeleteConfirm(projectName));
 
         contextMenu.getItems().addAll(openItem, renameItem, deleteItem);
         return contextMenu;
+    }
+
+    private void handleProjectCardDeleteConfirm(String projectName) {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Delete Project");
+        confirm.setHeaderText(null);
+        confirm.setContentText("Are you sure you want to delete '" + projectName + "'? This cannot be undone.");
+
+        confirm.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                handleProjectCardDelete(projectName);
+            }
+        });
     }
 
     // ── Card actions ──────────────────────────────────────────────────────────
 
     private void handleProjectCardDelete(String projectName) {
         try (Connection connection = DBUtil.getConnection()) {
-            projectService.deleteProject(projectService.getProjectId(connection, projectName));
+            int projectId = projectService.getProjectId(connection, projectName);
+            projectService.deleteProject(projectId);
             refreshProjects();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -242,7 +259,7 @@ public class HomePageController implements Initializable {
             controller.loadProject(projectName);
 
             Stage stage = (Stage) projectsList.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(root);
             stage.show();
 
         } catch (IOException e) {

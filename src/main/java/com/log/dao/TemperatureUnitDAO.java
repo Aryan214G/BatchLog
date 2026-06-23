@@ -161,4 +161,39 @@ public class TemperatureUnitDAO {
         return units;
     }
 
+    public void updateTemperatureUnit(
+            Connection conn,
+            int tempUnitId,
+            String newUnitName
+    ) {
+
+        String sql = """
+            UPDATE Temperature_Units
+            SET Temp_Unit = ?
+            WHERE Temp_Unit_ID = ?
+            """;
+
+        try (PreparedStatement stmt =
+                     conn.prepareStatement(sql)) {
+
+            stmt.setString(1, newUnitName);
+            stmt.setInt(2, tempUnitId);
+
+            int rowsAffected =
+                    stmt.executeUpdate();
+
+            if (rowsAffected == 0) {
+
+                System.out.println(
+                        "No temperature unit found with ID "
+                                + tempUnitId
+                );
+            }
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+        }
+    }
+
 }

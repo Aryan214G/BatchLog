@@ -23,7 +23,7 @@ public class PropertySubmissionService {
     private AppState instance = AppState.getInstance();
     private BasePropertiesState bsinstance = BasePropertiesState.getInstance();
 
-    private int tempId;
+    private Integer tempId;
     private int directionId;
     public PropertySubmissionService(TemperatureService temperatureService,
                                      DirectionService directionService,
@@ -47,7 +47,7 @@ public class PropertySubmissionService {
 
             handleTemperature(conn, propertyState.getTemperature());
             handleDirection(conn, propertyState.getDirection());
-            handleProperty(conn, propertyState, propertyName, selectedCategory, propertyState.getTestMethod());
+            handleProperty(conn, propertyState, propertyName, selectedCategory, propertyState.getTestMethod(), propertyState.getReportNumber());
 
             conn.commit();
 
@@ -78,17 +78,33 @@ public class PropertySubmissionService {
     }
 
     private void handleTemperature(Connection conn, Temperature temp) {
-        if (temp.getTempId() == null) {
 
-           this.tempId = temperatureService.insertTemperature(conn, temp);
-           temp.setTempId(tempId);
+    if (temp.isEmpty()) {
 
-        } else {
+        System.out.println("Temperature is empty");
 
-            this.tempId = temp.getTempId();
-            temperatureService.updateTemperature(conn, temp);
-        }
+        this.tempId = null;
+        return;
     }
+
+    System.out.println(
+            "Temperature object = "
+                    + temp.getTempVal()
+                    + " | "
+                    + temp.getTempUnitID()
+    );
+
+    if (temp.getTempId() == null) {
+
+        this.tempId = temperatureService.insertTemperature(conn, temp);
+        temp.setTempId(tempId);
+
+    } else {
+
+        this.tempId = temp.getTempId();
+        temperatureService.updateTemperature(conn, temp);
+    }
+}
 
     private void handleDirection(Connection conn, Direction dir) {
         if (dir.getDirId() == null) {
@@ -105,7 +121,7 @@ public class PropertySubmissionService {
             PropertyState propertyState,
             String propertyName,
             String selectedCategory,
-            String testMethod){
+            String testMethod, String reportNumber){
 
         //TODO: might need to replace this unecessary db call
         Category category = categoryService.getCategory(conn, selectedCategory);
@@ -164,6 +180,7 @@ public class PropertySubmissionService {
 
 
         property.setTestMethod(testMethod);
+        property.setReportNumber(reportNumber);
 
         property.setPropertyName(propertyName);
         property.setUnit(unit);
@@ -171,6 +188,9 @@ public class PropertySubmissionService {
         property.setTemperature(temperature);
         property.setDirection(direction);
         property.setTestMethod(testMethod);
+        property.setReportNumber(
+        propertyState.getReportNumber()
+);
         // ________________________________________________________________________________
 
         Integer propertyID = property.getPropertyID();

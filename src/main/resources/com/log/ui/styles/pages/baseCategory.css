@@ -1,0 +1,202 @@
+/* ==================================================
+   ROOT
+   ================================================== */
+
+.root {
+
+    -fx-background-color: #E4EAF3;
+}
+
+/* ==================================================
+   FORM CONTAINER
+   ================================================== */
+
+.form-container {
+
+    -fx-effect: dropshadow(
+    gaussian,
+    rgba(11,31,74,0.12),
+    20,
+    0.15,
+    0,
+    6
+);
+
+    -fx-background-color: -surface-color;
+
+    -fx-background-radius: 24;
+
+    -fx-border-color: -border-color;
+
+    -fx-border-radius: 24;
+
+    -fx-padding: 32;
+
+    -fx-spacing: 10 10;
+
+    -fx-max-width: 800;
+}
+
+/* ==================================================
+   PAGE TITLE
+   ================================================== */
+
+.page-title {
+
+    -fx-font-size: 36px;
+
+    -fx-font-weight: 700;
+
+    -fx-text-fill: -primary-navy;
+}
+
+/* ==================================================
+   LABELS
+   ================================================== */
+
+.label {
+
+    -fx-font-size: 14px;
+
+    -fx-font-weight: 600;
+
+    -fx-text-fill: -primary-navy;
+}
+
+/* ==================================================
+   TEXT INPUTS
+   ================================================== */
+
+.text-field,
+.date-picker {
+
+    -fx-background-color: white;
+
+    -fx-border-color: #C3D2E8;
+
+    -fx-border-radius: 12;
+
+    -fx-background-radius: 12;
+
+    -fx-padding: 12 16;
+
+    -fx-font-size: 14px;
+
+    -fx-text-fill: -text-primary;
+
+    -fx-pref-height: 48;
+}
+
+.text-field:focused,
+.date-picker:focused {
+
+    -fx-border-color: -accent-blue;
+
+    -fx-border-width: 2;
+}
+
+/* ==================================================
+   DATE PICKER
+   ================================================== */
+
+.date-picker > .arrow-button {
+
+    -fx-background-color: transparent;
+}
+
+.date-picker > .arrow-button > .arrow {
+
+    -fx-background-color: -primary-blue;
+}
+
+/* ==================================================
+   BUTTON AREA
+   ================================================== */
+
+.bottom-actions {
+
+    -fx-background-color: white;
+
+    -fx-padding: 16 24;
+
+    -fx-border-color: -border-color transparent transparent transparent;
+
+    -fx-border-width: 1 0 0 0;
+}
+
+/* ==================================================
+   CANCEL BUTTON
+   ================================================== */
+
+.cancel-btn {
+
+    -fx-background-color: transparent;
+
+    -fx-border-color: -border-color;
+
+    -fx-border-radius: 12;
+
+    -fx-background-radius: 12;
+
+    -fx-padding: 12 24;
+
+    -fx-font-weight: 600;
+
+    -fx-text-fill: -text-primary;
+}
+
+.cancel-btn:hover {
+
+    -fx-background-color: -surface-hover;
+}
+
+/* ==================================================
+   NEXT BUTTON
+   ================================================== */
+
+.next-btn {
+
+    -fx-background-color: -primary-blue;
+
+    -fx-text-fill: white;
+
+    -fx-background-radius: 12;
+
+    -fx-padding: 12 24;
+
+    -fx-font-weight: 700;
+}
+
+.next-btn:hover {
+
+    -fx-background-color: -primary-navy;
+}
+
+/* ==================================================
+   PLACEHOLDER TEXT
+   ================================================== */
+
+.text-field .text {
+
+    -fx-fill: -text-primary;
+}
+
+.text-input {
+
+    -fx-prompt-text-fill: -text-secondary;
+}
+
+
+.form-scroll {
+
+    -fx-background-color: transparent;
+
+    -fx-background-insets: 0;
+
+    -fx-border-color: transparent;
+}
+
+.form-scroll > .viewport {
+
+    -fx-background-color: transparent;
+}

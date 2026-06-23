@@ -1,6 +1,7 @@
 package com.log.service;
 
 import com.log.dao.TemperatureUnitDAO;
+import com.log.database.DBUtil;
 import com.log.model.Unit;
 
 import java.sql.Connection;
@@ -50,5 +51,25 @@ public class TemperatureUnitService {
     public List<String> getAllTemperatureUnits(Connection conn) {
 
         return dao.getAllTemperatureUnits(conn);
+    }
+
+    public void updateTemperatureUnit(
+            int tempUnitId,
+            String newUnitName
+    ) {
+
+        try (Connection conn =
+                     DBUtil.getConnection()) {
+
+            dao.updateTemperatureUnit(
+                    conn,
+                    tempUnitId,
+                    newUnitName
+            );
+
+        } catch (Exception e) {
+
+            throw new RuntimeException(e);
+        }
     }
 }

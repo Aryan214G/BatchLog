@@ -6,6 +6,7 @@ import com.log.model.Product;
 import com.log.model.Property;
 import com.log.model.PropertyValue;
 import com.log.service.*;
+import com.log.util.AlertUtil;
 import com.log.util.DateUtils;
 import com.log.util.DialogUtils;
 
@@ -72,12 +73,16 @@ public class PropertyReportService
         }
 
 
-        Optional<String> result = DialogUtils.showTextInputDialog(
-        "Report Number",
-        "Generate Report",
-        "Enter report number:"
+        String reportNumber = property.getReportNumber();
+
+if (reportNumber == null || reportNumber.isBlank()) {
+
+    AlertUtil.showError(
+            "Please enter a Report Number before generating the report."
     );
-        String reportNumber = result.orElse(null);
+
+    return null;
+}
 
         ReportData reportData = new ReportData(
                 property.getPropertyName(),
@@ -98,7 +103,8 @@ public class PropertyReportService
                 average,
                 stdDev,
                 values,
-                property.getUnit().getUnit()
+                property.getUnit().getUnit(),
+                property.getPropertyValues()
         );
 
 
@@ -239,9 +245,16 @@ public class PropertyReportService
             writeRightAlignedText(content, "Test Method: " + reportData.getTestMethod(), RIGHT_EDGE, rightSectionY);
                 rightSectionY-= 20;
 
-                writeRightAlignedText(content, "Test temperature: " + reportData.getTemperature() + " " + reportData.getTemperatureUnit(), RIGHT_EDGE, rightSectionY);
+                if(reportData.getTemperature() != null){
+                    writeRightAlignedText(content,
+                            "Test temperature: "
+                                    + reportData.getTemperature()
+                                    + " "
+                                    + reportData.getTemperatureUnit(),
+                            RIGHT_EDGE, rightSectionY);
 
-                rightSectionY-= 20;
+                    rightSectionY-= 20;
+                }
 
                 writeRightAlignedText(content, "Direction: " + reportData.getDirection(), RIGHT_EDGE, rightSectionY);
 
@@ -257,12 +270,13 @@ public class PropertyReportService
             y -= 30;
 
             String propertyName = reportData.getPropertyName().toUpperCase();
-            String unit = reportData.getUnit();
-
+            String unit = (reportData.getUnit().equals("Not Applicable"))
+                    ? ""
+                    : "(" + reportData.getUnit() + ")";
             float propertyWidth = font.getStringWidth(propertyName) / 1000 * fontSize;
             float propertyX = (page.getMediaBox().getWidth() - propertyWidth) / 2;
 
-            writeBoldText(content, propertyName  + " (" + unit + ")", propertyX, y);
+            writeBoldText(content, propertyName  + " " + unit, propertyX, y);
 
             y -= 60;
 
@@ -275,25 +289,89 @@ public class PropertyReportService
             float col1 = 100;
             float col2 = 100;
 
-            drawCell(content, tableX, tableY, col1, rowHeight);
-            drawCell(content, tableX + col1, tableY, col2, rowHeight);
+            // ===============================
 
-            drawCellTextBold(content, "Specimen No.", tableX, tableY, col1, rowHeight);
-            drawCellTextBold(content, "Test value", tableX + col2, tableY, col2, rowHeight);
+            boolean hasComponentNumbers =
+        reportData.getPropertyValues()
+                .stream()
+                .anyMatch(propertyValue ->
+                        propertyValue.getComponentNumber() != null
+                        && !propertyValue.getComponentNumber().isBlank()
+                );
 
-            int sNo = 1;
-            for(Double value : reportData.getValues())
-            {
-                y-= 25;
+drawCell(content, tableX, tableY, col1, rowHeight);
+drawCell(content, tableX + col1, tableY, col2, rowHeight);
 
-                drawCell(content, tableX, y, col1, rowHeight);
-                drawCell(content, tableX + col1, y, col2, rowHeight);
+drawCellTextBold(
+        content,
+        hasComponentNumbers
+                ? "Component No."
+                : "Specimen No.",
+        tableX,
+        tableY,
+        col1,
+        rowHeight
+);
 
-                drawCellText(content, "Specimen " + String.valueOf(sNo), tableX, y, col1, rowHeight);
-                drawCellText(content, value.toString(), tableX + col1, y, col2, rowHeight);
+drawCellTextBold(
+        content,
+        "Test Value",
+        tableX + col1,
+        tableY,
+        col2,
+        rowHeight
+);
 
-                sNo++;
-            }
+int sNo = 1;
+
+for (PropertyValue propertyValue
+        : reportData.getPropertyValues()) {
+
+    y -= 25;
+
+    drawCell(content, tableX, y, col1, rowHeight);
+    drawCell(content, tableX + col1, y, col2, rowHeight);
+
+    String rowLabel;
+
+    if (hasComponentNumbers
+            && propertyValue.getComponentNumber() != null
+            && !propertyValue.getComponentNumber().isBlank()) {
+
+        rowLabel =
+                propertyValue.getComponentNumber();
+
+    } else {
+
+        rowLabel =
+                "Specimen " + sNo;
+    }
+
+    drawCellText(
+            content,
+            rowLabel,
+            tableX,
+            y,
+            col1,
+            rowHeight
+    );
+
+    drawCellText(
+            content,
+            String.format(
+                    "%.2f",
+                    propertyValue.getPropertyVAL()
+            ),
+            tableX + col1,
+            y,
+            col2,
+            rowHeight
+    );
+
+    sNo++;
+}
+
+            // ===============================
 
             y -= 30;
 

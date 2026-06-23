@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="800" prefWidth="1200"
+            stylesheets="@../styles/pages/helpPage.css"
+            xmlns="http://javafx.com/javafx/26"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.log.ui.HelpController">
+
+    <top>
+        <fx:include source="../components/menubar.fxml" />
+    </top>
+
+    <center>
+        <VBox spacing="16" styleClass="results-content">
+            <padding>
+                <Insets bottom="24" left="24" right="24" top="24" />
+            </padding>
+
+            <!-- Back button -->
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <Button onAction="#handleBack" styleClass="back-btn" text="← Back" />
+            </HBox>
+
+            <VBox spacing="4">
+                <Label styleClass="manual-title" text="BatchLog User Manual" />
+                <Label styleClass="manual-subtitle" text="A quick guide to creating projects, entering test readings, finding results, and keeping your data safe." wrapText="true" />
+            </VBox>
+
+            <ScrollPane fitToWidth="true" styleClass="table-scroll" VBox.vgrow="ALWAYS">
+                <content>
+                    <VBox fx:id="manualContent" spacing="20" styleClass="manual-content">
+                        <padding>
+                            <Insets bottom="24" left="24" right="24" top="24" />
+                        </padding>
+
+                        <!-- ===================== SECTION 1 ===================== -->
+                        <VBox spacing="8">
+                            <Label styleClass="manual-section-title" text="1. Getting Started" />
+                            <Separator />
+                            <Label styleClass="manual-body" text="BatchLog helps you record, organize, retrieve, compare, and export batch test data. The Home page lists your recent projects. Use New Project to start a new record, select an existing project to view its batches, or use the search box to narrow the project list." wrapText="true" />
+                            <ImageView fitWidth="760" preserveRatio="true" smooth="true" styleClass="manual-image">
+                                <image>
+                                    <Image url="@../../../../images/HomePage.png" />
+                                </image>
+                            </ImageView>
+                        </VBox>
+
+                        <!-- ===================== SECTION 2 ===================== -->
+                        <VBox spacing="8">
+                            <Label styleClass="manual-section-title" text="2. Creating a Project" />
+                            <Separator />
+                            <Label styleClass="manual-body" text="From the Home page, click New Project. Enter the project name, batch ID, SOP, product name, component ID, test date, place of testing, and test schedule. SOP and test schedule may be left blank when they do not apply. Click Next to save the base details and continue to category entry." wrapText="true" />
+                            <ImageView fitWidth="760" preserveRatio="true" smooth="true" styleClass="manual-image">
+                                <image>
+                                    <Image url="@../../../../images/BasePropertiesPage.png" />
+                                </image>
+                            </ImageView>
+                        </VBox>
+
+                        <!-- ===================== SECTION 3 ===================== -->
+                        <VBox spacing="8">
+                            <Label styleClass="manual-section-title" text="3. Entering Property Values" />
+                            <Separator />
+                            <Label styleClass="manual-body" text="On the Categories page, choose a category from the left panel, then choose the property you want to record. Enter the temperature, direction, unit, and one or more measured values. Press Enter in a value field to add another row when needed. Click Submit to save the readings for the selected property." wrapText="true" />
+                            <ImageView fitWidth="760" preserveRatio="true" smooth="true" styleClass="manual-image">
+                                <image>
+                                    <Image url="@../../../../images/CategoriesPage.png" />
+                                </image>
+                            </ImageView>
+                        </VBox>
+
+                        <!-- ===================== SECTION 4 ===================== -->
+                        <VBox spacing="8">
+                            <Label styleClass="manual-section-title" text="4. Adding a New Batch" />
+                            <Separator />
+                            <Label styleClass="manual-body" text="Open a project from the Home page to view its saved batches. Use New Batch to add another batch under the same project. Confirm the batch details, then continue to the Categories page and enter readings as usual." wrapText="true" />
+                            <ImageView fitWidth="760" preserveRatio="true" smooth="true" styleClass="manual-image">
+                                <image>
+                                    <Image url="@../../../../images/BasePropertiesPage.png" />
+                                </image>
+                            </ImageView>
+                        </VBox>
+
+                        <!-- ===================== SECTION 5 ===================== -->
+                        <VBox spacing="8">
+                            <Label styleClass="manual-section-title" text="5. Searching and Retrieving Data" />
+                            <Separator />
+                            <Label styleClass="manual-body" text="Use the Retrieval page to search by project name, product name, batch ID, test date, place of testing, SOP, or test schedule. Search Batches returns batch-level records. Search Products returns product test records. Select a result to open the full property table." wrapText="true" />
+                            <ImageView fitWidth="760" preserveRatio="true" smooth="true" styleClass="manual-image">
+                                <image>
+                                    <Image url="@../../../../images/retrievalPage.png" />
+                                </image>
+                            </ImageView>
+                        </VBox>
+
+                        <!-- ===================== SECTION 6 ===================== -->
+                        <VBox spacing="8">
+                            <Label styleClass="manual-section-title" text="6. Viewing and Filtering Results" />
+                            <Separator />
+                            <Label styleClass="manual-body" text="The Results table shows every saved property, including category, temperature, direction, unit, individual values, and average value. Use Filter to show or hide columns and properties. Use Group by Category to organize the table by the category order configured in settings." wrapText="true" />
+                            <ImageView fitWidth="760" preserveRatio="true" smooth="true" styleClass="manual-image">
+                                <image>
+                                    <Image url="@../../../../images/retrievalPage.png" />
+                                </image>
+                            </ImageView>
+                        </VBox>
+
+                        <!-- ===================== SECTION 7 ===================== -->
+                        <VBox spacing="8">
+                            <Label styleClass="manual-section-title" text="7. Using the Results Context Menu" />
+                            <Separator />
+                            <Label styleClass="manual-body" text="Right-click any property row in the Results table to open the context menu. Choose Print property report to generate a report for that specific property, or choose Edit Property to update the saved values for the selected row. To update project or batch details such as batch ID, SOP, product details, test date, or test site, use Edit &gt; Project Details from the menu bar." wrapText="true" />
+                            <ImageView fitWidth="760" preserveRatio="true" smooth="true" styleClass="manual-image">
+                                <image>
+                                    <Image url="@../../../../images/ResultsContextMenu.png" />
+                                </image>
+                            </ImageView>
+                        </VBox>
+
+                        <!-- ===================== SECTION 8 ===================== -->
+                        <VBox spacing="8">
+                            <Label styleClass="manual-section-title" text="8. Comparing Batches" />
+                            <Separator />
+                            <Label styleClass="manual-body" text="From the Retrieval page, select the checkboxes beside the batches or tests you want to compare, then click Compare Selected. The comparison view places properties in rows and selected tests in columns so average values can be reviewed side by side." wrapText="true" />
+                            <ImageView fitWidth="760" preserveRatio="true" smooth="true" styleClass="manual-image">
+                                <image>
+                                    <Image url="@../../../../images/retrievalPage.png" />
+                                </image>
+                            </ImageView>
+                        </VBox>
+
+                        <!-- ===================== SECTION 9 ===================== -->
+                        <VBox spacing="8">
+                            <Label styleClass="manual-section-title" text="9. Exporting and Printing" />
+                            <Separator />
+                            <Label styleClass="manual-body" text="Use Print or Generate Report from the Results, Comparison, or Categories pages to create PDF reports. When prompted, enter the report number. Reports include the relevant project, product, batch, test, SOP, and property details automatically." wrapText="true" />
+                            <ImageView fitWidth="760" preserveRatio="true" smooth="true" styleClass="manual-image">
+                                <image>
+                                    <Image url="@../../../../images/CategoriesPage.png" />
+                                </image>
+                            </ImageView>
+                        </VBox>
+
+                        <!-- ===================== SECTION 10 ===================== -->
+                        <VBox spacing="8">
+                            <Label styleClass="manual-section-title" text="10. Managing Defaults and Settings" />
+                            <Separator />
+                            <Label styleClass="manual-body" text="Open Settings to maintain reusable application data. Set Defaults controls standard property/category setup. Add Units and Add Directions manage the choices available during data entry. Rename/Add Temperature Units and Direction lets you adjust temperature and direction labels. Add Categories and Properties expands the test structure, while Rename Categories and Properties updates existing names." wrapText="true" />
+                            <ImageView fitWidth="760" preserveRatio="true" smooth="true" styleClass="manual-image">
+                                <image>
+                                    <Image url="@../../../../images/SettingsPage.png" />
+                                </image>
+                            </ImageView>
+                        </VBox>
+
+                        <!-- ===================== SECTION 11 ===================== -->
+                        <VBox spacing="8">
+                            <Label styleClass="manual-section-title" text="11. Backup and Restore" />
+                            <Separator />
+                            <Label styleClass="manual-body" text="Use Settings &gt; Backup and restore to save a copy of the database or restore from an earlier backup file. Restoring replaces the current database, so BatchLog creates a safety backup first. Restart the application after a restore so every screen reloads from the restored database." wrapText="true" />
+                            <ImageView fitWidth="760" preserveRatio="true" smooth="true" styleClass="manual-image">
+                                <image>
+                                    <Image url="@../../../../images/SettingsPage.png" />
+                                </image>
+                            </ImageView>
+                        </VBox>
+
+                        <!-- ===================== SECTION 12 ===================== -->
+                        <VBox spacing="8">
+                            <Label styleClass="manual-section-title" text="12. Tips and Troubleshooting" />
+                            <Separator />
+                            <Label styleClass="manual-body" text="- Keep units consistent for the same property before exporting or comparing data.&#10;- Use filters to hide extra columns before printing wide tables.&#10;- If a search returns no results, clear optional fields and search again with only one or two known values.&#10;- Optional fields such as SOP and test schedule can be left blank.&#10;- Save entries before leaving the Categories page so measurements are written to the database." wrapText="true" />
+                            <ImageView fitWidth="760" preserveRatio="true" smooth="true" styleClass="manual-image">
+                                <image>
+                                    <Image url="@../../../../images/retrievalPage.png" />
+                                </image>
+                            </ImageView>
+                        </VBox>
+
+                    </VBox>
+                </content>
+            </ScrollPane>
+
+        </VBox>
+    </center>
+
+</BorderPane>

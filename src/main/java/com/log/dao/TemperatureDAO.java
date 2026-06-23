@@ -22,8 +22,17 @@ public class TemperatureDAO {
 
         try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            stmt.setString(1, temperature.getTempVal());
-            stmt.setInt(2, temperature.getTempUnitID());
+            if (temperature.getTempVal() == null || temperature.getTempVal().isBlank()) {
+                stmt.setNull(1, Types.REAL);
+            } else {
+                stmt.setString(1, temperature.getTempVal());
+            }
+
+            if (temperature.getTempUnitID() == null) {
+                stmt.setNull(2, Types.INTEGER);
+            } else {
+                stmt.setInt(2, temperature.getTempUnitID());
+            }
 
             stmt.executeUpdate();
 
@@ -46,9 +55,10 @@ public class TemperatureDAO {
                             t.Temp_ID,
                             t.Temp_VAL,
                             t.Temp_Unit_ID,
-                            u.Unit AS Temp_Unit
+                            tu.Temp_Unit AS Temp_Unit
                         FROM Temperature t
-                        JOIN Units u ON t.Temp_Unit_ID = u.Unit_ID
+                        LEFT JOIN Temperature_Units tu
+                        ON t.Temp_Unit_ID = tu.Temp_Unit_ID
                         WHERE t.Temp_ID = ?
                     """;
 
@@ -63,7 +73,7 @@ public class TemperatureDAO {
                 tempId = rs.getInt("Temp_ID");
                 String tempVal =  rs.getString("Temp_VAL");
 
-                int tempUnitId = rs.getInt("Temp_Unit_ID");
+                Integer tempUnitId = (Integer) rs.getObject("Temp_Unit_ID");
                 String tempUnitVal = rs.getString("Temp_Unit");
 
                 return new Temperature(
@@ -117,8 +127,18 @@ public class TemperatureDAO {
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, temperature.getTempVal());
-            stmt.setInt(2, temperature.getTempUnitID());
+            if (temperature.getTempVal() == null || temperature.getTempVal().isBlank()) {
+                stmt.setNull(1, Types.REAL);
+            } else {
+                stmt.setString(1, temperature.getTempVal());
+            }
+
+            if (temperature.getTempUnitID() == null) {
+                stmt.setNull(2, Types.INTEGER);
+            } else {
+                stmt.setInt(2, temperature.getTempUnitID());
+            }
+
             stmt.setInt(3, temperature.getTempId());
 
             stmt.executeUpdate();
