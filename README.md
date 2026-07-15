@@ -1,6 +1,22 @@
-# BatchLog
+<div align="center">
 
-**Test Data Management System**
+<img src="assets/banner.png" alt="BatchLog banner" width="100%">
+
+<br><br>
+
+![Java](https://img.shields.io/badge/Java-JavaFX-orange?logo=openjdk&logoColor=white)
+![Database](https://img.shields.io/badge/Database-SQLite-blue?logo=sqlite&logoColor=white)
+![Build](https://img.shields.io/badge/Build-Maven-C71A36?logo=apachemaven&logoColor=white)
+![Platform](https://img.shields.io/badge/Platform-Desktop-lightgrey)
+![Status](https://img.shields.io/badge/Status-Active-brightgreen)
+
+**[Features](#features) · [Tech Stack](#technologies-used) · [Architecture](#system-architecture) · [Screenshots](#screenshots)**
+
+</div>
+
+---
+
+## Overview
 
 BatchLog is a desktop application built with Java and JavaFX for managing engineering and laboratory test data. It gives users a structured way to organize projects, batches, products (components), and test properties, with powerful retrieval, comparison, and reporting built in.
 
