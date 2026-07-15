@@ -12,6 +12,10 @@
 
 **[Features](#features) · [Tech Stack](#technologies-used) · [Architecture](#system-architecture) · [Screenshots](#screenshots)**
 
+<br>
+
+[![Download for Windows](https://img.shields.io/badge/Download-Windows%20Installer-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/Aryan214G/BatchLog/releases/latest)
+
 </div>
 
 ---
@@ -96,5 +100,3 @@ The application follows a layered architecture:
 - N. Abhignan Reddy
 - Aryan Jingade
 - M. Praneet Reddy
-
-Submitted this project to ASL.
