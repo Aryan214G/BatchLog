@@ -97,6 +97,6 @@ The application follows a layered architecture:
 
 ## Team
 
-- N. Abhignan Reddy
 - Aryan Jingade
+- N. Abhignan Reddy
 - M. Praneet Reddy
